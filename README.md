@@ -18,6 +18,16 @@ Services:
 - Kibana Dev Tools at http://localhost:5601/app/dev_tools#/console
 - ElasticSearch at http://localhost:9200
 
+## Python dependencies
+
+Compile requirements.in to requirements.txt:
+
+	pip-compile
+
+Install dependencies from requirements.txt:
+
+	pip install -r requirements.txt
+
 # Issues board
 
 https://helsinkisolutionoffice.atlassian.net/projects/US/issues/
