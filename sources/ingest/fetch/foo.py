@@ -6,8 +6,8 @@ def get_page(URL):
     print(r.status_code)
 
     data = r.json()
-    #print(data["count"])
-    #print(len(data["results"]))
+    # print(data["count"])
+    # print(len(data["results"]))
 
     for elem in data["results"]:
         print(elem["name"]["fi"], elem["id"])
@@ -16,7 +16,7 @@ def get_page(URL):
 
 
 def fetch():
-    URL="https://api.hel.fi/servicemap/v2/department/"
+    URL = "https://api.hel.fi/servicemap/v2/department/"
 
     print("Hello from {}".format(__name__))
 
@@ -25,6 +25,7 @@ def fetch():
         next = get_page(next)
 
     return "Fetch completed by {}".format(__name__)
+
 
 def delete():
     pass

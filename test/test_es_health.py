@@ -15,46 +15,53 @@ from elasticsearch import Elasticsearch
 """
 
 
-logging.basicConfig(filename="test_es_health.log",
-                    format='%(filename)s: %(message)s',
-                    level=logging.DEBUG)
+logging.basicConfig(
+    filename="test_es_health.log",
+    format="%(filename)s: %(message)s",
+    level=logging.DEBUG,
+)
 
 
 def test_es_up():
     logging.debug("Checking ElasticSearch connection")
-    r = requests.get('http://localhost:9200')
+    r = requests.get("http://localhost:9200")
     logging.debug(json.dumps(json.loads(r.content), indent=4))
     assert r.status_code == 200
+
 
 def test_es_basic_operations():
     """ Run basic operations for testing purposes. """
 
-    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+    es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
     try:
         logging.debug("Deleting existing test data")
-        es.delete(index='unit-test-index', doc_type='test', id=1)
+        es.delete(index="unit-test-index", doc_type="test", id=1)
     except exceptions.NotFoundError:
         pass
 
     logging.debug("Adding test data")
-    r = es.index(index='unit-test-index', doc_type='test', id=1, body=
-        {
-        "name": "Koira Koiruli Pöö",
-        "height": "49",
-        "mass": "10",
-        "hair_color": "blond",
-        "birth_year": "1999",
-        "gender": "male",
-        })
+    r = es.index(
+        index="unit-test-index",
+        doc_type="test",
+        id=1,
+        body={
+            "name": "Koira Koiruli Pöö",
+            "height": "49",
+            "mass": "10",
+            "hair_color": "blond",
+            "birth_year": "1999",
+            "gender": "male",
+        },
+    )
 
     assert r["result"] == "created"
 
     es.indices.refresh(index="unit-test-index")
-    r = es.get(index='unit-test-index', doc_type='test', id=1)
-    assert r["_id"] == '1'
+    r = es.get(index="unit-test-index", doc_type="test", id=1)
+    assert r["_id"] == "1"
 
-    s = es.search(index="unit-test-index", body={"query": {"match" : { "name" : "cat" }}})
+    s = es.search(index="unit-test-index", body={"query": {"match": {"name": "cat"}}})
     hits = s["hits"]["total"]["value"]
     assert hits == 0
 
@@ -63,15 +70,17 @@ def test_es_basic_operations():
     hits = s["hits"]["total"]["value"]
     assert hits == 1
 
-    s = es.search(index="unit-test-index", body={"query": {"match" : { "mass" : "10" }}})
+    s = es.search(index="unit-test-index", body={"query": {"match": {"mass": "10"}}})
     logging.debug(s)
     hits = s["hits"]["total"]["value"]
     assert hits == 1
 
-    s = es.search(index="unit-test-index", body={"query": {"match" : { "name" : "Koiruli" }}})
+    s = es.search(
+        index="unit-test-index", body={"query": {"match": {"name": "Koiruli"}}}
+    )
     logging.debug(s)
     hits = s["hits"]["total"]["value"]
     assert hits == 1
 
     logging.debug("Deleting test data")
-    es.delete(index='unit-test-index', doc_type='test', id=1)
+    es.delete(index="unit-test-index", doc_type="test", id=1)

@@ -15,21 +15,22 @@ def fetch():
     print("Storing data to Elasticsearch")
 
     try:
-        es = Elasticsearch([{'host': 'es01', 'port': 9200}])
+        es = Elasticsearch([{"host": "es01", "port": 9200}])
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    r = es.index(index='test-index', doc_type='test', body=data["name"])
+    r = es.index(index="test-index", doc_type="test", body=data["name"])
     print(r)
 
     return "Fetch completed by {}".format(__name__)
 
+
 def delete():
     """ Delete the whole index. """
     try:
-        es = Elasticsearch([{'host': 'es01', 'port': 9200}])
+        es = Elasticsearch([{"host": "es01", "port": 9200}])
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    r = es.indices.delete(index='test-index')
+    r = es.indices.delete(index="test-index")
     print(r)
