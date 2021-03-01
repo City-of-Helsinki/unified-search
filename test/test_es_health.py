@@ -33,14 +33,14 @@ def test_es_basic_operations():
 
     try:
         logging.debug("Deleting existing test data")
-        es.delete(index='test-index', doc_type='test', id=1)
+        es.delete(index='unit-test-index', doc_type='test', id=1)
     except exceptions.NotFoundError:
         pass
 
     logging.debug("Adding test data")
-    r = es.index(index='test-index', doc_type='test', id=1, body=
+    r = es.index(index='unit-test-index', doc_type='test', id=1, body=
         {
-        "name": "Koira Koiruli",
+        "name": "Koira Koiruli Pöö",
         "height": "49",
         "mass": "10",
         "hair_color": "blond",
@@ -50,28 +50,28 @@ def test_es_basic_operations():
 
     assert r["result"] == "created"
 
-    es.indices.refresh(index="test-index")
-    r = es.get(index='test-index', doc_type='test', id=1)
+    es.indices.refresh(index="unit-test-index")
+    r = es.get(index='unit-test-index', doc_type='test', id=1)
     assert r["_id"] == '1'
 
-    s = es.search(index="test-index", body={"query": {"match" : { "name" : "cat" }}})
+    s = es.search(index="unit-test-index", body={"query": {"match" : { "name" : "cat" }}})
     hits = s["hits"]["total"]["value"]
     assert hits == 0
 
-    s = es.search(index="test-index", body={"query": {"match_all": {}}})
+    s = es.search(index="unit-test-index", body={"query": {"match_all": {}}})
     logging.debug(s)
     hits = s["hits"]["total"]["value"]
     assert hits == 1
 
-    s = es.search(index="test-index", body={"query": {"match" : { "mass" : "10" }}})
+    s = es.search(index="unit-test-index", body={"query": {"match" : { "mass" : "10" }}})
     logging.debug(s)
     hits = s["hits"]["total"]["value"]
     assert hits == 1
 
-    s = es.search(index="test-index", body={"query": {"match" : { "name" : "Koiruli" }}})
+    s = es.search(index="unit-test-index", body={"query": {"match" : { "name" : "Koiruli" }}})
     logging.debug(s)
     hits = s["hits"]["total"]["value"]
     assert hits == 1
 
     logging.debug("Deleting test data")
-    es.delete(index='test-index', doc_type='test', id=1)
+    es.delete(index='unit-test-index', doc_type='test', id=1)
