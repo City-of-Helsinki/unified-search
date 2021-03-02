@@ -34,6 +34,16 @@ To delete testing data:
 
 	docker-compose exec sources python manage.py ingest_data --delete
 
+## GraphQL search API
+
+Graphene Django based GraphQL search API is available at http://localhost:5001/graphql.
+
+To test queries, try
+
+	query {
+	  hello
+	}
+
 ## Python dependencies
 
 Compile requirements.in to requirements.txt:

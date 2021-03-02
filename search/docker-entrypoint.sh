@@ -18,7 +18,7 @@ fi
 if [ ! -z "$@" ]; then
     "$@"
 elif [ "$DEV_SERVER" = "1" ]; then
-    python ./manage.py runserver 0.0.0.0:5000
+    python ./manage.py runserver 0.0.0.0:5001
 else
     uwsgi --ini .prod/uwsgi.ini
 fi

@@ -20,6 +20,21 @@ services:
     networks:
       - elastic
 
+  search:
+    <<: *base
+    build:
+      context: ./search
+      target: development
+    ports:
+      - "5001:5001"
+    environment:
+      APPLY_MIGRATIONS: 1
+    restart: always
+    volumes:
+      - ./search:/app
+    networks:
+      - elastic
+
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
     container_name: es01
