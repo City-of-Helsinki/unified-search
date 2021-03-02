@@ -17,6 +17,8 @@ Services:
 - Kibana at http://localhost:5601
 - Kibana Dev Tools at http://localhost:5601/app/dev_tools#/console
 - ElasticSearch at http://localhost:9200
+- Data sources (data collector) at http://localhost:5000/
+- GraphQL search API at http://localhost:5001/graphql
 
 ## Testing
 
