@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from ingest.fetch import foo, bar
+from ingest.fetch import servicemap, linkedevents
 
 
 class Command(BaseCommand):
@@ -22,9 +22,12 @@ class Command(BaseCommand):
 
         if kwargs["delete"]:
             print("DELETING DATA")
-            foo.delete()
-            bar.delete()
+            servicemap.delete()
+            linkedevents.delete()
             return
 
-        # print(foo.fetch())
-        print(bar.fetch())
+        # TODO: add proper mapping, this works out of good luck as
+        # e.g. ID fields are of different type (string vs float)
+        print(linkedevents.fetch())
+        print(servicemap.fetch())
+

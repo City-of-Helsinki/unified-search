@@ -40,10 +40,14 @@ To delete testing data:
 
 Graphene Django based GraphQL search API is available at http://localhost:5001/graphql.
 
-To test queries, try
+After ingesting data, try
 
 	query {
-	  hello
+		q(match:"helsinki") {
+			text
+			count
+			rawResults
+		}
 	}
 
 ## Python dependencies
