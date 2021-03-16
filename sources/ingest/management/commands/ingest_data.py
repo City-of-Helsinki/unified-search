@@ -26,8 +26,8 @@ class Command(BaseCommand):
             linkedevents.delete()
             return
 
-        # TODO: add proper mapping, this works out of good luck as
-        # e.g. ID fields are of different type (string vs float)
         print(linkedevents.fetch())
+        linkedevents.set_alias("test-index")
         print(servicemap.fetch())
+        servicemap.set_alias("test-index")
 
