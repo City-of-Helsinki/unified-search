@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from ingest.fetch import servicemap, linkedevents
+from ingest.fetch import servicemap, linkedevents, palvelukartta
 
 
 class Command(BaseCommand):
@@ -26,8 +26,13 @@ class Command(BaseCommand):
             linkedevents.delete()
             return
 
-        print(linkedevents.fetch())
-        linkedevents.set_alias("test-index")
-        print(servicemap.fetch())
-        servicemap.set_alias("test-index")
+        #print(linkedevents.fetch())
+        #linkedevents.set_alias("test-index")
+        #print(servicemap.fetch())
+        #servicemap.set_alias("test-index")
+        print(palvelukartta.fetch())
+        palvelukartta.set_alias("test-index")
+
+        time = timezone.now().strftime("%X")
+        print("Completed at %s" % time)
 
