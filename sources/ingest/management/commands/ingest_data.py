@@ -22,14 +22,15 @@ class Command(BaseCommand):
 
         if kwargs["delete"]:
             print("DELETING DATA")
+            palvelukartta.delete()
             servicemap.delete()
             linkedevents.delete()
             return
 
-        #print(linkedevents.fetch())
-        #linkedevents.set_alias("test-index")
-        #print(servicemap.fetch())
-        #servicemap.set_alias("test-index")
+        print(linkedevents.fetch())
+        linkedevents.set_alias("test-index")
+        print(servicemap.fetch())
+        servicemap.set_alias("test-index")
         print(palvelukartta.fetch())
         palvelukartta.set_alias("test-index")
 

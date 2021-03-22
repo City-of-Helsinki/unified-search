@@ -6,6 +6,9 @@ exports.elasticSearchSchema = `
 
 """ Elasticsearch results """
 
+union Data = PalvelukarttaUnit | LinkedeventsPlace
+
+
 type ElasticSearchResult {
     took: Int,
     timed_out: Boolean,
@@ -36,7 +39,7 @@ _index: String,
 _type: String,
 _score: Float
 _id: String,
-_source: PalvelukarttaUnit
+_source: Data
 }
 
 `;

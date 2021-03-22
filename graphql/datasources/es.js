@@ -9,8 +9,12 @@ class ElasticSearchAPI extends RESTDataSource {
       this.baseURL = ELASTIC_SEARCH_URL;
     }
 
-    async getQueryResults(q) {
-      const query = {
+    async getQueryResults(q, index) {
+
+      // 'test-index' is alias for all available indexes
+      const es_index = index ? index : 'test-index'
+
+        const query = {
           query: {
               query_string: {
                   query: q
@@ -18,16 +22,16 @@ class ElasticSearchAPI extends RESTDataSource {
           }
       };
 
-      /*const data = await this.post(`test-index/_search`, undefined,
+    /*
+      const data = await this.post(`test-index/_search`, undefined,
           {
             headers: { 'Content-Type': 'application/json', },
             body: JSON.stringify(query)
           },
+      );
+    */
 
-          );
-      */
-
-    const data = this.post(`test-index/_search`, undefined,
+    const data = this.post(`${es_index}/_search`, undefined,
       {
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify(query)

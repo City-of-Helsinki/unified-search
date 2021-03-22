@@ -38,11 +38,11 @@ def delete():
     """ Delete the whole index. """
     try:
         es = Elasticsearch([{"host": "es01", "port": 9200}])
-    except ConnectionError as e:
+        r = es.indices.delete(index="servicemap")
+        print(r)
+    except Exception as e:
         return "ERROR at {}".format(__name__)
 
-    r = es.indices.delete(index="servicemap")
-    print(r)
 
 def set_alias(alias):
     """ Configure alias for index name. """
