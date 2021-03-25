@@ -14,12 +14,12 @@ class ElasticSearchAPI extends RESTDataSource {
       // 'test-index' is alias for all available indexes
       const es_index = index ? index : 'test-index'
 
-        const query = {
-          query: {
-              query_string: {
-                  query: q
-              }
-          }
+      const query = {
+        query: {
+            query_string: {
+                query: q
+            }
+        }
       };
 
     /*
@@ -37,7 +37,7 @@ class ElasticSearchAPI extends RESTDataSource {
         body: JSON.stringify(query)
         },
 
-      ).then((r) => { console.log(r.hits.hits[0]); return r });
+      ).then((r) => { console.log(/*r.hits.hits[0]*/"ok"); return r });
 
       return [data];
     }

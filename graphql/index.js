@@ -86,14 +86,6 @@ class OriginDirective extends SchemaDirectiveVisitor {
     }
   }
 
-
-/*
-TODO:
-- type collisions, e.g. id field
-- collector: use common types, such as language strings
-- enrich with URL of sensor data
-*/
-
   const resolvers = {
   Data: {
     __resolveType(obj, context, info) {
@@ -115,12 +107,44 @@ TODO:
           },
     },
     SearchResultConnection: {
-      count() {
-        return 444;
+      count(parent, args, context, info) {
+        const { es_results } = parent;
+        return es_results[0].then((r) => r.hits.total.value);
       },
-      max_score() {
-        return 777;
-      }
+      max_score(parent, args, context, info) {
+        const { es_results } = parent;
+        return es_results[0].then( (r) => r.hits.max_score);
+      },
+      pageInfo(parent, args, context, info) {
+        return {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "startCursor123",
+          endCursor: "endCursor123"
+        }
+      },
+      edges(parent, args, context, info) {
+        console.log("at edges");
+        const { es_results } = parent;
+        console.log(es_results);
+
+        es_results[0].then( (r) => console.log(r));
+        const edges = es_results[0].then((r) => r.hits.hits.map( function (e) {
+           return {
+             cursor: 123,
+             node: {
+               _score: e._score,
+               name: {
+                 fi: e._source.name_fi ? e._source.name_fi : e._source.name.fi
+                },
+               description: {
+                 fi: e.description ? e.description.fi : e.desc_fi
+                }
+              }
+            }
+          }));
+        return edges;
+      },
     },
 
   LegalEntity: {
