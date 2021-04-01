@@ -6,9 +6,9 @@ exports.locationSchema = `
   """
   type Venue {
     meta: NodeMeta
-    name: String
+    name: LanguageString
     location: LocationDescription
-    description: String
+    description: LanguageString
     descriptionResources: DescriptionResources
     partOf: Venue
     openingHours: OpeningHours
@@ -24,7 +24,7 @@ exports.locationSchema = `
   Free-form location, not necessarily at a know venue.
   """
   type LocationDescription {
-    url: String
+    url: LanguageString
     geoLocation: GeoJSONFeature
     streetAddress: Address
     explanation: String

@@ -48,11 +48,18 @@ const querySchema = `
     node: SearchResultNode!
   }
 
+  type OpeningHours {
+    url: String
+    is_open_now_url: String
+  }
+
   type SearchResultNode {
     _score: Float
     id: ID!
+    venue: Venue
     name: LanguageString!
     description: LanguageString!
+    openingHours: OpeningHours
     resources: DescriptionResources
     canonicalUrl: String!
     searchCategories: [UnifiedSearchResultCategory!]!
@@ -97,6 +104,10 @@ class OriginDirective extends SchemaDirectiveVisitor {
         return 'PalvelukarttaUnit';
       }
 
+      // todo
+      if(obj.origin === 'location'){
+        return 'locationUnit';
+      }
       return null; // GraphQLError is thrown
     },
   },
@@ -106,45 +117,67 @@ class OriginDirective extends SchemaDirectiveVisitor {
           return {es_results: res}
           },
     },
-    SearchResultConnection: {
-      count(parent, args, context, info) {
-        const { es_results } = parent;
-        return es_results[0].then((r) => r.hits.total.value);
-      },
-      max_score(parent, args, context, info) {
-        const { es_results } = parent;
-        return es_results[0].then( (r) => r.hits.max_score);
-      },
-      pageInfo(parent, args, context, info) {
-        return {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: "startCursor123",
-          endCursor: "endCursor123"
-        }
-      },
-      edges(parent, args, context, info) {
-        console.log("at edges");
-        const { es_results } = parent;
-        console.log(es_results);
+  SearchResultConnection: {
+    count(parent, args, context, info) {
+      const { es_results } = parent;
+      return es_results[0].then((r) => r.hits.total.value);
+    },
+    max_score(parent, args, context, info) {
+      const { es_results } = parent;
+      return es_results[0].then( (r) => r.hits.max_score);
+    },
+    pageInfo(parent, args, context, info) {
+      return {
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: "startCursor123",
+        endCursor: "endCursor123"
+      }
+    },
+    edges(parent, args, context, info) {
+      console.log("at edges");
+      const { es_results } = parent;
+      console.log(es_results);
 
-        es_results[0].then( (r) => console.log(r));
-        const edges = es_results[0].then((r) => r.hits.hits.map( function (e) {
-           return {
-             cursor: 123,
-             node: {
-               _score: e._score,
-               name: {
-                 fi: e._source.name_fi ? e._source.name_fi : e._source.name.fi
-                },
-               description: {
-                 fi: e.description ? e.description.fi : e.desc_fi
-                }
-              }
+      es_results[0].then( (r) => console.log(r));
+      const edges = es_results[0].then((r) => r.hits.hits.map( function (e) {
+          return {
+            cursor: 123,
+            node: {
+            _score: e._score,
+            venue: {venue: e._source.venue}, // pass parent to child resolver. How to do this better?
+            name: {
+                fi: e._source.venue.name.fi,
+                sv: e._source.venue.name.sv,
+                en: e._source.venue.name.en
+              },
+            description: {
+                fi: e._source.venue.description.fi,
+                sv: e._source.venue.description.sv,
+                en: e._source.venue.description.en
+              },
+            openingHours: {
+              url: e._source.venue.openingHours.url,
+              is_open_now_url: e._source.venue.openingHours.is_open_now_url
+              },
             }
-          }));
-        return edges;
+          }
+        }));
+      return edges;
+    },
+  },
+
+  Venue: {
+    name({venue}, args, context, info) {
+      return venue.name
       },
+    description({venue}, args, context, info) {
+      return venue.description
+      },
+    location({venue}, args, context, info) {
+      return venue.location
+      },
+
     },
 
   LegalEntity: {

@@ -37,7 +37,7 @@ class ElasticSearchAPI extends RESTDataSource {
         body: JSON.stringify(query)
         },
 
-      ).then((r) => { console.log(/*r.hits.hits[0]*/"ok"); return r });
+      ).then((r) => { console.log(r.hits.hits[0]); return r });
 
       return [data];
     }
