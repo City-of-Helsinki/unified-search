@@ -42,4 +42,9 @@ exports.locationSchema = `
     name: String!
     categories: [Keyword!]
   }
+  type OpeningHours {
+    url: String
+    is_open_now_url: String
+  }
+
 `;

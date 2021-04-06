@@ -36,7 +36,73 @@ To delete testing data:
 
 	docker-compose exec sources python manage.py ingest_data --delete
 
+
 ## GraphQL search API
+
+Start Apollo based GraphQL server at unified-search/graphql/:
+
+	node index.js
+
+See Queries.
+
+
+## GraphQL queries
+
+# Write your query or mutation here
+
+query {
+  unifiedSearch(q:"koira", index:"location") {
+    count
+    max_score
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      cursor
+      node {
+        venue {
+          name {
+            fi
+            sv
+            en
+          }
+          openingHours {
+            url
+            is_open_now_url
+          }
+          location {
+            url {
+              fi
+            }
+          }
+        }
+        _score
+        searchCategories
+      }
+    }
+    es_results {
+	    took
+      hits {
+        max_score
+        total {
+          value
+	      }
+        hits{
+          _index
+          _source {
+            data
+            }
+          }
+        }
+      }
+   }
+}
+
+
+## GraphQL search API - Graphene
 
 Graphene Django based GraphQL search API is available at http://localhost:5001/graphql.
 

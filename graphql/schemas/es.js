@@ -6,40 +6,41 @@ exports.elasticSearchSchema = `
 
 """ Elasticsearch results """
 
-union Data = PalvelukarttaUnit | LinkedeventsPlace
-
-
 type ElasticSearchResult {
-    took: Int,
-    timed_out: Boolean,
-    _shards: Shards
-    hits: Hits
-  }
+  took: Int,
+  timed_out: Boolean,
+  _shards: Shards
+  hits: Hits
+}
 
 type Shards {
-total: Int, 
-successful: Int,
-skipped: Int, 
-failed: Int
+  total: Int,
+  successful: Int,
+  skipped: Int,
+  failed: Int
 }
 
 type Hits {
-max_score: Float,
-total: HitTotal,
-hits: [SingleHit],
+  max_score: Float,
+  total: HitTotal,
+  hits: [SingleHit],
 }
 
 type HitTotal {
-value: Int,
-relation: String
+  value: Int,
+  relation: String
 }
 
 type SingleHit {
-_index: String,
-_type: String,
-_score: Float
-_id: String,
-_source: Data
+  _index: String,
+  _type: String,
+  _score: Float
+  _id: String,
+  _source: RawJSON
+}
+
+type RawJSON {
+  data: String
 }
 
 `;

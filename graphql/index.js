@@ -9,77 +9,9 @@ const { reservationSchema } = require('./schemas/reservation');
 const { eventSchema } = require('./schemas/event');
 const { actorSchema } = require('./schemas/actor');
 const { geoSchema } = require('./schemas/geojson');
+const { querySchema } = require('./schemas/query');
 
 const { ElasticSearchAPI } = require('./datasources/es');
-
-
-const querySchema = `
-  directive @origin(service: String, type: String, attr: String) repeatable on FIELD_DEFINITION | OBJECT
-
-  enum UnifiedSearchResultCategory {
-    POINT_OF_INTEREST
-    EVENT
-    RESERVABLE
-    ENROLLABLE
-    ARTWORK
-    ARTICLE
-    SERVICE
-  }
-
-  type SearchResultConnection {
-    """ Elasticsearch raw results """
-    es_results: [ElasticSearchResult]
-
-    count: Int
-    max_score: Float
-    pageInfo: SearchResultPageInfo
-    edges: [SearchResultEdge!]!
-  }
-
-  type SearchResultPageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
-  }
-
-  type SearchResultEdge {
-    cursor: String!
-    node: SearchResultNode!
-  }
-
-  type OpeningHours {
-    url: String
-    is_open_now_url: String
-  }
-
-  type SearchResultNode {
-    _score: Float
-    id: ID!
-    venue: Venue
-    name: LanguageString!
-    description: LanguageString!
-    openingHours: OpeningHours
-    resources: DescriptionResources
-    canonicalUrl: String!
-    searchCategories: [UnifiedSearchResultCategory!]!
-  }
-
-  type Query {
-    unifiedSearch(
-        """
-        Free form query string, corresponding to user search input
-        """
-        q: String,
-
-        """
-        Optional search index.
-        """
-        index: String,
-
-      ): SearchResultConnection
-  }
-`;
 
 
 class OriginDirective extends SchemaDirectiveVisitor {
@@ -93,24 +25,7 @@ class OriginDirective extends SchemaDirectiveVisitor {
     }
   }
 
-  const resolvers = {
-  Data: {
-    __resolveType(obj, context, info) {
-      console.log(obj)
-      if(obj.origin === 'linkedevents'){
-        return 'LinkedeventsPlace';
-      }
-      if(obj.origin === 'palvelukartta'){
-        return 'PalvelukarttaUnit';
-      }
-
-      // todo
-      if(obj.origin === 'location'){
-        return 'locationUnit';
-      }
-      return null; // GraphQLError is thrown
-    },
-  },
+const resolvers = {
   Query: {
     unifiedSearch: async (_source, { q, index }, { dataSources }) => {
           const res = await dataSources.elasticSearchAPI.getQueryResults(q, index);
@@ -144,22 +59,8 @@ class OriginDirective extends SchemaDirectiveVisitor {
           return {
             cursor: 123,
             node: {
-            _score: e._score,
-            venue: {venue: e._source.venue}, // pass parent to child resolver. How to do this better?
-            name: {
-                fi: e._source.venue.name.fi,
-                sv: e._source.venue.name.sv,
-                en: e._source.venue.name.en
-              },
-            description: {
-                fi: e._source.venue.description.fi,
-                sv: e._source.venue.description.sv,
-                en: e._source.venue.description.en
-              },
-            openingHours: {
-              url: e._source.venue.openingHours.url,
-              is_open_now_url: e._source.venue.openingHours.is_open_now_url
-              },
+              _score: e._score,
+              venue: {venue: e._source.venue}, // pass parent to child resolver. How to do this better?
             }
           }
         }));
@@ -177,8 +78,22 @@ class OriginDirective extends SchemaDirectiveVisitor {
     location({venue}, args, context, info) {
       return venue.location
       },
-
+    openingHours({venue}, args, context, info) {
+      return venue.openingHours
+    }
     },
+
+  RawJSON: {
+    data(parent, args, context, info) {
+      // Testing and debugging only
+      return JSON.stringify(parent)
+    }
+  },
+
+  SearchResultNode: {
+    // TODO
+    searchCategories: () => ["POINT_OF_INTEREST"]
+  },
 
   LegalEntity: {
     __resolveType(obj, context, info) {

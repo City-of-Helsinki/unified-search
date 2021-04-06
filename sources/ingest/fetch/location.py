@@ -183,7 +183,7 @@ def fetch():
             url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/opening_hours/",
             is_open_now_url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/is_open_now/")
 
-        # TODO
+        # TODO, this data is usually missing
         o = get_opening_hours(tpr_unit)
         if o:
             print(o)
