@@ -1,6 +1,4 @@
-
 const { GraphQLScalarType } = require('graphql');
-
 
 exports.palvelukarttaSchema = `
 
