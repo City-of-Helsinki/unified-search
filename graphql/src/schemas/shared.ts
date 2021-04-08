@@ -1,4 +1,4 @@
-exports.sharedSchema = `
+export const sharedSchema = `
   scalar DateTime
   type NodeMeta {
     id: ID!

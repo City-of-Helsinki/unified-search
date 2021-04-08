@@ -2,7 +2,7 @@
 // https://github.com/ghengeveld/graphql-geojson-demo instance by the
 // `get-graphql-schema` tool.
 
-exports.geoSchema = `
+export const geoSchema = `
 """Coordinate Reference System (CRS) object."""
 type GeoJSONCoordinateReferenceSystem {
   type: GeoJSONCRSType!

@@ -20,6 +20,20 @@ services:
     networks:
       - elastic
 
+  search-api:
+    <<: *base
+    build:
+      context: ./graphql
+      target: development
+    volumes:
+      - ./graphql:/app
+      - ./graphql/node_modules/:/app/node_modules
+    ports:
+      - "4000:4000"
+    restart: always
+    networks:
+      - elastic
+
   search:
     <<: *base
     build:

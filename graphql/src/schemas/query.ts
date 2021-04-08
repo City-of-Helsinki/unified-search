@@ -1,6 +1,4 @@
-const { GraphQLScalarType } = require('graphql');
-
-exports.querySchema = `
+export const querySchema = `
 
 """ Query """
 

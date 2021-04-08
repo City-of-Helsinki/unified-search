@@ -1,4 +1,4 @@
-exports.locationSchema = `
+export const locationSchema = `
   """
   A place that forms a unit and can be used for some specific purpose -
   respa unit or resource, service map unit, beta.kultus venue, linked

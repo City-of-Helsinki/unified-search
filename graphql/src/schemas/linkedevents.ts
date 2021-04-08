@@ -1,6 +1,4 @@
-const { GraphQLScalarType } = require('graphql');
-
-exports.linkedeventsSchema = `
+export const linkedeventsSchema = `
 
 type LinkedeventsPlace {
     """ Raw Linkedevents Place fields """

@@ -1,6 +1,6 @@
 const { RESTDataSource } = require('apollo-datasource-rest');
 
-const ELASTIC_SEARCH_URL = 'http://localhost:9200';
+const ELASTIC_SEARCH_URL = 'http://es01:9200';
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
@@ -46,4 +46,4 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 }
 
-module.exports = { ElasticSearchAPI };
+export { ElasticSearchAPI };

@@ -1,4 +1,4 @@
-exports.actorSchema = `
+export const actorSchema = `
   """TODO: take from Profile"""
   type Person {
     meta: NodeMeta

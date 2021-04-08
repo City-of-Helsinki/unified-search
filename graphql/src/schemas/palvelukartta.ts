@@ -1,6 +1,4 @@
-const { GraphQLScalarType } = require('graphql');
-
-exports.palvelukarttaSchema = `
+export const palvelukarttaSchema = `
 
 type PalvelukarttaUnit {
     """ Raw palvelukartta Unit fields """

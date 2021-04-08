@@ -17,36 +17,24 @@ const { querySchema } = require('./schemas/query');
 
 const { ElasticSearchAPI } = require('./datasources/es');
 
-class OriginDirective extends SchemaDirectiveVisitor {
-  visitFieldDefinition(field) {
-    const { resource, type, attr } = this.args;
-    field.resolve = () => {
-      resource, type, attr;
-    };
-  }
-
-  visitObject(type) {
-    console.log(`visitObject: ${type}`);
-  }
-}
 
 const resolvers = {
   Query: {
-    unifiedSearch: async (_source, { q, index }, { dataSources }) => {
+    unifiedSearch: async (_source: any, { q, index }: any, { dataSources }: any) => {
       const res = await dataSources.elasticSearchAPI.getQueryResults(q, index);
       return { es_results: res };
     },
   },
   SearchResultConnection: {
-    count(parent, args, context, info) {
+    count(parent: { es_results: any; }, args: any, context: any, info: any) {
       const { es_results } = parent;
-      return es_results[0].then((r) => r.hits.total.value);
+      return es_results[0].then((r: { hits: { total: { value: any; }; }; }) => r.hits.total.value);
     },
-    max_score(parent, args, context, info) {
+    max_score(parent: { es_results: any; }, args: any, context: any, info: any) {
       const { es_results } = parent;
-      return es_results[0].then((r) => r.hits.max_score);
+      return es_results[0].then((r: { hits: { max_score: any; }; }) => r.hits.max_score);
     },
-    pageInfo(parent, args, context, info) {
+    pageInfo(parent: any, args: any, context: any, info: any) {
       return {
         hasNextPage: false,
         hasPreviousPage: false,
@@ -54,14 +42,14 @@ const resolvers = {
         endCursor: 'endCursor123',
       };
     },
-    edges(parent, args, context, info) {
+    edges(parent: { es_results: any; }, args: any, context: any, info: any) {
       console.log('at edges');
       const { es_results } = parent;
       console.log(es_results);
 
-      es_results[0].then((r) => console.log(r));
-      const edges = es_results[0].then((r) =>
-        r.hits.hits.map(function (e) {
+      es_results[0].then((r: any) => console.log(r));
+      const edges = es_results[0].then((r: { hits: { hits: any[]; }; }) =>
+        r.hits.hits.map(function (e: { _score: any; _source: { venue: any; }; }) {
           return {
             cursor: 123,
             node: {
@@ -76,22 +64,22 @@ const resolvers = {
   },
 
   Venue: {
-    name({ venue }, args, context, info) {
+    name({ venue }: any, args: any, context: any, info: any) {
       return venue.name;
     },
-    description({ venue }, args, context, info) {
+    description({ venue }: any, args: any, context: any, info: any) {
       return venue.description;
     },
-    location({ venue }, args, context, info) {
+    location({ venue }: any, args: any, context: any, info: any) {
       return venue.location;
     },
-    openingHours({ venue }, args, context, info) {
+    openingHours({ venue }: any, args: any, context: any, info: any) {
       return venue.openingHours;
     },
   },
 
   RawJSON: {
-    data(parent, args, context, info) {
+    data(parent: any, args: any, context: any, info: any) {
       // Testing and debugging only
       return JSON.stringify(parent);
     },
@@ -103,22 +91,22 @@ const resolvers = {
   },
 
   LegalEntity: {
-    __resolveType(obj, context, info) {
+    __resolveType(obj: any, context: any, info: any) {
       return null;
     },
   },
   GeoJSONCRSProperties: {
-    __resolveType(obj, context, info) {
+    __resolveType(obj: any, context: any, info: any) {
       return null;
     },
   },
   GeoJSONGeometryInterface: {
-    __resolveType(obj, context, info) {
+    __resolveType(obj: any, context: any, info: any) {
       return null;
     },
   },
   GeoJSONInterface: {
-    __resolveType(obj, context, info) {
+    __resolveType(obj: any, context: any, info: any) {
       return null;
     },
   },
@@ -138,9 +126,6 @@ const combinedSchema = makeExecutableSchema({
     geoSchema,
   ],
   resolvers,
-  schemaDirectives: {
-    origin: OriginDirective,
-  },
 });
 
 const server = new ApolloServer({
@@ -151,4 +136,4 @@ const server = new ApolloServer({
     };
   },
 });
-server.listen().then(({ url }) => console.log(`Server running at ${url}`));
+server.listen().then(({ url }: any) => console.log(`Server running at ${url}`));
