@@ -1,14 +1,16 @@
 {
-  "name": "graphql",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "unified-search-graphql-api",
+  "version": "0.0.1",
+  "description": "GraphQL API for unified search",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon --ext ts --exec 'ts-node' src/index.ts",
+    "transpile": "tsc",
+    "serve": "node --max-http-header-size=16000 dist/index.js",
+    "test": "echo \"Error: no test specified, everything must work\" && exit 0"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "apollo-datasource-rest": "^0.10.0",
     "apollo-server": "^2.21.1",
@@ -16,6 +18,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.7",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   }
 }

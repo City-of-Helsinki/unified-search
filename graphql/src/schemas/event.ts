@@ -1,4 +1,4 @@
-exports.eventSchema = `
+export const eventSchema = `
   """
   An organised event - something that happens at a specific time, has a
   specific topic or content, and people can participate.  Examples include
