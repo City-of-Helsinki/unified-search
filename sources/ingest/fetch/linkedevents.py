@@ -1,5 +1,6 @@
 import json
 import requests
+from django.conf import settings
 
 from elasticsearch import Elasticsearch
 
@@ -10,7 +11,7 @@ def fetch():
     payload = {"page_size": 100}
     received_count = 0
     try:
-        es = Elasticsearch([{"host": "es01", "port": 9200}])
+        es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
@@ -36,7 +37,7 @@ def fetch():
 def delete():
     """ Delete the whole index. """
     try:
-        es = Elasticsearch([{"host": "es01", "port": 9200}])
+        es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index="linkedevents")
         print(r)
     except Exception as e:
@@ -46,7 +47,7 @@ def delete():
 def set_alias(alias):
     """ Configure alias for index name. """
     try:
-        es = Elasticsearch([{"host": "es01", "port": 9200}])
+        es = Elasticsearch([settings.ES_URI])
         es.indices.put_alias(index='linkedevents', name=alias)
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)

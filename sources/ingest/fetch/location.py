@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, asdict
 from typing import List
 from django.utils import timezone
+from django.conf import settings
 
 import json
 import requests
@@ -143,7 +144,7 @@ def get_opening_hours(d):
 def fetch():
 
     try:
-        es = Elasticsearch([{"host": "es01", "port": 9200}])
+        es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
@@ -230,7 +231,7 @@ def fetch():
 def delete():
     """ Delete the whole index. """
     try:
-        es = Elasticsearch([{"host": "es01", "port": 9200}])
+        es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index="location")
         print(r)
     except Exception as e:
@@ -240,7 +241,7 @@ def delete():
 def set_alias(alias):
     """ Configure alias for index name. """
     try:
-        es = Elasticsearch([{"host": "es01", "port": 9200}])
+        es = Elasticsearch([settings.ES_URI])
         es.indices.put_alias(index='location', name=alias)
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
