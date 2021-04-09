@@ -1,11 +1,11 @@
 const { RESTDataSource } = require('apollo-datasource-rest');
 
-const ELASTIC_SEARCH_URL = 'http://es01:9200';
+const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
-    this.baseURL = ELASTIC_SEARCH_URL;
+    this.baseURL = ELASTIC_SEARCH_URI;
   }
 
   async getQueryResults(q, index) {
