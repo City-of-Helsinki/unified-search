@@ -22,9 +22,9 @@ class Command(BaseCommand):
 
         if kwargs["delete"]:
             print("DELETING DATA")
-            palvelukartta.delete()
-            servicemap.delete()
-            linkedevents.delete()
+            # palvelukartta.delete()
+            # servicemap.delete()
+            # linkedevents.delete()
             location.delete()
             return
 
