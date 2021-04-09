@@ -72,10 +72,11 @@ jobs:
         run: |
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
 
-      - name: Build ${{ matrix.service }}
+      - name: Deploy ${{ matrix.service }}
+        uses: andersinno/kolga-deploy-action@v2
         env:
-          DOCKER_BUILD_SOURCE: ./${{ matrix.service }}/Dockerfile
-          DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
-          DOCKER_IMAGE_NAME: ${{ matrix.service }}
-          DOCKER_BUILD_ARG_DEBUG: "debug"
+          DOCKER_BUILD_SOURCE: ./${{ matrix.dir }}/Dockerfile
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.dir }}
+          DOCKER_IMAGE_NAME: ${{ matrix.dir }}
+          PROJECT_NAME: ${{ matrix.service }}
 
