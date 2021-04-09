@@ -24,26 +24,58 @@ env:
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ["sources", "graphql"]
+
     runs-on: ubuntu-latest
-    name: Build
+    name: Build ${{ matrix.service }}
     steps:
       - uses: actions/checkout@v2
-      - name: Build
+      - name: Build ${{ matrix.service }}
         uses: andersinno/kolga-build-action@v2
         env:
-          DOCKER_IMAGE_NAME: ${{ env.REPO_NAME }}-review
+          DOCKER_BUILD_SOURCE: ./${{ matrix.service }}/Dockerfile
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
           DOCKER_BUILD_ARG_DEBUG: "debug"
 
   review:
-    runs-on: ubuntu-latest
     needs: build
-    name: Review
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ["sources", "graphql"]
+        include:
+          - service: "sources"
+            dir: "sources"
+          - service: "graphql"
+            dir: "graphql"
+            SERVICE_PORT: "4000"
+            K8S_LIVENESS_FILE: /app/ready.txt
+            K8S_READINESS_FILE: /app/ready.txt
+
+    runs-on: ubuntu-latest
+    name: Deploy review ${{ matrix.service }}
+
+
     steps:
       - uses: actions/checkout@v2
-      - uses: andersinno/kolga-setup-action@v2
+      - uses: andersinno/kolga-build-action@v2
 
-      - name: Deploy
-        uses: andersinno/kolga-deploy-action@v2
+      - name: Sources settings
+        if: matrix.service == 'sources'
         env:
-          ENVIRONMENT_URL: https://${{ env.K8S_NAMESPACE }}.${{ env.BASE_DOMAIN }}
-          DOCKER_IMAGE_NAME: ${{ env.REPO_NAME }}-review
+          SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_STAGING }}
+        run: |
+          echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+
+      - name: Build ${{ matrix.service }}
+        env:
+          DOCKER_BUILD_SOURCE: ./${{ matrix.service }}/Dockerfile
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
+          DOCKER_BUILD_ARG_DEBUG: "debug"
+
