@@ -50,16 +50,11 @@ jobs:
         service: ["sources", "graphql"]
         include:
           - service: "sources"
-            dir: "sources"
           - service: "graphql"
-            dir: "graphql"
             SERVICE_PORT: "4000"
-            K8S_LIVENESS_FILE: /app/ready.txt
-            K8S_READINESS_FILE: /app/ready.txt
 
     runs-on: ubuntu-latest
-    name: Deploy review ${{ matrix.service }}
-
+    name: Deploy ${{ matrix.service }}
 
     steps:
       - uses: actions/checkout@v2
@@ -75,8 +70,8 @@ jobs:
       - name: Deploy ${{ matrix.service }}
         uses: andersinno/kolga-deploy-action@v2
         env:
-          DOCKER_BUILD_SOURCE: ./${{ matrix.dir }}/Dockerfile
-          DOCKER_BUILD_CONTEXT: ./${{ matrix.dir }}
-          DOCKER_IMAGE_NAME: ${{ matrix.dir }}
+          DOCKER_BUILD_SOURCE: ./${{ matrix.service }}/Dockerfile
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ matrix.service }}
 
