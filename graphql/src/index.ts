@@ -2,7 +2,10 @@ const {
   makeExecutableSchema,
   ApolloServer,
   SchemaDirectiveVisitor,
-} = require('apollo-server');
+} = require('apollo-server-express');
+
+import cors from 'cors';
+import express from 'express';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -17,6 +20,8 @@ const { querySchema } = require('./schemas/query');
 
 const { ElasticSearchAPI } = require('./datasources/es');
 
+const OK = 'OK';
+const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
 const resolvers = {
   Query: {
@@ -128,12 +133,52 @@ const combinedSchema = makeExecutableSchema({
   resolvers,
 });
 
-const server = new ApolloServer({
-  schema: combinedSchema,
-  dataSources: () => {
-    return {
-      elasticSearchAPI: new ElasticSearchAPI(),
-    };
-  },
-});
-server.listen().then(({ url }: any) => console.log(`Server running at ${url}`));
+(async () => {
+  const server = new ApolloServer({
+    schema: combinedSchema,
+    dataSources: () => {
+      return {
+        elasticSearchAPI: new ElasticSearchAPI(),
+      };
+    },
+  });
+
+  let serverIsReady = false;
+
+  const signalReady = () => {
+    serverIsReady = true;
+  };
+
+  const checkIsServerReady = (response) => {
+    if (serverIsReady) {
+      response.send(OK);
+    } else {
+      response.status(500).send(SERVER_IS_NOT_READY);
+    }
+  };
+
+  const app = express();
+
+  app.use(cors());
+
+  app.get('/healthz', (request, response) => {
+    checkIsServerReady(response);
+  });
+
+  app.get('/readiness', (request, response) => {
+    checkIsServerReady(response);
+  });
+
+  server.applyMiddleware({ app, path: '/search' });
+
+  const port = process.env.GRAPHQL_PROXY_PORT || 4000;
+
+  app.listen({ port }, () => {
+    signalReady();
+
+    // eslint-disable-next-line no-console
+    console.log(
+      `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
+    );
+  });
+})();
