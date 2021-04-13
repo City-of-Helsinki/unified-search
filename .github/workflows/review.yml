@@ -16,7 +16,6 @@ env:
   ES_USERNAME: ${{ secrets.K8S_SECRET_ELASTICSEARCH_USERNAME_STAGING }}
   ES_PASSWORD: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PASSWORD_STAGING }}
   ES_URI: https://${{ secrets.K8S_SECRET_ELASTICSEARCH_USERNAME_STAGING }}:${{ secrets.K8S_SECRET_ELASTICSEARCH_PASSWORD_STAGING }}@${{ secrets.K8S_SECRET_ELASTICSEARCH_HOST_STAGING }}:${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STAGING }}
-  SERVICE_PORT: 4000
   K8S_REQUEST_CPU: 20m
   K8S_REQUEST_RAM: 50Mi
   K8S_LIMIT_CPU: 50m
@@ -59,6 +58,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: andersinno/kolga-setup-action@v2
+
+      - name: File probes
+        if: matrix.SERVICE_PORT == ''
+        run: |
+          echo "K8S_LIVENESS_FILE=/app/ready.txt" >> $GITHUB_ENV
+          echo "K8S_READINESS_FILE=/app/ready.txt" >> $GITHUB_ENV
+          echo "K8S_INGRESS_DISABLED=True" >> $GITHUB_ENV
+
+      - name: Service with ingress
+        if: matrix.SERVICE_PORT != ''
+        run: |
+          echo "ENVIRONMENT_URL=https://${{ env.K8S_NAMESPACE }}-${{ matrix.service }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "SERVICE_PORT=${{ matrix.SERVICE_PORT }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
 
       - name: Sources settings
         if: matrix.service == 'sources'
