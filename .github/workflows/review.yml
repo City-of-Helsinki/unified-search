@@ -15,7 +15,6 @@ env:
   ES_PORT: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STAGING }}
   ES_USERNAME: ${{ secrets.K8S_SECRET_ELASTICSEARCH_USERNAME_STAGING }}
   ES_PASSWORD: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PASSWORD_STAGING }}
-  ES_URI: https://${{ secrets.K8S_SECRET_ELASTICSEARCH_USERNAME_STAGING }}:${{ secrets.K8S_SECRET_ELASTICSEARCH_PASSWORD_STAGING }}@${{ secrets.K8S_SECRET_ELASTICSEARCH_HOST_STAGING }}:${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STAGING }}
   K8S_REQUEST_CPU: 20m
   K8S_REQUEST_RAM: 50Mi
   K8S_LIMIT_CPU: 50m
@@ -58,6 +57,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: andersinno/kolga-setup-action@v2
+
+      - name: Elasticsearch variables
+        run: |
+          echo "K8S_SECRET_ES_URI=https://${{ env.ES_USERNAME }}:${{ env.ES_PASSWORD }}@${{ env.ES_HOST }}:${{ env.ES_PORT }}" >> $GITHUB_ENV
 
       - name: File probes
         if: matrix.SERVICE_PORT == ''
