@@ -7,8 +7,12 @@ from django.conf import settings
 import json
 import requests
 import sys
+import logging
 
 from elasticsearch import Elasticsearch
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -83,11 +87,12 @@ class Root:
 
 
 def request_json(url):
+    logger.debug(f"Requesting URL {url}")
     try:
         r = requests.get(url)
         r.raise_for_status()
     except Exception as e:
-        print(f"Error while requesting {url}: {e}")
+        logger.error(f"Error while requesting {url}: {e}")
     return r.json()
 
 
@@ -142,13 +147,12 @@ def get_opening_hours(d):
 
 
 def fetch():
-
     try:
         es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    print("Requesting data at {}".format(__name__))
+    logger.info("Requesting data at {}".format(__name__))
 
     tpr_units = get_tpr_units()
 
@@ -187,7 +191,7 @@ def fetch():
         # TODO, this data is usually missing
         o = get_opening_hours(tpr_unit)
         if o:
-            print(o)
+            logger.debug(o)
 
         venue = Venue(
             name=create_language_string(tpr_unit, "name"),
@@ -222,7 +226,7 @@ def fetch():
         root.links.append(link)
 
         r = es.index(index="location", doc_type="_doc", body=str(json.dumps(asdict(root))))
-        print(count, sep="")
+        logger.debug(f"Fethed data count: {count}")
         count = count + 1
 
     return "Fetch completed by {}".format(__name__)
@@ -233,7 +237,7 @@ def delete():
     try:
         es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index="location")
-        print(r)
+        logger.info(r)
     except Exception as e:
         return "ERROR at {}".format(__name__)
 
