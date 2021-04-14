@@ -88,12 +88,15 @@ class Root:
 
 def request_json(url):
     logger.debug(f"Requesting URL {url}")
+    result = None
     try:
         r = requests.get(url)
         r.raise_for_status()
+        result = r.json()
     except Exception as e:
         logger.error(f"Error while requesting {url}: {e}")
-    return r.json()
+        raise
+    return result
 
 
 def get_ontologyword_ids(id_list):
