@@ -98,19 +98,13 @@ Start Apollo based GraphQL server at `unified-search/graphql/`:
     }
 
 
-## GraphQL search API - Graphene
+## GraphQL search API - using curl
 
-Graphene Django based GraphQL search API is available at http://localhost:5001/graphql.
+    $ curl --insecure -X POST -H "Content-Type: application/json" --data '{"query":"query{unifiedSearch(q:\"leikkipuisto\", index:\"location\"){count}}"}' <GraphQL base URL>/search
 
-After ingesting data, try
+    {"data":{"unifiedSearch":{"count":61}}}
 
-    query {
-        q(match:"helsinki") {
-            text
-            count
-            rawResults
-        }
-    }
+
 
 ## Python dependencies
 
