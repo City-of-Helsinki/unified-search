@@ -19,6 +19,7 @@ env:
   K8S_REQUEST_RAM: 50Mi
   K8S_LIMIT_CPU: 50m
   K8S_LIMIT_RAM: 100Mi
+  DEBUG: 1
 
 jobs:
   build:
@@ -58,6 +59,10 @@ jobs:
       - uses: actions/checkout@v2
       - uses: andersinno/kolga-setup-action@v2
 
+      - name: Misc variables
+        run: |
+          echo "K8S_SECRET_DEBUG=${{ env.DEBUG }}" >> $GITHUB_ENV
+
       - name: Elasticsearch variables
         run: |
           echo "K8S_SECRET_ES_URI=https://${{ env.ES_USERNAME }}:${{ env.ES_PASSWORD }}@${{ env.ES_HOST }}:${{ env.ES_PORT }}" >> $GITHUB_ENV
@@ -90,4 +95,3 @@ jobs:
           DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ matrix.service }}
-

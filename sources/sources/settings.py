@@ -25,8 +25,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 ES_URI = os.getenv("ES_URI")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -123,3 +122,30 @@ USE_TZ = True
 
 STATIC_URL = os.getenv("STATIC_URL", "/static/")
 STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
+
+LOGGING = {
+    "version": 1,
+    "formatters": {
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        # Root logger
+        "": {
+            "handlers": ["console"],
+            "propagate": True,
+            "level": 'DEBUG' if DEBUG else 'INFO',
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "propagate": False,
+            'level': 'DEBUG' if DEBUG else 'INFO',
+        },
+    },
+}
