@@ -1,0 +1,103 @@
+name: Build & Stable
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  CONTAINER_REGISTRY_USER: ${{ secrets.GHCR_CONTAINER_REGISTRY_USER }}
+  CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+  CONTAINER_REGISTRY_REPO: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+  REPO_NAME: ${{ github.event.repository.name }}
+  KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW }}
+  BUILD_ARTIFACT_FOLDER: "build_artifacts"
+  SERVICE_ARTIFACT_FOLDER: "service_artifacts"
+  BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STABLE }}
+  ES_HOST: ${{ secrets.K8S_SECRET_ELASTICSEARCH_HOST_STABLE }}
+  ES_PORT: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STABLE }}
+  ES_USERNAME: ${{ secrets.K8S_SECRET_ELASTICSEARCH_USERNAME_STABLE }}
+  ES_PASSWORD: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PASSWORD_STABLE }}
+  K8S_REQUEST_CPU: 150m
+  K8S_REQUEST_RAM: 200Mi
+  K8S_LIMIT_CPU: 300m
+  K8S_LIMIT_RAM: 300Mi
+  DEBUG: 0
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ["sources", "graphql"]
+
+    runs-on: ubuntu-latest
+    name: Build ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ matrix.service }}
+        uses: andersinno/kolga-build-action@v2
+        env:
+          DOCKER_BUILD_SOURCE: ./${{ matrix.service }}/Dockerfile
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
+          DOCKER_BUILD_ARG_DEBUG: "debug"
+
+  stable:
+    needs: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ["sources", "graphql"]
+        include:
+          - service: "sources"
+          - service: "graphql"
+            SERVICE_PORT: "4000"
+
+    runs-on: ubuntu-latest
+    name: Deploy ${{ matrix.service }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: andersinno/kolga-setup-action@v2
+
+      - name: Misc variables
+        run: |
+          echo "K8S_SECRET_DEBUG=${{ env.DEBUG }}" >> $GITHUB_ENV
+
+      - name: Elasticsearch variables
+        run: |
+          echo "K8S_SECRET_ES_URI=https://${{ env.ES_USERNAME }}:${{ env.ES_PASSWORD }}@${{ env.ES_HOST }}:${{ env.ES_PORT }}" >> $GITHUB_ENV
+
+      - name: File probes
+        if: matrix.SERVICE_PORT == ''
+        run: |
+          echo "K8S_LIVENESS_FILE=/app/ready.txt" >> $GITHUB_ENV
+          echo "K8S_READINESS_FILE=/app/ready.txt" >> $GITHUB_ENV
+          echo "K8S_INGRESS_DISABLED=True" >> $GITHUB_ENV
+
+      - name: Service with ingress
+        if: matrix.SERVICE_PORT != ''
+        run: |
+          echo "ENVIRONMENT_URL=https://unified-search.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "SERVICE_PORT=${{ matrix.SERVICE_PORT }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
+
+      - name: Sources settings
+        if: matrix.service == 'sources'
+        env:
+          SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_STABLE }}
+        run: |
+          echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+
+      - name: Deploy ${{ matrix.service }}
+        uses: andersinno/kolga-deploy-action@v2
+        with:
+          track: "stable"
+        env:
+          DOCKER_BUILD_SOURCE: ./${{ matrix.service }}/Dockerfile
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.service }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
+          PROJECT_NAME: ${{ matrix.service }}
+          K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE_STABLE }}
