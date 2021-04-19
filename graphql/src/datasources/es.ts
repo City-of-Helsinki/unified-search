@@ -8,17 +8,48 @@ class ElasticSearchAPI extends RESTDataSource {
     this.baseURL = ELASTIC_SEARCH_URI;
   }
 
-  async getQueryResults(q, index) {
+  async getQueryResults(q, ontology, index) {
     // 'test-index' is alias for all available indexes
     const es_index = index ? index : 'test-index';
 
-    const query = {
+    let query: any = {
       query: {
         query_string: {
           query: q,
         },
       },
     };
+
+    if (ontology) {
+      /* TODO, depends on index specific data types */
+
+      query = {
+        query: {
+          bool: {
+            must: [
+              {
+                query_string: {
+                  query: q
+                }
+              }
+            ],
+            should: [
+              {
+                term: {
+                  "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi": ontology
+                }
+              },
+              {
+                term: {
+                  "links.raw_data.ontologyword_ids_enriched.ontologyword_fi": ontology
+                }
+              }
+            ]
+          }
+        }
+      };
+
+    }
 
     /*
       const data = await this.post(`test-index/_search`, undefined,
@@ -47,3 +78,6 @@ class ElasticSearchAPI extends RESTDataSource {
 }
 
 export { ElasticSearchAPI };
+
+
+"links.raw_data.ontologyword_ids_enriched.ontologyword_fi.keyword"

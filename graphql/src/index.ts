@@ -25,8 +25,8 @@ const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
 const resolvers = {
   Query: {
-    unifiedSearch: async (_source: any, { q, index }: any, { dataSources }: any) => {
-      const res = await dataSources.elasticSearchAPI.getQueryResults(q, index);
+    unifiedSearch: async (_source: any, { q, ontology, index }: any, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getQueryResults(q, ontology, index);
       return { es_results: res };
     },
   },
