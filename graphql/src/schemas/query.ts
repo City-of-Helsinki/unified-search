@@ -51,6 +51,11 @@ export const querySchema = `
         q: String,
 
         """
+        Optional, filter to match only these ontology words
+        """
+        ontology: String,
+
+        """
         Optional search index.
         """
         index: String,
