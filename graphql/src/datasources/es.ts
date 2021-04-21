@@ -8,7 +8,7 @@ class ElasticSearchAPI extends RESTDataSource {
     this.baseURL = ELASTIC_SEARCH_URI;
   }
 
-  async getQueryResults(q, ontology, index) {
+  async getQueryResults(q: String, ontology: String, index: String) {
     // 'test-index' is alias for all available indexes
     const es_index = index ? index : 'test-index';
 
