@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from ingest.fetch import servicemap, linkedevents, palvelukartta, location
+from ingest.fetch import servicemap, linkedevents, palvelukartta, location, vapaaehtoistoiminta
 
 
 class Command(BaseCommand):
@@ -25,19 +25,19 @@ class Command(BaseCommand):
             # palvelukartta.delete()
             # servicemap.delete()
             # linkedevents.delete()
+            vapaaehtoistoiminta.delete()
             location.delete()
             return
 
-        """
-        print(linkedevents.fetch())
-        linkedevents.set_alias("test-index")
-        print(servicemap.fetch())
-        servicemap.set_alias("test-index")
-        print(palvelukartta.fetch())
-        palvelukartta.set_alias("test-index")
-        """
-        location.fetch()
+        #print(linkedevents.fetch())
+        #linkedevents.set_alias("test-index")
+        #print(servicemap.fetch())
+        #servicemap.set_alias("test-index")
+        #print(palvelukartta.fetch())
+        #palvelukartta.set_alias("test-index")
 
+        vapaaehtoistoiminta.fetch()
+        location.fetch()
 
         time = timezone.now().strftime("%X")
         print("Completed at %s" % time)
