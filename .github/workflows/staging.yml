@@ -10,7 +10,7 @@ env:
   CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GHCR_TOKEN }}
   CONTAINER_REGISTRY_REPO: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
   REPO_NAME: ${{ github.event.repository.name }}
-  KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW }}
+  KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW_STAGING }}
   BUILD_ARTIFACT_FOLDER: "build_artifacts"
   SERVICE_ARTIFACT_FOLDER: "service_artifacts"
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}

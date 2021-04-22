@@ -16,29 +16,48 @@ class Command(BaseCommand):
             help="Delete stored data",
         )
 
+        # Named (optional) argument
+        parser.add_argument(
+            "--index",
+            nargs="*",
+            help="Limit to given index(s)",
+        )
+
     def handle(self, *args, **kwargs):
         time = timezone.now().strftime("%X")
         print("It's now %s" % time)
 
+        # Provided by ingest.fetch, default unless specified on command line
+        inds = {
+            "servicemap": servicemap,
+            "linkedevents": linkedevents,
+            "palvelukartta": palvelukartta,
+            "location": location,
+            "vapaaehtoistoiminta": vapaaehtoistoiminta
+        }
+
+        index_list = kwargs["index"]
+
+        if index_list:
+            # Check validity
+            for i in index_list:
+                if i not in inds.keys():
+                    print(f"Unknown index {i}, allowed: {inds.keys()}")
+                    return
+
+            inds = {i: inds[i] for i in index_list}
+
+        # delete indexes
         if kwargs["delete"]:
-            print("DELETING DATA")
-            # palvelukartta.delete()
-            # servicemap.delete()
-            # linkedevents.delete()
-            vapaaehtoistoiminta.delete()
-            location.delete()
+            for name, _obj in inds.items():
+                print(f"DELETING DATA at {name}")
+                _obj.delete()
             return
 
-        #print(linkedevents.fetch())
-        #linkedevents.set_alias("test-index")
-        #print(servicemap.fetch())
-        #servicemap.set_alias("test-index")
-        #print(palvelukartta.fetch())
-        #palvelukartta.set_alias("test-index")
-
-        vapaaehtoistoiminta.fetch()
-        location.fetch()
+        # fetch indexes
+        for name, _obj in inds.items():
+            print(f"Fetching {name}")
+            _obj.fetch()
 
         time = timezone.now().strftime("%X")
         print("Completed at %s" % time)
-
