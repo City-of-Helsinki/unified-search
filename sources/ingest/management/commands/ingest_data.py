@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from ingest.fetch import servicemap, linkedevents, palvelukartta, location, vapaaehtoistoiminta
 
+
 class Command(BaseCommand):
     help = "Ingest data from external data sources"
 
