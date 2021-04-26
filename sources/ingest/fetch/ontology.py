@@ -71,7 +71,7 @@ class Ontology:
         """ For each id in the list, get enriched id. """
 
         info = []
-        print(id_list)
+
         for _id in id_list:
             for i in self.ontology_word:
                 if i["id"] == _id:
