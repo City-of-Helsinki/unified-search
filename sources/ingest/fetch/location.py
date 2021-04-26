@@ -5,11 +5,13 @@ from django.utils import timezone
 from django.conf import settings
 
 import json
-import requests
 import sys
 import logging
 
 from elasticsearch import Elasticsearch
+
+from .traffic import request_json
+from .ontology import Ontology
 
 
 logger = logging.getLogger(__name__)
@@ -86,36 +88,6 @@ class Root:
     links: List[LinkedData] = field(default_factory=list)
 
 
-def request_json(url):
-    logger.debug(f"Requesting URL {url}")
-    result = None
-    try:
-        r = requests.get(url)
-        r.raise_for_status()
-        result = r.json()
-    except Exception as e:
-        logger.error(f"Error while requesting {url}: {e}")
-        raise
-    return result
-
-
-def get_ontologyword_ids(id_list):
-    info = []
-
-    for _id in id_list:
-        url = f"https://www.hel.fi/palvelukarttaws/rest/v4/ontologyword/{_id}/"
-        data = request_json(url)
-
-        # Drop verbose extra parameters
-        data.pop("unit_ids", None)
-        data.pop("can_add_schoolyear", None)
-        data.pop("can_add_clarification", None)
-        
-        info.append(data)
-
-    return info
-
-
 def get_tpr_units():
     url = "https://www.hel.fi/palvelukarttaws/rest/v4/unit/"
     data = request_json(url)
@@ -156,6 +128,8 @@ def fetch():
         return "ERROR at {}".format(__name__)
 
     logger.info("Requesting data at {}".format(__name__))
+
+    ontology = Ontology()
 
     tpr_units = get_tpr_units()
 
@@ -218,9 +192,12 @@ def fetch():
         # Extra information to raw data
         tpr_unit["origin"] = "tpr"
 
-        if "ontologyword_ids" in tpr_unit and tpr_unit['ontologyword_ids']:
-            # Enrich data from another API
-            tpr_unit["ontologyword_ids_enriched"] = get_ontologyword_ids(tpr_unit["ontologyword_ids"])
+        # Ontology ID's and tree contain plain integers, get corresponding texts
+        if tpr_unit.get("ontologyword_ids", None):
+            tpr_unit["ontologyword_ids_enriched"] = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
+
+        if tpr_unit.get("ontologytree_ids", None):
+            tpr_unit["ontologytree_ids_enriched"] = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
 
         link = LinkedData(
             service="tpr",
@@ -231,6 +208,7 @@ def fetch():
         r = es.index(index="location", doc_type="_doc", body=str(json.dumps(asdict(root))))
         logger.debug(f"Fethed data count: {count}")
         count = count + 1
+
 
     return "Fetch completed by {}".format(__name__)
 
