@@ -2,7 +2,6 @@ export type ConnectionCursor = string;
 
 export type ConnectionCursorObject = {
   offset: number;
-  meta: ConnectionArguments;
 };
 
 export type PageInfo = {

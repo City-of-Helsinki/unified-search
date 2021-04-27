@@ -67,7 +67,6 @@ const resolvers = {
       const getCursor = (offset: number) =>
         createCursor<ConnectionCursorObject>({
           offset,
-          meta: connectionArguments,
         });
 
       // Find shared data
