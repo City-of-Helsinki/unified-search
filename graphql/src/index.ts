@@ -62,7 +62,7 @@ const resolvers = {
         index,
         connectionArguments
       );
-      const results = await res[0];
+      const result = await res[0];
 
       const getCursor = (offset: number) =>
         createCursor<ConnectionCursorObject>({
@@ -70,10 +70,10 @@ const resolvers = {
         });
 
       // Find shared data
-      const edges = edgesFromEsResults(results, getCursor);
-      const hits = getHits(results);
+      const edges = edgesFromEsResults(result, getCursor);
+      const hits = getHits(result);
 
-      return { es_results: results, edges, hits, connectionArguments };
+      return { es_results: [result], edges, hits, connectionArguments };
     },
   },
   SearchResultConnection: {
@@ -81,13 +81,16 @@ const resolvers = {
       return hits;
     },
     max_score({ es_results }: any) {
-      return es_results.hits.max_score;
+      return es_results[0].hits.max_score;
     },
     pageInfo({ edges, hits, connectionArguments }: any) {
       return pageInfoResolver(edges, hits, connectionArguments);
     },
     edges({ edges }: any) {
       return edges;
+    },
+    es_results({ es_results }: any) {
+      return es_results;
     },
   },
 
