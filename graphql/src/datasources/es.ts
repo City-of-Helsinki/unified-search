@@ -92,5 +92,3 @@ class ElasticSearchAPI extends RESTDataSource {
 }
 
 export { ElasticSearchAPI };
-
-('links.raw_data.ontologyword_ids_enriched.ontologyword_fi.keyword');
