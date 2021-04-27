@@ -1,3 +1,6 @@
+import { ConnectionArguments } from '../types';
+import { getEsOffsetPaginationQuery } from '../utils';
+
 const { RESTDataSource } = require('apollo-datasource-rest');
 
 const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
@@ -8,10 +11,16 @@ class ElasticSearchAPI extends RESTDataSource {
     this.baseURL = ELASTIC_SEARCH_URI;
   }
 
-  async getQueryResults(q: String, ontology: String, index: String) {
+  async getQueryResults(
+    q?: string,
+    ontology?: string,
+    index?: string,
+    connectionArguments?: ConnectionArguments
+  ) {
     // 'test-index' is alias for all available indexes
     const es_index = index ? index : 'test-index';
 
+    // Resolve query
     let query: any = {
       query: {
         query_string: {
@@ -20,6 +29,7 @@ class ElasticSearchAPI extends RESTDataSource {
       },
     };
 
+    // Resolve ontology
     if (ontology) {
       /* TODO, depends on index specific data types */
 
@@ -29,25 +39,24 @@ class ElasticSearchAPI extends RESTDataSource {
             must: [
               {
                 query_string: {
-                  query: q
-                }
+                  query: q,
+                },
               },
               {
-                multi_match : {
+                multi_match: {
                   query: ontology,
                   fields: [
-                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_*",
-                    "links.raw_data.ontologyword_ids_enriched.ontologyword_*",
-                    "links.raw_data.ontologytree_ids_enriched.name_*",
-                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_*",
-                  ]
-                }
-              }
-            ]
-          }
-        }
+                    'links.raw_data.ontologyword_ids_enriched.extra_searchwords_*',
+                    'links.raw_data.ontologyword_ids_enriched.ontologyword_*',
+                    'links.raw_data.ontologytree_ids_enriched.name_*',
+                    'links.raw_data.ontologytree_ids_enriched.extra_searchwords_*',
+                  ],
+                },
+              },
+            ],
+          },
+        },
       };
-
     }
 
     /*
@@ -58,6 +67,12 @@ class ElasticSearchAPI extends RESTDataSource {
           },
       );
     */
+
+    // Resolve pagination
+    query = {
+      ...getEsOffsetPaginationQuery(connectionArguments),
+      ...query,
+    };
 
     const data = this.post(`${es_index}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
@@ -77,6 +92,3 @@ class ElasticSearchAPI extends RESTDataSource {
 }
 
 export { ElasticSearchAPI };
-
-
-"links.raw_data.ontologyword_ids_enriched.ontologyword_fi.keyword"

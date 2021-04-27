@@ -60,6 +60,30 @@ export const querySchema = `
         """
         index: String,
 
+        """
+        Optional pagination variable, match results after this cursor.
+        """
+        after: String
+
+        """
+        Optional pagination variable, limit the amount of results to N.
+        """
+        first: Int
+
+        """
+        NOTE: Unsupported
+
+        Optional pagination variable, match results before this cursor.
+        """
+        before: String
+
+        """
+        NOTE: Unsupported
+
+        Optional pagination variable, match the N last results.
+        """
+        last: Int
+
       ): SearchResultConnection
   }
 `;
