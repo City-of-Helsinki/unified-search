@@ -31,17 +31,16 @@ class ElasticSearchAPI extends RESTDataSource {
                 query_string: {
                   query: q
                 }
-              }
-            ],
-            should: [
-              {
-                term: {
-                  "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi": ontology
-                }
               },
               {
-                term: {
-                  "links.raw_data.ontologyword_ids_enriched.ontologyword_fi": ontology
+                multi_match : {
+                  query: ontology,
+                  fields: [
+                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_*",
+                    "links.raw_data.ontologyword_ids_enriched.ontologyword_*",
+                    "links.raw_data.ontologytree_ids_enriched.name_*",
+                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_*",
+                  ]
                 }
               }
             ]
