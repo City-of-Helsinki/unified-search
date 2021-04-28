@@ -193,10 +193,61 @@ def get_ontologytree_as_ontologies(ontologytree):
     return ontologies
 
 
+def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
+    ontologies_grouped_by_language = functools.reduce(
+        lambda acc, ontology: {
+            "fi": acc.get("fi") + [ontology.label.fi],
+            "sv": acc.get("sv") + [ontology.label.sv],
+            "en": acc.get("en") + [ontology.label.en],
+        },
+        ontologies,
+        {"fi": [], "sv": [], "en": []},
+    )
+
+    # Suggestions are stored in shorthand syntax. If you want to add more
+    # specific context or weight, you have to store suggestions on a per
+    # suggestion basis (example):
+    # [
+    #     {
+    #         "input": "beach",
+    #         "weight": 2,
+    #         "contexts": {
+    #             "language": "en",
+    #             "unit": "liikunta"
+    #         }
+    #     },
+    #     {
+    #         "input": "social services",
+    #         "weight": 2,
+    #         "contexts": {
+    #             "language": "en",
+    #             "unit": "social work"
+    #         }
+    #     },
+    # ]
+    suggest = []
+    for [language, suggestions_in_language] in ontologies_grouped_by_language.items():
+        suggestions_without_empty = list(
+            filter(lambda suggestion: type(suggestion) == str, suggestions_in_language)
+        )
+
+        suggest.append(
+            {"input": suggestions_without_empty, "contexts": {"language": language}}
+        )
+
+    return suggest
+
+
 custom_mappings = {
     "properties": {
         "suggest": {    
-            "type": "completion"
+            "type": "completion",
+            "contexts": [
+                {
+                    "name": "language",
+                    "type": "category",
+                }
+            ]
         }
     }
 }
@@ -286,6 +337,9 @@ def fetch():
         tpr_unit["origin"] = "tpr"
 
         # TODO: Separate words from tree
+        # TODO: Remove duplicates
+        #       Duplicates are not yet removed, because ontologies are not
+        #       returned in a public facing data structure.
         all_ontologies = []
         # Ontology ID's and tree contain plain integers, get corresponding texts
         if tpr_unit.get("ontologyword_ids", None):
@@ -298,19 +352,7 @@ def fetch():
             tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
             all_ontologies = all_ontologies + get_ontologytree_as_ontologies(tree_ontologies)
 
-        # TODO: Provide multilanguage support with context
-        ontology_labels = functools.reduce(
-            lambda acc, ontology: acc
-            + [
-                ontology.label.fi,
-                ontology.label.sv,
-                ontology.label.en,
-            ],
-            all_ontologies,
-            [],
-        )
-
-        root.suggest = ontology_labels
+        root.suggest = get_suggestions_from_ontologies(all_ontologies)
 
         link = LinkedData(
             service="tpr",
