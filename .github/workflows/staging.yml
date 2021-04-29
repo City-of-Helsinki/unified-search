@@ -102,11 +102,17 @@ jobs:
           PROJECT_NAME: ${{ matrix.service }}
           K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE_STAGING }}
 
+  cron:
+    needs: staging
+    runs-on: ubuntu-latest
+    name: Deploy cronjob
+
+    steps:
       - name: Deploy Cronjob
         uses: City-of-Helsinki/setup-cronjob-action@main
         with:
           name: harvester
-          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}/sources
           image_tag:  ${{ github.sha }}
           secret_name: project-staging-sources-secret
           kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
