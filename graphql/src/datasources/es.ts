@@ -9,6 +9,8 @@ class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = ELASTIC_SEARCH_URI;
+    // 'test-index' is alias for all available indexes
+    this.defaultIndex = 'test-index';
   }
 
   async getQueryResults(
@@ -17,8 +19,7 @@ class ElasticSearchAPI extends RESTDataSource {
     index?: string,
     connectionArguments?: ConnectionArguments
   ) {
-    // 'test-index' is alias for all available indexes
-    const es_index = index ? index : 'test-index';
+    const es_index = index ? index : this.defaultIndex;
 
     // Resolve query
     let query: any = {
@@ -83,6 +84,41 @@ class ElasticSearchAPI extends RESTDataSource {
     });
 
     return [data];
+  }
+
+  async getSuggestions(
+    prefix: string,
+    languages: string[],
+    index: string = this.defaultIndex,
+    size: number
+  ) {
+    const languageMap = {
+      FINNISH: 'fi',
+      SWEDISH: 'sv',
+      ENGLISH: 'en',
+    };
+    const query = {
+      // Hide all source fields to decrease network load
+      _source: '',
+      suggest: {
+        suggestions: {
+          prefix,
+          completion: {
+            field: 'suggest',
+            skip_duplicates: true,
+            size,
+            contexts: {
+              language: languages.map((language) => languageMap[language]),
+            },
+          },
+        },
+      },
+    };
+
+    return this.post(`${index}/_search`, undefined, {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(query),
+    });
   }
 
   async getMapping(q) {

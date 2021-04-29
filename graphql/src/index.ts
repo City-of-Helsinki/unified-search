@@ -75,6 +75,24 @@ const resolvers = {
 
       return { es_results: [result], edges, hits, connectionArguments };
     },
+    unifiedSearchCompletionSuggestions: async (
+      _source: any,
+      { prefix, languages, index, size }: any,
+      { dataSources }: any
+    ) => {
+      const res = await dataSources.elasticSearchAPI.getSuggestions(
+        prefix,
+        languages,
+        index,
+        size
+      );
+
+      return {
+        suggestions: res.suggest.suggestions[0].options.map((option) => ({
+          label: option.text,
+        })),
+      };
+    },
   },
   SearchResultConnection: {
     count({ hits }: any) {
