@@ -101,3 +101,17 @@ jobs:
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ matrix.service }}
           K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE_STAGING }}
+
+      - name: Deploy Cronjob
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          name: harvester
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+          image_tag:  ${{ github.sha }}
+          secret_name: project-staging-sources-secret
+          kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          schedule: '0 3 * * *' # at 03:00 every day
+          max_duration: "7200" # Run maximum 2 hours
+          command: "{/bin/sh}"
+          args: "{-c,python manage.py ingest_data --index location --delete && python manage.py ingest_data --index location}"
