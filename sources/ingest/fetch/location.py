@@ -7,6 +7,8 @@ from django.conf import settings
 import json
 import sys
 import logging
+import base64
+import functools
 
 from elasticsearch import Elasticsearch
 
@@ -64,6 +66,11 @@ class OpeningHours:
     hourLines: List[LanguageString] = field(default_factory=list)
 
 @dataclass
+class OntologyObject:
+    id: str
+    label: LanguageString
+
+@dataclass
 class Venue:
     meta: NodeMeta = None
     name: LanguageString = None
@@ -86,6 +93,7 @@ class Venue:
 class Root:
     venue: Venue
     links: List[LinkedData] = field(default_factory=list)
+    suggest: List[str] = field(default_factory=list)
 
 
 def get_tpr_units():
@@ -121,11 +129,147 @@ def get_opening_hours(d):
     return results
 
 
+def prefix_and_mask(prefix, body):
+    message = f"{prefix}-{body}"
+    message_bytes = message.encode("utf-8")
+    base64_bytes = base64.b64encode(message_bytes)
+
+    return base64_bytes.decode("utf-8")
+
+
+def get_ontologywords_as_ontologies(ontologywords):
+    ontologies = []
+
+    for ontologyword in ontologywords:
+        ontologies.append(
+            OntologyObject(
+                id=str(ontologyword.get("id")),
+                label=create_language_string(ontologyword, "ontologyword")
+            )
+        )
+
+        if (
+            "extra_searchwords_fi" in ontologyword
+            or "extra_searchwords_sv" in ontologyword
+            or "extra_searchwords_en" in ontologyword
+        ):
+            ontologies.append(
+                OntologyObject(
+                    # A unique id is not available in the source data. To make the id
+                    # more opaque we are encoding it.
+                    id=prefix_and_mask("es-", ontologyword.get("id")),
+                    label=create_language_string(ontologyword, "extra_searchwords")
+                )
+            )
+
+    return ontologies
+
+
+def get_ontologytree_as_ontologies(ontologytree):
+    ontologies = []
+
+    for ontologybranch in ontologytree:
+        ontologies.append(
+            OntologyObject(
+                id=str(ontologybranch.get("id")),
+                label=create_language_string(ontologybranch, "name")
+            )
+        )
+
+        if (
+            "extra_searchwords_fi" in ontologybranch
+            or "extra_searchwords_sv" in ontologybranch
+            or "extra_searchwords_en" in ontologybranch
+        ):
+            ontologies.append(
+                OntologyObject(
+                    # A unique id is not available in the source data. To make the id
+                    # more opaque we are encoding it.
+                    id=prefix_and_mask("es-", ontologybranch.get("id")),
+                    label=create_language_string(ontologybranch, "extra_searchwords")
+                )
+            )
+
+    return ontologies
+
+
+def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
+    ontologies_grouped_by_language = functools.reduce(
+        lambda acc, ontology: {
+            "fi": acc.get("fi") + [ontology.label.fi],
+            "sv": acc.get("sv") + [ontology.label.sv],
+            "en": acc.get("en") + [ontology.label.en],
+        },
+        ontologies,
+        {"fi": [], "sv": [], "en": []},
+    )
+
+    # Suggestions are stored in shorthand syntax. If you want to add more
+    # specific context or weight, you have to store suggestions on a per
+    # suggestion basis (example):
+    # [
+    #     {
+    #         "input": "beach",
+    #         "weight": 2,
+    #         "contexts": {
+    #             "language": "en",
+    #             "unit": "liikunta"
+    #         }
+    #     },
+    #     {
+    #         "input": "social services",
+    #         "weight": 2,
+    #         "contexts": {
+    #             "language": "en",
+    #             "unit": "social work"
+    #         }
+    #     },
+    # ]
+    suggest = []
+    for [language, suggestions_in_language] in ontologies_grouped_by_language.items():
+        suggestions_without_empty = list(
+            filter(lambda suggestion: type(suggestion) == str, suggestions_in_language)
+        )
+
+        suggest.append(
+            {"input": suggestions_without_empty, "contexts": {"language": language}}
+        )
+
+    return suggest
+
+
+custom_mappings = {
+    "properties": {
+        "suggest": {    
+            "type": "completion",
+            "contexts": [
+                {
+                    "name": "language",
+                    "type": "category",
+                }
+            ]
+        }
+    }
+}
+
 def fetch():
     try:
         es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
+
+    logger.info("Creating index location")
+
+    try:
+        es.indices.create(index="location")
+    except:
+        logger.info("Index location already exists, skipping")
+
+    logger.info("Applying custom mapping")
+
+    es.indices.put_mapping(index="location", body=custom_mappings)
+
+    logger.info("Custom mapping set")
 
     logger.info("Requesting data at {}".format(__name__))
 
@@ -192,12 +336,23 @@ def fetch():
         # Extra information to raw data
         tpr_unit["origin"] = "tpr"
 
+        # TODO: Separate words from tree
+        # TODO: Remove duplicates
+        #       Duplicates are not yet removed, because ontologies are not
+        #       returned in a public facing data structure.
+        all_ontologies = []
         # Ontology ID's and tree contain plain integers, get corresponding texts
         if tpr_unit.get("ontologyword_ids", None):
-            tpr_unit["ontologyword_ids_enriched"] = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
+            word_ontologies = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
+            tpr_unit["ontologyword_ids_enriched"] = word_ontologies
+            all_ontologies = all_ontologies + get_ontologywords_as_ontologies(word_ontologies)
 
         if tpr_unit.get("ontologytree_ids", None):
-            tpr_unit["ontologytree_ids_enriched"] = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
+            tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
+            tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
+            all_ontologies = all_ontologies + get_ontologytree_as_ontologies(tree_ontologies)
+
+        root.suggest = get_suggestions_from_ontologies(all_ontologies)
 
         link = LinkedData(
             service="tpr",
@@ -206,9 +361,9 @@ def fetch():
         root.links.append(link)
 
         r = es.index(index="location", doc_type="_doc", body=str(json.dumps(asdict(root))))
+
         logger.debug(f"Fethed data count: {count}")
         count = count + 1
-
 
     return "Fetch completed by {}".format(__name__)
 

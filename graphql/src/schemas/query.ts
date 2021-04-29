@@ -14,6 +14,12 @@ export const querySchema = `
     SERVICE
   }
 
+  enum UnifiedSearchLanguage {
+    FINNISH
+    SWEDISH
+    ENGLISH
+  }
+
   type SearchResultConnection {
     """ Elasticsearch raw results """
     es_results: [ElasticSearchResult]
@@ -41,6 +47,14 @@ export const querySchema = `
     id: ID!
     venue: Venue
     searchCategories: [UnifiedSearchResultCategory!]!
+  }
+
+  type Suggestion {
+    label: String!
+  }
+
+  type SearchSuggestionConnection {
+    suggestions: [Suggestion]!
   }
 
   type Query {
@@ -85,5 +99,27 @@ export const querySchema = `
         last: Int
 
       ): SearchResultConnection
+
+    unifiedSearchCompletionSuggestions(
+      """
+      Free form query string, corresponding to what the user has typed so far
+      """
+      prefix: String
+
+      """
+      Required parameter that target
+      """
+      languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
+
+      """
+      Optional search index.
+      """
+      index: String
+
+      """
+      Optional result size.
+      """
+      size: Int = 5
+      ): SearchSuggestionConnection
   }
 `;
