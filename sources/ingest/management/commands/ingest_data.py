@@ -1,7 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+import logging
 
 from ingest.fetch import servicemap, linkedevents, palvelukartta, location, vapaaehtoistoiminta
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -25,7 +29,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         time = timezone.now().strftime("%X")
-        print("It's now %s" % time)
+        logger.info("Started at %s" % time)
 
         # Provided by ingest.fetch, default unless specified on command line
         inds = {
@@ -42,7 +46,7 @@ class Command(BaseCommand):
             # Check validity
             for i in index_list:
                 if i not in inds.keys():
-                    print(f"Unknown index {i}, allowed: {inds.keys()}")
+                    logger.error(f"Unknown index {i}, allowed: {inds.keys()}")
                     return
 
             inds = {i: inds[i] for i in index_list}
@@ -50,14 +54,14 @@ class Command(BaseCommand):
         # delete indexes
         if kwargs["delete"]:
             for name, _obj in inds.items():
-                print(f"DELETING DATA at {name}")
+                logger.info(f"DELETING DATA at {name}")
                 _obj.delete()
             return
 
         # fetch indexes
         for name, _obj in inds.items():
-            print(f"Fetching {name}")
+            logger.info(f"Fetching {name}")
             _obj.fetch()
 
         time = timezone.now().strftime("%X")
-        print("Completed at %s" % time)
+        logger.info("Completed at %s" % time)

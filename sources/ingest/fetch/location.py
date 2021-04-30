@@ -258,20 +258,20 @@ def fetch():
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    logger.info("Creating index location")
+    logger.debug("Creating index location")
 
     try:
         es.indices.create(index="location")
     except:
-        logger.info("Index location already exists, skipping")
+        logger.debug("Index location already exists, skipping")
 
-    logger.info("Applying custom mapping")
+    logger.debug("Applying custom mapping")
 
     es.indices.put_mapping(index="location", body=custom_mappings)
 
-    logger.info("Custom mapping set")
+    logger.debug("Custom mapping set")
 
-    logger.info("Requesting data at {}".format(__name__))
+    logger.debug("Requesting data at {}".format(__name__))
 
     ontology = Ontology()
 
@@ -309,19 +309,12 @@ def fetch():
             url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/opening_hours/",
             is_open_now_url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/is_open_now/")
 
-        # TODO, this data is usually missing
-        o = get_opening_hours(tpr_unit)
-        if o:
-            logger.debug(o)
-
         venue = Venue(
             name=create_language_string(tpr_unit, "name"),
             description=create_language_string(tpr_unit, "desc"),
             location=location, 
             meta=meta, 
             openingHours=opening_hours)
-
-        #print(tpr_unit)
 
         place_url, place = get_linkedevents_place(_id)
 
@@ -361,10 +354,9 @@ def fetch():
         root.links.append(link)
 
         r = es.index(index="location", doc_type="_doc", body=str(json.dumps(asdict(root))))
-
-        logger.debug(f"Fethed data count: {count}")
         count = count + 1
 
+    logger.info(f"Fetched {count} items in total")
     return "Fetch completed by {}".format(__name__)
 
 
@@ -373,7 +365,7 @@ def delete():
     try:
         es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index="location")
-        logger.info(r)
+        logger.debug(r)
     except Exception as e:
         return "ERROR at {}".format(__name__)
 
