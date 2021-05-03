@@ -125,6 +125,9 @@ const resolvers = {
     openingHours({ venue }: any, args: any, context: any, info: any) {
       return venue.openingHours;
     },
+    meta({ venue }: any, args: any, context: any, info: any) {
+      return venue.meta;
+    },
   },
 
   RawJSON: {
