@@ -25,9 +25,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 ES_URI = os.getenv("ES_URI")
 
-DEBUG = os.getenv("DEBUG")
+DEBUG = os.getenv("DEBUG", "false").lower() in ("yes", "true", "t", "1")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
@@ -145,7 +145,13 @@ LOGGING = {
         "django.request": {
             "handlers": ["console"],
             "propagate": False,
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'DEBUG' if DEBUG else 'WARNING',
         },
+        "elasticsearch": {
+            "handlers": ["console"],
+            "propagate": False,
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+        },
+
     },
 }

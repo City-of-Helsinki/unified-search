@@ -1,11 +1,10 @@
-const {
-  makeExecutableSchema,
-  ApolloServer,
-  SchemaDirectiveVisitor,
-} = require('apollo-server-express');
+const { makeExecutableSchema, ApolloServer } = require('apollo-server-express');
 
 import cors from 'cors';
 import express from 'express';
+import { createCursor } from './utils';
+import pageInfoResolver from './resolvers/pageInfoResolver';
+import { ConnectionArguments, ConnectionCursorObject } from './types';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -23,48 +22,93 @@ const { ElasticSearchAPI } = require('./datasources/es');
 const OK = 'OK';
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
+type UnifiedSearchQuery = {
+  q?: String;
+  ontology?: string;
+  index?: string;
+} & ConnectionArguments;
+
+function edgesFromEsResults(results: any, getCursor: any) {
+  return results.hits.hits.map(function (
+    e: { _score: any; _source: { venue: any } },
+    index: number
+  ) {
+    return {
+      cursor: getCursor(index + 1),
+      node: {
+        _score: e._score,
+        venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
+      },
+    };
+  });
+}
+
+function getHits(results: any) {
+  return results.hits.total.value;
+}
+
 const resolvers = {
   Query: {
-    unifiedSearch: async (_source: any, { q, ontology, index }: any, { dataSources }: any) => {
-      const res = await dataSources.elasticSearchAPI.getQueryResults(q, ontology, index);
-      return { es_results: res };
+    unifiedSearch: async (
+      _source: any,
+      { q, ontology, index, before, after, first, last }: UnifiedSearchQuery,
+      { dataSources }: any
+    ) => {
+      const connectionArguments = { before, after, first, last };
+
+      const res = await dataSources.elasticSearchAPI.getQueryResults(
+        q,
+        ontology,
+        index,
+        connectionArguments
+      );
+      const result = await res[0];
+
+      const getCursor = (offset: number) =>
+        createCursor<ConnectionCursorObject>({
+          offset,
+        });
+
+      // Find shared data
+      const edges = edgesFromEsResults(result, getCursor);
+      const hits = getHits(result);
+
+      return { es_results: [result], edges, hits, connectionArguments };
+    },
+    unifiedSearchCompletionSuggestions: async (
+      _source: any,
+      { prefix, languages, index, size }: any,
+      { dataSources }: any
+    ) => {
+      const res = await dataSources.elasticSearchAPI.getSuggestions(
+        prefix,
+        languages,
+        index,
+        size
+      );
+
+      return {
+        suggestions: res.suggest.suggestions[0].options.map((option) => ({
+          label: option.text,
+        })),
+      };
     },
   },
   SearchResultConnection: {
-    count(parent: { es_results: any; }, args: any, context: any, info: any) {
-      const { es_results } = parent;
-      return es_results[0].then((r: { hits: { total: { value: any; }; }; }) => r.hits.total.value);
+    count({ hits }: any) {
+      return hits;
     },
-    max_score(parent: { es_results: any; }, args: any, context: any, info: any) {
-      const { es_results } = parent;
-      return es_results[0].then((r: { hits: { max_score: any; }; }) => r.hits.max_score);
+    max_score({ es_results }: any) {
+      return es_results[0].hits.max_score;
     },
-    pageInfo(parent: any, args: any, context: any, info: any) {
-      return {
-        hasNextPage: false,
-        hasPreviousPage: false,
-        startCursor: 'startCursor123',
-        endCursor: 'endCursor123',
-      };
+    pageInfo({ edges, hits, connectionArguments }: any) {
+      return pageInfoResolver(edges, hits, connectionArguments);
     },
-    edges(parent: { es_results: any; }, args: any, context: any, info: any) {
-      console.log('at edges');
-      const { es_results } = parent;
-      console.log(es_results);
-
-      es_results[0].then((r: any) => console.log(r));
-      const edges = es_results[0].then((r: { hits: { hits: any[]; }; }) =>
-        r.hits.hits.map(function (e: { _score: any; _source: { venue: any; }; }) {
-          return {
-            cursor: 123,
-            node: {
-              _score: e._score,
-              venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
-            },
-          };
-        })
-      );
+    edges({ edges }: any) {
       return edges;
+    },
+    es_results({ es_results }: any) {
+      return es_results;
     },
   },
 

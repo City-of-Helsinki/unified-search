@@ -14,6 +14,12 @@ export const querySchema = `
     SERVICE
   }
 
+  enum UnifiedSearchLanguage {
+    FINNISH
+    SWEDISH
+    ENGLISH
+  }
+
   type SearchResultConnection {
     """ Elasticsearch raw results """
     es_results: [ElasticSearchResult]
@@ -43,6 +49,14 @@ export const querySchema = `
     searchCategories: [UnifiedSearchResultCategory!]!
   }
 
+  type Suggestion {
+    label: String!
+  }
+
+  type SearchSuggestionConnection {
+    suggestions: [Suggestion]!
+  }
+
   type Query {
     unifiedSearch(
         """
@@ -60,6 +74,52 @@ export const querySchema = `
         """
         index: String,
 
+        """
+        Optional pagination variable, match results after this cursor.
+        """
+        after: String
+
+        """
+        Optional pagination variable, limit the amount of results to N.
+        """
+        first: Int
+
+        """
+        NOTE: Unsupported
+
+        Optional pagination variable, match results before this cursor.
+        """
+        before: String
+
+        """
+        NOTE: Unsupported
+
+        Optional pagination variable, match the N last results.
+        """
+        last: Int
+
       ): SearchResultConnection
+
+    unifiedSearchCompletionSuggestions(
+      """
+      Free form query string, corresponding to what the user has typed so far
+      """
+      prefix: String
+
+      """
+      Required parameter that target
+      """
+      languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
+
+      """
+      Optional search index.
+      """
+      index: String
+
+      """
+      Optional result size.
+      """
+      size: Int = 5
+      ): SearchSuggestionConnection
   }
 `;
