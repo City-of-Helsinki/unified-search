@@ -21,14 +21,20 @@ class ElasticSearchAPI extends RESTDataSource {
     languages?: ElasticLanguage[]
   ) {
     const es_index = index ? index : this.defaultIndex;
+    const defaultQuery = {
+      multi_match: {
+        query: q,
+        fields: [
+          'venue.name.*',
+          'venue.description.*',
+          'links.raw_data.short_desc_*',
+        ],
+      },
+    };
 
     // Resolve query
     let query: any = {
-      query: {
-        query_string: {
-          query: q,
-        },
-      },
+      query: defaultQuery,
     };
 
     // Resolve ontology
@@ -39,11 +45,7 @@ class ElasticSearchAPI extends RESTDataSource {
         query: {
           bool: {
             must: [
-              {
-                query_string: {
-                  query: q,
-                },
-              },
+              defaultQuery,
               {
                 multi_match: {
                   query: ontology,
