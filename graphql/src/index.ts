@@ -2,7 +2,7 @@ const { makeExecutableSchema, ApolloServer } = require('apollo-server-express');
 
 import cors from 'cors';
 import express from 'express';
-import { createCursor } from './utils';
+import { createCursor, elasticLanguageFromGraphqlLanguage } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
 
@@ -26,6 +26,7 @@ type UnifiedSearchQuery = {
   q?: String;
   ontology?: string;
   index?: string;
+  languages?: string[];
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -51,7 +52,16 @@ const resolvers = {
   Query: {
     unifiedSearch: async (
       _source: any,
-      { q, ontology, index, before, after, first, last }: UnifiedSearchQuery,
+      {
+        q,
+        ontology,
+        index,
+        before,
+        after,
+        first,
+        last,
+        languages,
+      }: UnifiedSearchQuery,
       { dataSources }: any
     ) => {
       const connectionArguments = { before, after, first, last };
@@ -60,7 +70,8 @@ const resolvers = {
         q,
         ontology,
         index,
-        connectionArguments
+        connectionArguments,
+        elasticLanguageFromGraphqlLanguage(languages)
       );
       const result = await res[0];
 
@@ -82,7 +93,7 @@ const resolvers = {
     ) => {
       const res = await dataSources.elasticSearchAPI.getSuggestions(
         prefix,
-        languages,
+        elasticLanguageFromGraphqlLanguage(languages),
         index,
         size
       );

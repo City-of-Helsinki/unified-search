@@ -1,7 +1,9 @@
+import { GraphQlToElasticLanguageMap } from './constants';
 import {
   ConnectionArguments,
   ElasticSearchPagination,
   ConnectionCursorObject,
+  ElasticLanguage,
 } from './types';
 
 export function createCursor<T>(query: T): string {
@@ -48,4 +50,24 @@ export function getEsOffsetPaginationQuery({
     from: offset,
     size,
   };
+}
+
+export function elasticLanguageFromGraphqlLanguage(
+  graphqlLanguages: string[]
+): ElasticLanguage[] {
+  return graphqlLanguages.map(
+    (language) => GraphQlToElasticLanguageMap[language]
+  );
+}
+
+export function targetFieldLanguages(
+  field: string,
+  languages: ElasticLanguage[]
+) {
+  // If all languages are targeted, use wildcard search
+  if (languages.length === Object.values(GraphQlToElasticLanguageMap).length) {
+    return [`${field}*`];
+  }
+
+  return languages.map((language) => `${field}${language}`);
 }

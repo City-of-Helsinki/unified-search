@@ -1,5 +1,5 @@
-import { ConnectionArguments } from '../types';
-import { getEsOffsetPaginationQuery } from '../utils';
+import { ConnectionArguments, ElasticLanguage } from '../types';
+import { getEsOffsetPaginationQuery, targetFieldLanguages } from '../utils';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
@@ -17,7 +17,8 @@ class ElasticSearchAPI extends RESTDataSource {
     q?: string,
     ontology?: string,
     index?: string,
-    connectionArguments?: ConnectionArguments
+    connectionArguments?: ConnectionArguments,
+    languages?: ElasticLanguage[]
   ) {
     const es_index = index ? index : this.defaultIndex;
 
@@ -47,11 +48,17 @@ class ElasticSearchAPI extends RESTDataSource {
                 multi_match: {
                   query: ontology,
                   fields: [
-                    'links.raw_data.ontologyword_ids_enriched.extra_searchwords_*',
-                    'links.raw_data.ontologyword_ids_enriched.ontologyword_*',
-                    'links.raw_data.ontologytree_ids_enriched.name_*',
-                    'links.raw_data.ontologytree_ids_enriched.extra_searchwords_*',
-                  ],
+                    'links.raw_data.ontologyword_ids_enriched.extra_searchwords_',
+                    'links.raw_data.ontologyword_ids_enriched.ontologyword_',
+                    'links.raw_data.ontologytree_ids_enriched.name_',
+                    'links.raw_data.ontologytree_ids_enriched.extra_searchwords_',
+                  ].reduce(
+                    (acc, fieldPath) => [
+                      ...acc,
+                      ...targetFieldLanguages(fieldPath, languages),
+                    ],
+                    []
+                  ),
                 },
               },
             ],
@@ -88,15 +95,10 @@ class ElasticSearchAPI extends RESTDataSource {
 
   async getSuggestions(
     prefix: string,
-    languages: string[],
+    languages: ElasticLanguage[],
     index: string = this.defaultIndex,
     size: number
   ) {
-    const languageMap = {
-      FINNISH: 'fi',
-      SWEDISH: 'sv',
-      ENGLISH: 'en',
-    };
     const query = {
       // Hide all source fields to decrease network load
       _source: '',
@@ -108,7 +110,7 @@ class ElasticSearchAPI extends RESTDataSource {
             skip_duplicates: true,
             size,
             contexts: {
-              language: languages.map((language) => languageMap[language]),
+              language: languages,
             },
           },
         },

@@ -98,6 +98,11 @@ export const querySchema = `
         """
         last: Int
 
+        """
+        Targets the search to fields of specified language
+        """
+        languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
+
       ): SearchResultConnection
 
     unifiedSearchCompletionSuggestions(
