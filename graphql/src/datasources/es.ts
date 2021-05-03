@@ -25,10 +25,16 @@ class ElasticSearchAPI extends RESTDataSource {
       multi_match: {
         query: q,
         fields: [
-          'venue.name.*',
-          'venue.description.*',
-          'links.raw_data.short_desc_*',
-        ],
+          'venue.name.',
+          'venue.description.',
+          'links.raw_data.short_desc_',
+        ].reduce(
+          (acc, fieldPath) => [
+            ...acc,
+            ...targetFieldLanguages(fieldPath, languages),
+          ],
+          []
+        ),
       },
     };
 
