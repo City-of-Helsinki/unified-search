@@ -305,8 +305,8 @@ def fetch():
             )
 
         opening_hours = OpeningHours(
-            url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/opening_hours/",
-            is_open_now_url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/is_open_now/")
+            url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/opening_hours/",
+            is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/")
 
         venue = Venue(
             name=create_language_string(tpr_unit, "name"),
