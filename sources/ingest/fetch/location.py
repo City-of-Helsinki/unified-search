@@ -4,11 +4,10 @@ from typing import List
 from django.utils import timezone
 from django.conf import settings
 
-import json
-import sys
 import logging
 import base64
 import functools
+from datetime import datetime
 
 from elasticsearch import Elasticsearch
 
@@ -22,8 +21,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class NodeMeta:
     id: str
-    createdAt: str
-    updatedAt: str=None
+    createdAt: datetime
+    updatedAt: datetime=None
 
 @dataclass
 class LinkedData:
@@ -285,7 +284,7 @@ def fetch():
         # ID's must be strings to avoid collisions
         tpr_unit["id"] = _id = str(tpr_unit["id"])
 
-        meta = NodeMeta(id=_id, createdAt=timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
+        meta = NodeMeta(id=_id, createdAt=datetime.now())
         
         location = Location(
             url=create_language_string(tpr_unit, "www"),
@@ -353,7 +352,9 @@ def fetch():
             raw_data=tpr_unit)
         root.links.append(link)
 
-        r = es.index(index="location", doc_type="_doc", body=str(json.dumps(asdict(root))))
+        r = es.index(index="location", doc_type="_doc", body=asdict(root))
+
+        logger.debug(f"Fethed data count: {count}")
         count = count + 1
 
     logger.info(f"Fetched {count} items in total")
