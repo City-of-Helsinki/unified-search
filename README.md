@@ -125,6 +125,29 @@ It is recommended to use GraphQL client such as Altair for sending queries. Exam
       }
     }
 
+### Date ranges
+
+Date can be used in queries assuming mapping type is correct (`date` in ES, `datetime.datetime` in Python):
+
+Get documents created in the last 2 minutes:
+
+    GET /location/_search
+    {
+      "query": {
+        "range": {
+          "venue.meta.createdAt": {
+            "gte": "now-2m/m"
+          }
+        }
+      }
+    }
+
+For references, see
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
+
 
 ## GraphQL search API - using curl
 
