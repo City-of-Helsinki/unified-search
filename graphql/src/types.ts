@@ -1,3 +1,5 @@
+import { GraphQlToElasticLanguageMap } from './constants';
+
 export type ConnectionCursor = string;
 
 export type ConnectionCursorObject = {
@@ -27,3 +29,5 @@ export type ElasticSearchPagination = {
   from?: number;
   size?: number;
 };
+
+export type ElasticLanguage = typeof GraphQlToElasticLanguageMap[keyof typeof GraphQlToElasticLanguageMap];
