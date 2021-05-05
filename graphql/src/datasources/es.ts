@@ -21,55 +21,62 @@ class ElasticSearchAPI extends RESTDataSource {
     languages?: ElasticLanguage[]
   ) {
     const es_index = index ? index : this.defaultIndex;
-    const defaultQuery = {
-      multi_match: {
-        query: q,
-        fields: [
-          'venue.name.',
-          'venue.description.',
-          'links.raw_data.short_desc_',
-        ].reduce(
-          (acc, fieldPath) => [
-            ...acc,
-            ...targetFieldLanguages(fieldPath, languages),
-          ],
-          []
-        ),
-      },
-    };
+    const defaultQuery = languages.reduce(
+      (acc, language) => ({
+        ...acc,
+        [language]: {
+          query_string: {
+            query: q,
+            fields: [
+              `venue.name.${language}`,
+              `venue.description.${language}`,
+              `links.raw_data.short_desc_${language}`,
+            ],
+          },
+        },
+      }),
+      {}
+    );
 
     // Resolve query
     let query: any = {
-      query: defaultQuery,
+      query: {
+        bool: {
+          should: Object.values(defaultQuery),
+        },
+      },
     };
 
     // Resolve ontology
     if (ontology) {
       /* TODO, depends on index specific data types */
 
+      const ontologyMatchers = languages.reduce(
+        (acc, language) => ({
+          ...acc,
+          [language]: {
+            multi_match: {
+              query: ontology,
+              fields: [
+                `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${language}`,
+                `links.raw_data.ontologyword_ids_enriched.ontologyword_${language}`,
+                `links.raw_data.ontologytree_ids_enriched.name_${language}`,
+                `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${language}`,
+              ],
+            },
+          },
+        }),
+        {}
+      );
+
       query = {
         query: {
           bool: {
-            must: [
-              defaultQuery,
-              {
-                multi_match: {
-                  query: ontology,
-                  fields: [
-                    'links.raw_data.ontologyword_ids_enriched.extra_searchwords_',
-                    'links.raw_data.ontologyword_ids_enriched.ontologyword_',
-                    'links.raw_data.ontologytree_ids_enriched.name_',
-                    'links.raw_data.ontologytree_ids_enriched.extra_searchwords_',
-                  ].reduce(
-                    (acc, fieldPath) => [
-                      ...acc,
-                      ...targetFieldLanguages(fieldPath, languages),
-                    ],
-                    []
-                  ),
-                },
+            should: languages.map((language) => ({
+              bool: {
+                must: [defaultQuery[language], ontologyMatchers[language]],
               },
-            ],
+            })),
           },
         },
       };
