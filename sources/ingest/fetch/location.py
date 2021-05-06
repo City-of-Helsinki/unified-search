@@ -17,6 +17,8 @@ from .ontology import Ontology
 
 logger = logging.getLogger(__name__)
 
+ES_INDEX = "location"
+
 
 @dataclass
 class NodeMeta:
@@ -289,13 +291,13 @@ def fetch():
     logger.debug("Creating index location")
 
     try:
-        es.indices.create(index="location")
+        es.indices.create(index=ES_INDEX)
     except:
         logger.debug("Index location already exists, skipping")
 
     logger.debug("Applying custom mapping")
 
-    es.indices.put_mapping(index="location", body=custom_mappings)
+    es.indices.put_mapping(index=ES_INDEX, body=custom_mappings)
 
     logger.debug("Custom mapping set")
 
@@ -381,7 +383,7 @@ def fetch():
             raw_data=tpr_unit)
         root.links.append(link)
 
-        r = es.index(index="location", doc_type="_doc", body=asdict(root))
+        r = es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
 
         logger.debug(f"Fethed data count: {count}")
         count = count + 1
@@ -394,7 +396,7 @@ def delete():
     """ Delete the whole index. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        r = es.indices.delete(index="location")
+        r = es.indices.delete(index=ES_INDEX)
         logger.debug(r)
     except Exception as e:
         return "ERROR at {}".format(__name__)
@@ -404,6 +406,6 @@ def set_alias(alias):
     """ Configure alias for index name. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        es.indices.put_alias(index='location', name=alias)
+        es.indices.put_alias(index=ES_INDEX, name=alias)
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)

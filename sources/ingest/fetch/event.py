@@ -1,8 +1,15 @@
 import json
 import requests
+import logging
 from django.conf import settings
 
 from elasticsearch import Elasticsearch
+
+
+logger = logging.getLogger(__name__)
+
+
+ES_INDEX = "event"
 
 
 def fetch():
@@ -15,31 +22,29 @@ def fetch():
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    print("Requesting data at {}".format(__name__))
+    logger.debug(f"Creating index {ES_INDEX}")
 
     while url and received_count < MAX_COUNT:
         r = requests.get(url, params=payload)
         data = r.json()
         item_count = len(data["data"])
         received_count = received_count + item_count
-        print(".", end="")
 
         for entry in data["data"]:
-            entry["origin"] = "event"
-            r = es.index(index="event", doc_type="_doc", body=str(json.dumps(entry)))
+            entry["origin"] = ES_INDEX
+            r = es.index(index=ES_INDEX, doc_type="_doc", body=entry)
 
         url = data["meta"]["next"]
 
-    print(".")
-    print("Received {} items".format(received_count))
+    logger.info("Received {} items".format(received_count))
     return "Fetch completed by {}".format(__name__)
 
 def delete():
     """ Delete the whole index. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        r = es.indices.delete(index="event")
-        print(r)
+        r = es.indices.delete(index=ES_INDEX)
+        logger.debug(r)
     except Exception as e:
         return "ERROR at {}".format(__name__)
 
@@ -48,6 +53,6 @@ def set_alias(alias):
     """ Configure alias for index name. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        es.indices.put_alias(index='event', name=alias)
+        es.indices.put_alias(index=ES_INDEX, name=alias)
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
