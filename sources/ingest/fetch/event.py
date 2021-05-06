@@ -14,7 +14,7 @@ ES_INDEX = "event"
 
 def fetch():
     url = "https://api.hel.fi/linkedevents/v1/event/"
-    MAX_COUNT = 2000
+
     payload = {"page_size": 100}
     received_count = 0
     try:
@@ -24,7 +24,7 @@ def fetch():
 
     logger.debug(f"Creating index {ES_INDEX}")
 
-    while url and received_count < MAX_COUNT:
+    while url:
         r = requests.get(url, params=payload)
         data = r.json()
         item_count = len(data["data"])
