@@ -1,4 +1,4 @@
-import json
+import os
 import requests
 import logging
 from django.conf import settings
@@ -13,7 +13,7 @@ ES_INDEX = "event"
 
 
 def fetch():
-    url = "https://api.hel.fi/linkedevents/v1/event/"
+    url = settings.EVENT_URL
 
     payload = {"page_size": 100}
     received_count = 0
