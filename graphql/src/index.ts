@@ -200,7 +200,7 @@ const combinedSchema = makeExecutableSchema({
       };
     },
     introspection: true,
-    playground: process.env.NODE_ENV === "development",
+    playground: process.env.PLAYGROUND || false,
   });
 
   let serverIsReady = false;
