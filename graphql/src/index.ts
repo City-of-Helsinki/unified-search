@@ -199,6 +199,8 @@ const combinedSchema = makeExecutableSchema({
         elasticSearchAPI: new ElasticSearchAPI(),
       };
     },
+    introspection: true,
+    playground: process.env.PLAYGROUND || false,
   });
 
   let serverIsReady = false;
