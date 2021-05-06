@@ -6,7 +6,7 @@ from elasticsearch import Elasticsearch
 
 
 def fetch():
-    url = "https://api.hel.fi/linkedevents/v1/place/"
+    url = "https://api.hel.fi/linkedevents/v1/event/"
     MAX_COUNT = 2000
     payload = {"page_size": 100}
     received_count = 0
@@ -25,8 +25,8 @@ def fetch():
         print(".", end="")
 
         for entry in data["data"]:
-            entry["origin"] = "vapaaehtoistoiminta"
-            r = es.index(index="vapaaehtoistoiminta", doc_type="_doc", body=str(json.dumps(entry)))
+            entry["origin"] = "event"
+            r = es.index(index="event", doc_type="_doc", body=str(json.dumps(entry)))
 
         url = data["meta"]["next"]
 
@@ -38,7 +38,7 @@ def delete():
     """ Delete the whole index. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        r = es.indices.delete(index="vapaaehtoistoiminta")
+        r = es.indices.delete(index="event")
         print(r)
     except Exception as e:
         return "ERROR at {}".format(__name__)
@@ -48,6 +48,6 @@ def set_alias(alias):
     """ Configure alias for index name. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        es.indices.put_alias(index='vapaaehtoistoiminta', name=alias)
+        es.indices.put_alias(index='event', name=alias)
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
