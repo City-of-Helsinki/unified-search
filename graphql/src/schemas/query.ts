@@ -46,6 +46,7 @@ export const querySchema = `
     _score: Float
     id: ID!
     venue: Venue
+    event: Event
     searchCategories: [UnifiedSearchResultCategory!]!
   }
 

@@ -1,7 +1,9 @@
-import os
 import requests
 import logging
+from dataclasses import dataclass, field, asdict
+from typing import List
 from django.conf import settings
+from datetime import datetime
 
 from elasticsearch import Elasticsearch
 
@@ -11,6 +13,41 @@ logger = logging.getLogger(__name__)
 
 ES_INDEX = "event"
 
+
+@dataclass
+class NodeMeta:
+    id: str
+    createdAt: datetime
+    updatedAt: datetime=None
+
+@dataclass
+class LanguageString:
+    fi: str
+    sv: str
+    en: str
+
+@dataclass
+class Event:
+    meta: NodeMeta = None
+    name: LanguageString = None
+
+@dataclass
+class Root:
+    event: Event
+
+    # TODO: by adding links the whole data can be indexed
+    #links: List[LinkedData] = field(default_factory=list)
+    #suggest: List[str] = field(default_factory=list)
+
+
+def create_language_string(d):
+    if not d:
+        return None
+    return LanguageString(
+        fi=d.get(f"fi", None),
+        sv=d.get(f"sv", None),
+        en=d.get(f"en", None)
+        )
 
 def fetch():
     url = settings.EVENT_URL
@@ -32,7 +69,20 @@ def fetch():
 
         for entry in data["data"]:
             entry["origin"] = ES_INDEX
-            r = es.index(index=ES_INDEX, doc_type="_doc", body=entry)
+
+            # ID's must be strings to avoid collisions
+            entry["id"] = _id = str(entry["id"])
+
+            meta = NodeMeta(id=_id, createdAt=datetime.now())
+
+            event = Event(
+                meta=meta,
+                name=create_language_string(entry["name"])
+            )
+
+            root = Root(event=event)
+
+            r = es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
 
         url = data["meta"]["next"]
 

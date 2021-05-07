@@ -31,7 +31,7 @@ type UnifiedSearchQuery = {
 
 function edgesFromEsResults(results: any, getCursor: any) {
   return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any } },
+    e: { _score: any; _source: { venue: any, event: any } },
     index: number
   ) {
     return {
@@ -39,6 +39,7 @@ function edgesFromEsResults(results: any, getCursor: any) {
       node: {
         _score: e._score,
         venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
+        event: { event: e._source.event },
       },
     };
   });
@@ -139,6 +140,16 @@ const resolvers = {
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
     },
+  },
+
+  Event: {
+    name({ event }: any, args: any, context: any, info: any) {
+      return event.name;
+    },
+    meta({ event }: any, args: any, context: any, info: any) {
+      return event.meta;
+    },
+
   },
 
   RawJSON: {

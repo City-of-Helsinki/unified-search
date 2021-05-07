@@ -9,8 +9,7 @@ class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = ELASTIC_SEARCH_URI;
-    // 'test-index' is alias for all available indexes
-    this.defaultIndex = 'test-index';
+    this.defaultIndex = 'location';
   }
 
   async getQueryResults(
