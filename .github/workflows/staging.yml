@@ -67,6 +67,7 @@ jobs:
       - name: Misc variables
         run: |
           echo "K8S_SECRET_DEBUG=${{ env.DEBUG }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_PLAYGROUND=${{ env.PLAYGROUND }}" >> $GITHUB_ENV
 
       - name: Elasticsearch variables
         run: |

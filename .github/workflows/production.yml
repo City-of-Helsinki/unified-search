@@ -23,6 +23,7 @@ env:
   K8S_LIMIT_CPU: 300m
   K8S_LIMIT_RAM: 300Mi
   DEBUG: 0
+  PLAYGROUND: 0
 
 jobs:
   build:
@@ -65,6 +66,7 @@ jobs:
       - name: Misc variables
         run: |
           echo "K8S_SECRET_DEBUG=${{ env.DEBUG }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_PLAYGROUND=${{ env.PLAYGROUND }}" >> $GITHUB_ENV
 
       - name: Elasticsearch variables
         run: |
