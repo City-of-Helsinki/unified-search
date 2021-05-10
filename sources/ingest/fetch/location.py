@@ -237,6 +237,25 @@ def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
     return suggest
 
 
+def define_language_properties():
+    languages = [("fi", "finnish"), ("sv", "swedish"), ("en", "english")]
+    language_properties = {}
+
+    for [language, analyzer] in languages:
+        language_properties[language] = {
+            "type": "text",
+            "analyzer": analyzer,
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above" : 256
+                }
+            }
+        }
+
+    return language_properties
+
+
 custom_mappings = {
     "properties": {
         "suggest": {    
@@ -247,6 +266,16 @@ custom_mappings = {
                     "type": "category",
                 }
             ]
+        },
+        "venue": {
+            "properties": {
+                "name": {
+                    "properties": define_language_properties()
+                },
+                "description": {
+                    "properties": define_language_properties()
+                }
+            }
         }
     }
 }
