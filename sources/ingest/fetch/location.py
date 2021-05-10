@@ -14,6 +14,7 @@ from elasticsearch import Elasticsearch
 from .traffic import request_json
 from .ontology import Ontology
 from .shared import LanguageString
+from .language import LanguageStringConverter
 
 
 logger = logging.getLogger(__name__)
@@ -108,14 +109,6 @@ def get_linkedevents_place(id):
     return url, data
 
 
-def create_language_string(d, key_prefix):
-    return LanguageString(
-        fi=d.get(f"{key_prefix}_fi", None),
-        sv=d.get(f"{key_prefix}_sv", None),
-        en=d.get(f"{key_prefix}_en", None)
-        )
-
-
 def get_opening_hours(d):
     results = []
     if "connections" in d and d["connections"]:
@@ -137,10 +130,12 @@ def get_ontologywords_as_ontologies(ontologywords):
     ontologies = []
 
     for ontologyword in ontologywords:
+        l = LanguageStringConverter(ontologyword)
+
         ontologies.append(
             OntologyObject(
                 id=str(ontologyword.get("id")),
-                label=create_language_string(ontologyword, "ontologyword")
+                label=l.get_language_string("ontologyword")
             )
         )
 
@@ -154,7 +149,7 @@ def get_ontologywords_as_ontologies(ontologywords):
                     # A unique id is not available in the source data. To make the id
                     # more opaque we are encoding it.
                     id=prefix_and_mask("es-", ontologyword.get("id")),
-                    label=create_language_string(ontologyword, "extra_searchwords")
+                    label=l.get_language_string("extra_searchwords")
                 )
             )
 
@@ -165,10 +160,12 @@ def get_ontologytree_as_ontologies(ontologytree):
     ontologies = []
 
     for ontologybranch in ontologytree:
+        l = LanguageStringConverter(ontologybranch)
+
         ontologies.append(
             OntologyObject(
                 id=str(ontologybranch.get("id")),
-                label=create_language_string(ontologybranch, "name")
+                label=l.get_language_string("name")
             )
         )
 
@@ -182,7 +179,7 @@ def get_ontologytree_as_ontologies(ontologytree):
                     # A unique id is not available in the source data. To make the id
                     # more opaque we are encoding it.
                     id=prefix_and_mask("es-", ontologybranch.get("id")),
-                    label=create_language_string(ontologybranch, "extra_searchwords")
+                    label=l.get_language_string("extra_searchwords")
                 )
             )
 
@@ -304,7 +301,7 @@ def fetch():
 
     count  = 0
     for tpr_unit in tpr_units:
-
+        l = LanguageStringConverter(tpr_unit)
         e = lambda k: tpr_unit.get(k, None)
 
         # ID's must be strings to avoid collisions
@@ -313,11 +310,11 @@ def fetch():
         meta = NodeMeta(id=_id, createdAt=datetime.now())
         
         location = Location(
-            url=create_language_string(tpr_unit, "www"),
+            url=l.get_language_string("www"),
             address = Address(
                 postal_code=e("address_zip"),
-                street_address=create_language_string(tpr_unit, "street_address"),
-                city=create_language_string(tpr_unit, "address_city")
+                street_address=l.get_language_string("street_address"),
+                city=l.get_language_string("address_city")
                 ),
             geoLocation=GeoJSONFeature(
                 latitude=e("latitude"),
@@ -335,8 +332,8 @@ def fetch():
             is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/")
 
         venue = Venue(
-            name=create_language_string(tpr_unit, "name"),
-            description=create_language_string(tpr_unit, "desc"),
+            name=l.get_language_string("name"),
+            description=l.get_language_string("desc"),
             location=location, 
             meta=meta, 
             openingHours=opening_hours)
