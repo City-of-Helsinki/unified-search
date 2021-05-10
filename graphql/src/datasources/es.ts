@@ -20,17 +20,31 @@ class ElasticSearchAPI extends RESTDataSource {
     languages?: ElasticLanguage[]
   ) {
     const es_index = index ? index : this.defaultIndex;
+
+    const searchFields = (lang: string, index: string) => {
+      if (index === 'location') {
+        return [
+          `venue.name.${lang}`,
+          `venue.description.${lang}`,
+          `links.raw_data.short_desc_${lang}`,
+        ]
+      }
+      else if (index === 'event') {
+        return [
+          `event.name.${lang}`,
+          `event.description.${lang}`,
+        ]
+      }
+      return [];
+    };
+
     const defaultQuery = languages.reduce(
       (acc, language) => ({
         ...acc,
         [language]: {
           query_string: {
             query: q,
-            fields: [
-              `venue.name.${language}`,
-              `venue.description.${language}`,
-              `links.raw_data.short_desc_${language}`,
-            ],
+            fields: searchFields(language, index),
           },
         },
       }),
