@@ -13,6 +13,7 @@ from elasticsearch import Elasticsearch
 
 from .traffic import request_json
 from .ontology import Ontology
+from .shared import LanguageString
 
 
 logger = logging.getLogger(__name__)
@@ -31,12 +32,6 @@ class LinkedData:
     service: str = None
     origin_url: str = None
     raw_data: dict = None
-
-@dataclass
-class LanguageString:
-    fi: str
-    sv: str
-    en: str
 
 @dataclass
 class Address:
@@ -288,7 +283,7 @@ def fetch():
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    logger.debug("Creating index location")
+    logger.debug(f"Creating index {ES_INDEX}")
 
     try:
         es.indices.create(index=ES_INDEX)

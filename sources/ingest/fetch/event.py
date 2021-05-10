@@ -7,6 +7,8 @@ from datetime import datetime
 
 from elasticsearch import Elasticsearch
 
+from .language import LanguageStringConverter
+from .shared import LanguageString
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +22,13 @@ class NodeMeta:
     createdAt: datetime
     updatedAt: datetime=None
 
-@dataclass
-class LanguageString:
-    fi: str
-    sv: str
-    en: str
 
 @dataclass
 class Event:
     meta: NodeMeta = None
     name: LanguageString = None
+    description: LanguageString = None
+
 
 @dataclass
 class Root:
@@ -39,15 +38,6 @@ class Root:
     #links: List[LinkedData] = field(default_factory=list)
     #suggest: List[str] = field(default_factory=list)
 
-
-def create_language_string(d):
-    if not d:
-        return None
-    return LanguageString(
-        fi=d.get(f"fi", None),
-        sv=d.get(f"sv", None),
-        en=d.get(f"en", None)
-        )
 
 def fetch():
     url = settings.EVENT_URL
@@ -75,9 +65,12 @@ def fetch():
 
             meta = NodeMeta(id=_id, createdAt=datetime.now())
 
+            l = LanguageStringConverter(entry)
+
             event = Event(
                 meta=meta,
-                name=create_language_string(entry["name"])
+                name=l.get_language_string("name"),
+                description=l.get_language_string("description")
             )
 
             root = Root(event=event)
@@ -88,6 +81,7 @@ def fetch():
 
     logger.info("Received {} items".format(received_count))
     return "Fetch completed by {}".format(__name__)
+
 
 def delete():
     """ Delete the whole index. """

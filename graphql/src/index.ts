@@ -146,6 +146,9 @@ const resolvers = {
     name({ event }: any, args: any, context: any, info: any) {
       return event.name;
     },
+    description({ event }: any, args: any, context: any, info: any) {
+      return event.description;
+    },
     meta({ event }: any, args: any, context: any, info: any) {
       return event.meta;
     },
