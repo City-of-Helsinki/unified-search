@@ -57,7 +57,7 @@ class LanguageStringConverter:
 
         if self.has_postfixed_fields():
             self.output = LanguageString(**self.get_postfixed_fields())
-        elif self.field_name in self.input:
+        elif self.field_name in self.input and self.input[self.field_name]:
             self.output = LanguageString(**self.get_sub_fields())
 
         return self.output

@@ -60,9 +60,12 @@ class LanguageTestCase(TestCase):
             "foo_fi": "kissa",
             "bar": {
                 "fi": "koira",
-            }
+            },
+            "foz": None,
         }
 
         l = language.LanguageStringConverter(input)
         self.assertEqual(l.get_language_string("foo"), LanguageString(fi="kissa", sv=None, en=None))
         self.assertEqual(l.get_language_string("bar"), LanguageString(fi="koira", sv=None, en=None))
+        self.assertEqual(l.get_language_string("baz"), None)
+        self.assertEqual(l.get_language_string("foz"), None)
