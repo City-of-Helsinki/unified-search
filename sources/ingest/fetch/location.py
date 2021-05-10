@@ -241,8 +241,8 @@ def define_language_properties():
     languages = [("fi", "finnish"), ("sv", "swedish"), ("en", "english")]
     language_properties = {}
 
-    for [langauge, analyzer] in languages:
-        language_properties[langauge] = {
+    for [language, analyzer] in languages:
+        language_properties[language] = {
             "type": "text",
             "analyzer": analyzer,
             "fields": {
