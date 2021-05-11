@@ -24,6 +24,7 @@ env:
   K8S_LIMIT_RAM: 300Mi
   DEBUG: 0
   PLAYGROUND: 1
+  EVENT_URL: https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/
 
 jobs:
   build:
@@ -66,6 +67,7 @@ jobs:
       - name: Misc variables
         run: |
           echo "K8S_SECRET_DEBUG=${{ env.DEBUG }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_PLAYGROUND=${{ env.PLAYGROUND }}" >> $GITHUB_ENV
 
       - name: Elasticsearch variables
         run: |
