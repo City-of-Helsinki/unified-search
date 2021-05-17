@@ -1,5 +1,6 @@
 from .traffic import request_json
 import logging
+import functools
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ class Keyword:
     def enrich_id(self, keyword_id):
         if keyword_id in self.keywords:
             return self.keywords[keyword_id]
-        return None
+        return {}
 
     def enrich(self, keyword_list):
         results = []
@@ -49,3 +50,27 @@ class Keyword:
             results.append(self.enrich_id(_id))
 
         return results
+
+    def grouped_by_lang(self, keyword_list):
+        """ For given list of URL's, enrich ID from cache and group
+            human readable words by language. Add "alt_labels" to
+            own group as it doesn't include language information."""
+
+        enriched = self.enrich(keyword_list)
+
+        grouped = functools.reduce(
+            lambda acc, item:
+            {
+                "fi": acc.get("fi") + [item.get("name", {}).get("fi", None)],
+                "sv": acc.get("sv") + [item.get("name", {}).get("sv", None)],
+                "en": acc.get("en") + [item.get("name", {}).get("en", None)],
+                # unpack from list
+                "alt": acc.get("alt") + item["alt_labels"] if "alt_labels" in item else acc.get("alt")
+            },
+            enriched,
+            {"fi": [], "sv": [], "en": [], "alt": []},
+        )
+
+        # drop empty
+        grouped = {k:[val for val in v if val is not None] for k,v in grouped.items()}
+        return grouped

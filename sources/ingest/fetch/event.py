@@ -2,6 +2,7 @@ import requests
 import logging
 from dataclasses import dataclass, field, asdict
 from typing import List
+
 from django.conf import settings
 from datetime import datetime
 
@@ -41,6 +42,7 @@ class LinkedData:
 @dataclass
 class Root:
     event: Event
+    ontology: List[str] = field(default_factory=list)
     links: List[LinkedData] = field(default_factory=list)
     #suggest: List[str] = field(default_factory=list)
 
@@ -84,6 +86,8 @@ def fetch():
             )
 
             root = Root(event=event)
+
+            root.ontology = keyword.grouped_by_lang(entry["keywords"])
 
             event_data = LinkedData(
                 service="linkedevents",
