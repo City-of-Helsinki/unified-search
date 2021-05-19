@@ -106,27 +106,15 @@ class ElasticSearchAPI extends RESTDataSource {
       };
     }
 
-    /*
-      const data = await this.post(`test-index/_search`, undefined,
-          {
-            headers: { 'Content-Type': 'application/json', },
-            body: JSON.stringify(query)
-          },
-      );
-    */
-
     // Resolve pagination
     query = {
       ...getEsOffsetPaginationQuery(connectionArguments),
       ...query,
     };
 
-    const data = this.post(`${es_index}/_search`, undefined, {
+    const data = await this.post(`${es_index}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(query),
-    }).then((r) => {
-      console.log(r.hits.hits[0]);
-      return r;
     });
 
     return [data];
