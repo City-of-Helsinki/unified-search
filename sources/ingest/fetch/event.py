@@ -1,7 +1,8 @@
 import requests
 import logging
 from dataclasses import dataclass, field, asdict
-from typing import List
+from typing import List, Dict
+
 from django.conf import settings
 from datetime import datetime
 
@@ -9,6 +10,7 @@ from elasticsearch import Elasticsearch
 
 from .language import LanguageStringConverter
 from .shared import LanguageString
+from .keyword import Keyword
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +33,19 @@ class Event:
 
 
 @dataclass
+class LinkedData:
+    service: str = None
+    origin_url: str = None
+    raw_data: Dict = None
+
+
+OntologyType = Dict[str, Dict[str, List[str]]]
+
+@dataclass
 class Root:
     event: Event
-
-    # TODO: by adding links the whole data can be indexed
-    #links: List[LinkedData] = field(default_factory=list)
+    ontology: OntologyType = None
+    links: List[LinkedData] = field(default_factory=list)
     #suggest: List[str] = field(default_factory=list)
 
 
@@ -50,6 +60,8 @@ def fetch():
         return "ERROR at {}".format(__name__)
 
     logger.debug(f"Creating index {ES_INDEX}")
+
+    keyword = Keyword()
 
     while url:
         r = requests.get(url, params=payload)
@@ -67,6 +79,8 @@ def fetch():
 
             l = LanguageStringConverter(entry)
 
+            entry["keywords_enriched"] = keyword.enrich(entry["keywords"])
+
             event = Event(
                 meta=meta,
                 name=l.get_language_string("name"),
@@ -74,6 +88,15 @@ def fetch():
             )
 
             root = Root(event=event)
+
+            root.ontology = keyword.grouped_by_lang(entry["keywords"])
+
+            event_data = LinkedData(
+                service="linkedevents",
+                origin_url=f"{url}{_id}/",
+                raw_data=entry)
+
+            root.links.append(event_data)
 
             r = es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
 

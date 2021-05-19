@@ -67,14 +67,13 @@ const resolvers = {
     ) => {
       const connectionArguments = { before, after, first, last };
 
-      const res = await dataSources.elasticSearchAPI.getQueryResults(
+      const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,
         ontology,
         index,
         connectionArguments,
         elasticLanguageFromGraphqlLanguage(languages)
       );
-      const result = await res[0];
 
       const getCursor = (offset: number) =>
         createCursor<ConnectionCursorObject>({
