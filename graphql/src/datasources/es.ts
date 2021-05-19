@@ -38,6 +38,24 @@ class ElasticSearchAPI extends RESTDataSource {
       return [];
     };
 
+    const ontologyFields = (lang: string, index: string) => {
+      if (index === 'location') {
+        return [
+          `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${lang}`,
+          `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
+          `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
+          `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
+        ]
+      }
+      else if (index === 'event') {
+        return [
+          `ontology.${lang}`,
+          `ontology.alt`,
+        ]
+      }
+      return [];
+    }
+
     const defaultQuery = languages.reduce(
       (acc, language) => ({
         ...acc,
@@ -62,20 +80,13 @@ class ElasticSearchAPI extends RESTDataSource {
 
     // Resolve ontology
     if (ontology) {
-      /* TODO, depends on index specific data types */
-
       const ontologyMatchers = languages.reduce(
         (acc, language) => ({
           ...acc,
           [language]: {
             multi_match: {
               query: ontology,
-              fields: [
-                `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${language}`,
-                `links.raw_data.ontologyword_ids_enriched.ontologyword_${language}`,
-                `links.raw_data.ontologytree_ids_enriched.name_${language}`,
-                `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${language}`,
-              ],
+              fields: ontologyFields(language, index),
             },
           },
         }),
