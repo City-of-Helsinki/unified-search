@@ -1,7 +1,7 @@
 import requests
 import logging
 from dataclasses import dataclass, field, asdict
-from typing import List
+from typing import List, Dict
 
 from django.conf import settings
 from datetime import datetime
@@ -36,13 +36,15 @@ class Event:
 class LinkedData:
     service: str = None
     origin_url: str = None
-    raw_data: dict = None
+    raw_data: Dict = None
 
+
+OntologyType = Dict[str, Dict[str, List[str]]]
 
 @dataclass
 class Root:
     event: Event
-    ontology: List[str] = field(default_factory=list)
+    ontology: OntologyType = None
     links: List[LinkedData] = field(default_factory=list)
     #suggest: List[str] = field(default_factory=list)
 
