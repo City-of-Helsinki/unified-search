@@ -112,12 +112,10 @@ class ElasticSearchAPI extends RESTDataSource {
       ...query,
     };
 
-    const data = await this.post(`${es_index}/_search`, undefined, {
+    return this.post(`${es_index}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(query),
     });
-
-    return [data];
   }
 
   async getSuggestions(
