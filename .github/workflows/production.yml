@@ -122,4 +122,4 @@ jobs:
           schedule: '0 5 * * *' # at 05:00 every day
           max_duration: "7200" # Run maximum 2 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index location --delete && python manage.py ingest_data --index location}"
+          args: "{-c,python manage.py ingest_data --index event location --delete && python manage.py ingest_data --index event location}"
