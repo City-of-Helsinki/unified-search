@@ -36,8 +36,8 @@ class LinkedData:
 
 @dataclass
 class Address:
-    postal_code: str
-    street_address: LanguageString
+    postalCode: str
+    streetAddress: LanguageString
     city: LanguageString
 
 @dataclass
@@ -318,8 +318,8 @@ def fetch():
         location = Location(
             url=l.get_language_string("www"),
             address = Address(
-                postal_code=e("address_zip"),
-                street_address=l.get_language_string("street_address"),
+                postalCode=e("address_zip"),
+                streetAddress=l.get_language_string("street_address"),
                 city=l.get_language_string("address_city")
                 ),
             geoLocation=GeoJSONFeature(

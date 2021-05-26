@@ -50,6 +50,8 @@ export const actorSchema = `
   }
   """TODO: give real structure"""
   type Address {
-    streetAddress: String!
+    postalCode: String
+    streetAddress: LanguageString
+    city: LanguageString
   }
 `;

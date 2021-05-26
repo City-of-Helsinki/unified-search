@@ -27,7 +27,7 @@ export const locationSchema = `
   type LocationDescription {
     url: LanguageString
     geoLocation: GeoJSONFeature
-    streetAddress: Address
+    address: Address
     explanation: String
 	@origin(service: "linked", type: "event", attr: "location_extra_info")
     venue: Venue
