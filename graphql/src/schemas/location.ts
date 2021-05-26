@@ -19,6 +19,7 @@ export const locationSchema = `
     arrivalInstructions: String
     additionalInfo: String
     facilities: [VenueFacility!]
+    images: [Image]
   }
   """
   Free-form location, not necessarily at a know venue.
@@ -45,6 +46,11 @@ export const locationSchema = `
   type OpeningHours {
     url: String
     is_open_now_url: String
+  }
+
+  type Image {
+    url: String
+    caption: LanguageString
   }
 
 `;

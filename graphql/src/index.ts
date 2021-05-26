@@ -136,6 +136,9 @@ const resolvers = {
     openingHours({ venue }: any, args: any, context: any, info: any) {
       return venue.openingHours;
     },
+    images({ venue }: any, args: any, context: any, info: any) {
+      return venue.images;
+    },
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
     },

@@ -68,6 +68,11 @@ class OntologyObject:
     label: LanguageString
 
 @dataclass
+class Image:
+    url: str
+    caption: LanguageString
+
+@dataclass
 class Venue:
     meta: NodeMeta = None
     name: LanguageString = None
@@ -85,6 +90,7 @@ class Venue:
     arrivalInstructions: str = None
     additionalInfo: str = None
     facilities: str = None
+    images: List[Image] = field(default_factory=list)
 
 @dataclass
 class Root:
@@ -331,12 +337,19 @@ def fetch():
             url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/opening_hours/",
             is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/")
 
+        # Assuming single image
+        images = []
+        images.append(Image(
+                url=e("picture_url"),
+                caption=l.get_language_string("picture_caption")))
+
         venue = Venue(
             name=l.get_language_string("name"),
             description=l.get_language_string("desc"),
             location=location, 
             meta=meta, 
-            openingHours=opening_hours)
+            openingHours=opening_hours,
+            images=images)
 
         place_url, place = get_linkedevents_place(_id)
 
