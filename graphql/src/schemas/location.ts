@@ -49,7 +49,7 @@ export const locationSchema = `
   }
 
   type Image {
-    image_url: String
+    url: String
     caption: LanguageString
   }
 

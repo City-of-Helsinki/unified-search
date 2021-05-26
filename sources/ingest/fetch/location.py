@@ -69,7 +69,7 @@ class OntologyObject:
 
 @dataclass
 class Image:
-    image_url: str
+    url: str
     caption: LanguageString
 
 @dataclass
@@ -340,7 +340,7 @@ def fetch():
         # Assuming single image
         images = []
         images.append(Image(
-                image_url=e("picture_url"),
+                url=e("picture_url"),
                 caption=l.get_language_string("picture_caption")))
 
         venue = Venue(
