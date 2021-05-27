@@ -4,6 +4,7 @@ from typing import List
 from django.utils import timezone
 from django.conf import settings
 
+import requests
 import logging
 import base64
 import functools
@@ -36,8 +37,8 @@ class LinkedData:
 
 @dataclass
 class Address:
-    postal_code: str
-    street_address: LanguageString
+    postalCode: str
+    streetAddress: LanguageString
     city: LanguageString
 
 @dataclass
@@ -318,8 +319,8 @@ def fetch():
         location = Location(
             url=l.get_language_string("www"),
             address = Address(
-                postal_code=e("address_zip"),
-                street_address=l.get_language_string("street_address"),
+                postalCode=e("address_zip"),
+                streetAddress=l.get_language_string("street_address"),
                 city=l.get_language_string("address_city")
                 ),
             geoLocation=GeoJSONFeature(
@@ -351,15 +352,18 @@ def fetch():
             openingHours=opening_hours,
             images=images)
 
-        place_url, place = get_linkedevents_place(_id)
+        try:
+            place_url, place = get_linkedevents_place(_id)
 
-        place_link = LinkedData(
-            service="linkedevents",
-            origin_url=place_url,
-            raw_data=place)
+            place_link = LinkedData(
+                service="linkedevents",
+                origin_url=place_url,
+                raw_data=place)
 
-        root = Root(venue=venue)
-        root.links.append(place_link)
+            root = Root(venue=venue)
+            root.links.append(place_link)
+        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exc:
+            logger.warning(f"Error while fetching {place_url}: {exc}")
 
         # Extra information to raw data
         tpr_unit["origin"] = "tpr"
