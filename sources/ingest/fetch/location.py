@@ -4,6 +4,7 @@ from typing import List
 from django.utils import timezone
 from django.conf import settings
 
+import requests
 import logging
 import base64
 import functools
@@ -351,15 +352,19 @@ def fetch():
             openingHours=opening_hours,
             images=images)
 
-        place_url, place = get_linkedevents_place(_id)
+        try:
+            place_url, place = get_linkedevents_place(_id)
 
-        place_link = LinkedData(
-            service="linkedevents",
-            origin_url=place_url,
-            raw_data=place)
+            place_link = LinkedData(
+                service="linkedevents",
+                origin_url=place_url,
+                raw_data=place)
 
-        root = Root(venue=venue)
-        root.links.append(place_link)
+            root = Root(venue=venue)
+            root.links.append(place_link)
+        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError):
+            logger.warning(f"Error when fetching {place_url}")
+            pass
 
         # Extra information to raw data
         tpr_unit["origin"] = "tpr"
