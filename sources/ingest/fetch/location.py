@@ -364,7 +364,6 @@ def fetch():
             root.links.append(place_link)
         except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exc:
             logger.warning(f"Error while fetching {place_url}: {exc}")
-            pass
 
         # Extra information to raw data
         tpr_unit["origin"] = "tpr"
