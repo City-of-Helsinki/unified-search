@@ -362,8 +362,8 @@ def fetch():
 
             root = Root(venue=venue)
             root.links.append(place_link)
-        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError):
-            logger.warning(f"Error when fetching {place_url}")
+        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exc:
+            logger.warning(f"Error while fetching {place_url}: {exc}")
             pass
 
         # Extra information to raw data
