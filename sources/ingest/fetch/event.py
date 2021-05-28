@@ -52,7 +52,6 @@ class Root:
 def fetch():
     url = settings.EVENT_URL
 
-    payload = {"page_size": 100}
     received_count = 0
     try:
         es = Elasticsearch([settings.ES_URI])
@@ -64,7 +63,8 @@ def fetch():
     keyword = Keyword()
 
     while url:
-        r = requests.get(url, params=payload)
+        logger.debug(f"Requesting URL {url}")
+        r = requests.get(url)
         data = r.json()
         item_count = len(data["data"])
         received_count = received_count + item_count
