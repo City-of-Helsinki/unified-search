@@ -88,8 +88,10 @@ jobs:
         if: matrix.service == 'sources'
         env:
           SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_STAGING }}
+          EVENT_URL: ${{ env.EVENT_URL }}
         run: |
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "K8S_SECRET_EVENT_URL=$EVENT_URL" >> $GITHUB_ENV
 
       - name: Deploy ${{ matrix.service }}
         uses: andersinno/kolga-deploy-action@v2
