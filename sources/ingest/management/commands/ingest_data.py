@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 import logging
 
-from ingest.fetch import servicemap, linkedevents, palvelukartta, location, vapaaehtoistoiminta
+from ingest.fetch import location, event
 
 
 logger = logging.getLogger(__name__)
@@ -31,13 +31,10 @@ class Command(BaseCommand):
         time = timezone.now().strftime("%X")
         logger.info("Started at %s" % time)
 
-        # Provided by ingest.fetch, default unless specified on command line
+        # Provided by ingest.fetch, defaults to these unless specified on command line
         inds = {
-            "servicemap": servicemap,
-            "linkedevents": linkedevents,
-            "palvelukartta": palvelukartta,
             "location": location,
-            "vapaaehtoistoiminta": vapaaehtoistoiminta
+            "event": event
         }
 
         index_list = kwargs["index"]

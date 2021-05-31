@@ -64,6 +64,14 @@ Following test script is available for basic health check:
 
     pytest --log-cli-level=debug test_es_health.py
 
+Sources tests, in docker-compose:
+
+    docker-compose exec sources python manage.py test
+
+GraphQL tests:
+
+    npx jest
+
 ## GraphQL search API
 
 If not running with docker-compose, start Apollo based GraphQL server at `unified-search/graphql/`:
@@ -72,10 +80,72 @@ If not running with docker-compose, start Apollo based GraphQL server at `unifie
 
 ## GraphQL queries
 
-It is recommended to use GraphQL client such as Altair for sending queries. Example:
+It is recommended to use GraphQL client such as Altair for sending queries.
+
+### Search all with specified ontology
 
     query {
-      unifiedSearch(q:"koira", index:"location") {
+      unifiedSearch(index: "event", q: "*", ontology: "vapaaehtoistoiminta", languages:FINNISH) {
+        edges {
+          cursor
+          node {
+            event {
+              name {
+                fi
+              }
+              description {
+                fi
+              }
+            }
+          }
+        }
+      }
+    }
+
+### Free text search - event index
+
+    query {
+      unifiedSearch(index: "event", q: "koira", languages:FINNISH) {
+        edges {
+          cursor
+          node {
+            event {
+              name {
+                fi
+              }
+              description {
+                fi
+              }
+            }
+          }
+        }
+      }
+    }
+
+### Free text search - location index
+
+    query {
+      unifiedSearch(index: "location", q: "koira", languages:FINNISH) {
+        edges {
+          cursor
+          node {
+            venue {
+              name {
+                fi
+              }
+              description {
+                fi
+              }
+            }
+          }
+        }
+      }
+    }
+
+### Pagination and scores
+
+    query {
+      unifiedSearch(q: "koira", index: "location") {
         count
         max_score
         pageInfo {
@@ -103,8 +173,30 @@ It is recommended to use GraphQL client such as Altair for sending queries. Exam
                 }
               }
             }
-          _score
-          searchCategories
+            _score
+            searchCategories
+          }
+        }
+      }
+    }
+
+
+### Raw data for debugging purposes
+
+    query {
+      unifiedSearch(q: "koira", index: "location", first: 3) {
+        count
+        max_score
+        edges {
+          node {
+            venue {
+              name {
+                fi
+                sv
+                en
+              }
+            }
+            _score
           }
         }
         es_results {
@@ -125,6 +217,41 @@ It is recommended to use GraphQL client such as Altair for sending queries. Exam
       }
     }
 
+### Suggestions for text completion
+
+    query {
+      unifiedSearchCompletionSuggestions(prefix:"ki", languages:FINNISH, index:"location")
+      {
+        suggestions {
+          label
+        }
+      }
+    }
+
+
+### Date ranges
+
+Date can be used in queries assuming mapping type is correct (`date` in ES, `datetime.datetime` in Python):
+
+Get documents created in the last 2 minutes:
+
+    GET /location/_search
+    {
+      "query": {
+        "range": {
+          "venue.meta.createdAt": {
+            "gte": "now-2m/m"
+          }
+        }
+      }
+    }
+
+For references, see
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
+
 
 ## GraphQL search API - using curl
 
@@ -141,6 +268,14 @@ Compile requirements.in to requirements.txt:
 Install dependencies from requirements.txt:
 
     pip install -r requirements.txt
+
+
+## Known issues
+
+1. New index is added but Elasticsearch returns elasticsearch.exceptions.AuthorizationException.
+
+    Elasticsearch access control list needs to be updated with access to new index. When using Aiven it
+    can be done from its control panel (under ACL).
 
 # Issues board
 

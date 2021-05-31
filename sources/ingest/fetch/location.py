@@ -4,26 +4,30 @@ from typing import List
 from django.utils import timezone
 from django.conf import settings
 
-import json
-import sys
+import requests
 import logging
 import base64
 import functools
+from datetime import datetime
 
 from elasticsearch import Elasticsearch
 
 from .traffic import request_json
 from .ontology import Ontology
+from .shared import LanguageString
+from .language import LanguageStringConverter
 
 
 logger = logging.getLogger(__name__)
+
+ES_INDEX = "location"
 
 
 @dataclass
 class NodeMeta:
     id: str
-    createdAt: str
-    updatedAt: str=None
+    createdAt: datetime
+    updatedAt: datetime=None
 
 @dataclass
 class LinkedData:
@@ -32,15 +36,9 @@ class LinkedData:
     raw_data: dict = None
 
 @dataclass
-class LanguageString:
-    fi: str
-    sv: str
-    en: str
-
-@dataclass
 class Address:
-    postal_code: str
-    street_address: LanguageString
+    postalCode: str
+    streetAddress: LanguageString
     city: LanguageString
 
 @dataclass
@@ -71,6 +69,11 @@ class OntologyObject:
     label: LanguageString
 
 @dataclass
+class Image:
+    url: str
+    caption: LanguageString
+
+@dataclass
 class Venue:
     meta: NodeMeta = None
     name: LanguageString = None
@@ -88,6 +91,7 @@ class Venue:
     arrivalInstructions: str = None
     additionalInfo: str = None
     facilities: str = None
+    images: List[Image] = field(default_factory=list)
 
 @dataclass
 class Root:
@@ -112,14 +116,6 @@ def get_linkedevents_place(id):
     return url, data
 
 
-def create_language_string(d, key_prefix):
-    return LanguageString(
-        fi=d.get(f"{key_prefix}_fi", None),
-        sv=d.get(f"{key_prefix}_sv", None),
-        en=d.get(f"{key_prefix}_en", None)
-        )
-
-
 def get_opening_hours(d):
     results = []
     if "connections" in d and d["connections"]:
@@ -141,10 +137,12 @@ def get_ontologywords_as_ontologies(ontologywords):
     ontologies = []
 
     for ontologyword in ontologywords:
+        l = LanguageStringConverter(ontologyword)
+
         ontologies.append(
             OntologyObject(
                 id=str(ontologyword.get("id")),
-                label=create_language_string(ontologyword, "ontologyword")
+                label=l.get_language_string("ontologyword")
             )
         )
 
@@ -158,7 +156,7 @@ def get_ontologywords_as_ontologies(ontologywords):
                     # A unique id is not available in the source data. To make the id
                     # more opaque we are encoding it.
                     id=prefix_and_mask("es-", ontologyword.get("id")),
-                    label=create_language_string(ontologyword, "extra_searchwords")
+                    label=l.get_language_string("extra_searchwords")
                 )
             )
 
@@ -169,10 +167,12 @@ def get_ontologytree_as_ontologies(ontologytree):
     ontologies = []
 
     for ontologybranch in ontologytree:
+        l = LanguageStringConverter(ontologybranch)
+
         ontologies.append(
             OntologyObject(
                 id=str(ontologybranch.get("id")),
-                label=create_language_string(ontologybranch, "name")
+                label=l.get_language_string("name")
             )
         )
 
@@ -186,7 +186,7 @@ def get_ontologytree_as_ontologies(ontologytree):
                     # A unique id is not available in the source data. To make the id
                     # more opaque we are encoding it.
                     id=prefix_and_mask("es-", ontologybranch.get("id")),
-                    label=create_language_string(ontologybranch, "extra_searchwords")
+                    label=l.get_language_string("extra_searchwords")
                 )
             )
 
@@ -238,6 +238,25 @@ def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
     return suggest
 
 
+def define_language_properties():
+    languages = [("fi", "finnish"), ("sv", "swedish"), ("en", "english")]
+    language_properties = {}
+
+    for [language, analyzer] in languages:
+        language_properties[language] = {
+            "type": "text",
+            "analyzer": analyzer,
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above" : 256
+                }
+            }
+        }
+
+    return language_properties
+
+
 custom_mappings = {
     "properties": {
         "suggest": {    
@@ -248,6 +267,16 @@ custom_mappings = {
                     "type": "category",
                 }
             ]
+        },
+        "venue": {
+            "properties": {
+                "name": {
+                    "properties": define_language_properties()
+                },
+                "description": {
+                    "properties": define_language_properties()
+                }
+            }
         }
     }
 }
@@ -258,16 +287,16 @@ def fetch():
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)
 
-    logger.debug("Creating index location")
+    logger.debug(f"Creating index {ES_INDEX}")
 
     try:
-        es.indices.create(index="location")
+        es.indices.create(index=ES_INDEX)
     except:
         logger.debug("Index location already exists, skipping")
 
     logger.debug("Applying custom mapping")
 
-    es.indices.put_mapping(index="location", body=custom_mappings)
+    es.indices.put_mapping(index=ES_INDEX, body=custom_mappings)
 
     logger.debug("Custom mapping set")
 
@@ -279,20 +308,20 @@ def fetch():
 
     count  = 0
     for tpr_unit in tpr_units:
-
+        l = LanguageStringConverter(tpr_unit)
         e = lambda k: tpr_unit.get(k, None)
 
         # ID's must be strings to avoid collisions
         tpr_unit["id"] = _id = str(tpr_unit["id"])
 
-        meta = NodeMeta(id=_id, createdAt=timezone.now().strftime("%Y-%m-%d %H:%M:%S"))
+        meta = NodeMeta(id=_id, createdAt=datetime.now())
         
         location = Location(
-            url=create_language_string(tpr_unit, "www"),
+            url=l.get_language_string("www"),
             address = Address(
-                postal_code=e("address_zip"),
-                street_address=create_language_string(tpr_unit, "street_address"),
-                city=create_language_string(tpr_unit, "address_city")
+                postalCode=e("address_zip"),
+                streetAddress=l.get_language_string("street_address"),
+                city=l.get_language_string("address_city")
                 ),
             geoLocation=GeoJSONFeature(
                 latitude=e("latitude"),
@@ -306,25 +335,35 @@ def fetch():
             )
 
         opening_hours = OpeningHours(
-            url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/opening_hours/",
-            is_open_now_url=f"http://hauki-test.oc.hel.ninja/v1/resource/tprek:{_id}/is_open_now/")
+            url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/opening_hours/",
+            is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/")
+
+        # Assuming single image
+        images = []
+        images.append(Image(
+                url=e("picture_url"),
+                caption=l.get_language_string("picture_caption")))
 
         venue = Venue(
-            name=create_language_string(tpr_unit, "name"),
-            description=create_language_string(tpr_unit, "desc"),
+            name=l.get_language_string("name"),
+            description=l.get_language_string("desc"),
             location=location, 
             meta=meta, 
-            openingHours=opening_hours)
+            openingHours=opening_hours,
+            images=images)
 
-        place_url, place = get_linkedevents_place(_id)
+        try:
+            place_url, place = get_linkedevents_place(_id)
 
-        place_link = LinkedData(
-            service="linkedevents",
-            origin_url=place_url,
-            raw_data=place)
+            place_link = LinkedData(
+                service="linkedevents",
+                origin_url=place_url,
+                raw_data=place)
 
-        root = Root(venue=venue)
-        root.links.append(place_link)
+            root = Root(venue=venue)
+            root.links.append(place_link)
+        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exc:
+            logger.warning(f"Error while fetching {place_url}: {exc}")
 
         # Extra information to raw data
         tpr_unit["origin"] = "tpr"
@@ -353,7 +392,9 @@ def fetch():
             raw_data=tpr_unit)
         root.links.append(link)
 
-        r = es.index(index="location", doc_type="_doc", body=str(json.dumps(asdict(root))))
+        r = es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
+
+        logger.debug(f"Fethed data count: {count}")
         count = count + 1
 
     logger.info(f"Fetched {count} items in total")
@@ -364,7 +405,7 @@ def delete():
     """ Delete the whole index. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        r = es.indices.delete(index="location")
+        r = es.indices.delete(index=ES_INDEX)
         logger.debug(r)
     except Exception as e:
         return "ERROR at {}".format(__name__)
@@ -374,6 +415,6 @@ def set_alias(alias):
     """ Configure alias for index name. """
     try:
         es = Elasticsearch([settings.ES_URI])
-        es.indices.put_alias(index='location', name=alias)
+        es.indices.put_alias(index=ES_INDEX, name=alias)
     except ConnectionError as e:
         return "ERROR at {}".format(__name__)

@@ -1,5 +1,5 @@
-import { ConnectionArguments } from '../types';
-import { getEsOffsetPaginationQuery } from '../utils';
+import { ConnectionArguments, ElasticLanguage } from '../types';
+import { getEsOffsetPaginationQuery, targetFieldLanguages } from '../utils';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
@@ -9,65 +9,102 @@ class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = ELASTIC_SEARCH_URI;
-    // 'test-index' is alias for all available indexes
-    this.defaultIndex = 'test-index';
+    this.defaultIndex = 'location';
   }
 
   async getQueryResults(
     q?: string,
     ontology?: string,
     index?: string,
-    connectionArguments?: ConnectionArguments
+    connectionArguments?: ConnectionArguments,
+    languages?: ElasticLanguage[]
   ) {
     const es_index = index ? index : this.defaultIndex;
+
+    const searchFields = (lang: string, index: string) => {
+      if (index === 'location') {
+        return [
+          `venue.name.${lang}`,
+          `venue.description.${lang}`,
+          `links.raw_data.short_desc_${lang}`,
+        ]
+      }
+      else if (index === 'event') {
+        return [
+          `event.name.${lang}`,
+          `event.description.${lang}`,
+        ]
+      }
+      return [];
+    };
+
+    const ontologyFields = (lang: string, index: string) => {
+      if (index === 'location') {
+        return [
+          `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${lang}`,
+          `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
+          `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
+          `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
+        ]
+      }
+      else if (index === 'event') {
+        return [
+          `ontology.${lang}`,
+          `ontology.alt`,
+        ]
+      }
+      return [];
+    }
+
+    const defaultQuery = languages.reduce(
+      (acc, language) => ({
+        ...acc,
+        [language]: {
+          query_string: {
+            query: q,
+            fields: searchFields(language, index),
+          },
+        },
+      }),
+      {}
+    );
 
     // Resolve query
     let query: any = {
       query: {
-        query_string: {
-          query: q,
+        bool: {
+          should: Object.values(defaultQuery),
         },
       },
     };
 
     // Resolve ontology
     if (ontology) {
-      /* TODO, depends on index specific data types */
+      const ontologyMatchers = languages.reduce(
+        (acc, language) => ({
+          ...acc,
+          [language]: {
+            multi_match: {
+              query: ontology,
+              fields: ontologyFields(language, index),
+            },
+          },
+        }),
+        {}
+      );
 
       query = {
         query: {
           bool: {
-            must: [
-              {
-                query_string: {
-                  query: q,
-                },
+            should: languages.map((language) => ({
+              bool: {
+                must: [defaultQuery[language], ontologyMatchers[language]],
               },
-              {
-                multi_match: {
-                  query: ontology,
-                  fields: [
-                    'links.raw_data.ontologyword_ids_enriched.extra_searchwords_*',
-                    'links.raw_data.ontologyword_ids_enriched.ontologyword_*',
-                    'links.raw_data.ontologytree_ids_enriched.name_*',
-                    'links.raw_data.ontologytree_ids_enriched.extra_searchwords_*',
-                  ],
-                },
-              },
-            ],
+            })),
           },
         },
       };
     }
-
-    /*
-      const data = await this.post(`test-index/_search`, undefined,
-          {
-            headers: { 'Content-Type': 'application/json', },
-            body: JSON.stringify(query)
-          },
-      );
-    */
 
     // Resolve pagination
     query = {
@@ -75,28 +112,18 @@ class ElasticSearchAPI extends RESTDataSource {
       ...query,
     };
 
-    const data = this.post(`${es_index}/_search`, undefined, {
+    return this.post(`${es_index}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(query),
-    }).then((r) => {
-      console.log(r.hits.hits[0]);
-      return r;
     });
-
-    return [data];
   }
 
   async getSuggestions(
     prefix: string,
-    languages: string[],
+    languages: ElasticLanguage[],
     index: string = this.defaultIndex,
     size: number
   ) {
-    const languageMap = {
-      FINNISH: 'fi',
-      SWEDISH: 'sv',
-      ENGLISH: 'en',
-    };
     const query = {
       // Hide all source fields to decrease network load
       _source: '',
@@ -108,7 +135,7 @@ class ElasticSearchAPI extends RESTDataSource {
             skip_duplicates: true,
             size,
             contexts: {
-              language: languages.map((language) => languageMap[language]),
+              language: languages,
             },
           },
         },

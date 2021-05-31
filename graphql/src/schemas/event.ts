@@ -8,9 +8,9 @@ export const eventSchema = `
   """
   type Event {
     meta: NodeMeta
-    name: String!
+    name: LanguageString
 	@origin(service: "linked", type: "event", attr: "name")
-    description: String
+    description: LanguageString
 	@origin(service: "linked", type: "event", attr: "description")
     shortDescription: String
 	@origin(service: "linked", type: "event", attr: "short_description")
