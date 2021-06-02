@@ -1,5 +1,4 @@
-import { ConnectionArguments, ElasticLanguage } from '../types';
-import { getEsOffsetPaginationQuery, targetFieldLanguages } from '../utils';
+import { ElasticLanguage } from '../types';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
@@ -16,7 +15,8 @@ class ElasticSearchAPI extends RESTDataSource {
     q?: string,
     ontology?: string,
     index?: string,
-    connectionArguments?: ConnectionArguments,
+    from?: number,
+    size?: number,
     languages?: ElasticLanguage[]
   ) {
     const es_index = index ? index : this.defaultIndex;
@@ -108,7 +108,8 @@ class ElasticSearchAPI extends RESTDataSource {
 
     // Resolve pagination
     query = {
-      ...getEsOffsetPaginationQuery(connectionArguments),
+      from,
+      size,
       ...query,
     };
 
