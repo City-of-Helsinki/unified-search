@@ -2,7 +2,11 @@ const { makeExecutableSchema, ApolloServer } = require('apollo-server-express');
 
 import cors from 'cors';
 import express from 'express';
-import { createCursor, elasticLanguageFromGraphqlLanguage } from './utils';
+import {
+  createCursor,
+  elasticLanguageFromGraphqlLanguage,
+  getEsOffsetPaginationQuery,
+} from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
 
@@ -66,18 +70,20 @@ const resolvers = {
       { dataSources }: any
     ) => {
       const connectionArguments = { before, after, first, last };
+      const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,
         ontology,
         index,
-        connectionArguments,
+        from,
+        size,
         elasticLanguageFromGraphqlLanguage(languages)
       );
 
       const getCursor = (offset: number) =>
         createCursor<ConnectionCursorObject>({
-          offset,
+          offset: from + offset,
         });
 
       // Find shared data
