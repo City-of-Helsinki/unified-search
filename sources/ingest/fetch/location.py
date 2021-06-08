@@ -9,7 +9,6 @@ from typing import List
 
 import requests
 from django.conf import settings
-from django.utils import timezone
 from elasticsearch import Elasticsearch
 
 from .language import LanguageStringConverter
@@ -284,13 +283,14 @@ def fetch():
     try:
         es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
-        return "ERROR at {}".format(__name__)
+        return f"ERROR at {__name__}: {e}"
 
     logger.debug(f"Creating index {ES_INDEX}")
 
     try:
         es.indices.create(index=ES_INDEX)
-    except:
+    # TODO
+    except BaseException:
         logger.debug("Index location already exists, skipping")
 
     logger.debug("Applying custom mapping")
@@ -308,7 +308,7 @@ def fetch():
     count = 0
     for tpr_unit in tpr_units:
         l = LanguageStringConverter(tpr_unit)
-        e = lambda k: tpr_unit.get(k, None)
+        e = lambda k: tpr_unit.get(k, None)  # noqa: E731
 
         # ID's must be strings to avoid collisions
         tpr_unit["id"] = _id = str(tpr_unit["id"])
@@ -402,7 +402,7 @@ def fetch():
         )
         root.links.append(link)
 
-        r = es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
+        es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
 
         logger.debug(f"Fethed data count: {count}")
         count = count + 1
@@ -417,8 +417,8 @@ def delete():
         es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index=ES_INDEX)
         logger.debug(r)
-    except Exception as e:
-        return "ERROR at {}".format(__name__)
+    except ConnectionError as e:
+        return f"ERROR at {__name__}: {e}"
 
 
 def set_alias(alias):
@@ -427,4 +427,4 @@ def set_alias(alias):
         es = Elasticsearch([settings.ES_URI])
         es.indices.put_alias(index=ES_INDEX, name=alias)
     except ConnectionError as e:
-        return "ERROR at {}".format(__name__)
+        return f"ERROR at {__name__}: {e}"

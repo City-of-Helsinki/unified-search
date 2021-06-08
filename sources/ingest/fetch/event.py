@@ -56,7 +56,7 @@ def fetch():
     try:
         es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
-        return "ERROR at {}".format(__name__)
+        return f"ERROR at {__name__}: {e}"
 
     logger.debug(f"Creating index {ES_INDEX}")
 
@@ -111,8 +111,8 @@ def delete():
         es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index=ES_INDEX)
         logger.debug(r)
-    except Exception as e:
-        return "ERROR at {}".format(__name__)
+    except ConnectionError as e:
+        return f"ERROR at {__name__}: {e}"
 
 
 def set_alias(alias):
@@ -121,4 +121,4 @@ def set_alias(alias):
         es = Elasticsearch([settings.ES_URI])
         es.indices.put_alias(index=ES_INDEX, name=alias)
     except ConnectionError as e:
-        return "ERROR at {}".format(__name__)
+        return f"ERROR at {__name__}: {e}"
