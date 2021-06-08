@@ -66,7 +66,7 @@ Following test script is available for basic health check:
 
 Sources tests, in docker-compose:
 
-    docker-compose exec sources python manage.py test
+    docker-compose exec sources pytest
 
 GraphQL tests:
 
