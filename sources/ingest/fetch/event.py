@@ -1,16 +1,15 @@
-import requests
 import logging
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict
-
-from django.conf import settings
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from typing import Dict, List
 
+import requests
+from django.conf import settings
 from elasticsearch import Elasticsearch
 
+from .keyword import Keyword
 from .language import LanguageStringConverter
 from .shared import LanguageString
-from .keyword import Keyword
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ ES_INDEX = "event"
 class NodeMeta:
     id: str
     createdAt: datetime
-    updatedAt: datetime=None
+    updatedAt: datetime = None
 
 
 @dataclass
@@ -41,12 +40,13 @@ class LinkedData:
 
 OntologyType = Dict[str, Dict[str, List[str]]]
 
+
 @dataclass
 class Root:
     event: Event
     ontology: OntologyType = None
     links: List[LinkedData] = field(default_factory=list)
-    #suggest: List[str] = field(default_factory=list)
+    # suggest: List[str] = field(default_factory=list)
 
 
 def fetch():
@@ -84,7 +84,7 @@ def fetch():
             event = Event(
                 meta=meta,
                 name=l.get_language_string("name"),
-                description=l.get_language_string("description")
+                description=l.get_language_string("description"),
             )
 
             root = Root(event=event)
@@ -92,9 +92,8 @@ def fetch():
             root.ontology = keyword.grouped_by_lang(entry["keywords"])
 
             event_data = LinkedData(
-                service="linkedevents",
-                origin_url=f"{url}{_id}/",
-                raw_data=entry)
+                service="linkedevents", origin_url=f"{url}{_id}/", raw_data=entry
+            )
 
             root.links.append(event_data)
 
@@ -107,7 +106,7 @@ def fetch():
 
 
 def delete():
-    """ Delete the whole index. """
+    """Delete the whole index."""
     try:
         es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index=ES_INDEX)
@@ -117,7 +116,7 @@ def delete():
 
 
 def set_alias(alias):
-    """ Configure alias for index name. """
+    """Configure alias for index name."""
     try:
         es = Elasticsearch([settings.ES_URI])
         es.indices.put_alias(index=ES_INDEX, name=alias)

@@ -1,15 +1,15 @@
-from .traffic import request_json
-import logging
 import functools
+import logging
 
+from .traffic import request_json
 
 logger = logging.getLogger(__name__)
 
 
 class Keyword:
-    """ Helper class for dealing with (yso) keyword ID's.
-        Instead of fething extra information for each ID separately, get
-        local cache and use it to enrich given ID's.
+    """Helper class for dealing with (yso) keyword ID's.
+    Instead of fething extra information for each ID separately, get
+    local cache and use it to enrich given ID's.
     """
 
     def __init__(self):
@@ -46,31 +46,32 @@ class Keyword:
             # Format is as follows:
             # {'@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/yso:p1235/'}
 
-            _id = elem["@id"].split('/')[-2]
+            _id = elem["@id"].split("/")[-2]
             results.append(self.enrich_id(_id))
 
         return results
 
     def grouped_by_lang(self, keyword_list):
-        """ For given list of URL's, enrich ID from cache and group
-            human readable words by language. Add "alt_labels" to
-            own group as it doesn't include language information."""
+        """For given list of URL's, enrich ID from cache and group
+        human readable words by language. Add "alt_labels" to
+        own group as it doesn't include language information."""
 
         enriched = self.enrich(keyword_list)
 
         grouped = functools.reduce(
-            lambda acc, item:
-            {
+            lambda acc, item: {
                 "fi": acc.get("fi") + [item.get("name", {}).get("fi", None)],
                 "sv": acc.get("sv") + [item.get("name", {}).get("sv", None)],
                 "en": acc.get("en") + [item.get("name", {}).get("en", None)],
                 # unpack from list
-                "alt": acc.get("alt") + item["alt_labels"] if "alt_labels" in item else acc.get("alt")
+                "alt": acc.get("alt") + item["alt_labels"]
+                if "alt_labels" in item
+                else acc.get("alt"),
             },
             enriched,
             {"fi": [], "sv": [], "en": [], "alt": []},
         )
 
         # drop empty
-        grouped = {k:[val for val in v if val is not None] for k,v in grouped.items()}
+        grouped = {k: [val for val in v if val is not None] for k, v in grouped.items()}
         return grouped

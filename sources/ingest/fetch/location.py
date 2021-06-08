@@ -1,22 +1,21 @@
 from __future__ import annotations
-from dataclasses import dataclass, field, asdict
-from typing import List
-from django.utils import timezone
-from django.conf import settings
 
-import requests
-import logging
 import base64
 import functools
+import logging
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from typing import List
 
+import requests
+from django.conf import settings
+from django.utils import timezone
 from elasticsearch import Elasticsearch
 
-from .traffic import request_json
+from .language import LanguageStringConverter
 from .ontology import Ontology
 from .shared import LanguageString
-from .language import LanguageStringConverter
-
+from .traffic import request_json
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,8 @@ ES_INDEX = "location"
 class NodeMeta:
     id: str
     createdAt: datetime
-    updatedAt: datetime=None
+    updatedAt: datetime = None
+
 
 @dataclass
 class LinkedData:
@@ -35,11 +35,13 @@ class LinkedData:
     origin_url: str = None
     raw_data: dict = None
 
+
 @dataclass
 class Address:
     postalCode: str
     streetAddress: LanguageString
     city: LanguageString
+
 
 @dataclass
 class GeoJSONFeature:
@@ -51,11 +53,13 @@ class GeoJSONFeature:
     easting_etrs_tm35fin: int
     manual_coordinates: bool
 
+
 @dataclass
 class Location:
     url: LanguageString
     address: Address = None
     geoLocation: GeoJSONFeature = None
+
 
 @dataclass
 class OpeningHours:
@@ -63,15 +67,18 @@ class OpeningHours:
     is_open_now_url: str
     hourLines: List[LanguageString] = field(default_factory=list)
 
+
 @dataclass
 class OntologyObject:
     id: str
     label: LanguageString
 
+
 @dataclass
 class Image:
     url: str
     caption: LanguageString
+
 
 @dataclass
 class Venue:
@@ -79,7 +86,7 @@ class Venue:
     name: LanguageString = None
     location: Location = None
     description: LanguageString = None
-    
+
     # TODO
     descriptionResources: str = None
     # annotations imported for this
@@ -92,6 +99,7 @@ class Venue:
     additionalInfo: str = None
     facilities: str = None
     images: List[Image] = field(default_factory=list)
+
 
 @dataclass
 class Root:
@@ -142,7 +150,7 @@ def get_ontologywords_as_ontologies(ontologywords):
         ontologies.append(
             OntologyObject(
                 id=str(ontologyword.get("id")),
-                label=l.get_language_string("ontologyword")
+                label=l.get_language_string("ontologyword"),
             )
         )
 
@@ -156,7 +164,7 @@ def get_ontologywords_as_ontologies(ontologywords):
                     # A unique id is not available in the source data. To make the id
                     # more opaque we are encoding it.
                     id=prefix_and_mask("es-", ontologyword.get("id")),
-                    label=l.get_language_string("extra_searchwords")
+                    label=l.get_language_string("extra_searchwords"),
                 )
             )
 
@@ -171,8 +179,7 @@ def get_ontologytree_as_ontologies(ontologytree):
 
         ontologies.append(
             OntologyObject(
-                id=str(ontologybranch.get("id")),
-                label=l.get_language_string("name")
+                id=str(ontologybranch.get("id")), label=l.get_language_string("name")
             )
         )
 
@@ -186,7 +193,7 @@ def get_ontologytree_as_ontologies(ontologytree):
                     # A unique id is not available in the source data. To make the id
                     # more opaque we are encoding it.
                     id=prefix_and_mask("es-", ontologybranch.get("id")),
-                    label=l.get_language_string("extra_searchwords")
+                    label=l.get_language_string("extra_searchwords"),
                 )
             )
 
@@ -246,12 +253,7 @@ def define_language_properties():
         language_properties[language] = {
             "type": "text",
             "analyzer": analyzer,
-            "fields": {
-                "keyword": {
-                    "type": "keyword",
-                    "ignore_above" : 256
-                }
-            }
+            "fields": {"keyword": {"type": "keyword", "ignore_above": 256}},
         }
 
     return language_properties
@@ -259,27 +261,24 @@ def define_language_properties():
 
 custom_mappings = {
     "properties": {
-        "suggest": {    
+        "suggest": {
             "type": "completion",
             "contexts": [
                 {
                     "name": "language",
                     "type": "category",
                 }
-            ]
+            ],
         },
         "venue": {
             "properties": {
-                "name": {
-                    "properties": define_language_properties()
-                },
-                "description": {
-                    "properties": define_language_properties()
-                }
+                "name": {"properties": define_language_properties()},
+                "description": {"properties": define_language_properties()},
             }
-        }
+        },
     }
 }
+
 
 def fetch():
     try:
@@ -306,7 +305,7 @@ def fetch():
 
     tpr_units = get_tpr_units()
 
-    count  = 0
+    count = 0
     for tpr_unit in tpr_units:
         l = LanguageStringConverter(tpr_unit)
         e = lambda k: tpr_unit.get(k, None)
@@ -315,54 +314,60 @@ def fetch():
         tpr_unit["id"] = _id = str(tpr_unit["id"])
 
         meta = NodeMeta(id=_id, createdAt=datetime.now())
-        
+
         location = Location(
             url=l.get_language_string("www"),
-            address = Address(
+            address=Address(
                 postalCode=e("address_zip"),
                 streetAddress=l.get_language_string("street_address"),
-                city=l.get_language_string("address_city")
-                ),
+                city=l.get_language_string("address_city"),
+            ),
             geoLocation=GeoJSONFeature(
                 latitude=e("latitude"),
                 longitude=e("longitude"),
                 northing_etrs_gk25=e("northing_etrs_gk25"),
-                easting_etrs_gk25 = e("easting_etrs_gk25"),
-                northing_etrs_tm35fin = e("northing_etrs_tm35fin"),
-                easting_etrs_tm35fin = e("easting_etrs_tm35fin"),
-                manual_coordinates = e("manual_coordinates")
-                ),
-            )
+                easting_etrs_gk25=e("easting_etrs_gk25"),
+                northing_etrs_tm35fin=e("northing_etrs_tm35fin"),
+                easting_etrs_tm35fin=e("easting_etrs_tm35fin"),
+                manual_coordinates=e("manual_coordinates"),
+            ),
+        )
 
         opening_hours = OpeningHours(
             url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/opening_hours/",
-            is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/")
+            is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/",
+        )
 
         # Assuming single image
         images = []
-        images.append(Image(
-                url=e("picture_url"),
-                caption=l.get_language_string("picture_caption")))
+        images.append(
+            Image(
+                url=e("picture_url"), caption=l.get_language_string("picture_caption")
+            )
+        )
 
         venue = Venue(
             name=l.get_language_string("name"),
             description=l.get_language_string("desc"),
-            location=location, 
-            meta=meta, 
+            location=location,
+            meta=meta,
             openingHours=opening_hours,
-            images=images)
+            images=images,
+        )
 
         try:
             place_url, place = get_linkedevents_place(_id)
 
             place_link = LinkedData(
-                service="linkedevents",
-                origin_url=place_url,
-                raw_data=place)
+                service="linkedevents", origin_url=place_url, raw_data=place
+            )
 
             root = Root(venue=venue)
             root.links.append(place_link)
-        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exc:
+        except (
+            requests.exceptions.HTTPError,
+            requests.exceptions.ConnectionError,
+        ) as exc:
             logger.warning(f"Error while fetching {place_url}: {exc}")
 
         # Extra information to raw data
@@ -377,19 +382,24 @@ def fetch():
         if tpr_unit.get("ontologyword_ids", None):
             word_ontologies = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
             tpr_unit["ontologyword_ids_enriched"] = word_ontologies
-            all_ontologies = all_ontologies + get_ontologywords_as_ontologies(word_ontologies)
+            all_ontologies = all_ontologies + get_ontologywords_as_ontologies(
+                word_ontologies
+            )
 
         if tpr_unit.get("ontologytree_ids", None):
             tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
             tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
-            all_ontologies = all_ontologies + get_ontologytree_as_ontologies(tree_ontologies)
+            all_ontologies = all_ontologies + get_ontologytree_as_ontologies(
+                tree_ontologies
+            )
 
         root.suggest = get_suggestions_from_ontologies(all_ontologies)
 
         link = LinkedData(
             service="tpr",
-            origin_url=f"https://www.hel.fi/palvelukarttaws/rest/v4/unit/{_id}/", 
-            raw_data=tpr_unit)
+            origin_url=f"https://www.hel.fi/palvelukarttaws/rest/v4/unit/{_id}/",
+            raw_data=tpr_unit,
+        )
         root.links.append(link)
 
         r = es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
@@ -402,7 +412,7 @@ def fetch():
 
 
 def delete():
-    """ Delete the whole index. """
+    """Delete the whole index."""
     try:
         es = Elasticsearch([settings.ES_URI])
         r = es.indices.delete(index=ES_INDEX)
@@ -412,7 +422,7 @@ def delete():
 
 
 def set_alias(alias):
-    """ Configure alias for index name. """
+    """Configure alias for index name."""
     try:
         es = Elasticsearch([settings.ES_URI])
         es.indices.put_alias(index=ES_INDEX, name=alias)

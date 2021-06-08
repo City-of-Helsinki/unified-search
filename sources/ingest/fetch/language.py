@@ -1,38 +1,39 @@
 from .shared import LanguageString
 
+
 class LanguageStringConverter:
-    """ Helper class for creating language strings from various input formats.
+    """Helper class for creating language strings from various input formats.
 
-        The type used for storing multilanguage fields is following:
+    The type used for storing multilanguage fields is following:
 
-            @dataclass
-            class LanguageString:
-                fi: str
-                sv: str
-                en: str
+        @dataclass
+        class LanguageString:
+            fi: str
+            sv: str
+            en: str
 
-        Input may be received in various forms:
+    Input may be received in various forms:
 
-        1. Sub fields for language, possibly missing or empty fields
+    1. Sub fields for language, possibly missing or empty fields
 
-            "location_extra_info": {
-                "fi": ""
-            },
+        "location_extra_info": {
+            "fi": ""
+        },
 
-            "name": {
-                "fi": "Maksutonta puistojumppaa Roihuvuoressa"
-            },
+        "name": {
+            "fi": "Maksutonta puistojumppaa Roihuvuoressa"
+        },
 
-            "price": {
-                "fi": "20/10/5€",
-                "en": "20/10/5€"
-            }
+        "price": {
+            "fi": "20/10/5€",
+            "en": "20/10/5€"
+        }
 
-        2. Flat fields including language in the field name
+    2. Flat fields including language in the field name
 
-            "name_fi": "Roihuvuoren liikuntapuisto",
-            "name_sv": "Kasbergets idrottspark",
-            "name_en": "Roihuvuori sports park",
+        "name_fi": "Roihuvuoren liikuntapuisto",
+        "name_sv": "Kasbergets idrottspark",
+        "name_en": "Roihuvuori sports park",
 
     """
 
@@ -46,10 +47,15 @@ class LanguageStringConverter:
         return any([self.input.get(key, False) for key in expected])
 
     def get_postfixed_fields(self):
-        return {lang: self.input.get(self.field_name + "_" + lang, None) for lang in self.LANGUAGES}
+        return {
+            lang: self.input.get(self.field_name + "_" + lang, None)
+            for lang in self.LANGUAGES
+        }
 
     def get_sub_fields(self):
-        return {lang: self.input[self.field_name].get(lang, None) for lang in self.LANGUAGES}
+        return {
+            lang: self.input[self.field_name].get(lang, None) for lang in self.LANGUAGES
+        }
 
     def get_language_string(self, field_name: str):
         self.field_name = field_name
