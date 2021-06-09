@@ -58,6 +58,7 @@ class Location:
     url: LanguageString
     address: Address = None
     geoLocation: GeoJSONFeature = None
+    administrativeDivisions: List[AdministrativeDivision] = field(default_factory=list)
 
 
 @dataclass
@@ -77,6 +78,14 @@ class OntologyObject:
 class Image:
     url: str
     caption: LanguageString
+
+
+@dataclass
+class AdministrativeDivision:
+    id: str
+    type: str
+    municipality: str
+    name: LanguageString
 
 
 @dataclass
@@ -361,6 +370,10 @@ def fetch():
             place_link = LinkedData(
                 service="linkedevents", origin_url=place_url, raw_data=place
             )
+            venue.location.administrativeDivisions = [
+                AdministrativeDivision(id=le_division.pop("ocd_id"), **le_division)
+                for le_division in place["divisions"].copy()
+            ]
 
             root = Root(venue=venue)
             root.links.append(place_link)

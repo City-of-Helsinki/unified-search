@@ -29,7 +29,8 @@ export const locationSchema = `
     geoLocation: GeoJSONFeature
     address: Address
     explanation: String
-	@origin(service: "linked", type: "event", attr: "location_extra_info")
+    @origin(service: "linked", type: "event", attr: "location_extra_info")
+    administrativeDivisions: [AdministrativeDivision]
     venue: Venue
   }
   """TODO: take this from service map / TPREK"""
@@ -53,4 +54,10 @@ export const locationSchema = `
     caption: LanguageString
   }
 
+  type AdministrativeDivision {
+    id: ID
+    type: String
+    municipality: String
+    name: LanguageString
+  }
 `;
