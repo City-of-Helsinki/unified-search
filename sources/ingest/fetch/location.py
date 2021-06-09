@@ -363,6 +363,7 @@ def fetch():
             openingHours=opening_hours,
             images=images,
         )
+        root = Root(venue=venue)
 
         try:
             place_url, place = get_linkedevents_place(_id)
@@ -375,7 +376,6 @@ def fetch():
                 for le_division in place["divisions"].copy()
             ]
 
-            root = Root(venue=venue)
             root.links.append(place_link)
         except (
             requests.exceptions.HTTPError,
