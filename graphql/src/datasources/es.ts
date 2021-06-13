@@ -14,6 +14,7 @@ class ElasticSearchAPI extends RESTDataSource {
   async getQueryResults(
     q?: string,
     ontology?: string,
+    administrativeDivision?: string,
     index?: string,
     from?: number,
     size?: number,
@@ -102,6 +103,16 @@ class ElasticSearchAPI extends RESTDataSource {
               },
             })),
           },
+        },
+      };
+    }
+
+    // Resolve administrative division
+    if (administrativeDivision) {
+      query.query.bool.minimum_should_match = 1;
+      query.query.bool.filter = {
+        term: {
+          'venue.location.administrativeDivisions.id.keyword': administrativeDivision,
         },
       };
     }

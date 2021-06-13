@@ -71,6 +71,11 @@ export const querySchema = `
         ontology: String,
 
         """
+        Optional, filter to match only these administrative divisions
+        """
+        administrativeDivision: ID,
+
+        """
         Optional search index.
         """
         index: String,
