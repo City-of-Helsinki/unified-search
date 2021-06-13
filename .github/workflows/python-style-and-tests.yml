@@ -1,0 +1,87 @@
+name: Python code style and tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+
+env:
+  SECRET_KEY: topsecret123
+
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./sources
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pip-modules
+        with:
+          path: ~/.pip-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt codecov
+      - name: Run tests
+        run: pytest -ra -vv --doctest-modules --cov=.
+
+      - name: Coverage
+        run: codecov
+
+  coding-style:
+    name: Coding style
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./sources
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pip-modules
+        with:
+          path: ~/.pip-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Formatting
+        run: black --check .
+
+      - name: Linting
+        run: flake8
+
+      - name: Import sorting
+        run: isort . -c

@@ -26,7 +26,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ES_URI = os.getenv("ES_URI")
 
 # Allow custom URL for testing purposes e.g. to match dev version of Linkedevents
-EVENT_URL = os.getenv("EVENT_URL", "https://api.hel.fi/linkedevents/v1/event/?start=today")
+EVENT_URL = os.getenv(
+    "EVENT_URL", "https://api.hel.fi/linkedevents/v1/event/?start=today"
+)
 
 DEBUG = os.getenv("DEBUG", "false").lower() in ("yes", "true", "t", "1")
 
@@ -133,7 +135,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            "level": "DEBUG" if DEBUG else "INFO",
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
@@ -143,18 +145,17 @@ LOGGING = {
         "": {
             "handlers": ["console"],
             "propagate": True,
-            "level": 'DEBUG' if DEBUG else 'INFO',
+            "level": "DEBUG" if DEBUG else "INFO",
         },
         "django.request": {
             "handlers": ["console"],
             "propagate": False,
-            'level': 'DEBUG' if DEBUG else 'WARNING',
+            "level": "DEBUG" if DEBUG else "WARNING",
         },
         "elasticsearch": {
             "handlers": ["console"],
             "propagate": False,
-            'level': 'DEBUG' if DEBUG else 'WARNING',
+            "level": "DEBUG" if DEBUG else "WARNING",
         },
-
     },
 }

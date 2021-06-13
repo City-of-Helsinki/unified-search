@@ -2,14 +2,15 @@ from .traffic import request_json
 
 
 class AlreadyFound(Exception):
-    """ Custom expection for checking against duplicate entries. """
+    """Custom expection for checking against duplicate entries."""
+
     pass
 
 
 class Ontology:
-    """ Helper class for dealing with ontology ID's and ontology tree.
-        Instead of fething extra information for each ID separately, get
-        local cache and use it to enrich given ID's.
+    """Helper class for dealing with ontology ID's and ontology tree.
+    Instead of fething extra information for each ID separately, get
+    local cache and use it to enrich given ID's.
     """
 
     def __init__(self):
@@ -33,7 +34,7 @@ class Ontology:
         return None
 
     def _get_tree(self, _id, hits=None):
-        """ Get parents recursively. """
+        """Get parents recursively."""
 
         if not hits:
             hits = []
@@ -45,8 +46,8 @@ class Ontology:
         return self._get_tree(e["parent_id"], hits)
 
     def enrich_tree_ids(self, id_list):
-        """ For each id in the list, get tree of related enriched id's and store
-            individual entries.
+        """For each id in the list, get tree of related enriched id's and store
+        individual entries.
         """
 
         info = []
@@ -68,7 +69,7 @@ class Ontology:
         return info
 
     def enrich_word_ids(self, id_list):
-        """ For each id in the list, get enriched id. """
+        """For each id in the list, get enriched id."""
 
         info = []
 

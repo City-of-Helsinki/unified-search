@@ -1,9 +1,9 @@
-from django.core.management.base import BaseCommand
-from django.utils import timezone
 import logging
 
-from ingest.fetch import location, event
+from django.core.management.base import BaseCommand
+from django.utils import timezone
 
+from ingest.fetch import event, location
 
 logger = logging.getLogger(__name__)
 
@@ -32,10 +32,7 @@ class Command(BaseCommand):
         logger.info("Started at %s" % time)
 
         # Provided by ingest.fetch, defaults to these unless specified on command line
-        inds = {
-            "location": location,
-            "event": event
-        }
+        inds = {"location": location, "event": event}
 
         index_list = kwargs["index"]
 
