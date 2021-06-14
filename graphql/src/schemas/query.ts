@@ -73,7 +73,7 @@ export const querySchema = `
         """
         Optional, filter to match only these administrative divisions
         """
-        administrativeDivision: ID,
+        administrativeDivisionId: ID,
 
         """
         Optional search index.
@@ -131,6 +131,8 @@ export const querySchema = `
       Optional result size.
       """
       size: Int = 5
-      ): SearchSuggestionConnection
+    ): SearchSuggestionConnection
+
+    administrativeDivisions: [AdministrativeDivision]
   }
 `;

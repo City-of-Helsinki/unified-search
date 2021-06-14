@@ -5,11 +5,11 @@ import functools
 import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 import requests
 from django.conf import settings
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, NotFoundError
 
 from .language import LanguageStringConverter
 from .ontology import Ontology
@@ -19,6 +19,7 @@ from .traffic import request_json
 logger = logging.getLogger(__name__)
 
 ES_INDEX = "location"
+ES_ADMINISTRATIVE_DIVISION_INDEX = "administrative_division"
 
 
 @dataclass
@@ -84,7 +85,7 @@ class Image:
 class AdministrativeDivision:
     id: str
     type: str
-    municipality: str
+    municipality: Optional[str]
     name: LanguageString
 
 
@@ -288,7 +289,7 @@ custom_mappings = {
 }
 
 
-def fetch():
+def fetch():  # noqa C901 this function could use some refactoring
     try:
         es = Elasticsearch([settings.ES_URI])
     except ConnectionError as e:
@@ -417,6 +418,16 @@ def fetch():
 
         es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
 
+        # all encountered administrative divisions are stored in their own index so
+        # that they can be easily returned from the GQL API. We might want to change
+        # this implementation in the future, maybe even use something else than ES.
+        for division in venue.location.administrativeDivisions:
+            es.index(
+                index=ES_ADMINISTRATIVE_DIVISION_INDEX,
+                body=asdict(division),
+                id=division.id,
+            )
+
         logger.debug(f"Fethed data count: {count}")
         count = count + 1
 
@@ -428,10 +439,18 @@ def delete():
     """Delete the whole index."""
     try:
         es = Elasticsearch([settings.ES_URI])
-        r = es.indices.delete(index=ES_INDEX)
-        logger.debug(r)
     except ConnectionError as e:
-        return f"ERROR at {__name__}: {e}"
+        logger.error(f"ERROR at {__name__}: {e}")
+        return
+
+    for index in (ES_ADMINISTRATIVE_DIVISION_INDEX, ES_INDEX):
+        try:
+            r = es.indices.delete(index=index)
+            logger.debug(r)
+        except NotFoundError as e:
+            logger.debug(e)
+        except ConnectionError as e:
+            logger.error(f"ERROR at {__name__}: {e}")
 
 
 def set_alias(alias):

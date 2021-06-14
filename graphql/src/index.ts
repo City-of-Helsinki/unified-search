@@ -29,7 +29,7 @@ const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 type UnifiedSearchQuery = {
   q?: String;
   ontology?: string;
-  administrativeDivision?: string;
+  administrativeDivisionId?: string;
   index?: string;
   languages?: string[];
 } & ConnectionArguments;
@@ -61,7 +61,7 @@ const resolvers = {
       {
         q,
         ontology,
-        administrativeDivision,
+        administrativeDivisionId,
         index,
         before,
         after,
@@ -77,7 +77,7 @@ const resolvers = {
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,
         ontology,
-        administrativeDivision,
+        administrativeDivisionId,
         index,
         from,
         size,
@@ -112,6 +112,13 @@ const resolvers = {
           label: option.text,
         })),
       };
+    },
+    administrativeDivisions: async (_, __, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getAdministrativeDivisions();
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+      }));
     },
   },
   SearchResultConnection: {
