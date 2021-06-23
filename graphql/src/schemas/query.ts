@@ -76,6 +76,11 @@ export const querySchema = `
         administrativeDivisionId: ID,
 
         """
+        Optional, filter to match only these ontology tree ids
+        """
+        ontologyTreeId: ID,
+
+        """
         Optional search index.
         """
         index: String,

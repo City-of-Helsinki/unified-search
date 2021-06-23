@@ -16,6 +16,7 @@ class ElasticSearchAPI extends RESTDataSource {
     q?: string,
     ontology?: string,
     administrativeDivisionId?: string,
+    ontologyTreeId?: string,
     index?: string,
     from?: number,
     size?: number,
@@ -100,14 +101,20 @@ class ElasticSearchAPI extends RESTDataSource {
       };
     }
 
-    // Resolve administrative division
+    let filters: { [key: string]: string }[] = [];
     if (administrativeDivisionId) {
+      filters.push({
+        'venue.location.administrativeDivisions.id.keyword': administrativeDivisionId,
+      });
+    }
+    if (ontologyTreeId) {
+      filters.push({
+        'links.raw_data.ontologytree_ids_enriched.id': ontologyTreeId,
+      });
+    }
+    if (filters.length) {
       query.query.bool.minimum_should_match = 1;
-      query.query.bool.filter = {
-        term: {
-          'venue.location.administrativeDivisions.id.keyword': administrativeDivisionId,
-        },
-      };
+      query.query.bool.filter = filters.map((filter) => ({ term: filter }));
     }
 
     // Resolve pagination
