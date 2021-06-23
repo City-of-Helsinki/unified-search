@@ -36,7 +36,7 @@ type UnifiedSearchQuery = {
 
 function edgesFromEsResults(results: any, getCursor: any) {
   return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any, event: any } },
+    e: { _score: any; _source: { venue: any; event: any } },
     index: number
   ) {
     return {
@@ -170,7 +170,6 @@ const resolvers = {
     meta({ event }: any, args: any, context: any, info: any) {
       return event.meta;
     },
-
   },
 
   RawJSON: {
