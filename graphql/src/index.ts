@@ -29,13 +29,14 @@ const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 type UnifiedSearchQuery = {
   q?: String;
   ontology?: string;
+  administrativeDivisionId?: string;
   index?: string;
   languages?: string[];
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
   return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any, event: any } },
+    e: { _score: any; _source: { venue: any; event: any } },
     index: number
   ) {
     return {
@@ -60,6 +61,7 @@ const resolvers = {
       {
         q,
         ontology,
+        administrativeDivisionId,
         index,
         before,
         after,
@@ -75,6 +77,7 @@ const resolvers = {
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,
         ontology,
+        administrativeDivisionId,
         index,
         from,
         size,
@@ -109,6 +112,13 @@ const resolvers = {
           label: option.text,
         })),
       };
+    },
+    administrativeDivisions: async (_, __, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getAdministrativeDivisions();
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+      }));
     },
   },
   SearchResultConnection: {
@@ -160,7 +170,6 @@ const resolvers = {
     meta({ event }: any, args: any, context: any, info: any) {
       return event.meta;
     },
-
   },
 
   RawJSON: {

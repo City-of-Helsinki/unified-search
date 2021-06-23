@@ -71,6 +71,11 @@ export const querySchema = `
         ontology: String,
 
         """
+        Optional, filter to match only these administrative divisions
+        """
+        administrativeDivisionId: ID,
+
+        """
         Optional search index.
         """
         index: String,
@@ -126,6 +131,8 @@ export const querySchema = `
       Optional result size.
       """
       size: Int = 5
-      ): SearchSuggestionConnection
+    ): SearchSuggestionConnection
+
+    administrativeDivisions: [AdministrativeDivision]
   }
 `;

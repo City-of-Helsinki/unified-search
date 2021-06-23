@@ -3,6 +3,7 @@ import { ElasticLanguage } from '../types';
 const { RESTDataSource } = require('apollo-datasource-rest');
 
 const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
+const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
@@ -14,6 +15,7 @@ class ElasticSearchAPI extends RESTDataSource {
   async getQueryResults(
     q?: string,
     ontology?: string,
+    administrativeDivisionId?: string,
     index?: string,
     from?: number,
     size?: number,
@@ -27,13 +29,9 @@ class ElasticSearchAPI extends RESTDataSource {
           `venue.name.${lang}`,
           `venue.description.${lang}`,
           `links.raw_data.short_desc_${lang}`,
-        ]
-      }
-      else if (index === 'event') {
-        return [
-          `event.name.${lang}`,
-          `event.description.${lang}`,
-        ]
+        ];
+      } else if (index === 'event') {
+        return [`event.name.${lang}`, `event.description.${lang}`];
       }
       return [];
     };
@@ -45,16 +43,12 @@ class ElasticSearchAPI extends RESTDataSource {
           `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
           `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
           `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
-        ]
-      }
-      else if (index === 'event') {
-        return [
-          `ontology.${lang}`,
-          `ontology.alt`,
-        ]
+        ];
+      } else if (index === 'event') {
+        return [`ontology.${lang}`, `ontology.alt`];
       }
       return [];
-    }
+    };
 
     const defaultQuery = languages.reduce(
       (acc, language) => ({
@@ -106,6 +100,16 @@ class ElasticSearchAPI extends RESTDataSource {
       };
     }
 
+    // Resolve administrative division
+    if (administrativeDivisionId) {
+      query.query.bool.minimum_should_match = 1;
+      query.query.bool.filter = {
+        term: {
+          'venue.location.administrativeDivisions.id.keyword': administrativeDivisionId,
+        },
+      };
+    }
+
     // Resolve pagination
     query = {
       from,
@@ -144,6 +148,15 @@ class ElasticSearchAPI extends RESTDataSource {
     };
 
     return this.post(`${index}/_search`, undefined, {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(query),
+    });
+  }
+
+  async getAdministrativeDivisions() {
+    const query = { query: { match_all: {} } };
+
+    return this.post(`${ES_ADMINISTRATIVE_DIVISION_INDEX}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(query),
     });
