@@ -45,6 +45,16 @@ class Address:
 
 @dataclass
 class GeoJSONFeature:
+    geometry: GeoJSONGeometry
+
+
+@dataclass
+class GeoJSONGeometry:
+    coordinates: Coordinates
+
+
+@dataclass
+class Coordinates:
     latitude: float
     longitude: float
     northing_etrs_gk25: int
@@ -333,13 +343,17 @@ def fetch():  # noqa C901 this function could use some refactoring
                 city=l.get_language_string("address_city"),
             ),
             geoLocation=GeoJSONFeature(
-                latitude=e("latitude"),
-                longitude=e("longitude"),
-                northing_etrs_gk25=e("northing_etrs_gk25"),
-                easting_etrs_gk25=e("easting_etrs_gk25"),
-                northing_etrs_tm35fin=e("northing_etrs_tm35fin"),
-                easting_etrs_tm35fin=e("easting_etrs_tm35fin"),
-                manual_coordinates=e("manual_coordinates"),
+                geometry=GeoJSONGeometry(
+                    coordinates=Coordinates(
+                        latitude=e("latitude"),
+                        longitude=e("longitude"),
+                        northing_etrs_gk25=e("northing_etrs_gk25"),
+                        easting_etrs_gk25=e("easting_etrs_gk25"),
+                        northing_etrs_tm35fin=e("northing_etrs_tm35fin"),
+                        easting_etrs_tm35fin=e("easting_etrs_tm35fin"),
+                        manual_coordinates=e("manual_coordinates"),
+                    )
+                )
             ),
         )
 
