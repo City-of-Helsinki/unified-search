@@ -199,12 +199,19 @@ const resolvers = {
   },
   GeoJSONGeometryInterface: {
     __resolveType(obj: any, context: any, info: any) {
-      return null;
+      return 'GeoJSONPoint';
     },
   },
   GeoJSONInterface: {
     __resolveType(obj: any, context: any, info: any) {
       return null;
+    },
+  },
+  GeoJSONPoint: {
+    coordinates(obj: any, context: any, info: any) {
+      return obj.coordinates?.latitude && obj.coordinates?.longitude
+        ? [obj.coordinates.longitude, obj.coordinates.latitude]
+        : null;
     },
   },
 };
