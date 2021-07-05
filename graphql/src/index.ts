@@ -208,10 +208,22 @@ const resolvers = {
     },
   },
   GeoJSONPoint: {
-    coordinates(obj: any, context: any, info: any) {
-      return obj.coordinates?.latitude && obj.coordinates?.longitude
-        ? [obj.coordinates.longitude, obj.coordinates.latitude]
-        : null;
+    type() {
+      return 'Point';
+    },
+    coordinates(obj: any) {
+      const long = obj.coordinates?.longitude ?? obj.longitude;
+      const lat = obj.coordinates?.latitude ?? obj.latitude;
+
+      return long && lat ? [long, lat] : null;
+    },
+  },
+  GeoJSONFeature: {
+    type() {
+      return 'Point';
+    },
+    geometry(parent: any) {
+      return parent;
     },
   },
 };
