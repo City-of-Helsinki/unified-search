@@ -161,11 +161,8 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 
   async getAdministrativeDivisions() {
-    const query = { query: { match_all: {} } };
-
-    return this.post(`${ES_ADMINISTRATIVE_DIVISION_INDEX}/_search`, undefined, {
+    return this.get(`${ES_ADMINISTRATIVE_DIVISION_INDEX}/_search`, {size: 10000}, {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(query),
     });
   }
 
