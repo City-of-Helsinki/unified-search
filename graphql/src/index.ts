@@ -37,7 +37,7 @@ type UnifiedSearchQuery = {
 
 function edgesFromEsResults(results: any, getCursor: any) {
   return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any; event: any } },
+    e: { _score: any; _source: { venue: any; event: any; } },
     index: number
   ) {
     return {
@@ -157,6 +157,9 @@ const resolvers = {
     },
     images({ venue }: any, args: any, context: any, info: any) {
       return venue.images;
+    },
+    ontologyWords({ venue }: any) {
+      return venue.ontologyWords;
     },
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
