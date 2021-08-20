@@ -212,8 +212,8 @@ const resolvers = {
       return 'Point';
     },
     coordinates(obj: any) {
-      const long = obj.coordinates?.longitude ?? obj.longitude;
-      const lat = obj.coordinates?.latitude ?? obj.latitude;
+      const long = obj.geometry?.coordinates?.longitude ?? obj.longitude;
+      const lat = obj.geometry?.coordinates?.latitude ?? obj.latitude;
 
       return long && lat ? [long, lat] : null;
     },
