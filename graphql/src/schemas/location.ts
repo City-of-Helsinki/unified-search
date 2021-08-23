@@ -20,6 +20,7 @@ export const locationSchema = `
     additionalInfo: String
     facilities: [VenueFacility!]
     images: [Image]
+    ontologyWords: [OntologyWord]
   }
   """
   Free-form location, not necessarily at a know venue.
@@ -59,5 +60,10 @@ export const locationSchema = `
     type: String
     municipality: String
     name: LanguageString
+  }
+
+  type OntologyWord {
+    id: ID
+    label: LanguageString
   }
 `;

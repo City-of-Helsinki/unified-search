@@ -118,6 +118,7 @@ class Venue:
     additionalInfo: str = None
     facilities: str = None
     images: List[Image] = field(default_factory=list)
+    ontologyWords: List[OntologyObject] = field(default_factory=list)
 
 
 @dataclass
@@ -413,6 +414,17 @@ def fetch():  # noqa C901 this function could use some refactoring
             all_ontologies = all_ontologies + get_ontologywords_as_ontologies(
                 word_ontologies
             )
+            venue.ontologyWords = [
+                {
+                    "id": word["id"],
+                    "label": {
+                        "fi": word["ontologyword_fi"],
+                        "sv": word["ontologyword_sv"],
+                        "en": word["ontologyword_en"],
+                    },
+                }
+                for word in word_ontologies
+            ]
 
         if tpr_unit.get("ontologytree_ids", None):
             tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
