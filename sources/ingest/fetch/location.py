@@ -4,12 +4,15 @@ import base64
 import functools
 import logging
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
-from typing import List, Optional
+from datetime import datetime, time, timedelta
+from typing import List, Optional, Tuple, Union
+from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
+from django.utils.timezone import localdate
 from elasticsearch import Elasticsearch, NotFoundError
+from humps import camelize
 
 from .language import LanguageStringConverter
 from .ontology import Ontology
@@ -33,7 +36,7 @@ class NodeMeta:
 class LinkedData:
     service: str = None
     origin_url: str = None
-    raw_data: dict = None
+    raw_data: Union[dict, list] = None
 
 
 @dataclass
@@ -76,7 +79,22 @@ class Location:
 class OpeningHours:
     url: str
     is_open_now_url: str
-    hourLines: List[LanguageString] = field(default_factory=list)
+    data: List[OpeningHoursDay] = field(default_factory=list)
+
+
+@dataclass
+class OpeningHoursDay:
+    date: date
+    times: List[OpeningHoursTimes]
+
+
+@dataclass
+class OpeningHoursTimes:
+    startTime: time
+    endTime: time
+    endTimeOnNextDay: bool
+    resourceState: str
+    fullDay: bool
 
 
 @dataclass
@@ -144,13 +162,39 @@ def get_linkedevents_place(id):
     return url, data
 
 
-def get_opening_hours(d):
-    results = []
-    if "connections" in d and d["connections"]:
-        for section in d["connections"]:
-            if section["section_type"] == "OPENING_HOURS":
-                results.append(section)
-    return results
+def get_hauki_opening_hours_and_link(
+    venue_id: str,
+) -> Tuple[OpeningHours, Optional[LinkedData]]:
+    hauki_resource_url = f"https://hauki.api.hel.fi/v1/resource/tprek:{venue_id}/"
+
+    opening_hours = OpeningHours(
+        url=f"{hauki_resource_url}opening_hours/",
+        is_open_now_url=f"{hauki_resource_url}is_open_now/",
+    )
+
+    # fetch opening hours for today and tomorrow so that we will have opening hours
+    # available for a day also if they are needed before the day's indexing has been
+    # done.
+    tomorrow = localdate() + timedelta(days=1)
+    params = {"start_date": "today", "end_date": tomorrow}
+    url = f"{hauki_resource_url}opening_hours/?" + urlencode(params)
+
+    try:
+        data = request_json(url)
+    except (
+        requests.exceptions.HTTPError,
+        requests.exceptions.ConnectionError,
+    ):
+        return opening_hours, None
+
+    opening_hours.data = camelize(data)
+    opening_hours_link = LinkedData(
+        service="hauki",
+        origin_url=hauki_resource_url,
+        raw_data=opening_hours.data,
+    )
+
+    return opening_hours, opening_hours_link
 
 
 def prefix_and_mask(prefix, body):
@@ -358,10 +402,7 @@ def fetch():  # noqa C901 this function could use some refactoring
             ),
         )
 
-        opening_hours = OpeningHours(
-            url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/opening_hours/",
-            is_open_now_url=f"https://hauki.api.hel.fi/v1/resource/tprek:{_id}/is_open_now/",
-        )
+        opening_hours, opening_hours_link = get_hauki_opening_hours_and_link(_id)
 
         # Assuming single image
         images = []
@@ -380,6 +421,9 @@ def fetch():  # noqa C901 this function could use some refactoring
             images=images,
         )
         root = Root(venue=venue)
+
+        if opening_hours_link:
+            root.links.append(opening_hours_link)
 
         try:
             place_url, place = get_linkedevents_place(_id)
