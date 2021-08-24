@@ -55,6 +55,14 @@ function getHits(results: any) {
   return results.hits.total.value;
 }
 
+function getTodayString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return [year, month, day].join('-');
+}
+
 const resolvers = {
   Query: {
     unifiedSearch: async (
@@ -163,6 +171,15 @@ const resolvers = {
     },
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
+    },
+  },
+
+  OpeningHours: {
+    today({ data }: any) {
+      const openingHoursToday = data.find(
+        (openingHoursDay) => openingHoursDay.date === getTodayString()
+      );
+      return openingHoursToday ? openingHoursToday.times : [];
     },
   },
 
