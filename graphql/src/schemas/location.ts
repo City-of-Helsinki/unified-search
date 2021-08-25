@@ -48,6 +48,7 @@ export const locationSchema = `
   type OpeningHours {
     url: String
     is_open_now_url: String
+    today: [OpeningHoursTimes]
   }
 
   type Image {
@@ -65,5 +66,13 @@ export const locationSchema = `
   type OntologyWord {
     id: ID
     label: LanguageString
+  }
+
+  type OpeningHoursTimes {
+    startTime: String
+    endTime: String
+    endTimeOnNextDay: Boolean
+    resourceState: String
+    fullDay: Boolean
   }
 `;

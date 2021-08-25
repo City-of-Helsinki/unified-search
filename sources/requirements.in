@@ -2,3 +2,4 @@ certifi
 Django
 elasticsearch
 requests
+pyhumps
