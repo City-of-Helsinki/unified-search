@@ -3,26 +3,22 @@ from __future__ import annotations
 import base64
 import functools
 import logging
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import datetime, time, timedelta
 from typing import List, Optional, Tuple, Union
 from urllib.parse import urlencode
 
 import requests
-from django.conf import settings
 from django.utils.timezone import localdate
-from elasticsearch import Elasticsearch, NotFoundError
 from humps import camelize
 
-from .language import LanguageStringConverter
-from .ontology import Ontology
-from .shared import LanguageString
-from .traffic import request_json
+from .base import Importer
+from .utils.language import LanguageStringConverter
+from .utils.ontology import Ontology
+from .utils.shared import LanguageString
+from .utils.traffic import request_json
 
 logger = logging.getLogger(__name__)
-
-ES_INDEX = "location"
-ES_ADMINISTRATIVE_DIVISION_INDEX = "administrative_division"
 
 
 @dataclass
@@ -344,189 +340,151 @@ custom_mappings = {
 }
 
 
-def fetch():  # noqa C901 this function could use some refactoring
-    try:
-        es = Elasticsearch([settings.ES_URI])
-    except ConnectionError as e:
-        return f"ERROR at {__name__}: {e}"
+class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
+    LOCATION_INDEX = "location"
+    ADMINISTRATIVE_DIVISION_INDEX = "administrative_division"
+    index_names = (LOCATION_INDEX, ADMINISTRATIVE_DIVISION_INDEX)
 
-    logger.debug(f"Creating index {ES_INDEX}")
+    def run(self):  # noqa C901 this function could use some refactoring
+        self.create_indexes()
+        self.apply_mapping(custom_mappings, self.LOCATION_INDEX)
 
-    try:
-        es.indices.create(index=ES_INDEX)
-    # TODO
-    except BaseException:
-        logger.debug("Index location already exists, skipping")
+        logger.debug("Requesting data at {}".format(__name__))
 
-    logger.debug("Applying custom mapping")
+        ontology = Ontology()
 
-    es.indices.put_mapping(index=ES_INDEX, body=custom_mappings)
+        tpr_units = get_tpr_units()
 
-    logger.debug("Custom mapping set")
+        count = 0
+        for tpr_unit in tpr_units:
+            l = LanguageStringConverter(tpr_unit)
+            e = lambda k: tpr_unit.get(k, None)  # noqa: E731
 
-    logger.debug("Requesting data at {}".format(__name__))
+            # ID's must be strings to avoid collisions
+            tpr_unit["id"] = _id = str(tpr_unit["id"])
 
-    ontology = Ontology()
+            meta = NodeMeta(id=_id, createdAt=datetime.now())
 
-    tpr_units = get_tpr_units()
-
-    count = 0
-    for tpr_unit in tpr_units:
-        l = LanguageStringConverter(tpr_unit)
-        e = lambda k: tpr_unit.get(k, None)  # noqa: E731
-
-        # ID's must be strings to avoid collisions
-        tpr_unit["id"] = _id = str(tpr_unit["id"])
-
-        meta = NodeMeta(id=_id, createdAt=datetime.now())
-
-        location = Location(
-            url=l.get_language_string("www"),
-            address=Address(
-                postalCode=e("address_zip"),
-                streetAddress=l.get_language_string("street_address"),
-                city=l.get_language_string("address_city"),
-            ),
-            geoLocation=GeoJSONFeature(
-                geometry=GeoJSONGeometry(
-                    coordinates=Coordinates(
-                        latitude=e("latitude"),
-                        longitude=e("longitude"),
-                        northing_etrs_gk25=e("northing_etrs_gk25"),
-                        easting_etrs_gk25=e("easting_etrs_gk25"),
-                        northing_etrs_tm35fin=e("northing_etrs_tm35fin"),
-                        easting_etrs_tm35fin=e("easting_etrs_tm35fin"),
-                        manual_coordinates=e("manual_coordinates"),
+            location = Location(
+                url=l.get_language_string("www"),
+                address=Address(
+                    postalCode=e("address_zip"),
+                    streetAddress=l.get_language_string("street_address"),
+                    city=l.get_language_string("address_city"),
+                ),
+                geoLocation=GeoJSONFeature(
+                    geometry=GeoJSONGeometry(
+                        coordinates=Coordinates(
+                            latitude=e("latitude"),
+                            longitude=e("longitude"),
+                            northing_etrs_gk25=e("northing_etrs_gk25"),
+                            easting_etrs_gk25=e("easting_etrs_gk25"),
+                            northing_etrs_tm35fin=e("northing_etrs_tm35fin"),
+                            easting_etrs_tm35fin=e("easting_etrs_tm35fin"),
+                            manual_coordinates=e("manual_coordinates"),
+                        )
                     )
+                ),
+            )
+
+            opening_hours, opening_hours_link = get_hauki_opening_hours_and_link(_id)
+
+            # Assuming single image
+            images = []
+            images.append(
+                Image(
+                    url=e("picture_url"),
+                    caption=l.get_language_string("picture_caption"),
                 )
-            ),
-        )
-
-        opening_hours, opening_hours_link = get_hauki_opening_hours_and_link(_id)
-
-        # Assuming single image
-        images = []
-        images.append(
-            Image(
-                url=e("picture_url"), caption=l.get_language_string("picture_caption")
-            )
-        )
-
-        venue = Venue(
-            name=l.get_language_string("name"),
-            description=l.get_language_string("desc"),
-            location=location,
-            meta=meta,
-            openingHours=opening_hours,
-            images=images,
-        )
-        root = Root(venue=venue)
-
-        if opening_hours_link:
-            root.links.append(opening_hours_link)
-
-        try:
-            place_url, place = get_linkedevents_place(_id)
-
-            place_link = LinkedData(
-                service="linkedevents", origin_url=place_url, raw_data=place
-            )
-            venue.location.administrativeDivisions = [
-                AdministrativeDivision(id=le_division.pop("ocd_id"), **le_division)
-                for le_division in place["divisions"].copy()
-            ]
-
-            root.links.append(place_link)
-        except (
-            requests.exceptions.HTTPError,
-            requests.exceptions.ConnectionError,
-        ) as exc:
-            logger.warning(f"Error while fetching {place_url}: {exc}")
-
-        # Extra information to raw data
-        tpr_unit["origin"] = "tpr"
-
-        # TODO: Separate words from tree
-        # TODO: Remove duplicates
-        #       Duplicates are not yet removed, because ontologies are not
-        #       returned in a public facing data structure.
-        all_ontologies = []
-        # Ontology ID's and tree contain plain integers, get corresponding texts
-        if tpr_unit.get("ontologyword_ids", None):
-            word_ontologies = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
-            tpr_unit["ontologyword_ids_enriched"] = word_ontologies
-            all_ontologies = all_ontologies + get_ontologywords_as_ontologies(
-                word_ontologies
-            )
-            venue.ontologyWords = [
-                {
-                    "id": word["id"],
-                    "label": {
-                        "fi": word["ontologyword_fi"],
-                        "sv": word["ontologyword_sv"],
-                        "en": word["ontologyword_en"],
-                    },
-                }
-                for word in word_ontologies
-            ]
-
-        if tpr_unit.get("ontologytree_ids", None):
-            tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
-            tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
-            all_ontologies = all_ontologies + get_ontologytree_as_ontologies(
-                tree_ontologies
             )
 
-        root.suggest = get_suggestions_from_ontologies(all_ontologies)
-
-        link = LinkedData(
-            service="tpr",
-            origin_url=f"https://www.hel.fi/palvelukarttaws/rest/v4/unit/{_id}/",
-            raw_data=tpr_unit,
-        )
-        root.links.append(link)
-
-        es.index(index=ES_INDEX, doc_type="_doc", body=asdict(root))
-
-        # all encountered administrative divisions are stored in their own index so
-        # that they can be easily returned from the GQL API. We might want to change
-        # this implementation in the future, maybe even use something else than ES.
-        for division in venue.location.administrativeDivisions:
-            es.index(
-                index=ES_ADMINISTRATIVE_DIVISION_INDEX,
-                body=asdict(division),
-                id=division.id,
+            venue = Venue(
+                name=l.get_language_string("name"),
+                description=l.get_language_string("desc"),
+                location=location,
+                meta=meta,
+                openingHours=opening_hours,
+                images=images,
             )
+            root = Root(venue=venue)
 
-        logger.debug(f"Fethed data count: {count}")
-        count = count + 1
+            if opening_hours_link:
+                root.links.append(opening_hours_link)
 
-    logger.info(f"Fetched {count} items in total")
-    return "Fetch completed by {}".format(__name__)
+            try:
+                place_url, place = get_linkedevents_place(_id)
 
+                place_link = LinkedData(
+                    service="linkedevents", origin_url=place_url, raw_data=place
+                )
+                venue.location.administrativeDivisions = [
+                    AdministrativeDivision(id=le_division.pop("ocd_id"), **le_division)
+                    for le_division in place["divisions"].copy()
+                ]
 
-def delete():
-    """Delete the whole index."""
-    try:
-        es = Elasticsearch([settings.ES_URI])
-    except ConnectionError as e:
-        logger.error(f"ERROR at {__name__}: {e}")
-        return
+                root.links.append(place_link)
+            except (
+                requests.exceptions.HTTPError,
+                requests.exceptions.ConnectionError,
+            ) as exc:
+                logger.warning(f"Error while fetching {place_url}: {exc}")
 
-    for index in (ES_ADMINISTRATIVE_DIVISION_INDEX, ES_INDEX):
-        try:
-            r = es.indices.delete(index=index)
-            logger.debug(r)
-        except NotFoundError as e:
-            logger.debug(e)
-        except ConnectionError as e:
-            logger.error(f"ERROR at {__name__}: {e}")
+            # Extra information to raw data
+            tpr_unit["origin"] = "tpr"
 
+            # TODO: Separate words from tree
+            # TODO: Remove duplicates
+            #       Duplicates are not yet removed, because ontologies are not
+            #       returned in a public facing data structure.
+            all_ontologies = []
+            # Ontology ID's and tree contain plain integers, get corresponding texts
+            if tpr_unit.get("ontologyword_ids", None):
+                word_ontologies = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
+                tpr_unit["ontologyword_ids_enriched"] = word_ontologies
+                all_ontologies = all_ontologies + get_ontologywords_as_ontologies(
+                    word_ontologies
+                )
+                venue.ontologyWords = [
+                    {
+                        "id": word["id"],
+                        "label": {
+                            "fi": word["ontologyword_fi"],
+                            "sv": word["ontologyword_sv"],
+                            "en": word["ontologyword_en"],
+                        },
+                    }
+                    for word in word_ontologies
+                ]
 
-def set_alias(alias):
-    """Configure alias for index name."""
-    try:
-        es = Elasticsearch([settings.ES_URI])
-        es.indices.put_alias(index=ES_INDEX, name=alias)
-    except ConnectionError as e:
-        return f"ERROR at {__name__}: {e}"
+            if tpr_unit.get("ontologytree_ids", None):
+                tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
+                tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
+                all_ontologies = all_ontologies + get_ontologytree_as_ontologies(
+                    tree_ontologies
+                )
+
+            root.suggest = get_suggestions_from_ontologies(all_ontologies)
+
+            link = LinkedData(
+                service="tpr",
+                origin_url=f"https://www.hel.fi/palvelukarttaws/rest/v4/unit/{_id}/",
+                raw_data=tpr_unit,
+            )
+            root.links.append(link)
+
+            self.add_to_index(root, self.LOCATION_INDEX)
+
+            # all encountered administrative divisions are stored in their own index so
+            # that they can be easily returned from the GQL API. We might want to change
+            # this implementation in the future, maybe even use something else than ES.
+            for division in venue.location.administrativeDivisions:
+                self.add_to_index(
+                    division,
+                    self.ADMINISTRATIVE_DIVISION_INDEX,
+                    extra_params={"id": division.id},
+                )
+
+            logger.debug(f"Fethed data count: {count}")
+            count = count + 1
+
+        logger.info(f"Fetched {count} items in total")

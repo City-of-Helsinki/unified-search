@@ -122,7 +122,7 @@ jobs:
           schedule: '0 4 * * *' # at 04:00 every day
           max_duration: "10800" # Run maximum 3 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index location --delete && python manage.py ingest_data --index location}"
+          args: "{-c,python manage.py ingest_data location --delete && python manage.py ingest_data location}"
 
       - name: Harvest event index
         uses: City-of-Helsinki/setup-cronjob-action@main
@@ -136,4 +136,4 @@ jobs:
           schedule: '0 1 * * *' # at 01:00 every day
           max_duration: "10800" # Run maximum 3 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index event --delete && python manage.py ingest_data --index event}"
+          args: "{-c,python manage.py ingest_data event --delete && python manage.py ingest_data event}"
