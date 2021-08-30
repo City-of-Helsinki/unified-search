@@ -139,5 +139,9 @@ export const querySchema = `
     ): SearchSuggestionConnection
 
     administrativeDivisions: [AdministrativeDivision]
+    ontologyTree(
+      rootId: ID
+      leavesOnly: Boolean
+     ): [OntologyTree]
   }
 `;

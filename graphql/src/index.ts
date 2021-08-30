@@ -20,6 +20,7 @@ const { eventSchema } = require('./schemas/event');
 const { actorSchema } = require('./schemas/actor');
 const { geoSchema } = require('./schemas/geojson');
 const { querySchema } = require('./schemas/query');
+const { ontologySchema } = require('./schemas/ontology');
 
 const { ElasticSearchAPI } = require('./datasources/es');
 
@@ -37,7 +38,7 @@ type UnifiedSearchQuery = {
 
 function edgesFromEsResults(results: any, getCursor: any) {
   return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any; event: any; } },
+    e: { _score: any; _source: { venue: any; event: any } },
     index: number
   ) {
     return {
@@ -131,7 +132,15 @@ const resolvers = {
         ...hit._source,
       }));
     },
+    ontologyTree: async (_, args, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getOntologyTree(args);
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+      }));
+    },
   },
+
   SearchResultConnection: {
     count({ hits }: any) {
       return hits;
@@ -260,6 +269,7 @@ const combinedSchema = makeExecutableSchema({
     eventSchema,
     actorSchema,
     geoSchema,
+    ontologySchema,
   ],
   resolvers,
 });
