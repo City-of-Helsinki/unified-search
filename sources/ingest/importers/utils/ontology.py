@@ -1,3 +1,5 @@
+from typing import List
+
 from .traffic import request_json
 
 
@@ -44,6 +46,9 @@ class Ontology:
         if not e.get("parent_id", None):
             return hits
         return self._get_tree(e["parent_id"], hits)
+
+    def get_ancestor_ids(self, _id: str) -> List[str]:
+        return [o["id"] for o in self._get_tree(_id) if o["id"] != _id]
 
     def enrich_tree_ids(self, id_list):
         """For each id in the list, get tree of related enriched id's and store

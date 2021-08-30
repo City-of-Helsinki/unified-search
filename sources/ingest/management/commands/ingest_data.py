@@ -4,11 +4,13 @@ from typing import Dict, Optional, Type, Union
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
-from ...importers import EventImporter, LocationImporter
+from ...importers import EventImporter, LocationImporter, OntologyTreeImporter
 
 logger = logging.getLogger(__name__)
 
-ImporterMap = Dict[str, Union[Type[EventImporter], Type[LocationImporter]]]
+ImporterMap = Dict[
+    str, Union[Type[EventImporter], Type[LocationImporter], Type[OntologyTreeImporter]]
+]
 
 
 class Command(BaseCommand):
@@ -17,6 +19,7 @@ class Command(BaseCommand):
     all_importers: ImporterMap = {
         "location": LocationImporter,
         "event": EventImporter,
+        "ontology_tree": OntologyTreeImporter,
     }
 
     def add_arguments(self, parser):
