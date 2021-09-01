@@ -46,17 +46,23 @@ Following management command can be used to fetch data from external data source
 
     docker-compose exec sources python manage.py ingest_data
 
-It is also possible to limit command to certain index:
+It is also possible to limit command to certain importer:
 
-    docker-compose exec sources python manage.py ingest_data --index location
+    docker-compose exec sources python manage.py ingest_data location
 
 Delete all data:
 
     docker-compose exec sources python manage.py ingest_data --delete
 
-Delete data at given index:
+Delete data imported by given importer:
 
-    docker-compose exec sources python manage.py ingest_data --delete --index location
+    docker-compose exec sources python manage.py ingest_data location --delete
+
+Currently implemented importers and the indexes they create:
+
+* **event** (event)
+* **location** (location, administrative_division)
+* **ontology_tree** (ontology_tree)
 
 ## Testing
 

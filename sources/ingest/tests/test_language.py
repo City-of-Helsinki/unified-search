@@ -1,7 +1,6 @@
 from django.test import TestCase
 
-from ingest.fetch.language import LanguageStringConverter
-from ingest.fetch.shared import LanguageString
+from ingest.importers.utils import LanguageString, LanguageStringConverter
 
 
 class LanguageTestCase(TestCase):

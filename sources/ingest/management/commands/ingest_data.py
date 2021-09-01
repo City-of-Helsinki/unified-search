@@ -1,15 +1,26 @@
 import logging
+from typing import Dict, Optional, Type, Union
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
-from ingest.fetch import event, location
+from ...importers import EventImporter, LocationImporter, OntologyTreeImporter
 
 logger = logging.getLogger(__name__)
+
+ImporterMap = Dict[
+    str, Union[Type[EventImporter], Type[LocationImporter], Type[OntologyTreeImporter]]
+]
 
 
 class Command(BaseCommand):
     help = "Ingest data from external data sources"
+
+    all_importers: ImporterMap = {
+        "location": LocationImporter,
+        "event": EventImporter,
+        "ontology_tree": OntologyTreeImporter,
+    }
 
     def add_arguments(self, parser):
 
@@ -20,42 +31,54 @@ class Command(BaseCommand):
             help="Delete stored data",
         )
 
-        # Named (optional) argument
+        # Positional (optional) argument(s)
         parser.add_argument(
-            "--index",
+            "importer",
             nargs="*",
-            help="Limit to given index(s)",
+            help="Limit to given importer(s)",
         )
 
     def handle(self, *args, **kwargs):
-        time = timezone.now().strftime("%X")
-        logger.info("Started at %s" % time)
+        start_time = timezone.now()
+        logger.info(f"Started at {start_time:%X}")
 
-        # Provided by ingest.fetch, defaults to these unless specified on command line
-        inds = {"location": location, "event": event}
+        importer_map = self.get_importer_map(kwargs["importer"])
 
-        index_list = kwargs["index"]
-
-        if index_list:
-            # Check validity
-            for i in index_list:
-                if i not in inds.keys():
-                    logger.error(f"Unknown index {i}, allowed: {inds.keys()}")
-                    return
-
-            inds = {i: inds[i] for i in index_list}
-
-        # delete indexes
         if kwargs["delete"]:
-            for name, _obj in inds.items():
-                logger.info(f"DELETING DATA at {name}")
-                _obj.delete()
+            self.handle_delete(importer_map)
             return
 
-        # fetch indexes
-        for name, _obj in inds.items():
-            logger.info(f"Fetching {name}")
-            _obj.fetch()
+        self.handle_import(importer_map)
 
-        time = timezone.now().strftime("%X")
-        logger.info("Completed at %s" % time)
+        end_time = timezone.now()
+        logger.info(
+            f"Completed at {end_time:%X}, took {(end_time - start_time).seconds} sec."
+        )
+
+    def get_importer_map(self, importer_names: Optional[str]) -> ImporterMap:
+        importer_map: ImporterMap = {}
+        for importer_name in importer_names or self.all_importers.keys():
+            try:
+                importer_map[importer_name] = self.all_importers[importer_name]
+            except KeyError:
+                raise CommandError(
+                    f"Unknown importer: '{importer_name}', "
+                    f"allowed: {list(self.all_importers.keys())}."
+                )
+        return importer_map
+
+    def handle_delete(self, importer_map: ImporterMap) -> None:
+        for importer_name, importer_class in importer_map.items():
+            logger.info(f"Deleting data {importer_name}")
+            try:
+                importer_class().delete_indexes()
+            except Exception as e:  # noqa
+                logger.exception(e)
+
+    def handle_import(self, importer_map: ImporterMap) -> None:
+        for importer_name, importer_class in importer_map.items():
+            logger.info(f"Importing {importer_name}")
+            try:
+                importer_class().run()
+            except Exception as e:  # noqa
+                logger.exception(e)

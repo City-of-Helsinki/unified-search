@@ -4,6 +4,43 @@ const { RESTDataSource } = require('apollo-datasource-rest');
 
 const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
 const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
+const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
+
+type OntologyTreeParams = {
+  rootId?: string;
+  leavesOnly?: boolean;
+};
+
+type OntologyTreeQuery = {
+  size: number;
+  query?: {
+    bool: OntologyTreeQueryBool;
+  };
+};
+
+type OntologyTreeQueryBool = {
+  filter?: {
+    bool: {
+      should: [
+        {
+          term: {
+            ancestorIds: string;
+          };
+        },
+        {
+          term: {
+            _id: string;
+          };
+        }
+      ];
+    };
+  };
+  must_not?: {
+    exists: {
+      field: 'childIds';
+    };
+  };
+};
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
@@ -161,9 +198,43 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 
   async getAdministrativeDivisions() {
-    return this.get(`${ES_ADMINISTRATIVE_DIVISION_INDEX}/_search`, {size: 10000}, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return this.get(
+      `${ES_ADMINISTRATIVE_DIVISION_INDEX}/_search`,
+      { size: 10000 },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
+  async getOntologyTree({ rootId, leavesOnly }: OntologyTreeParams) {
+    const bool: OntologyTreeQueryBool = {
+      ...(rootId && {
+        filter: {
+          bool: {
+            should: [
+              { term: { ancestorIds: rootId } },
+              { term: { _id: rootId } },
+            ],
+          },
+        },
+      }),
+      ...(leavesOnly && {
+        must_not: { exists: { field: 'childIds' } },
+      }),
+    };
+    const query: OntologyTreeQuery = {
+      size: 10000,
+      ...(bool && { query: { bool } }),
+    };
+
+    return this.post(
+      `${ES_ONTOLOGY_TREE_INDEX}/_search`,
+      JSON.stringify(query),
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
   async getMapping(q) {

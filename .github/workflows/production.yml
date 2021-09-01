@@ -122,7 +122,7 @@ jobs:
           schedule: '0 3 * * *' # at 03:00 every day
           max_duration: "10800" # Run maximum 3 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index location --delete && python manage.py ingest_data --index location}"
+          args: "{-c,python manage.py ingest_data location --delete && python manage.py ingest_data location}"
 
       - name: Harvest event index
         uses: City-of-Helsinki/setup-cronjob-action@main
@@ -136,4 +136,18 @@ jobs:
           schedule: '0 0 * * *' # at 00:00 every day
           max_duration: "10800" # Run maximum 3 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index event --delete && python manage.py ingest_data --index event}"
+          args: "{-c,python manage.py ingest_data event --delete && python manage.py ingest_data event}"
+
+      - name: Harvest ontology tree index
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          name: harvest-ontology-tree
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}/sources
+          image_tag:  ${{ github.sha }}
+          secret_name: project-staging-sources-secret
+          kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          schedule: '0 6 * * *' # at 06:00 every day
+          max_duration: "10800" # Run maximum 3 hours
+          command: "{/bin/sh}"
+          args: "{-c,python manage.py ingest_data ontology_tree --delete && python manage.py ingest_data ontology_tree}"
