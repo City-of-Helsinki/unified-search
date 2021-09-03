@@ -71,14 +71,24 @@ export const querySchema = `
         ontology: String,
 
         """
+        Optional, filter to match only this administrative division. DEPRECATED! use administrativeDivisionIds instead.
+        """
+        administrativeDivisionId: ID
+
+        """
         Optional, filter to match only these administrative divisions
         """
-        administrativeDivisionId: ID,
+        administrativeDivisionIds: [ID],
+
+        """
+        Optional, filter to match only this ontology tree id. DEPRECATED! use ontologyTreeIds instead.
+        """
+        ontologyTreeId: ID
 
         """
         Optional, filter to match only these ontology tree ids
         """
-        ontologyTreeId: ID,
+        ontologyTreeIds: [ID],
 
         """
         Optional search index.

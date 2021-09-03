@@ -42,6 +42,28 @@ type OntologyTreeQueryBool = {
   };
 };
 
+type AdministrativeDivisionFilter = {
+  bool: {
+    should: Array<{
+      term: {
+        'venue.location.administrativeDivisions.id.keyword': string;
+      };
+    }>;
+  };
+};
+
+type OntologyTreeFilter = {
+  bool: {
+    should: Array<{
+      term: {
+        'links.raw_data.ontologytree_ids_enriched.id': string;
+      };
+    }>;
+  };
+};
+
+type SearchFilters = Array<AdministrativeDivisionFilter | OntologyTreeFilter>;
+
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
@@ -53,7 +75,9 @@ class ElasticSearchAPI extends RESTDataSource {
     q?: string,
     ontology?: string,
     administrativeDivisionId?: string,
+    administrativeDivisionIds?: string[],
     ontologyTreeId?: string,
+    ontologyTreeIds?: string[],
     index?: string,
     from?: number,
     size?: number,
@@ -138,20 +162,47 @@ class ElasticSearchAPI extends RESTDataSource {
       };
     }
 
-    let filters: { [key: string]: string }[] = [];
+    let divisionIds = administrativeDivisionIds ?? [];
     if (administrativeDivisionId) {
-      filters.push({
-        'venue.location.administrativeDivisions.id.keyword': administrativeDivisionId,
-      });
+      divisionIds.push(administrativeDivisionId);
     }
+    let ontologyIds = ontologyTreeIds ?? [];
     if (ontologyTreeId) {
-      filters.push({
-        'links.raw_data.ontologytree_ids_enriched.id': ontologyTreeId,
-      });
+      ontologyIds.push(ontologyTreeId);
     }
+
+    const filters: SearchFilters = [
+      ...(divisionIds.length
+        ? [
+            {
+              bool: {
+                should: divisionIds.map((divisionId) => ({
+                  term: {
+                    'venue.location.administrativeDivisions.id.keyword': divisionId,
+                  },
+                })),
+              },
+            },
+          ]
+        : []),
+      ...(ontologyIds.length
+        ? [
+            {
+              bool: {
+                should: ontologyIds.map((ontologyId) => ({
+                  term: {
+                    'links.raw_data.ontologytree_ids_enriched.id': ontologyId,
+                  },
+                })),
+              },
+            },
+          ]
+        : []),
+    ];
+
     if (filters.length) {
       query.query.bool.minimum_should_match = 1;
-      query.query.bool.filter = filters.map((filter) => ({ term: filter }));
+      query.query.bool.filter = filters;
     }
 
     // Resolve pagination
