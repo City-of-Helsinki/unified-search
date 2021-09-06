@@ -330,11 +330,6 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                 ),
             )
 
-            (
-                opening_hours,
-                opening_hours_link,
-            ) = opening_hours_fetcher.get_opening_hours_and_link(_id)
-
             # Assuming single image
             images = []
             images.append(
@@ -343,6 +338,11 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                     caption=l.get_language_string("picture_caption"),
                 )
             )
+
+            (
+                opening_hours,
+                opening_hours_link,
+            ) = opening_hours_fetcher.get_opening_hours_and_link(_id)
 
             venue = Venue(
                 name=l.get_language_string("name"),
