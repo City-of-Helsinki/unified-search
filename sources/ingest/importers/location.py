@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Optional, Union
 
-import requests
+from requests import RequestException
 
 from .base import Importer
 from .utils.language import LanguageStringConverter
@@ -369,10 +369,7 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                 ]
 
                 root.links.append(place_link)
-            except (
-                requests.exceptions.HTTPError,
-                requests.exceptions.ConnectionError,
-            ) as exc:
+            except RequestException as exc:
                 logger.warning(f"Error while fetching {place_url}: {exc}")
 
             # Extra information to raw data
