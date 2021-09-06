@@ -4,7 +4,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-TIMEOUT = 10
+TIMEOUT = 20
 
 
 def request_json(url):

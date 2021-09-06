@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Optional, Union
 
-import requests
+from requests import RequestException
 
 from .base import Importer
 from .utils.language import LanguageStringConverter
@@ -330,11 +330,6 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                 ),
             )
 
-            (
-                opening_hours,
-                opening_hours_link,
-            ) = opening_hours_fetcher.get_opening_hours_and_link(_id)
-
             # Assuming single image
             images = []
             images.append(
@@ -343,6 +338,11 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                     caption=l.get_language_string("picture_caption"),
                 )
             )
+
+            (
+                opening_hours,
+                opening_hours_link,
+            ) = opening_hours_fetcher.get_opening_hours_and_link(_id)
 
             venue = Venue(
                 name=l.get_language_string("name"),
@@ -369,10 +369,7 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                 ]
 
                 root.links.append(place_link)
-            except (
-                requests.exceptions.HTTPError,
-                requests.exceptions.ConnectionError,
-            ) as exc:
+            except RequestException as exc:
                 logger.warning(f"Error while fetching {place_url}: {exc}")
 
             # Extra information to raw data

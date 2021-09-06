@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 from django.utils.timezone import localdate
 from humps import camelize
+from requests import RequestException
 
 from .shared import LinkedData
 from .traffic import request_json
@@ -54,11 +55,17 @@ class HaukiOpeningHoursFetcher:
     For the batch importing to work optimally, the order of the method calls should
     match the order of the ID list.
 
+    If opening hours for a venue cannot be fetched from Hauki, the returned link object
+    will be None, but the returned OpeningHours object is still usable.
+
     Example:
 
     fetcher = HaukiOpeningHoursFetcher(venue["id"] for venue in venues)
     for venue in venues:
         opening_hours, link = fetcher(venue["id"])
+        print(f"Hauki URL: {opening_hours.url}")  # OpeningHours obj always returned
+        if not link:
+            print("Could not fetch opening hours from Hauki.")
     """
 
     def __init__(
@@ -72,17 +79,21 @@ class HaukiOpeningHoursFetcher:
 
     def get_opening_hours_and_link(
         self, venue_id: Union[str, int]
-    ) -> Tuple[OpeningHours, LinkedData]:
+    ) -> Tuple[OpeningHours, Optional[LinkedData]]:
         venue_id = str(venue_id)
         hauki_resource_url = HAUKI_RESOURCE_URL.format(venue_id=venue_id)
-
-        data = self.get_opening_hours_for_venue(venue_id)
 
         opening_hours = OpeningHours(
             url=f"{hauki_resource_url}opening_hours/",
             is_open_now_url=f"{hauki_resource_url}is_open_now/",
-            data=camelize(data),
         )
+
+        try:
+            data = self.get_opening_hours_for_venue(venue_id)
+        except RequestException:
+            return opening_hours, None
+
+        opening_hours.data = camelize(data)
         opening_hours_link = LinkedData(
             service="hauki",
             origin_url=opening_hours.url,
