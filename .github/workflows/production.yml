@@ -120,7 +120,7 @@ jobs:
           kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
           target_namespace: ${{ secrets.K8S_NAMESPACE_STABLE }}
           schedule: '0 3 * * *' # at 03:00 every day
-          max_duration: "10800" # Run maximum 3 hours
+          max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
           args: "{-c,python manage.py ingest_data location --delete && python manage.py ingest_data location}"
 
@@ -134,7 +134,7 @@ jobs:
           kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
           target_namespace: ${{ secrets.K8S_NAMESPACE_STABLE }}
           schedule: '0 0 * * *' # at 00:00 every day
-          max_duration: "10800" # Run maximum 3 hours
+          max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
           args: "{-c,python manage.py ingest_data event --delete && python manage.py ingest_data event}"
 
@@ -148,6 +148,6 @@ jobs:
           kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
           target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
           schedule: '0 6 * * *' # at 06:00 every day
-          max_duration: "10800" # Run maximum 3 hours
+          max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
           args: "{-c,python manage.py ingest_data ontology_tree --delete && python manage.py ingest_data ontology_tree}"
