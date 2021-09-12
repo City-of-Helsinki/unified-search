@@ -284,10 +284,9 @@ custom_mappings = {
 class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
     LOCATION_INDEX = "location"
     ADMINISTRATIVE_DIVISION_INDEX = "administrative_division"
-    index_names = (LOCATION_INDEX, ADMINISTRATIVE_DIVISION_INDEX)
+    index_base_names = (LOCATION_INDEX, ADMINISTRATIVE_DIVISION_INDEX)
 
     def run(self):  # noqa C901 this function could use some refactoring
-        self.create_indexes()
         self.apply_mapping(custom_mappings, self.LOCATION_INDEX)
 
         logger.debug("Requesting data at {}".format(__name__))
@@ -415,19 +414,19 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
             )
             root.links.append(link)
 
-            self.add_to_index(root, self.LOCATION_INDEX)
+            self.add_data(root, self.LOCATION_INDEX)
 
             # all encountered administrative divisions are stored in their own index so
             # that they can be easily returned from the GQL API. We might want to change
             # this implementation in the future, maybe even use something else than ES.
             for division in venue.location.administrativeDivisions:
-                self.add_to_index(
+                self.add_data(
                     division,
                     self.ADMINISTRATIVE_DIVISION_INDEX,
                     extra_params={"id": division.id},
                 )
 
-            logger.debug(f"Fethed data count: {count}")
+            logger.debug(f"Fetched data count: {count}")
             count = count + 1
 
         logger.info(f"Fetched {count} items in total")

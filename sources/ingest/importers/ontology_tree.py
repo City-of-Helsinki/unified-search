@@ -14,7 +14,7 @@ class OntologyTreeObject:
 
 
 class OntologyTreeImporter(Importer[OntologyTreeObject]):
-    index_names = ("ontology_tree",)
+    index_base_names = ("ontology_tree",)
 
     def run(self):
         ontology = Ontology()
@@ -26,4 +26,4 @@ class OntologyTreeImporter(Importer[OntologyTreeObject]):
                 childIds=tree_obj["child_ids"],
                 ontologyWordReference=tree_obj.get("ontologyword_reference"),
             )
-            self.add_to_index(data, extra_params={"id": tree_obj["id"]})
+            self.add_data(data, extra_params={"id": tree_obj["id"]})
