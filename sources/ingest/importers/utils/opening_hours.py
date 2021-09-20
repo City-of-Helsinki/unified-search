@@ -13,6 +13,7 @@ from .traffic import request_json
 DEFAULT_BATCH_SIZE = 100
 # TODO make configurable
 HAUKI_BASE_URL = "https://hauki.api.hel.fi/v1/"
+NUMBER_OF_DAYS_TO_FETCH = 7
 
 HAUKI_RESOURCE_URL = HAUKI_BASE_URL + "resource/tprek:{venue_id}/"
 HAUKI_OPENING_HOURS_URL = HAUKI_BASE_URL + "opening_hours/"
@@ -122,11 +123,11 @@ class HaukiOpeningHoursFetcher:
 
     def fetch(self, ids: Sequence[str]) -> RawHoursById:
         today = localdate()
-        tomorrow = today + timedelta(days=1)
+        end_date = today + timedelta(days=NUMBER_OF_DAYS_TO_FETCH)
         prefixed_ids = (f"tprek:{i}" for i in ids)
         params = {
             "start_date": today,
-            "end_date": tomorrow,
+            "end_date": end_date,
             "resource": ",".join(prefixed_ids),
         }
         url = f"{HAUKI_OPENING_HOURS_URL}?{urlencode(params)}"
