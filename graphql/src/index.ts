@@ -37,6 +37,7 @@ type UnifiedSearchQuery = {
   ontologyWordIds?: string[];
   index?: string;
   languages?: string[];
+  openAt?: string;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -85,6 +86,7 @@ const resolvers = {
         first,
         last,
         languages,
+        openAt,
       }: UnifiedSearchQuery,
       { dataSources }: any
     ) => {
@@ -102,7 +104,8 @@ const resolvers = {
         index,
         from,
         size,
-        elasticLanguageFromGraphqlLanguage(languages)
+        elasticLanguageFromGraphqlLanguage(languages),
+        openAt
       );
 
       const getCursor = (offset: number) =>

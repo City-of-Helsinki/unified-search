@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { ElasticLanguage } from '../types';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
@@ -5,6 +6,7 @@ const { RESTDataSource } = require('apollo-datasource-rest');
 const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
 const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
 const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
+const DEFAULT_TIME_ZONE = 'Europe/Helsinki';
 
 type OntologyTreeParams = {
   rootId?: string;
@@ -39,6 +41,12 @@ type OntologyTreeQueryBool = {
     exists: {
       field: 'childIds';
     };
+  };
+};
+
+type OpenAtFilter = {
+  term: {
+    'venue.openingHours.openRanges': string;
   };
 };
 
@@ -96,7 +104,8 @@ class ElasticSearchAPI extends RESTDataSource {
     index?: string,
     from?: number,
     size?: number,
-    languages?: ElasticLanguage[]
+    languages?: ElasticLanguage[],
+    openAt?: string
   ) {
     const es_index = index ? index : this.defaultIndex;
 
@@ -186,7 +195,15 @@ class ElasticSearchAPI extends RESTDataSource {
       ontologyIds.push(ontologyTreeId);
     }
 
-    const filters: ArrayFilter[] = [
+    // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
+    const openAtDateTime = DateTime.fromISO(openAt, {
+      zone: DEFAULT_TIME_ZONE,
+    });
+    const finalOpenAt = openAtDateTime.isValid
+      ? openAtDateTime.toISO()
+      : openAt;
+
+    const filters: Array<ArrayFilter | OpenAtFilter> = [
       ...buildArrayFilter(
         'venue.location.administrativeDivisions.id.keyword',
         divisionIds
@@ -199,6 +216,15 @@ class ElasticSearchAPI extends RESTDataSource {
         'links.raw_data.ontologyword_ids_enriched.id',
         ontologyWordIds
       ),
+      ...(finalOpenAt
+        ? [
+            {
+              term: {
+                'venue.openingHours.openRanges': finalOpenAt,
+              },
+            },
+          ]
+        : []),
     ];
 
     if (filters.length) {

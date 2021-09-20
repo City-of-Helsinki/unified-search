@@ -129,6 +129,14 @@ export const querySchema = `
         """
         languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
 
+        """
+        Return only venues that are open at the given moment. In addition to ISO 8601 datetimes, accepts values
+        conforming to Elastic Search date math (https://www.elastic.co/guide/en/elasticsearch/reference/7.x/common-options.html#date-math)
+        like "now+3h". When there is a datetime provided without a timezone offset, "Europe/Helsinki" will be assumed
+        as the time zone.
+        """
+        openAt: String
+
       ): SearchResultConnection
 
     unifiedSearchCompletionSuggestions(

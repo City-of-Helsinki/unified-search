@@ -19,12 +19,14 @@
     }
   },
   "dependencies": {
+    "@types/luxon": "^2.0.4",
     "apollo-datasource-rest": "^0.10.0",
     "apollo-server": "^2.21.1",
     "apollo-server-express": "^2.22.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "graphql": "^15.5.0"
+    "graphql": "^15.5.0",
+    "luxon": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",
