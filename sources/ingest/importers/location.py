@@ -275,6 +275,13 @@ custom_mappings = {
             "properties": {
                 "name": {"properties": define_language_properties()},
                 "description": {"properties": define_language_properties()},
+                "openingHours": {
+                    "properties": {
+                        "openRanges": {
+                            "type": "date_range",
+                        }
+                    }
+                },
             }
         },
     }

@@ -1,9 +1,11 @@
+from copy import copy
 from dataclasses import dataclass, field
-from datetime import date, time, timedelta
+from datetime import date, datetime, time, timedelta
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
 from urllib.parse import urlencode
 
-from django.utils.timezone import localdate
+import pytz
+from django.utils.timezone import localdate, make_aware
 from humps import camelize
 from requests import RequestException
 
@@ -14,6 +16,7 @@ DEFAULT_BATCH_SIZE = 100
 # TODO make configurable
 HAUKI_BASE_URL = "https://hauki.api.hel.fi/v1/"
 NUMBER_OF_DAYS_TO_FETCH = 7
+DEFAULT_TIME_ZONE = "Europe/Helsinki"
 
 HAUKI_RESOURCE_URL = HAUKI_BASE_URL + "resource/tprek:{venue_id}/"
 HAUKI_OPENING_HOURS_URL = HAUKI_BASE_URL + "opening_hours/"
@@ -35,10 +38,30 @@ class OpeningHoursDay:
 
 
 @dataclass
+class OpeningHoursTimesRange:
+    gte: str
+    lt: str
+
+
+@dataclass
 class OpeningHours:
     url: str
     is_open_now_url: str
     data: List[OpeningHoursDay] = field(default_factory=list)
+    openRanges: List[OpeningHoursTimesRange] = field(default_factory=list)
+
+
+@dataclass
+class DateTimeRange:
+    """Helper dataclass for manipulating datetime ranges to build opening hours times ranges."""  # noqa
+
+    start: datetime
+    end: datetime
+
+    def as_opening_hours_times_range(self) -> OpeningHoursTimesRange:
+        return OpeningHoursTimesRange(
+            gte=self.start.isoformat(), lt=self.end.isoformat()
+        )
 
 
 RawHours = List[dict]
@@ -94,6 +117,7 @@ class HaukiOpeningHoursFetcher:
         except RequestException:
             return opening_hours, None
 
+        opening_hours.openRanges = self.get_open_ranges(data)
         opening_hours.data = camelize(data)
         opening_hours_link = LinkedData(
             service="hauki",
@@ -141,6 +165,60 @@ class HaukiOpeningHoursFetcher:
 
         return {i: result_map.get(i, []) for i in ids}
 
+    def get_open_ranges(self, data: RawHours) -> List[OpeningHoursTimesRange]:
+        """Get datetime ranges when the venue is open."""
+
+        open_ranges: List[DateTimeRange] = []
+        closed_ranges: List[DateTimeRange] = []
+
+        for day_data in data:
+            day = datetime.date(datetime.strptime(day_data["date"], "%Y-%m-%d"))
+
+            for time_data in day_data["times"]:
+                # Skip other states than "open" and "closed" at least for now
+                if time_data["resource_state"] not in ("open", "closed"):
+                    continue
+
+                # If the data is not for full day, require both the start time and the
+                # end time
+                if not (
+                    time_data["full_day"]
+                    or (
+                        time_data["start_time"]
+                        and time_data["end_time"]
+                        and time_data["start_time"] != time_data["end_time"]
+                    )
+                ):
+                    continue
+
+                if time_data["full_day"]:
+                    start_time = end_time = "00:00:00"
+                    end_time_on_next_day = True
+                else:
+                    start_time = time_data["start_time"]
+                    end_time = time_data["end_time"]
+                    end_time_on_next_day = time_data["end_time_on_next_day"]
+
+                range_list = (
+                    open_ranges
+                    if time_data["resource_state"] == "open"
+                    else closed_ranges
+                )
+                range_list.append(
+                    DateTimeRange(
+                        start=self.get_datetime_from_date_and_time(day, start_time),
+                        end=self.get_datetime_from_date_and_time(
+                            day + timedelta(days=1) if end_time_on_next_day else day,
+                            end_time,
+                        ),
+                    )
+                )
+
+        # Override times when open by times when closed
+        open_ranges = self.datetime_range_list_difference(open_ranges, closed_ranges)
+
+        return [r.as_opening_hours_times_range() for r in open_ranges]
+
     @staticmethod
     def get_tprek_origin_id(data: dict) -> Optional[str]:
         return next(
@@ -151,3 +229,68 @@ class HaukiOpeningHoursFetcher:
             ),
             {},
         ).get("origin_id")
+
+    @staticmethod
+    def get_datetime_from_date_and_time(day, dt):
+        return make_aware(
+            datetime.combine(day, datetime.strptime(dt, "%H:%M:%S").time()),
+            pytz.timezone(DEFAULT_TIME_ZONE),
+            True,
+        )
+
+    @staticmethod
+    def datetime_range_list_difference(
+        minuend_ranges: List[DateTimeRange],
+        subtrahend_ranges: List[DateTimeRange],
+    ) -> List[DateTimeRange]:
+        """Subtract a datetime range list from a datetime range list."""
+
+        # Loop over the subtrahend ranges and subtract each of them from all of the
+        # minuend ranges. NOTE: the minuend ranges list is (possibly) updated between
+        # subtrahend ranges.
+        for subtrahend_range in subtrahend_ranges:
+            minuend_ranges = sum(
+                (
+                    HaukiOpeningHoursFetcher.datetime_range_difference(
+                        minuend_range, subtrahend_range
+                    )
+                    for minuend_range in minuend_ranges
+                ),
+                [],
+            )
+        return minuend_ranges
+
+    @staticmethod
+    def datetime_range_difference(
+        minuend: DateTimeRange, subtrahend: DateTimeRange
+    ) -> List[DateTimeRange]:
+        """Subtract a datetime range from a datetime range."""
+
+        if subtrahend.start <= minuend.start and subtrahend.end >= minuend.end:
+            # subtrahend covers minuend completely
+            #  mmmm
+            # ssssss
+            return []
+        elif subtrahend.end <= minuend.start or subtrahend.start >= minuend.end:
+            # subtrahend completely outside minuend
+            # mmmmmm
+            #        ssssss
+            return [copy(minuend)]
+        elif subtrahend.start > minuend.start and subtrahend.end < minuend.end:
+            # subtrahend in the middle of minuend, the result is two ranges
+            # mmmmmm
+            #  ssss
+            return [
+                DateTimeRange(start=minuend.start, end=subtrahend.start),
+                DateTimeRange(start=subtrahend.end, end=minuend.end),
+            ]
+        else:
+            # here we have only two possibilities left
+            if subtrahend.start <= minuend.start:
+                #    mmmmmm
+                # ssssss
+                return [DateTimeRange(start=subtrahend.end, end=minuend.end)]
+            else:
+                # mmmmmm
+                #    ssssss
+                return [DateTimeRange(start=minuend.start, end=subtrahend.start)]
