@@ -62,7 +62,19 @@ type OntologyTreeFilter = {
   };
 };
 
-type SearchFilters = Array<AdministrativeDivisionFilter | OntologyTreeFilter>;
+type OntologyWordFilter = {
+  bool: {
+    should: Array<{
+      term: {
+        'links.raw_data.ontologyword_ids_enriched.id': string;
+      };
+    }>;
+  };
+};
+
+type SearchFilters = Array<
+  AdministrativeDivisionFilter | OntologyTreeFilter | OntologyWordFilter
+>;
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
@@ -78,6 +90,7 @@ class ElasticSearchAPI extends RESTDataSource {
     administrativeDivisionIds?: string[],
     ontologyTreeId?: string,
     ontologyTreeIds?: string[],
+    ontologyWordIds?: string[],
     index?: string,
     from?: number,
     size?: number,
@@ -192,6 +205,19 @@ class ElasticSearchAPI extends RESTDataSource {
                 should: ontologyIds.map((ontologyId) => ({
                   term: {
                     'links.raw_data.ontologytree_ids_enriched.id': ontologyId,
+                  },
+                })),
+              },
+            },
+          ]
+        : []),
+      ...((ontologyWordIds ?? []).length
+        ? [
+            {
+              bool: {
+                should: ontologyWordIds.map((ontologyWordId) => ({
+                  term: {
+                    'links.raw_data.ontologyword_ids_enriched.id': ontologyWordId,
                   },
                 })),
               },
