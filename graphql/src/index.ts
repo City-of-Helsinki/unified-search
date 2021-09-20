@@ -34,6 +34,7 @@ type UnifiedSearchQuery = {
   administrativeDivisionIds?: string[];
   ontologyTreeId?: string;
   ontologyTreeIds?: string[];
+  ontologyWordIds?: string[];
   index?: string;
   languages?: string[];
 } & ConnectionArguments;
@@ -77,6 +78,7 @@ const resolvers = {
         administrativeDivisionIds,
         ontologyTreeId,
         ontologyTreeIds,
+        ontologyWordIds,
         index,
         before,
         after,
@@ -96,6 +98,7 @@ const resolvers = {
         administrativeDivisionIds,
         ontologyTreeId,
         ontologyTreeIds,
+        ontologyWordIds,
         index,
         from,
         size,
