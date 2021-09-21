@@ -1,17 +1,22 @@
 # Common unified search
 
+TEST
+
 This is common unified search: multi domain search over multiple services.
 
 Solution consists of following parts:
 
 [Data collector](https://github.com/City-of-Helsinki/unified-search/tree/develop/sources)
+
 - Python Django application for fetching data from multiple sources and storing it to Elasticsearch.
 - Django management commands are triggered by Kubernetes cron jobs.
 
 Elasticsearch
+
 - Search engine for indexing the data.
 
 [GraphQL API](https://github.com/City-of-Helsinki/unified-search/tree/develop/graphql)
+
 - GraphQL API on top of Elasticsearch providing high level interface for end (frontend) users.
 
 # Endpoints
@@ -38,6 +43,7 @@ Services:
 - Data sources (data collector) at http://localhost:5000/
 
 Deprecated:
+
 - Graphene based testing GraphQL search API at http://localhost:5001/graphql
 
 ## Fetching data with data collector
@@ -60,9 +66,9 @@ Delete data imported by given importer:
 
 Currently implemented importers and the indexes they create:
 
-* **event** (event)
-* **location** (location, administrative_division)
-* **ontology_tree** (ontology_tree)
+- **event** (event)
+- **location** (location, administrative_division)
+- **ontology_tree** (ontology_tree)
 
 ## Testing
 
@@ -186,7 +192,6 @@ It is recommended to use GraphQL client such as Altair for sending queries.
       }
     }
 
-
 ### Raw data for debugging purposes
 
     query {
@@ -234,7 +239,6 @@ It is recommended to use GraphQL client such as Altair for sending queries.
       }
     }
 
-
 ### Date ranges
 
 Date can be used in queries assuming mapping type is correct (`date` in ES, `datetime.datetime` in Python):
@@ -258,7 +262,6 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.h
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
 
-
 ## GraphQL search API - using curl
 
     $ curl --insecure -X POST -H "Content-Type: application/json" --data '{"query":"query{unifiedSearch(q:\"leikkipuisto\", index:\"location\"){count}}"}' <GraphQL base URL>/search
@@ -275,13 +278,12 @@ Install dependencies from requirements.txt:
 
     pip install -r requirements.txt
 
-
 ## Known issues
 
 1. New index is added but Elasticsearch returns elasticsearch.exceptions.AuthorizationException.
 
-    Elasticsearch access control list needs to be updated with access to new index. When using Aiven it
-    can be done from its control panel (under ACL).
+   Elasticsearch access control list needs to be updated with access to new index. When using Aiven it
+   can be done from its control panel (under ACL).
 
 # Issues board
 
