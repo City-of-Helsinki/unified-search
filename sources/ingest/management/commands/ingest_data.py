@@ -71,7 +71,7 @@ class Command(BaseCommand):
         for importer_name, importer_class in importer_map.items():
             logger.info(f"Deleting data {importer_name}")
             try:
-                importer_class().delete_indexes()
+                importer_class().delete_all_data()
             except Exception as e:  # noqa
                 logger.exception(e)
 
@@ -79,6 +79,6 @@ class Command(BaseCommand):
         for importer_name, importer_class in importer_map.items():
             logger.info(f"Importing {importer_name}")
             try:
-                importer_class().run()
+                importer_class().base_run()
             except Exception as e:  # noqa
                 logger.exception(e)

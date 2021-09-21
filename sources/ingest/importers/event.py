@@ -46,10 +46,9 @@ class Root:
 
 
 class EventImporter(Importer[Root]):
-    index_names = ("event",)
+    index_base_names = ("event",)
 
     def run(self):
-        self.create_indexes()
         url = settings.EVENT_URL
         received_count = 0
         keyword = Keyword()
@@ -62,7 +61,7 @@ class EventImporter(Importer[Root]):
             received_count = received_count + item_count
 
             for entry in data["data"]:
-                entry["origin"] = self.index_names[0]
+                entry["origin"] = self.index_base_names[0]
 
                 # ID's must be strings to avoid collisions
                 entry["id"] = _id = str(entry["id"])
@@ -89,7 +88,7 @@ class EventImporter(Importer[Root]):
 
                 root.links.append(event_data)
 
-                self.add_to_index(root)
+                self.add_data(root)
 
             url = data["meta"]["next"]
 
