@@ -1,10 +1,29 @@
-import { ElasticLanguage } from '../types';
+import * as Elastic from '@elastic/elasticsearch';
 
+import { ElasticLanguage } from '../types';
 const { RESTDataSource } = require('apollo-datasource-rest');
 
 const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
 const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
 const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
+
+const elasticClient = new Elastic.Client({ node: ELASTIC_SEARCH_URI });
+
+elasticClient.on('request', (err, result) => {
+  if (err) {
+    console.error(JSON.stringify(err, Object.getOwnPropertyNames(err)));
+  }
+
+  console.info(JSON.stringify(result));
+});
+
+elasticClient.on('response', (err, result) => {
+  if (err) {
+    console.error(JSON.stringify(err, Object.getOwnPropertyNames(err)));
+  }
+
+  console.info(JSON.stringify(result));
+});
 
 type OntologyTreeParams = {
   rootId?: string;
@@ -212,10 +231,12 @@ class ElasticSearchAPI extends RESTDataSource {
       ...query,
     };
 
-    return this.post(`${es_index}/_search`, undefined, {
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(query),
+    const response = await elasticClient.search({
+      index: es_index,
+      body: query,
     });
+
+    return response.body;
   }
 
   async getSuggestions(
