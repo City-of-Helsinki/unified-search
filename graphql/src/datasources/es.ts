@@ -68,6 +68,7 @@ class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = ELASTIC_SEARCH_URI;
+    console.log(`baseURL: "${ELASTIC_SEARCH_URI}"`);
     this.defaultIndex = 'location';
   }
 
