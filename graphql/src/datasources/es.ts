@@ -42,27 +42,41 @@ type OntologyTreeQueryBool = {
   };
 };
 
-type AdministrativeDivisionFilter = {
+type TermField =
+  | 'venue.location.administrativeDivisions.id.keyword'
+  | 'links.raw_data.ontologytree_ids_enriched.id'
+  | 'links.raw_data.ontologyword_ids_enriched.id';
+
+type ArrayFilter = {
   bool: {
     should: Array<{
       term: {
-        'venue.location.administrativeDivisions.id.keyword': string;
+        [key: string]: string;
       };
     }>;
   };
 };
 
-type OntologyTreeFilter = {
-  bool: {
-    should: Array<{
-      term: {
-        'links.raw_data.ontologytree_ids_enriched.id': string;
-      };
-    }>;
-  };
-};
+function buildArrayFilter(
+  field: TermField,
+  values: string[] = []
+): ArrayFilter[] {
+  if (values.length === 0) {
+    return [];
+  }
 
-type SearchFilters = Array<AdministrativeDivisionFilter | OntologyTreeFilter>;
+  return [
+    {
+      bool: {
+        should: values.map((value) => ({
+          term: {
+            [field]: value,
+          },
+        })),
+      },
+    },
+  ];
+}
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
@@ -78,6 +92,7 @@ class ElasticSearchAPI extends RESTDataSource {
     administrativeDivisionIds?: string[],
     ontologyTreeId?: string,
     ontologyTreeIds?: string[],
+    ontologyWordIds?: string[],
     index?: string,
     from?: number,
     size?: number,
@@ -171,33 +186,19 @@ class ElasticSearchAPI extends RESTDataSource {
       ontologyIds.push(ontologyTreeId);
     }
 
-    const filters: SearchFilters = [
-      ...(divisionIds.length
-        ? [
-            {
-              bool: {
-                should: divisionIds.map((divisionId) => ({
-                  term: {
-                    'venue.location.administrativeDivisions.id.keyword': divisionId,
-                  },
-                })),
-              },
-            },
-          ]
-        : []),
-      ...(ontologyIds.length
-        ? [
-            {
-              bool: {
-                should: ontologyIds.map((ontologyId) => ({
-                  term: {
-                    'links.raw_data.ontologytree_ids_enriched.id': ontologyId,
-                  },
-                })),
-              },
-            },
-          ]
-        : []),
+    const filters: ArrayFilter[] = [
+      ...buildArrayFilter(
+        'venue.location.administrativeDivisions.id.keyword',
+        divisionIds
+      ),
+      ...buildArrayFilter(
+        'links.raw_data.ontologytree_ids_enriched.id',
+        ontologyIds
+      ),
+      ...buildArrayFilter(
+        'links.raw_data.ontologyword_ids_enriched.id',
+        ontologyWordIds
+      ),
     ];
 
     if (filters.length) {

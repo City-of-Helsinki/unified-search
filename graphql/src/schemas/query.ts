@@ -91,6 +91,11 @@ export const querySchema = `
         ontologyTreeIds: [ID],
 
         """
+        Optional, filter to match only these ontology word ids
+        """
+        ontologyWordIds: [ID],
+
+        """
         Optional search index.
         """
         index: String,
