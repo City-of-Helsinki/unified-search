@@ -44,6 +44,12 @@ type OntologyTreeQueryBool = {
   };
 };
 
+export type OrderByDistanceParams = {
+  latitude: number;
+  longitude: number;
+  order: 'ASCENDING' | 'DESCENDING';
+};
+
 type OpenAtFilter = {
   term: {
     'venue.openingHours.openRanges': string;
@@ -105,7 +111,8 @@ class ElasticSearchAPI extends RESTDataSource {
     from?: number,
     size?: number,
     languages?: ElasticLanguage[],
-    openAt?: string
+    openAt?: string,
+    orderByDistance?: OrderByDistanceParams
   ) {
     const es_index = index ? index : this.defaultIndex;
 
@@ -230,6 +237,16 @@ class ElasticSearchAPI extends RESTDataSource {
     if (filters.length) {
       query.query.bool.minimum_should_match = 1;
       query.query.bool.filter = filters;
+    }
+
+    if (typeof orderByDistance !== 'undefined') {
+      query.sort = {
+        _geo_distance: {
+          location: [orderByDistance.latitude, orderByDistance.longitude],
+          order: orderByDistance.order === 'DESCENDING' ? 'desc' : 'asc',
+          ignore_unmapped: true,
+        },
+      };
     }
 
     // Resolve pagination

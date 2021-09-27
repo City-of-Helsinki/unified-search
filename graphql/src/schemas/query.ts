@@ -58,6 +58,17 @@ export const querySchema = `
     suggestions: [Suggestion]!
   }
 
+  enum SortOrder {
+    ASCENDING
+    DESCENDING
+  }
+
+  input OrderByDistance {
+    latitude: Float
+    longitude: Float
+    order: SortOrder = ASCENDING
+  }
+
   type Query {
     unifiedSearch(
         """
@@ -136,6 +147,11 @@ export const querySchema = `
         as the time zone.
         """
         openAt: String
+
+        """
+        Order results by distance to given coordinates.
+        """
+        orderByDistance: OrderByDistance
 
       ): SearchResultConnection
 

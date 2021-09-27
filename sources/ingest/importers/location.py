@@ -112,8 +112,15 @@ class Venue:
 
 
 @dataclass
+class GeoPoint:
+    latitude: float
+    longitude: float
+
+
+@dataclass
 class Root:
     venue: Venue
+    location: GeoPoint = None
     links: List[LinkedData] = field(default_factory=list)
     suggest: List[str] = field(default_factory=list)
 
@@ -284,6 +291,7 @@ custom_mappings = {
                 },
             }
         },
+        "location": {"type": "geo_point"},
     }
 }
 
@@ -420,6 +428,12 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                 raw_data=tpr_unit,
             )
             root.links.append(link)
+
+            root.location = (
+                {"lat": e("latitude"), "lon": e("longitude")}
+                if e("latitude") and e("longitude")
+                else None
+            )
 
             self.add_data(root, self.LOCATION_INDEX)
 
