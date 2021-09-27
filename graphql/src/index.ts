@@ -9,6 +9,7 @@ import {
 } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
+import { OrderByDistanceParams } from './datasources/es';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -38,6 +39,7 @@ type UnifiedSearchQuery = {
   index?: string;
   languages?: string[];
   openAt?: string;
+  orderByDistance?: OrderByDistanceParams;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -87,6 +89,7 @@ const resolvers = {
         last,
         languages,
         openAt,
+        orderByDistance,
       }: UnifiedSearchQuery,
       { dataSources }: any
     ) => {
@@ -105,7 +108,8 @@ const resolvers = {
         from,
         size,
         elasticLanguageFromGraphqlLanguage(languages),
-        openAt
+        openAt,
+        orderByDistance
       );
 
       const getCursor = (offset: number) =>
@@ -138,7 +142,8 @@ const resolvers = {
       };
     },
     administrativeDivisions: async (_, __, { dataSources }: any) => {
-      const res = await dataSources.elasticSearchAPI.getAdministrativeDivisions();
+      const res =
+        await dataSources.elasticSearchAPI.getAdministrativeDivisions();
       return res.hits.hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
