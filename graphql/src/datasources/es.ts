@@ -242,7 +242,10 @@ class ElasticSearchAPI extends RESTDataSource {
     if (typeof orderByDistance !== 'undefined') {
       query.sort = {
         _geo_distance: {
-          location: [orderByDistance.latitude, orderByDistance.longitude],
+          location: {
+            lat: orderByDistance.latitude,
+            lon: orderByDistance.longitude,
+          },
           order: orderByDistance.order === 'DESCENDING' ? 'desc' : 'asc',
           ignore_unmapped: true,
         },
