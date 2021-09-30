@@ -5,6 +5,8 @@ const { RESTDataSource } = require('apollo-datasource-rest');
 
 const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
 const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
+const ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX =
+  'helsinki_common_administrative_division';
 const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
 const DEFAULT_TIME_ZONE = 'Europe/Helsinki';
 
@@ -42,6 +44,10 @@ type OntologyTreeQueryBool = {
       field: 'childIds';
     };
   };
+};
+
+type AdministrativeDivisionParams = {
+  helsinkiCommonOnly?: boolean;
 };
 
 export type OrderByDistanceParams = {
@@ -295,9 +301,14 @@ class ElasticSearchAPI extends RESTDataSource {
     });
   }
 
-  async getAdministrativeDivisions() {
+  async getAdministrativeDivisions({
+    helsinkiCommonOnly,
+  }: AdministrativeDivisionParams) {
+    const index = helsinkiCommonOnly
+      ? ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX
+      : ES_ADMINISTRATIVE_DIVISION_INDEX;
     return this.get(
-      `${ES_ADMINISTRATIVE_DIVISION_INDEX}/_search`,
+      `${index}/_search`,
       { size: 10000 },
       {
         headers: { 'Content-Type': 'application/json' },

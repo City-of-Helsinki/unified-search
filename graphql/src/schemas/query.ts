@@ -177,7 +177,12 @@ export const querySchema = `
       size: Int = 5
     ): SearchSuggestionConnection
 
-    administrativeDivisions: [AdministrativeDivision]
+    administrativeDivisions(
+        """
+        Return only Helsinki administrative divisions that make a sensible set to be used as an option list in an UI for example.
+        """
+        helsinkiCommonOnly: Boolean): [AdministrativeDivision]
+
     ontologyTree(
       rootId: ID
       leavesOnly: Boolean

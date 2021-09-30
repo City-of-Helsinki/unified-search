@@ -141,9 +141,10 @@ const resolvers = {
         })),
       };
     },
-    administrativeDivisions: async (_, __, { dataSources }: any) => {
-      const res =
-        await dataSources.elasticSearchAPI.getAdministrativeDivisions();
+    administrativeDivisions: async (_, args, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getAdministrativeDivisions(
+        args
+      );
       return res.hits.hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
