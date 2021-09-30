@@ -299,7 +299,14 @@ custom_mappings = {
 class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
     LOCATION_INDEX = "location"
     ADMINISTRATIVE_DIVISION_INDEX = "administrative_division"
-    index_base_names = (LOCATION_INDEX, ADMINISTRATIVE_DIVISION_INDEX)
+    HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX = (
+        "helsinki_common_administrative_division"
+    )
+    index_base_names = (
+        LOCATION_INDEX,
+        ADMINISTRATIVE_DIVISION_INDEX,
+        HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
+    )
 
     def run(self):  # noqa C901 this function could use some refactoring
         self.apply_mapping(custom_mappings, self.LOCATION_INDEX)
@@ -312,6 +319,7 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
 
         opening_hours_fetcher = HaukiOpeningHoursFetcher(t["id"] for t in tpr_units)
 
+        helsinki_neighborhoods = set()
         count = 0
         for tpr_unit in tpr_units:
             l = LanguageStringConverter(tpr_unit)
@@ -441,6 +449,31 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
             # that they can be easily returned from the GQL API. We might want to change
             # this implementation in the future, maybe even use something else than ES.
             for division in venue.location.administrativeDivisions:
+
+                # store a certain set of Helsinki's divisions into it's own index. This
+                # set is mostly meant to be used to provide division choices list for a
+                # UI. Whether this kind of set should be provided by US in the first
+                # place is a good question, and the answer might very well be no, so
+                # this is subject to change in the future.
+                #
+                # Currently includes all neighborhoods and sub districts with
+                # duplicates removed.
+                if (
+                    division.type in ("neighborhood", "sub_district")
+                    and division.municipality == "Helsinki"
+                ):
+                    if not (
+                        division.type == "sub_district"
+                        and division.name["fi"] in helsinki_neighborhoods
+                    ):
+                        self.add_data(
+                            division,
+                            self.HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
+                            extra_params={"id": division.id},
+                        )
+                    if division.type == "neighborhood":
+                        helsinki_neighborhoods.add(division.name["fi"])
+
                 self.add_data(
                     division,
                     self.ADMINISTRATIVE_DIVISION_INDEX,
