@@ -187,5 +187,9 @@ export const querySchema = `
       rootId: ID
       leavesOnly: Boolean
      ): [OntologyTree]
+
+    ontologyWords(
+      id: [ID!]
+    ): [OntologyWord]
   }
 `;
