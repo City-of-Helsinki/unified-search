@@ -1,4 +1,9 @@
-const { makeExecutableSchema, ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
 
 import cors from 'cors';
 import express from 'express';
@@ -301,7 +306,11 @@ const combinedSchema = makeExecutableSchema({
       };
     },
     introspection: true,
-    playground: process.env.PLAYGROUND || false,
+    plugins: [
+      process.env.PLAYGROUND
+        ? ApolloServerPluginLandingPageGraphQLPlayground()
+        : ApolloServerPluginLandingPageDisabled(),
+    ],
   });
 
   let serverIsReady = false;
@@ -329,6 +338,8 @@ const combinedSchema = makeExecutableSchema({
   app.get('/readiness', (request, response) => {
     checkIsServerReady(response);
   });
+
+  await server.start();
 
   server.applyMiddleware({ app, path: '/search' });
 
