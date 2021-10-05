@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List, Union
 
 from .base import Importer
 from .utils import LanguageString, LanguageStringConverter, Ontology
