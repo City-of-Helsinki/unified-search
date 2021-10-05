@@ -9,7 +9,7 @@ class OntologyWordObject:
     name: LanguageString
 
 
-class OntologyWordsImporter(Importer[OntologyWordObject]):
+class OntologyWordImporter(Importer[OntologyWordObject]):
     index_base_names = ("ontology_word",)
 
     def run(self):

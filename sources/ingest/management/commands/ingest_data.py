@@ -8,7 +8,7 @@ from ...importers import (
     EventImporter,
     LocationImporter,
     OntologyTreeImporter,
-    OntologyWordsImporter,
+    OntologyWordImporter,
 )
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ ImporterMap = Dict[
         Type[EventImporter],
         Type[LocationImporter],
         Type[OntologyTreeImporter],
-        Type[OntologyWordsImporter],
+        Type[OntologyWordImporter],
     ],
 ]
 
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         "location": LocationImporter,
         "event": EventImporter,
         "ontology_tree": OntologyTreeImporter,
-        "ontology_words": OntologyWordsImporter,
+        "ontology_word": OntologyWordImporter,
     }
 
     def add_arguments(self, parser):

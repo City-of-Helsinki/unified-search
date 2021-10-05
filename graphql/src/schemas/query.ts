@@ -189,7 +189,7 @@ export const querySchema = `
      ): [OntologyTree]
 
     ontologyWords(
-      id: [ID!]
+      ids: [ID!]
     ): [OntologyWord]
   }
 `;

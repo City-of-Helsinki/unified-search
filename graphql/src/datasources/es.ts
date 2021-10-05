@@ -8,7 +8,7 @@ const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
 const ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX =
   'helsinki_common_administrative_division';
 const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
-const ES_ONTOLOGY_WORDS_INDEX = 'ontology_words';
+const ES_ONTOLOGY_WORD_INDEX = 'ontology_word';
 const DEFAULT_TIME_ZONE = 'Europe/Helsinki';
 
 type OntologyTreeParams = {
@@ -17,7 +17,7 @@ type OntologyTreeParams = {
 };
 
 type OntologyWordParams = {
-  id?: string[];
+  ids?: string[];
 };
 
 type OntologyTreeQuery = {
@@ -351,18 +351,18 @@ class ElasticSearchAPI extends RESTDataSource {
     );
   }
 
-  async getOntologyWords({ id }: OntologyWordParams) {
-    const query = id
+  async getOntologyWords({ ids }: OntologyWordParams) {
+    const query = ids
       ? {
           query: {
             terms: {
-              _id: id,
+              _id: ids,
             },
           },
         }
       : {};
     return this.post(
-      `${ES_ONTOLOGY_WORDS_INDEX}/_search`,
+      `${ES_ONTOLOGY_WORD_INDEX}/_search`,
       JSON.stringify({ size: 10000, ...query }),
       {
         headers: { 'Content-Type': 'application/json' },
