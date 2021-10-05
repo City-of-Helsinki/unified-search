@@ -30,4 +30,5 @@ export type ElasticSearchPagination = {
   size?: number;
 };
 
-export type ElasticLanguage = typeof GraphQlToElasticLanguageMap[keyof typeof GraphQlToElasticLanguageMap];
+export type ElasticLanguage =
+  typeof GraphQlToElasticLanguageMap[keyof typeof GraphQlToElasticLanguageMap];

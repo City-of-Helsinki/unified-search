@@ -157,6 +157,15 @@ const resolvers = {
         ...hit._source,
       }));
     },
+    ontologyWords: async (_, args, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getOntologyWords(args);
+
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+        label: hit._source.name,
+      }));
+    },
   },
 
   SearchResultConnection: {

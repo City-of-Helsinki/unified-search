@@ -138,10 +138,10 @@ jobs:
           command: "{/bin/sh}"
           args: "{-c,python manage.py ingest_data event}"
 
-      - name: Harvest ontology tree index
+      - name: Harvest ontology tree and word index
         uses: City-of-Helsinki/setup-cronjob-action@main
         with:
-          name: harvest-ontology-tree
+          name: harvest-ontology-tree-and-words
           image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}/sources
           image_tag:  ${{ github.sha }}
           secret_name: project-staging-sources-secret
@@ -150,4 +150,4 @@ jobs:
           schedule: '0 6 * * *' # at 06:00 every day
           max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data ontology_tree}"
+          args: "{-c,python manage.py ingest_data ontology_tree; python manage.py ingest_data ontology_word}"
