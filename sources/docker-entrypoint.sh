@@ -15,9 +15,9 @@ if [[ "$INITIALIZE_DATA" = "1" ]]; then
 fi
 
 # Start server
-if [ ! -z "$@" ]; then
+if [[ ! -z "$@" ]]; then
     "$@"
-elif [ "$DEV_SERVER" = "1" ]; then
+elif [[ "$DEV_SERVER" = "1" ]]; then
     python ./manage.py runserver 0.0.0.0:5000
 else
     uwsgi --ini .prod/uwsgi.ini
