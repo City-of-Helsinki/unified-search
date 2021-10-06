@@ -1,6 +1,6 @@
 export const sharedSchema = `
   scalar DateTime
-  type NodeMeta {
+  type NodeMeta @cacheControl(inheritMaxAge: true) {
     id: ID!
     createdAt: DateTime
     updatedAt: DateTime
@@ -14,7 +14,7 @@ export const sharedSchema = `
     FI
   }
   """TODO: convert all String's to LanguageString's if linguistic content"""
-  type LanguageString {
+  type LanguageString @cacheControl(inheritMaxAge: true){
     fi: String
     sv: String
     en: String
@@ -48,4 +48,15 @@ export const sharedSchema = `
     meta: NodeMeta
     todo: String
   }
+
+  enum CacheControlScope {
+    PUBLIC
+    PRIVATE
+  }
+
+  directive @cacheControl(
+    maxAge: Int
+    scope: CacheControlScope
+    inheritMaxAge: Boolean
+  ) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
 `;

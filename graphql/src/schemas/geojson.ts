@@ -24,7 +24,7 @@ type GeoJSONFeature implements GeoJSONInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem!
   bbox: [Float]
-  geometry: GeoJSONGeometryInterface
+  geometry: GeoJSONGeometryInterface @cacheControl(inheritMaxAge: true)
   properties: JSONObject
   id: String
 }

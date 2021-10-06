@@ -5,6 +5,8 @@ import {
   ApolloServerPluginLandingPageDisabled,
 } from 'apollo-server-core';
 
+import responseCachePlugin from 'apollo-server-plugin-response-cache';
+
 import cors from 'cors';
 import express from 'express';
 import {
@@ -96,7 +98,8 @@ const resolvers = {
         openAt,
         orderByDistance,
       }: UnifiedSearchQuery,
-      { dataSources }: any
+      { dataSources }: any,
+      info: any
     ) => {
       const connectionArguments = { before, after, first, last };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
@@ -125,6 +128,12 @@ const resolvers = {
       // Find shared data
       const edges = edgesFromEsResults(result, getCursor);
       const hits = getHits(result);
+
+      if (result.hits.hits.length >= 1000) {
+        info.cacheControl.setCacheHint({
+          maxAge: parseInt(process.env.CACHE_MAX_AGE ?? '3600', 10),
+        });
+      }
 
       return { es_results: [result], edges, hits, connectionArguments };
     },
@@ -319,6 +328,7 @@ const combinedSchema = makeExecutableSchema({
       process.env.PLAYGROUND
         ? ApolloServerPluginLandingPageGraphQLPlayground()
         : ApolloServerPluginLandingPageDisabled(),
+      responseCachePlugin(),
     ],
   });
 
