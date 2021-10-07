@@ -1,4 +1,11 @@
-const { makeExecutableSchema, ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
+
+import responseCachePlugin from 'apollo-server-plugin-response-cache';
 
 import cors from 'cors';
 import express from 'express';
@@ -91,7 +98,8 @@ const resolvers = {
         openAt,
         orderByDistance,
       }: UnifiedSearchQuery,
-      { dataSources }: any
+      { dataSources }: any,
+      info: any
     ) => {
       const connectionArguments = { before, after, first, last };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
@@ -120,6 +128,12 @@ const resolvers = {
       // Find shared data
       const edges = edgesFromEsResults(result, getCursor);
       const hits = getHits(result);
+
+      if (result.hits.hits.length >= 1000) {
+        info.cacheControl.setCacheHint({
+          maxAge: parseInt(process.env.CACHE_MAX_AGE ?? '3600', 10),
+        });
+      }
 
       return { es_results: [result], edges, hits, connectionArguments };
     },
@@ -310,7 +324,12 @@ const combinedSchema = makeExecutableSchema({
       };
     },
     introspection: true,
-    playground: process.env.PLAYGROUND || false,
+    plugins: [
+      process.env.PLAYGROUND
+        ? ApolloServerPluginLandingPageGraphQLPlayground()
+        : ApolloServerPluginLandingPageDisabled(),
+      responseCachePlugin(),
+    ],
   });
 
   let serverIsReady = false;
@@ -338,6 +357,8 @@ const combinedSchema = makeExecutableSchema({
   app.get('/readiness', (request, response) => {
     checkIsServerReady(response);
   });
+
+  await server.start();
 
   server.applyMiddleware({ app, path: '/search' });
 

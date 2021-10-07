@@ -7,7 +7,7 @@ export const locationSchema = `
   type Venue {
     meta: NodeMeta
     name: LanguageString
-    location: LocationDescription
+    location: LocationDescription @cacheControl(inheritMaxAge: true)
     description: LanguageString
     descriptionResources: DescriptionResources
     partOf: Venue
@@ -27,7 +27,7 @@ export const locationSchema = `
   """
   type LocationDescription {
     url: LanguageString
-    geoLocation: GeoJSONFeature
+    geoLocation: GeoJSONFeature @cacheControl(inheritMaxAge: true)
     address: Address
     explanation: String
     @origin(service: "linked", type: "event", attr: "location_extra_info")

@@ -27,7 +27,7 @@ export const querySchema = `
     count: Int
     max_score: Float
     pageInfo: SearchResultPageInfo
-    edges: [SearchResultEdge!]!
+    edges: [SearchResultEdge!]! @cacheControl(inheritMaxAge: true)
   }
 
   type SearchResultPageInfo {
@@ -39,13 +39,13 @@ export const querySchema = `
 
   type SearchResultEdge {
     cursor: String!
-    node: SearchResultNode!
+    node: SearchResultNode! @cacheControl(inheritMaxAge: true)
   }
 
   type SearchResultNode {
     _score: Float
     id: ID!
-    venue: Venue
+    venue: Venue @cacheControl(inheritMaxAge: true)
     event: Event
     searchCategories: [UnifiedSearchResultCategory!]!
   }
