@@ -64,8 +64,8 @@ export const querySchema = `
   }
 
   input OrderByDistance {
-    latitude: Float
-    longitude: Float
+    latitude: Float!
+    longitude: Float!
     order: SortOrder = ASCENDING
   }
 

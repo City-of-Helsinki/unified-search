@@ -6,6 +6,8 @@ import {
 } from 'apollo-server-core';
 
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
+import { ValidationError } from 'apollo-server-express';
+import isUndefined from 'lodash/isUndefined';
 
 import cors from 'cors';
 import express from 'express';
@@ -46,8 +48,8 @@ type UnifiedSearchQuery = {
   index?: string;
   languages?: string[];
   openAt?: string;
-  orderByDistance?: OrderByDistanceParams;
-  orderByName?: OrderByNameParams;
+  orderByDistance?: OrderByDistanceParams | null;
+  orderByName?: OrderByNameParams | null;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -105,6 +107,18 @@ const resolvers = {
     ) => {
       const connectionArguments = { before, after, first, last };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
+
+      if (!isUndefined(orderByDistance) && !isUndefined(orderByName)) {
+        throw new ValidationError(
+          'Cannot use both "orderByDistance" and "orderByName".'
+        );
+      }
+      if (orderByDistance === null) {
+        throw new ValidationError('"orderByDistance" cannot be null.');
+      }
+      if (orderByName === null) {
+        throw new ValidationError('"orderByName" cannot be null.');
+      }
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,

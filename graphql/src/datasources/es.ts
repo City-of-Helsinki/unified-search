@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { ElasticLanguage } from '../types';
-import { ValidationError } from 'apollo-server-express';
+import isUndefined from 'lodash/isUndefined';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
@@ -258,16 +258,8 @@ class ElasticSearchAPI extends RESTDataSource {
       query.query.bool.filter = filters;
     }
 
-    const hasDistanceOrdering = typeof orderByDistance !== 'undefined';
-    const hasNameOrdering = typeof orderByName !== 'undefined';
-
-    if (hasDistanceOrdering && hasNameOrdering) {
-      throw new ValidationError(
-        'Cannot use both orderByDistance and orderByName.'
-      );
-    }
     if (['event', 'location'].includes(es_index)) {
-      if (hasDistanceOrdering) {
+      if (!isUndefined(orderByDistance)) {
         query.sort = {
           _geo_distance: {
             location: {
@@ -278,7 +270,7 @@ class ElasticSearchAPI extends RESTDataSource {
             ignore_unmapped: true,
           },
         };
-      } else if (hasNameOrdering) {
+      } else if (!isUndefined(orderByName)) {
         const type = es_index === 'location' ? 'venue' : 'event';
         const language = languages[0] ?? 'fi';
         query.sort = {
