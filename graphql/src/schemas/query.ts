@@ -69,6 +69,10 @@ export const querySchema = `
     order: SortOrder = ASCENDING
   }
 
+  input OrderByName {
+    order: SortOrder = ASCENDING
+  }
+
   type Query {
     unifiedSearch(
         """
@@ -149,9 +153,14 @@ export const querySchema = `
         openAt: String
 
         """
-        Order results by distance to given coordinates.
+        Order results by distance to given coordinates. Cannot be used with "orderByName".
         """
         orderByDistance: OrderByDistance
+
+        """
+        Order results by venue name in language given as the first value in "languages" argument. Cannot be used with "orderByDistance".
+        """
+        orderByName: OrderByName
 
       ): SearchResultConnection
 

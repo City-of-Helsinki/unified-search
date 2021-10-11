@@ -16,7 +16,7 @@ import {
 } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
-import { OrderByDistanceParams } from './datasources/es';
+import { OrderByDistanceParams, OrderByNameParams } from './datasources/es';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -47,6 +47,7 @@ type UnifiedSearchQuery = {
   languages?: string[];
   openAt?: string;
   orderByDistance?: OrderByDistanceParams;
+  orderByName?: OrderByNameParams;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -97,6 +98,7 @@ const resolvers = {
         languages,
         openAt,
         orderByDistance,
+        orderByName,
       }: UnifiedSearchQuery,
       { dataSources }: any,
       info: any
@@ -117,7 +119,8 @@ const resolvers = {
         size,
         elasticLanguageFromGraphqlLanguage(languages),
         openAt,
-        orderByDistance
+        orderByDistance,
+        orderByName
       );
 
       const getCursor = (offset: number) =>
