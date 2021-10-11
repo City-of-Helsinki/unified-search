@@ -279,10 +279,10 @@ class ElasticSearchAPI extends RESTDataSource {
           },
         };
       } else if (hasNameOrdering) {
+        const type = es_index === 'location' ? 'venue' : 'event';
+        const language = languages[0] ?? 'fi';
         query.sort = {
-          [`${es_index === 'location' ? 'venue' : 'event'}.name.${
-            languages[0] ?? 'fi'
-          }.keyword`]: {
+          [`${type}.name.${language}.keyword`]: {
             order: orderByName.order === 'DESCENDING' ? 'desc' : 'asc',
             missing: '_last',
           },
