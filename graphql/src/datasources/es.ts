@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { ElasticLanguage } from '../types';
+import isUndefined from 'lodash/isUndefined';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
@@ -55,10 +56,16 @@ type AdministrativeDivisionParams = {
   helsinkiCommonOnly?: boolean;
 };
 
+type OrderingDirection = 'ASCENDING' | 'DESCENDING';
+
 export type OrderByDistanceParams = {
   latitude: number;
   longitude: number;
-  order: 'ASCENDING' | 'DESCENDING';
+  order: OrderingDirection;
+};
+
+export type OrderByNameParams = {
+  order: OrderingDirection;
 };
 
 type OpenAtFilter = {
@@ -123,7 +130,8 @@ class ElasticSearchAPI extends RESTDataSource {
     size?: number,
     languages?: ElasticLanguage[],
     openAt?: string,
-    orderByDistance?: OrderByDistanceParams
+    orderByDistance?: OrderByDistanceParams,
+    orderByName?: OrderByNameParams
   ) {
     const es_index = index ? index : this.defaultIndex;
 
@@ -250,17 +258,28 @@ class ElasticSearchAPI extends RESTDataSource {
       query.query.bool.filter = filters;
     }
 
-    if (typeof orderByDistance !== 'undefined') {
-      query.sort = {
-        _geo_distance: {
-          location: {
-            lat: orderByDistance.latitude,
-            lon: orderByDistance.longitude,
+    if (['event', 'location'].includes(es_index)) {
+      if (!isUndefined(orderByDistance)) {
+        query.sort = {
+          _geo_distance: {
+            location: {
+              lat: orderByDistance.latitude,
+              lon: orderByDistance.longitude,
+            },
+            order: orderByDistance.order === 'DESCENDING' ? 'desc' : 'asc',
+            ignore_unmapped: true,
           },
-          order: orderByDistance.order === 'DESCENDING' ? 'desc' : 'asc',
-          ignore_unmapped: true,
-        },
-      };
+        };
+      } else if (!isUndefined(orderByName)) {
+        const type = es_index === 'location' ? 'venue' : 'event';
+        const language = languages[0] ?? 'fi';
+        query.sort = {
+          [`${type}.name.${language}.keyword`]: {
+            order: orderByName.order === 'DESCENDING' ? 'desc' : 'asc',
+            missing: '_last',
+          },
+        };
+      }
     }
 
     // Resolve pagination

@@ -6,6 +6,8 @@ import {
 } from 'apollo-server-core';
 
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
+import { ValidationError } from 'apollo-server-express';
+import isUndefined from 'lodash/isUndefined';
 
 import cors from 'cors';
 import express from 'express';
@@ -16,7 +18,7 @@ import {
 } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
-import { OrderByDistanceParams } from './datasources/es';
+import { OrderByDistanceParams, OrderByNameParams } from './datasources/es';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -46,7 +48,8 @@ type UnifiedSearchQuery = {
   index?: string;
   languages?: string[];
   openAt?: string;
-  orderByDistance?: OrderByDistanceParams;
+  orderByDistance?: OrderByDistanceParams | null;
+  orderByName?: OrderByNameParams | null;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -97,12 +100,25 @@ const resolvers = {
         languages,
         openAt,
         orderByDistance,
+        orderByName,
       }: UnifiedSearchQuery,
       { dataSources }: any,
       info: any
     ) => {
       const connectionArguments = { before, after, first, last };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
+
+      if (!isUndefined(orderByDistance) && !isUndefined(orderByName)) {
+        throw new ValidationError(
+          'Cannot use both "orderByDistance" and "orderByName".'
+        );
+      }
+      if (orderByDistance === null) {
+        throw new ValidationError('"orderByDistance" cannot be null.');
+      }
+      if (orderByName === null) {
+        throw new ValidationError('"orderByName" cannot be null.');
+      }
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,
@@ -117,7 +133,8 @@ const resolvers = {
         size,
         elasticLanguageFromGraphqlLanguage(languages),
         openAt,
-        orderByDistance
+        orderByDistance,
+        orderByName
       );
 
       const getCursor = (offset: number) =>
