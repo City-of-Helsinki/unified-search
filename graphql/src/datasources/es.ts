@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { ElasticLanguage } from '../types';
-import isUndefined from 'lodash/isUndefined';
+import { isDefined } from '../utils';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
@@ -259,7 +259,7 @@ class ElasticSearchAPI extends RESTDataSource {
     }
 
     if (['event', 'location'].includes(es_index)) {
-      if (!isUndefined(orderByDistance)) {
+      if (isDefined(orderByDistance)) {
         query.sort = {
           _geo_distance: {
             location: {
@@ -270,7 +270,7 @@ class ElasticSearchAPI extends RESTDataSource {
             ignore_unmapped: true,
           },
         };
-      } else if (!isUndefined(orderByName)) {
+      } else if (isDefined(orderByName)) {
         const type = es_index === 'location' ? 'venue' : 'event';
         const language = languages[0] ?? 'fi';
         query.sort = {

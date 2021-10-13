@@ -7,7 +7,6 @@ import {
 
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
 import { ValidationError } from 'apollo-server-express';
-import isUndefined from 'lodash/isUndefined';
 
 import cors from 'cors';
 import express from 'express';
@@ -15,6 +14,7 @@ import {
   createCursor,
   elasticLanguageFromGraphqlLanguage,
   getEsOffsetPaginationQuery,
+  isDefined,
 } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
@@ -108,7 +108,7 @@ const resolvers = {
       const connectionArguments = { before, after, first, last };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
 
-      if (!isUndefined(orderByDistance) && !isUndefined(orderByName)) {
+      if (isDefined(orderByDistance) && isDefined(orderByName)) {
         throw new ValidationError(
           'Cannot use both "orderByDistance" and "orderByName".'
         );
