@@ -1,7 +1,6 @@
 version: "3.7"
 
-x-base:
-  &base
+x-base: &base
   env_file:
     - .env
 
@@ -99,37 +98,9 @@ services:
     container_name: kib01
     ports:
       - 5601:5601
-    depends_on:
-      - "es01"
-      - "es02"
-      - "es03"
-      - "ent-search"
     environment:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: '["http://es01:9200","http://es02:9200","http://es03:9200"]'
-      ENTERPRISESEARCH_HOST: http://ent-search:3002
-    networks:
-      - elastic
-
-  ent-search:
-    image: docker.elastic.co/enterprise-search/enterprise-search:7.11.1
-    restart: unless-stopped
-    depends_on:
-      - "es01"
-      - "es02"
-      - "es03"
-    environment:
-      - "JAVA_OPTS=-Xms512m -Xmx512m"
-      # - "ENT_SEARCH_DEFAULT_PASSWORD=changeme"
-      # - "elasticsearch.username=elastic"
-      # - "elasticsearch.password=changeme"
-      - "elasticsearch.host=http://es01:9200"
-      - "allow_es_settings_modification=true"
-      - "secret_management.encryption_keys=[4a2cd3f81d39bf28738c10db0ca782095ff\
-        ac07279561809eecc722e0c20eb09]"
-      - "elasticsearch.startup_retry.interval=15"
-    ports:
-      - 127.0.0.1:3002:3002
     networks:
       - elastic
 
