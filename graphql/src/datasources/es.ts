@@ -139,21 +139,22 @@ class ElasticSearchAPI extends RESTDataSource {
     const searchFieldsBoostMapping = {
       // Normally weighted search fields for different indexes
       1: (lang: string, index: string) => {
-        if (index === 'location') {
-          return [
-            `venue.description.${lang}`,
-            `links.raw_data.short_desc_${lang}`,
-          ];
-        } else if (index === 'event') {
-          return [`event.name.${lang}`, `event.description.${lang}`];
-        }
-        return [];
+        return (
+          {
+            location: [
+              `venue.description.${lang}`,
+              `links.raw_data.short_desc_${lang}`,
+            ],
+            event: [`event.name.${lang}`, `event.description.${lang}`],
+          }[index] ?? []
+        );
       },
       3: (lang: string, index: string) => {
-        if (index === 'location') {
-          return [`venue.name.${lang}`];
-        }
-        return [];
+        return (
+          {
+            location: [`venue.name.${lang}`],
+          }[index] ?? []
+        );
       },
     };
 
@@ -176,15 +177,16 @@ class ElasticSearchAPI extends RESTDataSource {
     const defaultQuery = languages.reduce(
       (acc, language) => ({
         ...acc,
-        [language]: Object.entries(searchFieldsBoostMapping).map(
-          ([boost, searchFields]) => ({
+        [language]: Object.entries(searchFieldsBoostMapping)
+          // Don't map empty field sets to query
+          .filter(([, searchFields]) => searchFields(language, index).length)
+          .map(([boost, searchFields]) => ({
             query_string: {
               query: q,
               boost: boost,
               fields: searchFields(language, index),
             },
-          })
-        ),
+          })),
       }),
       {}
     );
