@@ -135,19 +135,30 @@ class ElasticSearchAPI extends RESTDataSource {
   ) {
     const es_index = index ? index : this.defaultIndex;
 
-    const searchFields = (lang: string, index: string) => {
-      if (index === 'location') {
-        return [
-          `venue.name.${lang}`,
-          `venue.description.${lang}`,
-          `links.raw_data.short_desc_${lang}`,
-        ];
-      } else if (index === 'event') {
-        return [`event.name.${lang}`, `event.description.${lang}`];
-      }
-      return [];
+    // Some fields should be boosted / weighted to get more relevant result set
+    const searchFieldsBoostMapping = {
+      // Normally weighted search fields for different indexes
+      1: (lang: string, index: string) => {
+        return (
+          {
+            location: [
+              `venue.description.${lang}`,
+              `links.raw_data.short_desc_${lang}`,
+            ],
+            event: [`event.name.${lang}`, `event.description.${lang}`],
+          }[index] ?? []
+        );
+      },
+      3: (lang: string, index: string) => {
+        return (
+          {
+            location: [`venue.name.${lang}`],
+          }[index] ?? []
+        );
+      },
     };
 
+    // Ontology fields for different indexes
     const ontologyFields = (lang: string, index: string) => {
       if (index === 'location') {
         return [
@@ -162,15 +173,20 @@ class ElasticSearchAPI extends RESTDataSource {
       return [];
     };
 
+    // Default query is to search the same thing in every language
     const defaultQuery = languages.reduce(
       (acc, language) => ({
         ...acc,
-        [language]: {
-          query_string: {
-            query: q,
-            fields: searchFields(language, index),
-          },
-        },
+        [language]: Object.entries(searchFieldsBoostMapping)
+          // Don't map empty field sets to query
+          .filter(([, searchFields]) => searchFields(language, index).length)
+          .map(([boost, searchFields]) => ({
+            query_string: {
+              query: q,
+              boost: boost,
+              fields: searchFields(language, index),
+            },
+          })),
       }),
       {}
     );
@@ -179,7 +195,7 @@ class ElasticSearchAPI extends RESTDataSource {
     let query: any = {
       query: {
         bool: {
-          should: Object.values(defaultQuery),
+          should: Object.values(defaultQuery).flat(),
         },
       },
     };
