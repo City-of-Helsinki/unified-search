@@ -1,10 +1,11 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import asdict, is_dataclass
-from typing import Generic, Optional, Tuple, TypeVar
+from typing import Generic, List, Optional, Tuple, TypeVar
 
 from django.conf import settings
 from elasticsearch import Elasticsearch, NotFoundError
+from elasticsearch.helpers import bulk
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,22 @@ class Importer(ABC, Generic[IndexableData]):
         body = asdict(data) if is_dataclass(data) else data
         try:
             self.es.index(index=index_name, body=body, **(extra_params or {}))
+        except ConnectionError as e:
+            logger.error(e)
+
+    def add_data_bulk(
+        self,
+        data: List[IndexableData],
+        index_base_name: Optional[str] = None,
+    ) -> None:
+        index_name = self._get_wip_alias(index_base_name or self.index_base_names[0])
+
+        body = [
+            {"_index": index_name, "_source": asdict(d) if is_dataclass(d) else d}
+            for d in data
+        ]
+        try:
+            bulk(self.es, body)
         except ConnectionError as e:
             logger.error(e)
 

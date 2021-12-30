@@ -1,3 +1,7 @@
+from .administrative_division import (
+    AdministrativeDivision,
+    AdministrativeDivisionFetcher,
+)
 from .keyword import Keyword
 from .language import LanguageStringConverter
 from .ontology import Ontology
@@ -13,4 +17,6 @@ __all__ = [
     "HaukiOpeningHoursFetcher",
     "LanguageString",
     "request_json",
+    "AdministrativeDivision",
+    "AdministrativeDivisionFetcher",
 ]

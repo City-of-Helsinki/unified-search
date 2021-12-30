@@ -61,9 +61,10 @@ Delete data imported by given importer:
 Currently implemented importers and the indexes they create:
 
 - **event** (event)
-- **location** (location, administrative_division)
+- **location** (location)
 - **ontology_tree** (ontology_tree)
 - **ontology_word** (ontology_word)
+- **administrative_division** (administrative_division, helsinki_common_administrative_division)
 
 ## Testing
 

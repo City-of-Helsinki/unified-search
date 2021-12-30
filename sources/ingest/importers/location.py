@@ -5,16 +5,19 @@ import functools
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Optional, Union
-
-from requests import RequestException
+from typing import List, Union
 
 from .base import Importer
-from .utils.language import LanguageStringConverter
-from .utils.ontology import Ontology
-from .utils.opening_hours import HaukiOpeningHoursFetcher, OpeningHours
-from .utils.shared import LanguageString
-from .utils.traffic import request_json
+from .utils import (
+    AdministrativeDivision,
+    AdministrativeDivisionFetcher,
+    HaukiOpeningHoursFetcher,
+    LanguageString,
+    LanguageStringConverter,
+    Ontology,
+    OpeningHours,
+    request_json,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -82,14 +85,6 @@ class Image:
 
 
 @dataclass
-class AdministrativeDivision:
-    id: str
-    type: str
-    municipality: Optional[str]
-    name: LanguageString
-
-
-@dataclass
 class Venue:
     meta: NodeMeta = None
     name: LanguageString = None
@@ -129,16 +124,6 @@ def get_tpr_units():
     url = "https://www.hel.fi/palvelukarttaws/rest/v4/unit/"
     data = request_json(url)
     return data
-
-
-def get_linkedevents_place(id):
-    url = f"https://api.hel.fi/linkedevents/v1/place/tprek:{id}/"
-    data = request_json(url)
-
-    # Extra information to raw data
-    data["origin"] = "linkedevents"
-
-    return url, data
 
 
 def prefix_and_mask(prefix, body):
@@ -296,20 +281,11 @@ custom_mappings = {
 }
 
 
-class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
-    LOCATION_INDEX = "location"
-    ADMINISTRATIVE_DIVISION_INDEX = "administrative_division"
-    HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX = (
-        "helsinki_common_administrative_division"
-    )
-    index_base_names = (
-        LOCATION_INDEX,
-        ADMINISTRATIVE_DIVISION_INDEX,
-        HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
-    )
+class LocationImporter(Importer[Root]):
+    index_base_names = ("location",)
 
     def run(self):  # noqa C901 this function could use some refactoring
-        self.apply_mapping(custom_mappings, self.LOCATION_INDEX)
+        self.apply_mapping(custom_mappings)
 
         logger.debug("Requesting data at {}".format(__name__))
 
@@ -318,8 +294,8 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
         tpr_units = get_tpr_units()
 
         opening_hours_fetcher = HaukiOpeningHoursFetcher(t["id"] for t in tpr_units)
+        administrative_division_fetcher = AdministrativeDivisionFetcher()
 
-        encountered_helsinki_areas = set()
         count = 0
         for tpr_unit in tpr_units:
             l = LanguageStringConverter(tpr_unit)
@@ -379,20 +355,12 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
             if opening_hours_link:
                 root.links.append(opening_hours_link)
 
-            try:
-                place_url, place = get_linkedevents_place(_id)
-
-                place_link = LinkedData(
-                    service="linkedevents", origin_url=place_url, raw_data=place
+            coordinates = venue.location.geoLocation.geometry.coordinates
+            venue.location.administrativeDivisions = (
+                administrative_division_fetcher.get_by_coordinates(
+                    longitude=coordinates.longitude, latitude=coordinates.latitude
                 )
-                venue.location.administrativeDivisions = [
-                    AdministrativeDivision(id=le_division.pop("ocd_id"), **le_division)
-                    for le_division in place["divisions"].copy()
-                ]
-
-                root.links.append(place_link)
-            except RequestException as exc:
-                logger.warning(f"Error while fetching {place_url}: {exc}")
+            )
 
             # Extra information to raw data
             tpr_unit["origin"] = "tpr"
@@ -443,45 +411,7 @@ class LocationImporter(Importer[Union[Root, AdministrativeDivision]]):
                 else None
             )
 
-            self.add_data(root, self.LOCATION_INDEX)
-
-            # all encountered administrative divisions are stored in their own index so
-            # that they can be easily returned from the GQL API. We might want to change
-            # this implementation in the future, maybe even use something else than ES.
-            for division in venue.location.administrativeDivisions:
-                self.add_data(
-                    division,
-                    self.ADMINISTRATIVE_DIVISION_INDEX,
-                    extra_params={"id": division.id},
-                )
-
-            # store a certain set of Helsinki's divisions into it's own index. This
-            # set is mostly meant to be used to provide division choices list for a
-            # UI. Whether this kind of set should be provided by US in the first
-            # place is a good question, and at least we probably want to build a
-            # separate administrative division importer, so this implementation is
-            # likely to change in the future.
-            #
-            # Currently includes all neighborhoods and sub districts with
-            # duplicates removed.
-            for division in sorted(
-                filter(
-                    lambda d: d.type in ("neighborhood", "sub_district")
-                    and division.municipality == "Helsinki",
-                    venue.location.administrativeDivisions,
-                ),
-                # make sure neighborhoods are processed before sub districts so that
-                # duplicates will always be indexed as neighborhoods
-                key=lambda d: d.type,
-            ):
-                cleaned_name = division.name["fi"].lower().strip()
-                if cleaned_name not in encountered_helsinki_areas:
-                    self.add_data(
-                        division,
-                        self.HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
-                        extra_params={"id": division.id},
-                    )
-                encountered_helsinki_areas.add(cleaned_name)
+            self.add_data(root)
 
             logger.debug(f"Fetched data count: {count}")
             count = count + 1

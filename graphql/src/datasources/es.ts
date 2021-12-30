@@ -143,7 +143,6 @@ class ElasticSearchAPI extends RESTDataSource {
           {
             location: [
               `venue.description.${lang}`,
-              `links.raw_data.short_desc_${lang}`,
             ],
             event: [`event.name.${lang}`, `event.description.${lang}`],
           }[index] ?? []
