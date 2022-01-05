@@ -19,6 +19,8 @@ from .utils import (
     request_json,
 )
 
+BATCH_SIZE = 100
+
 logger = logging.getLogger(__name__)
 
 
@@ -296,6 +298,7 @@ class LocationImporter(Importer[Root]):
         opening_hours_fetcher = HaukiOpeningHoursFetcher(t["id"] for t in tpr_units)
         administrative_division_fetcher = AdministrativeDivisionFetcher()
 
+        data_buffer: List[Root] = []
         count = 0
         for tpr_unit in tpr_units:
             l = LanguageStringConverter(tpr_unit)
@@ -411,9 +414,15 @@ class LocationImporter(Importer[Root]):
                 else None
             )
 
-            self.add_data(root)
+            data_buffer.append(root)
+            if len(data_buffer) >= BATCH_SIZE:
+                self.add_data_bulk(data_buffer)
+                data_buffer = []
 
             logger.debug(f"Fetched data count: {count}")
             count = count + 1
+
+        if data_buffer:
+            self.add_data_bulk(data_buffer)
 
         logger.info(f"Fetched {count} items in total")
