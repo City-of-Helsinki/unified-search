@@ -96,7 +96,7 @@ class Importer(ABC, Generic[IndexableData]):
             for index_name in (f"{alias}_1", f"{alias}_2"):
                 logger.debug(f"Deleting index {index_name}")
                 try:
-                    response = self.es.indices.delete(index=index_name)
+                    response = self.es.indices.delete(index=index_name, ignore=404)
                     logger.debug(response)
                 except NotFoundError as e:
                     if e.error == "index_not_found_exception":
@@ -162,7 +162,7 @@ class Importer(ABC, Generic[IndexableData]):
     def _delete_index(self, index) -> None:
         logger.debug(f"Deleting index {index}")
         try:
-            response = self.es.indices.delete(index=index)
+            response = self.es.indices.delete(index=index, ignore=404)
             logger.debug(response)
         except NotFoundError as e:
             if e.error == "index_not_found_exception":
@@ -173,7 +173,7 @@ class Importer(ABC, Generic[IndexableData]):
     def _delete_alias(self, alias: str) -> None:
         logger.debug(f"Deleting alias {alias}")
         try:
-            self.es.indices.delete_alias(index="*", name=alias)
+            self.es.indices.delete_alias(index="*", name=alias, ignore=404)
         except NotFoundError:
             pass
 
