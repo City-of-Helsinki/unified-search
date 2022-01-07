@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 from ...importers import (
+    AdministrativeDivisionImporter,
     EventImporter,
     LocationImporter,
     OntologyTreeImporter,
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 ImporterMap = Dict[
     str,
     Union[
+        Type[AdministrativeDivisionImporter],
         Type[EventImporter],
         Type[LocationImporter],
         Type[OntologyTreeImporter],
@@ -28,6 +30,7 @@ class Command(BaseCommand):
     help = "Ingest data from external data sources"
 
     all_importers: ImporterMap = {
+        "administrative_division": AdministrativeDivisionImporter,
         "location": LocationImporter,
         "event": EventImporter,
         "ontology_tree": OntologyTreeImporter,

@@ -27,6 +27,9 @@ jobs:
         with:
           python-version: '3.8'
 
+      - name: Install GDAL and SpatiaLite library extension
+        run: sudo apt-get install gdal-bin libsqlite3-mod-spatialite
+
       - name: Cache pip packages
         uses: actions/cache@v2
         env:
@@ -38,9 +41,11 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Install dependencies
+
+      - name: Install Python dependencies
         run: |
           pip install -r requirements.txt -r requirements-dev.txt codecov
+
       - name: Run tests
         run: pytest -ra -vv --doctest-modules --cov=.
 
@@ -63,6 +68,9 @@ jobs:
         with:
           python-version: '3.8'
 
+      - name: Install GDAL and SpatiaLite library extension
+        run: sudo apt-get install gdal-bin libsqlite3-mod-spatialite
+
       - name: Cache pip packages
         uses: actions/cache@v2
         env:
@@ -74,7 +82,8 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Install dependencies
+
+      - name: Install Python dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Formatting
