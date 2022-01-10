@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -c requirements.txt
     #   black
-attrs==21.3.0
+attrs==21.4.0
     # via
     #   -c requirements.txt
     #   flake8-bugbear
