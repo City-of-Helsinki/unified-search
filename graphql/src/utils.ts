@@ -71,3 +71,7 @@ export function targetFieldLanguages(
 
   return languages.map((language) => `${field}${language}`);
 }
+
+export function isDefined(value: any) {
+  return typeof value !== 'undefined';
+}

@@ -21,10 +21,9 @@ env:
   K8S_REQUEST_CPU: 150m
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 300m
-  K8S_LIMIT_RAM: 300Mi
-  DEBUG: 0
+  K8S_LIMIT_RAM: 600Mi
+  DEBUG: 1
   PLAYGROUND: 1
-  EVENT_URL: https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/
 
 jobs:
   build:
@@ -91,10 +90,8 @@ jobs:
         if: matrix.service == 'sources'
         env:
           SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_STAGING }}
-          EVENT_URL: ${{ env.EVENT_URL }}
         run: |
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
-          echo "K8S_SECRET_EVENT_URL=$EVENT_URL" >> $GITHUB_ENV
 
       - name: Deploy ${{ matrix.service }}
         uses: andersinno/kolga-deploy-action@v2
@@ -123,9 +120,9 @@ jobs:
           kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
           target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
           schedule: '0 4 * * *' # at 04:00 every day
-          max_duration: "10800" # Run maximum 3 hours
+          max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index location --delete && python manage.py ingest_data --index location}"
+          args: "{-c,python manage.py ingest_data location}"
 
       - name: Harvest event index
         uses: City-of-Helsinki/setup-cronjob-action@main
@@ -137,6 +134,34 @@ jobs:
           kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
           target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
           schedule: '0 1 * * *' # at 01:00 every day
-          max_duration: "10800" # Run maximum 3 hours
+          max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py ingest_data --index event --delete && python manage.py ingest_data --index event}"
+          args: "{-c,python manage.py ingest_data event}"
+
+      - name: Harvest ontology tree and word index
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          name: harvest-ontology-tree-and-words
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}/sources
+          image_tag:  ${{ github.sha }}
+          secret_name: project-staging-sources-secret
+          kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          schedule: '0 7 * * *' # at 07:00 every day
+          max_duration: "21600" # Run maximum 6 hours
+          command: "{/bin/sh}"
+          args: "{-c,python manage.py ingest_data ontology_tree; python manage.py ingest_data ontology_word}"
+
+      - name: Harvest administrative division indexes
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          name: harvest-administrative-division-indexes
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}/sources
+          image_tag:  ${{ github.sha }}
+          secret_name: project-staging-sources-secret
+          kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          schedule: '0 3 * * *' # at 03:00 every day
+          max_duration: "3600" # Run maximum 1 hour
+          command: "{/bin/sh}"
+          args: "{-c,python manage.py ingest_data administrative_division}"

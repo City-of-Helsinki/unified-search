@@ -18,10 +18,9 @@ env:
   K8S_REQUEST_CPU: 150m
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 300m
-  K8S_LIMIT_RAM: 300Mi
+  K8S_LIMIT_RAM: 600Mi
   DEBUG: 1
   PLAYGROUND: 1
-  EVENT_URL: https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/event/
 
 jobs:
   build:
@@ -88,10 +87,8 @@ jobs:
         if: matrix.service == 'sources'
         env:
           SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_STAGING }}
-          EVENT_URL: ${{ env.EVENT_URL }}
         run: |
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
-          echo "K8S_SECRET_EVENT_URL=$EVENT_URL" >> $GITHUB_ENV
 
       - name: Deploy ${{ matrix.service }}
         uses: andersinno/kolga-deploy-action@v2

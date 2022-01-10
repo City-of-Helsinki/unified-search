@@ -1,10 +1,24 @@
-const { makeExecutableSchema, ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
+
+import responseCachePlugin from 'apollo-server-plugin-response-cache';
+import { ValidationError } from 'apollo-server-express';
 
 import cors from 'cors';
 import express from 'express';
-import { createCursor, elasticLanguageFromGraphqlLanguage } from './utils';
+import {
+  createCursor,
+  elasticLanguageFromGraphqlLanguage,
+  getEsOffsetPaginationQuery,
+  isDefined,
+} from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
+import { OrderByDistanceParams, OrderByNameParams } from './datasources/es';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -16,6 +30,7 @@ const { eventSchema } = require('./schemas/event');
 const { actorSchema } = require('./schemas/actor');
 const { geoSchema } = require('./schemas/geojson');
 const { querySchema } = require('./schemas/query');
+const { ontologySchema } = require('./schemas/ontology');
 
 const { ElasticSearchAPI } = require('./datasources/es');
 
@@ -25,13 +40,21 @@ const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 type UnifiedSearchQuery = {
   q?: String;
   ontology?: string;
+  administrativeDivisionId?: string;
+  administrativeDivisionIds?: string[];
+  ontologyTreeId?: string;
+  ontologyTreeIds?: string[];
+  ontologyWordIds?: string[];
   index?: string;
   languages?: string[];
+  openAt?: string;
+  orderByDistance?: OrderByDistanceParams | null;
+  orderByName?: OrderByNameParams | null;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
   return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any, event: any } },
+    e: { _score: any; _source: { venue: any; event: any } },
     index: number
   ) {
     return {
@@ -49,6 +72,14 @@ function getHits(results: any) {
   return results.hits.total.value;
 }
 
+function getTodayString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return [year, month, day].join('-');
+}
+
 const resolvers = {
   Query: {
     unifiedSearch: async (
@@ -56,33 +87,70 @@ const resolvers = {
       {
         q,
         ontology,
+        administrativeDivisionId,
+        administrativeDivisionIds,
+        ontologyTreeId,
+        ontologyTreeIds,
+        ontologyWordIds,
         index,
         before,
         after,
         first,
         last,
         languages,
+        openAt,
+        orderByDistance,
+        orderByName,
       }: UnifiedSearchQuery,
-      { dataSources }: any
+      { dataSources }: any,
+      info: any
     ) => {
       const connectionArguments = { before, after, first, last };
+      const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
+
+      if (isDefined(orderByDistance) && isDefined(orderByName)) {
+        throw new ValidationError(
+          'Cannot use both "orderByDistance" and "orderByName".'
+        );
+      }
+      if (orderByDistance === null) {
+        throw new ValidationError('"orderByDistance" cannot be null.');
+      }
+      if (orderByName === null) {
+        throw new ValidationError('"orderByName" cannot be null.');
+      }
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         q,
         ontology,
+        administrativeDivisionId,
+        administrativeDivisionIds,
+        ontologyTreeId,
+        ontologyTreeIds,
+        ontologyWordIds,
         index,
-        connectionArguments,
-        elasticLanguageFromGraphqlLanguage(languages)
+        from,
+        size,
+        elasticLanguageFromGraphqlLanguage(languages),
+        openAt,
+        orderByDistance,
+        orderByName
       );
 
       const getCursor = (offset: number) =>
         createCursor<ConnectionCursorObject>({
-          offset,
+          offset: from + offset,
         });
 
       // Find shared data
       const edges = edgesFromEsResults(result, getCursor);
       const hits = getHits(result);
+
+      if (result.hits.hits.length >= 1000) {
+        info.cacheControl.setCacheHint({
+          maxAge: parseInt(process.env.CACHE_MAX_AGE ?? '3600', 10),
+        });
+      }
 
       return { es_results: [result], edges, hits, connectionArguments };
     },
@@ -104,7 +172,33 @@ const resolvers = {
         })),
       };
     },
+    administrativeDivisions: async (_, args, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getAdministrativeDivisions(
+        args
+      );
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+      }));
+    },
+    ontologyTree: async (_, args, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getOntologyTree(args);
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+      }));
+    },
+    ontologyWords: async (_, args, { dataSources }: any) => {
+      const res = await dataSources.elasticSearchAPI.getOntologyWords(args);
+
+      return res.hits.hits.map((hit: any) => ({
+        id: hit._id,
+        ...hit._source,
+        label: hit._source.name,
+      }));
+    },
   },
+
   SearchResultConnection: {
     count({ hits }: any) {
       return hits;
@@ -139,8 +233,20 @@ const resolvers = {
     images({ venue }: any, args: any, context: any, info: any) {
       return venue.images;
     },
+    ontologyWords({ venue }: any) {
+      return venue.ontologyWords;
+    },
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
+    },
+  },
+
+  OpeningHours: {
+    today({ data }: any) {
+      const openingHoursToday = data.find(
+        (openingHoursDay) => openingHoursDay.date === getTodayString()
+      );
+      return openingHoursToday ? openingHoursToday.times : [];
     },
   },
 
@@ -154,7 +260,6 @@ const resolvers = {
     meta({ event }: any, args: any, context: any, info: any) {
       return event.meta;
     },
-
   },
 
   RawJSON: {
@@ -181,12 +286,31 @@ const resolvers = {
   },
   GeoJSONGeometryInterface: {
     __resolveType(obj: any, context: any, info: any) {
-      return null;
+      return 'GeoJSONPoint';
     },
   },
   GeoJSONInterface: {
     __resolveType(obj: any, context: any, info: any) {
       return null;
+    },
+  },
+  GeoJSONPoint: {
+    type() {
+      return 'Point';
+    },
+    coordinates(obj: any) {
+      const long = obj.geometry?.coordinates?.longitude ?? obj.longitude;
+      const lat = obj.geometry?.coordinates?.latitude ?? obj.latitude;
+
+      return long && lat ? [long, lat] : null;
+    },
+  },
+  GeoJSONFeature: {
+    type() {
+      return 'Point';
+    },
+    geometry(parent: any) {
+      return parent;
     },
   },
 };
@@ -203,6 +327,7 @@ const combinedSchema = makeExecutableSchema({
     eventSchema,
     actorSchema,
     geoSchema,
+    ontologySchema,
   ],
   resolvers,
 });
@@ -216,7 +341,12 @@ const combinedSchema = makeExecutableSchema({
       };
     },
     introspection: true,
-    playground: process.env.PLAYGROUND || false,
+    plugins: [
+      process.env.PLAYGROUND
+        ? ApolloServerPluginLandingPageGraphQLPlayground()
+        : ApolloServerPluginLandingPageDisabled(),
+      responseCachePlugin(),
+    ],
   });
 
   let serverIsReady = false;
@@ -244,6 +374,8 @@ const combinedSchema = makeExecutableSchema({
   app.get('/readiness', (request, response) => {
     checkIsServerReady(response);
   });
+
+  await server.start();
 
   server.applyMiddleware({ app, path: '/search' });
 

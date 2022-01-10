@@ -16,6 +16,7 @@ RUN apt-install.sh \
     python3-gdal \
     gcc \
     libc-dev \
+    libsqlite3-mod-spatialite \
     && apt-cleanup.sh \
     build-essential \
     pkg-config

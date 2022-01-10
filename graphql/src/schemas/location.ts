@@ -7,7 +7,7 @@ export const locationSchema = `
   type Venue {
     meta: NodeMeta
     name: LanguageString
-    location: LocationDescription
+    location: LocationDescription @cacheControl(inheritMaxAge: true)
     description: LanguageString
     descriptionResources: DescriptionResources
     partOf: Venue
@@ -20,16 +20,18 @@ export const locationSchema = `
     additionalInfo: String
     facilities: [VenueFacility!]
     images: [Image]
+    ontologyWords: [OntologyWord]
   }
   """
   Free-form location, not necessarily at a know venue.
   """
   type LocationDescription {
     url: LanguageString
-    geoLocation: GeoJSONFeature
+    geoLocation: GeoJSONFeature @cacheControl(inheritMaxAge: true)
     address: Address
     explanation: String
-	@origin(service: "linked", type: "event", attr: "location_extra_info")
+    @origin(service: "linked", type: "event", attr: "location_extra_info")
+    administrativeDivisions: [AdministrativeDivision]
     venue: Venue
   }
   """TODO: take this from service map / TPREK"""
@@ -46,6 +48,8 @@ export const locationSchema = `
   type OpeningHours {
     url: String
     is_open_now_url: String
+    today: [OpeningHoursTimes]
+    data: [OpeningHoursDay]
   }
 
   type Image {
@@ -53,4 +57,28 @@ export const locationSchema = `
     caption: LanguageString
   }
 
+  type AdministrativeDivision {
+    id: ID
+    type: String
+    municipality: String
+    name: LanguageString
+  }
+
+  type OntologyWord {
+    id: ID
+    label: LanguageString
+  }
+
+  type OpeningHoursDay {
+    date: String
+    times: [OpeningHoursTimes]
+  }
+
+  type OpeningHoursTimes {
+    startTime: String
+    endTime: String
+    endTimeOnNextDay: Boolean
+    resourceState: String
+    fullDay: Boolean
+  }
 `;

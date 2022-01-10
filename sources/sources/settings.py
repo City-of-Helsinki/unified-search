@@ -26,7 +26,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ES_URI = os.getenv("ES_URI")
 
 # Allow custom URL for testing purposes e.g. to match dev version of Linkedevents
-EVENT_URL = os.getenv("EVENT_URL", "https://api.hel.fi/linkedevents/v1/event/")
+EVENT_URL = os.getenv(
+    "EVENT_URL", "https://api.hel.fi/linkedevents/v1/event/?start=today"
+)
 
 DEBUG = os.getenv("DEBUG", "false").lower() in ("yes", "true", "t", "1")
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "munigeo",
     "ingest",
 ]
 
@@ -81,7 +84,7 @@ WSGI_APPLICATION = "sources.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "ENGINE": "django.contrib.gis.db.backends.spatialite",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
@@ -133,7 +136,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            "level": "DEBUG" if DEBUG else "INFO",
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
@@ -143,18 +146,17 @@ LOGGING = {
         "": {
             "handlers": ["console"],
             "propagate": True,
-            "level": 'DEBUG' if DEBUG else 'INFO',
+            "level": "DEBUG" if DEBUG else "INFO",
         },
         "django.request": {
             "handlers": ["console"],
             "propagate": False,
-            'level': 'DEBUG' if DEBUG else 'WARNING',
+            "level": "DEBUG" if DEBUG else "WARNING",
         },
         "elasticsearch": {
             "handlers": ["console"],
             "propagate": False,
-            'level': 'DEBUG' if DEBUG else 'WARNING',
+            "level": "DEBUG" if DEBUG else "WARNING",
         },
-
     },
 }

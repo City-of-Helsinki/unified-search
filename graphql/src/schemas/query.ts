@@ -27,7 +27,7 @@ export const querySchema = `
     count: Int
     max_score: Float
     pageInfo: SearchResultPageInfo
-    edges: [SearchResultEdge!]!
+    edges: [SearchResultEdge!]! @cacheControl(inheritMaxAge: true)
   }
 
   type SearchResultPageInfo {
@@ -39,13 +39,13 @@ export const querySchema = `
 
   type SearchResultEdge {
     cursor: String!
-    node: SearchResultNode!
+    node: SearchResultNode! @cacheControl(inheritMaxAge: true)
   }
 
   type SearchResultNode {
     _score: Float
     id: ID!
-    venue: Venue
+    venue: Venue @cacheControl(inheritMaxAge: true)
     event: Event
     searchCategories: [UnifiedSearchResultCategory!]!
   }
@@ -56,6 +56,21 @@ export const querySchema = `
 
   type SearchSuggestionConnection {
     suggestions: [Suggestion]!
+  }
+
+  enum SortOrder {
+    ASCENDING
+    DESCENDING
+  }
+
+  input OrderByDistance {
+    latitude: Float!
+    longitude: Float!
+    order: SortOrder = ASCENDING
+  }
+
+  input OrderByName {
+    order: SortOrder = ASCENDING
   }
 
   type Query {
@@ -69,6 +84,31 @@ export const querySchema = `
         Optional, filter to match only these ontology words
         """
         ontology: String,
+
+        """
+        Optional, filter to match only this administrative division. DEPRECATED! use administrativeDivisionIds instead.
+        """
+        administrativeDivisionId: ID
+
+        """
+        Optional, filter to match only these administrative divisions
+        """
+        administrativeDivisionIds: [ID],
+
+        """
+        Optional, filter to match only this ontology tree id. DEPRECATED! use ontologyTreeIds instead.
+        """
+        ontologyTreeId: ID
+
+        """
+        Optional, filter to match only these ontology tree ids
+        """
+        ontologyTreeIds: [ID],
+
+        """
+        Optional, filter to match only these ontology word ids
+        """
+        ontologyWordIds: [ID],
 
         """
         Optional search index.
@@ -104,6 +144,24 @@ export const querySchema = `
         """
         languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
 
+        """
+        Return only venues that are open at the given moment. In addition to ISO 8601 datetimes, accepts values
+        conforming to Elastic Search date math (https://www.elastic.co/guide/en/elasticsearch/reference/7.x/common-options.html#date-math)
+        like "now+3h". When there is a datetime provided without a timezone offset, "Europe/Helsinki" will be assumed
+        as the time zone.
+        """
+        openAt: String
+
+        """
+        Order results by distance to given coordinates. Cannot be used with "orderByName".
+        """
+        orderByDistance: OrderByDistance
+
+        """
+        Order results by venue name in language given as the first value in "languages" argument. Cannot be used with "orderByDistance".
+        """
+        orderByName: OrderByName
+
       ): SearchResultConnection
 
     unifiedSearchCompletionSuggestions(
@@ -126,6 +184,21 @@ export const querySchema = `
       Optional result size.
       """
       size: Int = 5
-      ): SearchSuggestionConnection
+    ): SearchSuggestionConnection
+
+    administrativeDivisions(
+        """
+        Return only Helsinki administrative divisions that make a sensible set to be used as an option list in an UI for example.
+        """
+        helsinkiCommonOnly: Boolean): [AdministrativeDivision]
+
+    ontologyTree(
+      rootId: ID
+      leavesOnly: Boolean
+     ): [OntologyTree]
+
+    ontologyWords(
+      ids: [ID!]
+    ): [OntologyWord]
   }
 `;
