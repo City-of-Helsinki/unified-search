@@ -10,6 +10,8 @@ import { ValidationError } from 'apollo-server-express';
 
 import cors from 'cors';
 import express from 'express';
+import * as Sentry from '@sentry/node';
+
 import {
   createCursor,
   elasticLanguageFromGraphqlLanguage,
@@ -332,6 +334,41 @@ const combinedSchema = makeExecutableSchema({
   resolvers,
 });
 
+const sentryConfig = {
+  // adapted from https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
+  requestDidStart(_) {
+    return {
+      didEncounterErrors(ctx) {
+        // If we couldn't parse the operation, don't
+        // do anything here
+        if (!ctx.operation) {
+          return;
+        }
+        for (const err of ctx.errors) {
+          // Add scoped report details and send to Sentry
+          Sentry.withScope((scope) => {
+            // Annotate whether failing operation was query/mutation/subscription
+            scope.setTag('kind', ctx.operation.operation);
+            // Log query and variables as extras
+            // (make sure to strip out sensitive data!)
+            scope.setExtra('query', ctx.request.query);
+            scope.setExtra('variables', ctx.request.variables);
+            if (err.path) {
+              // We can also add the path as breadcrumb
+              scope.addBreadcrumb({
+                category: 'query-path',
+                message: err.path.join(' > '),
+                level: Sentry.Severity.Debug,
+              });
+            }
+            Sentry.captureException(err);
+          });
+        }
+      },
+    };
+  },
+};
+
 (async () => {
   const server = new ApolloServer({
     schema: combinedSchema,
@@ -346,6 +383,7 @@ const combinedSchema = makeExecutableSchema({
         ? ApolloServerPluginLandingPageGraphQLPlayground()
         : ApolloServerPluginLandingPageDisabled(),
       responseCachePlugin(),
+      sentryConfig,
     ],
   });
 
@@ -390,3 +428,5 @@ const combinedSchema = makeExecutableSchema({
     );
   });
 })();
+
+Sentry.init({ dsn: process.env.SENTRY_DSN });
