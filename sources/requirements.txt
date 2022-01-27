@@ -42,7 +42,7 @@ django-parler-rest==2.1
     # via django-munigeo
 djangorestframework==3.13.1
     # via django-parler-rest
-elasticsearch==7.16.2
+elasticsearch==7.13.4
     # via -r requirements.in
 idna==3.3
     # via requests
