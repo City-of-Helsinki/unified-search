@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pytest
 from django.conf import settings
-from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch
 
 from ..base import Importer
 
@@ -38,7 +38,7 @@ def assert_snapshot_match_es_data_and_aliases(snapshot, es):
 
 @pytest.fixture
 def es():
-    es = Elasticsearch([settings.ES_URI])
+    es = OpenSearch([settings.ES_URI])
     yield es
     es.indices.delete("test_*")
 

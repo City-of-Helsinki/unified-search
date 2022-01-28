@@ -1,10 +1,8 @@
 import logging
 import requests
 import json
-import time
 
-from elasticsearch import exceptions
-from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch
 
 
 """ Running:
@@ -29,9 +27,9 @@ def test_es_up():
 
 
 def test_es_search():
-    """ Search after running management command to fill ES from data sources. """
+    """Search after running management command to fill ES from data sources."""
 
-    es = Elasticsearch([{"host": "localhost", "port": 9200}])
+    es = OpenSearch([{"host": "localhost", "port": 9200}])
 
     query = {"query": {"match": {"fi": {"query": "kivist", "fuzziness": "AUTO"}}}}
 
