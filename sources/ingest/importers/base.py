@@ -4,8 +4,8 @@ from dataclasses import asdict, is_dataclass
 from typing import Generic, List, Optional, Tuple, TypeVar
 
 from django.conf import settings
-from elasticsearch import Elasticsearch, NotFoundError
-from elasticsearch.helpers import bulk
+from opensearchpy import NotFoundError, OpenSearch
+from opensearchpy.helpers import bulk
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class Importer(ABC, Generic[IndexableData]):
             raise NotImplementedError(
                 f"Importer {self.__class__.__name__} is missing index_base_names."
             )
-        self.es = Elasticsearch([settings.ES_URI])
+        self.es = OpenSearch([settings.ES_URI])
 
     @abstractmethod
     def run(self) -> None:

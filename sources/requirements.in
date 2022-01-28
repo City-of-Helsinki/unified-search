@@ -1,6 +1,6 @@
 certifi
 Django
-elasticsearch<7.14.0
+opensearch-py
 requests
 pyhumps
 # TODO use PyPI version once available

@@ -1,10 +1,8 @@
 import logging
 import requests
 import json
-import time
 
-from elasticsearch import exceptions
-from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch, exceptions
 
 
 """ Running:
@@ -23,16 +21,16 @@ logging.basicConfig(
 
 
 def test_es_up():
-    logging.debug("Checking ElasticSearch connection")
+    logging.debug("Checking OpenSearch connection")
     r = requests.get("http://localhost:9200")
     logging.debug(json.dumps(json.loads(r.content), indent=4))
     assert r.status_code == 200
 
 
 def test_es_basic_operations():
-    """ Run basic operations for testing purposes. """
+    """Run basic operations for testing purposes."""
 
-    es = Elasticsearch([{"host": "localhost", "port": 9200}])
+    es = OpenSearch([{"host": "localhost", "port": 9200}])
 
     try:
         logging.debug("Deleting existing test data")
