@@ -1,6 +1,8 @@
 name: Build & Stable
 on:
   push:
+    tags:
+      - "release-*"
     branches:
       - main
 
