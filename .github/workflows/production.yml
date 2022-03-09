@@ -15,6 +15,7 @@ env:
   KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW_STABLE }}
   BUILD_ARTIFACT_FOLDER: "build_artifacts"
   SERVICE_ARTIFACT_FOLDER: "service_artifacts"
+  APP_MIGRATE_COMMAND: /app/.prod/on_deploy.sh
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STABLE }}
   ES_HOST: ${{ secrets.K8S_SECRET_ELASTICSEARCH_HOST_STABLE }}
   ES_PORT: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STABLE }}
