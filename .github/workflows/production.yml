@@ -127,7 +127,7 @@ jobs:
           schedule: '0 3 * * *' # at 03:00 every day
           max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py migrate --noinput; python manage.py ingest_data location}"
+          args: "{-c,python manage.py migrate --noinput && python manage.py ingest_data location}"
 
       - name: Harvest event index
         uses: City-of-Helsinki/setup-cronjob-action@main
@@ -141,7 +141,7 @@ jobs:
           schedule: '0 0 * * *' # at 00:00 every day
           max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py migrate --noinput; python manage.py ingest_data event}"
+          args: "{-c,python manage.py migrate --noinput && python manage.py ingest_data event}"
 
       - name: Harvest ontology tree and word index
         uses: City-of-Helsinki/setup-cronjob-action@main
@@ -155,7 +155,7 @@ jobs:
           schedule: '0 6 * * *' # at 06:00 every day
           max_duration: "21600" # Run maximum 6 hours
           command: "{/bin/sh}"
-          args: "{-c,python manage.py migrate --noinput; python manage.py ingest_data ontology_tree; python manage.py ingest_data ontology_word}"
+          args: "{-c,python manage.py migrate --noinput && python manage.py ingest_data ontology_tree && python manage.py ingest_data ontology_word}"
 
       - name: Harvest administrative division indexes
         uses: City-of-Helsinki/setup-cronjob-action@main
@@ -169,4 +169,4 @@ jobs:
           schedule: '0 2 * * *' # at 02:00 every day
           max_duration: "3600" # Run maximum 1 hour
           command: "{/bin/sh}"
-          args: "{-c,python manage.py migrate --noinput; python manage.py ingest_data administrative_division}"
+          args: "{-c,python manage.py migrate --noinput && python manage.py ingest_data administrative_division}"
