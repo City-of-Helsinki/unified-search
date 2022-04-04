@@ -13,7 +13,6 @@ env:
   KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW_STAGING }}
   BUILD_ARTIFACT_FOLDER: "build_artifacts"
   SERVICE_ARTIFACT_FOLDER: "service_artifacts"
-  APP_MIGRATE_COMMAND: /app/.prod/on_deploy.sh
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}
   ES_HOST: ${{ secrets.K8S_SECRET_ELASTICSEARCH_HOST_STAGING }}
   ES_PORT: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STAGING }}
@@ -93,6 +92,7 @@ jobs:
         if: matrix.service == 'sources'
         env:
           SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_STAGING }}
+          APP_MIGRATE_COMMAND: /app/.prod/on_deploy.sh
         run: |
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
 
