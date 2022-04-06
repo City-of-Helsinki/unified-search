@@ -11,6 +11,9 @@ const ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX =
 const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
 const ES_ONTOLOGY_WORD_INDEX = 'ontology_word';
 const DEFAULT_TIME_ZONE = 'Europe/Helsinki';
+// The default page size when the first or last arguments are not given.
+// This is the default page size set by OpenSearch / ElasticSearch
+const ES_DEFAULT_PAGE_SIZE = 10;
 
 type OntologyTreeParams = {
   rootId?: string;
@@ -141,9 +144,7 @@ class ElasticSearchAPI extends RESTDataSource {
       1: (lang: string, index: string) => {
         return (
           {
-            location: [
-              `venue.description.${lang}`,
-            ],
+            location: [`venue.description.${lang}`],
             event: [`event.name.${lang}`, `event.description.${lang}`],
           }[index] ?? []
         );
@@ -410,4 +411,4 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 }
 
-export { ElasticSearchAPI };
+export { ElasticSearchAPI, ES_DEFAULT_PAGE_SIZE };
