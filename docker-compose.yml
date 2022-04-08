@@ -18,7 +18,7 @@ services:
     volumes:
       - ./sources:/app
     networks:
-      - elastic
+      - opensearch-net
 
   search-api:
     <<: *base
@@ -32,86 +32,100 @@ services:
       - "4000:4000"
     restart: unless-stopped
     networks:
-      - elastic
+      - opensearch-net
 
-  es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    container_name: es01
+  opensearch-node1:
+    image: opensearchproject/opensearch:1.3.1
+    container_name: opensearch-node1
     environment:
-      - node.name=es01
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
     ulimits:
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
     volumes:
-      - data01:/usr/share/elasticsearch/data
+      - opensearch-data1:/usr/share/opensearch/data
     ports:
       - 9200:9200
+      - 9600:9600 # required for Performance Analyzer
     networks:
-      - elastic
-
-  es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    container_name: es02
+      - opensearch-net
+  
+  opensearch-node2:
+    image: opensearchproject/opensearch:1.3.1
+    container_name: opensearch-node2
     environment:
-      - node.name=es02
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es03
-      - cluster.initial_master_nodes=es01,es02,es03
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node2
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
     volumes:
-      - data02:/usr/share/elasticsearch/data
+      - opensearch-data2:/usr/share/opensearch/data
     networks:
-      - elastic
+      - opensearch-net
 
-  es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    container_name: es03
+  opensearch-node3:
+    image: opensearchproject/opensearch:1.3.1
+    container_name: opensearch-node3
     environment:
-      - node.name=es03
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es02
-      - cluster.initial_master_nodes=es01,es02,es03
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node3
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
     volumes:
-      - data03:/usr/share/elasticsearch/data
+      - opensearch-data3:/usr/share/opensearch/data
     networks:
-      - elastic
+      - opensearch-net
 
-  kib01:
-    image: docker.elastic.co/kibana/kibana:7.11.1
-    container_name: kib01
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:1.3.1
+    container_name: opensearch-dashboards
     ports:
       - 5601:5601
+    expose:
+      - "5601"
     environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: '["http://es01:9200","http://es02:9200","http://es03:9200"]'
+      - 'OPENSEARCH_HOSTS=["http://opensearch-node1:9200","http://opensearch-node2:9200","http://opensearch-node3:9200"]'
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true" # disables security dashboards plugin in OpenSearch Dashboards
     networks:
-      - elastic
+      - opensearch-net
 
 volumes:
-  data01:
+  opensearch-data1:
     driver: local
-  data02:
+  opensearch-data2:
     driver: local
-  data03:
+  opensearch-data3:
     driver: local
-
 networks:
-  elastic:
+  opensearch-net:
     driver: bridge

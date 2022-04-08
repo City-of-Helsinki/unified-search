@@ -5,14 +5,17 @@ This is common unified search: multi domain search over multiple services.
 Solution consists of following parts:
 
 [Data collector](https://github.com/City-of-Helsinki/unified-search/tree/develop/sources)
-- Python Django application for fetching data from multiple sources and storing it to Elasticsearch.
+
+- Python Django application for fetching data from multiple sources and storing it to the OpenSearch (or earlier to the Elasticsearch).
 - Django management commands are triggered by Kubernetes cron jobs.
 
-Elasticsearch
+OpenSearch
+
 - Search engine for indexing the data.
 
 [GraphQL API](https://github.com/City-of-Helsinki/unified-search/tree/develop/graphql)
-- GraphQL API on top of Elasticsearch providing high level interface for end (frontend) users.
+
+- GraphQL API on top of OpenSearch providing high level interface for end (frontend) users.
 
 # Endpoints
 
@@ -32,17 +35,18 @@ To verify nodes are up and running:
 Services:
 
 - GraphQL search API: http://localhost:4000/search
-- Kibana at http://localhost:5601
-- Kibana Dev Tools at http://localhost:5601/app/dev_tools#/console
-- ElasticSearch at http://localhost:9200
+- OpenSearch Dashboard at http://localhost:5601
+- OpenSearch Dashboard Dev Tools at http://localhost:5601/app/dev_tools#/console
+- OpenSearch at http://localhost:9200
 - Data sources (data collector) at http://localhost:5000/
 
 Deprecated:
+
 - Graphene based testing GraphQL search API at http://localhost:5001/graphql
 
 ## Fetching data with data collector
 
-Following management command can be used to fetch data from external data sources and store it to Elasticsearch:
+Following management command can be used to fetch data from external data sources and store it to OpenSearch:
 
     docker-compose exec sources python manage.py ingest_data
 
@@ -188,7 +192,6 @@ It is recommended to use GraphQL client such as Altair for sending queries.
       }
     }
 
-
 ### Raw data for debugging purposes
 
     query {
@@ -236,7 +239,6 @@ It is recommended to use GraphQL client such as Altair for sending queries.
       }
     }
 
-
 ### Date ranges
 
 Date can be used in queries assuming mapping type is correct (`date` in ES, `datetime.datetime` in Python):
@@ -260,7 +262,6 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.h
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
 
-
 ## GraphQL search API - using curl
 
     $ curl --insecure -X POST -H "Content-Type: application/json" --data '{"query":"query{unifiedSearch(q:\"leikkipuisto\", index:\"location\"){count}}"}' <GraphQL base URL>/search
@@ -277,13 +278,12 @@ Install dependencies from requirements.txt:
 
     pip install -r requirements.txt
 
-
 ## Known issues
 
 1. New index is added but Elasticsearch returns elasticsearch.exceptions.AuthorizationException.
 
-    Elasticsearch access control list needs to be updated with access to new index. When using Aiven it
-    can be done from its control panel (under ACL).
+   Elasticsearch access control list needs to be updated with access to new index. When using Aiven it
+   can be done from its control panel (under ACL).
 
 # Issues board
 
