@@ -62,3 +62,13 @@ class LanguageTestCase(TestCase):
         )
         self.assertEqual(l.get_language_string("baz"), None)
         self.assertEqual(l.get_language_string("foz"), None)
+
+    def test_language_string_text(self):
+        input = {"foo_fi": "kissa", "bar_fi": "koira"}
+        l = LanguageStringConverter(input)
+        assert l.get_language_string("foo").text == input["foo_fi"]
+
+    def test_language_string_default_language(self):
+        input = {"foo_fi": "kissa", "bar_fi": "koira"}
+        l = LanguageStringConverter(input)
+        assert l.get_language_string("foo").defaultLanguage == "FI"
