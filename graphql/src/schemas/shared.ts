@@ -18,8 +18,6 @@ export const sharedSchema = `
     fi: String
     sv: String
     en: String
-    text: String!
-    defaultLanguage: Language
   }
   """
   any kind of description answering the question "when".
