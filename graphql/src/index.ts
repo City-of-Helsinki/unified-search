@@ -1,5 +1,5 @@
 const { ApolloServer } = require('apollo-server-express');
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { buildSubgraphSchema } from '@apollo/subgraph';
 import {
   ApolloServerPluginLandingPageGraphQLPlayground,
   ApolloServerPluginLandingPageDisabled,
@@ -317,14 +317,14 @@ const resolvers = {
   },
 };
 
-const combinedSchema = makeExecutableSchema({
+const combinedSchema = buildSubgraphSchema({
   typeDefs: [
     querySchema,
     elasticSearchSchema,
     palvelukarttaSchema,
     linkedeventsSchema,
     locationSchema,
-    sharedSchema,
+    sharedSchema, // FIXME: OVerlapping with events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql); Keyword and Location Image
     reservationSchema,
     eventSchema,
     actorSchema,
@@ -377,14 +377,10 @@ const sentryConfig = {
         elasticSearchAPI: new ElasticSearchAPI(),
       };
     },
+    playground:
+      process.env.PLAYGROUND !== null ? Boolean(process.env.PLAYGROUND) : true,
     introspection: true,
-    plugins: [
-      process.env.PLAYGROUND
-        ? ApolloServerPluginLandingPageGraphQLPlayground()
-        : ApolloServerPluginLandingPageDisabled(),
-      responseCachePlugin(),
-      sentryConfig,
-    ],
+    plugins: [responseCachePlugin(), sentryConfig],
   });
 
   let serverIsReady = false;

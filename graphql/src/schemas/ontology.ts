@@ -1,4 +1,5 @@
-export const ontologySchema = `
+import { gql } from 'graphql-tag';
+export const ontologySchema = gql`
   type OntologyTree {
     id: ID
     parentId: ID
