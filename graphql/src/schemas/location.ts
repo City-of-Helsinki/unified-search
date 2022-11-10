@@ -1,4 +1,5 @@
-export const locationSchema = `
+import { gql } from 'graphql-tag';
+export const locationSchema = gql`
   """
   A place that forms a unit and can be used for some specific purpose -
   respa unit or resource, service map unit, beta.kultus venue, linked
@@ -19,7 +20,7 @@ export const locationSchema = `
     arrivalInstructions: String
     additionalInfo: String
     facilities: [VenueFacility!]
-    images: [Image]
+    images: [LocationImage]
     ontologyWords: [OntologyWord]
   }
   """
@@ -30,20 +31,24 @@ export const locationSchema = `
     geoLocation: GeoJSONFeature @cacheControl(inheritMaxAge: true)
     address: Address
     explanation: String
-    @origin(service: "linked", type: "event", attr: "location_extra_info")
+      @origin(service: "linked", type: "event", attr: "location_extra_info")
     administrativeDivisions: [AdministrativeDivision]
     venue: Venue
   }
-  """TODO: take this from service map / TPREK"""
+  """
+  TODO: take this from service map / TPREK
+  """
   type AccessibilityProfile {
     meta: NodeMeta
     todo: String
   }
-  """TODO: combine beta.kultus Venue stuff with respa equipment type"""
+  """
+  TODO: combine beta.kultus Venue stuff with respa equipment type
+  """
   type VenueFacility {
     meta: NodeMeta
     name: String!
-    categories: [Keyword!]
+    categories: [KeywordString!]
   }
   type OpeningHours {
     url: String
@@ -52,7 +57,7 @@ export const locationSchema = `
     data: [OpeningHoursDay]
   }
 
-  type Image {
+  type LocationImage {
     url: String
     caption: LanguageString
   }

@@ -1,20 +1,28 @@
-export const sharedSchema = `
+import { gql } from 'graphql-tag';
+export const sharedSchema = gql`
   scalar DateTime
   type NodeMeta @cacheControl(inheritMaxAge: true) {
     id: ID!
     createdAt: DateTime
     updatedAt: DateTime
   }
-  """TODO: merge all free tags, categories, and keywords"""
-  type Keyword {
+  """
+  TODO: merge all free tags, categories, and keywords
+  KEYWORDS ARE GIVEN FROM events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql)
+  """
+  type KeywordString {
     name: String!
   }
-  """TODO: take from Profile or external source"""
+  """
+  TODO: take from Profile or external source
+  """
   enum Language {
     FI
   }
-  """TODO: convert all String's to LanguageString's if linguistic content"""
-  type LanguageString @cacheControl(inheritMaxAge: true){
+  """
+  TODO: convert all String's to LanguageString's if linguistic content
+  """
+  type LanguageString @cacheControl(inheritMaxAge: true) {
     fi: String
     sv: String
     en: String
@@ -24,9 +32,8 @@ export const sharedSchema = `
   """
   type TimeDescription {
     starting: DateTime
-	@origin(service: "linked", type: "event", attr: "start_time")
-    ending: DateTime
-	@origin(service: "linked", type: "event", attr: "end_time")
+      @origin(service: "linked", type: "event", attr: "start_time")
+    ending: DateTime @origin(service: "linked", type: "event", attr: "end_time")
     otherTime: TimeDescription
   }
   """
@@ -35,13 +42,15 @@ export const sharedSchema = `
   """
   type DescriptionResources {
     mediaResources: [MediaResource!]!
-	@origin(service: "linked", type: "event", attr: "images")
-	@origin(service: "linked", type: "event", attr: "videos")
+      @origin(service: "linked", type: "event", attr: "images")
+      @origin(service: "linked", type: "event", attr: "videos")
     infoUrls: [String!]!
-	@origin(service: "linked", type: "event", attr: "info_url")
+      @origin(service: "linked", type: "event", attr: "info_url")
     externalLinks: [String!]!
   }
-  """TODO: take this from Linked events Image type."""
+  """
+  TODO: take this from Linked events Image type.
+  """
   type MediaResource {
     meta: NodeMeta
     todo: String

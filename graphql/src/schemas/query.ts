@@ -1,6 +1,6 @@
-export const querySchema = `
-
-""" Query """
+import { gql } from 'graphql-tag';
+export const querySchema = gql`
+  extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
   directive @origin(service: String, type: String, attr: String) repeatable on FIELD_DEFINITION | OBJECT
 

@@ -1,5 +1,8 @@
-export const actorSchema = `
-  """TODO: take from Profile"""
+import { gql } from 'graphql-tag';
+export const actorSchema = gql`
+  """
+  TODO: take from Profile
+  """
   type Person {
     meta: NodeMeta
     name: String
@@ -20,7 +23,9 @@ export const actorSchema = `
     "If the person has proved their legal identity"
     LEGALLY_CONNECTED
   }
-  """TODO: merge beta.kultus organisation, etc"""
+  """
+  TODO: merge beta.kultus organisation, etc
+  """
   type Organisation {
     meta: NodeMeta
     contactDetails: ContactInfo
@@ -37,8 +42,7 @@ export const actorSchema = `
   Contact details for a person, legal entity, venue or project
   """
   type ContactInfo
-    @origin(service: "linked", type: "event", attr: "provider_contact_info")
-  {
+    @origin(service: "linked", type: "event", attr: "provider_contact_info") {
     contactUrl: String
     phoneNumbers: [PhoneNumber!]!
     emailAddresses: [String!]!
@@ -48,7 +52,9 @@ export const actorSchema = `
     countryCode: String!
     restNumber: String!
   }
-  """TODO: give real structure"""
+  """
+  TODO: give real structure
+  """
   type Address {
     postalCode: String
     streetAddress: LanguageString
