@@ -29,7 +29,7 @@ export const eventSchema = gql`
     published: DateTime
       @origin(service: "linked", type: "event", attr: "date_published")
     contactPerson: LegalEntity
-    eventLanguages: [Language!]!
+    eventLanguages: [UnifiedSearchLanguageEnum!]!
       @origin(service: "linked", type: "event", attr: "in_language")
     subEvents: [Event!]!
       @origin(service: "linked", type: "event", attr: "sub_events")
