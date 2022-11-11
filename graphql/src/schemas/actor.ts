@@ -8,7 +8,7 @@ export const actorSchema = gql`
     name: String
     identificationStrength: IdentificationStrength
     contactDetails: ContactInfo
-    preferredLanguages: [Language!]
+    preferredLanguages: [UnifiedSearchLanguageEnum!]
     preferredMedium: ContactMedium
   }
   enum IdentificationStrength {

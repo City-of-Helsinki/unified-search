@@ -16,7 +16,7 @@ export const sharedSchema = gql`
   """
   TODO: take from Profile or external source
   """
-  enum Language {
+  enum UnifiedSearchLanguageEnum {
     FI
   }
   """
