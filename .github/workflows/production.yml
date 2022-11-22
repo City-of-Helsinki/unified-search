@@ -3,8 +3,6 @@ on:
   push:
     tags:
       - "release-*"
-    branches:
-      - main
 
 env:
   CONTAINER_REGISTRY: ghcr.io
