@@ -5,13 +5,13 @@ export const locationSchema = gql`
   respa unit or resource, service map unit, beta.kultus venue, linked
   events place, Kukkuu venue
   """
-  type Venue {
+  type UnifiedSearchVenue {
     meta: NodeMeta
     name: LanguageString
     location: LocationDescription @cacheControl(inheritMaxAge: true)
     description: LanguageString
     descriptionResources: DescriptionResources
-    partOf: Venue
+    partOf: UnifiedSearchVenue
     openingHours: OpeningHours
     manager: LegalEntity
     contactDetails: ContactInfo
@@ -33,7 +33,7 @@ export const locationSchema = gql`
     explanation: String
       @origin(service: "linked", type: "event", attr: "location_extra_info")
     administrativeDivisions: [AdministrativeDivision]
-    venue: Venue
+    venue: UnifiedSearchVenue
   }
   """
   TODO: take this from service map / TPREK
