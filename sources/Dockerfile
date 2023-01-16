@@ -71,11 +71,6 @@ RUN cat /app/letsencrypt-root.pem >> /usr/local/lib/python3.7/site-packages/cert
 
 COPY --chown=appuser:appuser . /app/
 
-# OpenShift write accesses issue, runtime error :
-# npm ERR! Log files were not written due to an error writing to the directory: /.npm/_logs
-RUN mkdir -p /.npm
-RUN chgrp -R 0 /.npm && chmod g+w -R /.npm
-
 USER appuser
 
 EXPOSE 5000/tcp
