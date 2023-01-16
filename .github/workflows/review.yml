@@ -83,7 +83,7 @@ jobs:
           echo "ENVIRONMENT_URL=https://${{ env.K8S_NAMESPACE }}-${{ matrix.service }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
           echo "SERVICE_PORT=${{ matrix.SERVICE_PORT }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
-          echo "K8S_SECRET_SENTRY_DSN=${{ env.SENTRY_DSN }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_SENTRY_DSN=1${{ env.SENTRY_DSN }}2" >> $GITHUB_ENV
 
       - name: Sources settings
         if: matrix.service == 'sources'
