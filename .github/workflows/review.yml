@@ -15,6 +15,7 @@ env:
   ES_PORT: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PORT_STAGING }}
   ES_USERNAME: ${{ secrets.K8S_SECRET_ELASTICSEARCH_USERNAME_STAGING }}
   ES_PASSWORD: ${{ secrets.K8S_SECRET_ELASTICSEARCH_PASSWORD_STAGING }}
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   K8S_REQUEST_CPU: 150m
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 300m
@@ -82,6 +83,7 @@ jobs:
           echo "ENVIRONMENT_URL=https://${{ env.K8S_NAMESPACE }}-${{ matrix.service }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
           echo "SERVICE_PORT=${{ matrix.SERVICE_PORT }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
+          echo "K8S_SECRET_SENTRY_DSN=${{ env.SENTRY_DSN }}" >> $GITHUB_ENV
 
       - name: Sources settings
         if: matrix.service == 'sources'
