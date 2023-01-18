@@ -71,6 +71,11 @@ RUN cat /app/letsencrypt-root.pem >> /usr/local/lib/python3.7/site-packages/cert
 
 COPY --chown=appuser:appuser . /app/
 
+# OpenShift write accesses issue
+# db.sqlite3 is written to /app -directory
+USER root
+RUN chgrp 0 /app && chmod g+w /app
+
 USER appuser
 
 EXPOSE 5000/tcp
