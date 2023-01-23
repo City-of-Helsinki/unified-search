@@ -46,7 +46,7 @@ class Importer(ABC, Generic[IndexableData]):
             raise NotImplementedError(
                 f"Importer {self.__class__.__name__} is missing index_base_names."
             )
-        self.es = OpenSearch([settings.ES_URI])
+        self.es = OpenSearch([settings.ES_URI], timeout=60)
 
     @abstractmethod
     def run(self) -> None:
