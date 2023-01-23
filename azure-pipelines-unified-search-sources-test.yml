@@ -1,4 +1,3 @@
-#
 # Test pipeline. Run build and deploy for Platta test environments. 
 # Pipeline runs different tests e.g. unittest and browser tests.
 #
