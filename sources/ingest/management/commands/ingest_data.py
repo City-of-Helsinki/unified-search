@@ -89,6 +89,7 @@ class Command(BaseCommand):
                 importer_class().delete_all_data()
             except Exception as e:  # noqa
                 logger.exception(e)
+                raise e
 
     def handle_import(self, importer_map: ImporterMap) -> None:
         for importer_name, importer_class in importer_map.items():
@@ -97,3 +98,4 @@ class Command(BaseCommand):
                 importer_class().base_run()
             except Exception as e:  # noqa
                 logger.exception(e)
+                raise e
