@@ -60,6 +60,9 @@ EXPOSE 5000/tcp
 FROM appbase as production
 # ==============================
 
+RUN apt-install.sh \
+    nano
+
 COPY --from=staticbuilder --chown=appuser:appuser /app/static /app/static
 
 COPY --chown=appuser:appuser requirements-prod.txt /app/requirements-prod.txt
