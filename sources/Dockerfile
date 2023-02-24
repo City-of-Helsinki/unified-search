@@ -77,7 +77,7 @@ COPY --chown=appuser:appuser . /app/
 # OpenShift write accesses issue
 # db.sqlite3 is written to /app -directory
 USER root
-RUN chgrp 0 /app && chmod g+w /app
+RUN chgrp -R 0 /app && chmod g+w -R /app
 
 USER appuser
 
