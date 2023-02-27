@@ -60,9 +60,6 @@ EXPOSE 5000/tcp
 FROM appbase as production
 # ==============================
 
-RUN apt-install.sh \
-    nano
-
 COPY --from=staticbuilder --chown=appuser:appuser /app/static /app/static
 
 COPY --chown=appuser:appuser requirements-prod.txt /app/requirements-prod.txt
@@ -77,7 +74,7 @@ COPY --chown=appuser:appuser . /app/
 # OpenShift write accesses issue
 # db.sqlite3 is written to /app -directory
 USER root
-RUN chgrp -R 0 /app && chmod g+w -R /app
+RUN chgrp 0 /app && chmod g+w /app
 
 USER appuser
 
