@@ -47,5 +47,8 @@ extends:
   # Django example: azure-pipelines-PROJECTNAME-api-release.yml
   # Drupal example: azure-pipelines-drupal-release.yml
   template: azure-pipelines-unified-search-sources-review.yml@kuva-unified-search-pipelines
-  #parameters:
-    #imagetag: ${{ parameters.imagetag }}
+  parameters:
+    # Application build arguments and config map values as key value pairs.
+    # The values here will override the values defined in the kuva-unified-search-pipelines-pipelines repository
+    configMap:
+      EVENT_URL: https://linkedevents.api.hel.fi/v1/event/?start=today
