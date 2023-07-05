@@ -11,7 +11,7 @@ RUN apt-install.sh \
     build-essential \
     libpq-dev \
     gdal-bin \
-    netcat \
+    netcat-traditional \
     pkg-config \
     python3-gdal \
     gcc \
