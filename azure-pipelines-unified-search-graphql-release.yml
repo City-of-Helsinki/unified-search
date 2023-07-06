@@ -8,7 +8,7 @@ trigger:
   batch: true
   tags:
     include:
-      - release-*
+      - graphql-v*
   paths:
     exclude:
     - README.md

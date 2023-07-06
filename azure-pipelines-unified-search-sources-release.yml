@@ -8,7 +8,7 @@ trigger:
   batch: true
   tags:
     include:
-      - release-*
+      - sources-v*
   paths:
     exclude:
     - README.md

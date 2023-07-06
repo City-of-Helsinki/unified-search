@@ -1,0 +1,15 @@
+{
+  "bootstrap-sha": "93e1ef9429dde2fb6bff51d0a8970c65d4f790db",
+  "sequential-calls": true,
+  "packages": {
+    "graphql": {
+      "release-type": "node",
+      "package-name": "graphql"
+    },
+    "sources": {
+      "release-type": "python",
+      "package-name": "sources"
+    }
+  },
+  "plugins": ["sentence-case"]
+}

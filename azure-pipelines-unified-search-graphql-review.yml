@@ -22,7 +22,13 @@ pr:
     - main
   paths:
     exclude:
-    - README.md
+    - '*release-please*'
+    - '**/*.md'
+    - '.github/'
+    - '*-release.yml'
+    - '*-test.yml'
+    - '*sources-review.yml'
+    - 'docker-compose*'
 
 # By default, use self-hosted agents
 pool: Default
