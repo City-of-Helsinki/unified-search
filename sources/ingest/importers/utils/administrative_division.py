@@ -1,3 +1,4 @@
+import zipfile
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -19,11 +20,29 @@ class AdministrativeDivision:
     name: LanguageString
 
 
+def geo_import_finnish_municipalities():
+    call_command("geo_import", "finland", "--municipalities")
+
+
 class AdministrativeDivisionFetcher:
     def __init__(self):
         with transaction.atomic():
             # fetch administrative divisions to the database using django-munigeo
-            call_command("geo_import", "finland", "--municipalities")
+            try:
+                geo_import_finnish_municipalities()
+            except zipfile.BadZipfile:
+                # HACK: If the import fails then monkey patch the source URL to a
+                #       working one from unreleased (Post 0.3.8) django-munigeo commit
+                #       47fd86444fcb095d868911056e344a4fc06578b7
+                # TODO: Once django-munigeo >0.3.8 has been released to PyPI make this
+                #       project use it and remove this hack
+                from munigeo.importer import finland
+
+                finland.MUNI_DATA_URL = (
+                    "https://makasiini.hel.ninja/TietoaKuntajaosta_2016_1000k.zip"
+                )
+                geo_import_finnish_municipalities()
+
             call_command("geo_import", "helsinki", "--divisions")
 
         self.administrative_divisions_qs = AdministrativeDivisionModel.objects.filter(
