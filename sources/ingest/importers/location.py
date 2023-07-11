@@ -136,11 +136,11 @@ def prefix_and_mask(prefix, body):
     return base64_bytes.decode("utf-8")
 
 
-def get_ontologywords_as_ontologies(ontologywords):
+def get_ontologywords_as_ontologies(ontologywords, use_fallback_languages: bool):
     ontologies = []
 
     for ontologyword in ontologywords:
-        l = LanguageStringConverter(ontologyword)
+        l = LanguageStringConverter(ontologyword, use_fallback_languages)
 
         ontologies.append(
             OntologyObject(
@@ -166,11 +166,11 @@ def get_ontologywords_as_ontologies(ontologywords):
     return ontologies
 
 
-def get_ontologytree_as_ontologies(ontologytree):
+def get_ontologytree_as_ontologies(ontologytree, use_fallback_languages: bool):
     ontologies = []
 
     for ontologybranch in ontologytree:
-        l = LanguageStringConverter(ontologybranch)
+        l = LanguageStringConverter(ontologybranch, use_fallback_languages)
 
         ontologies.append(
             OntologyObject(
@@ -301,7 +301,7 @@ class LocationImporter(Importer[Root]):
         data_buffer: List[Root] = []
         count = 0
         for tpr_unit in tpr_units:
-            l = LanguageStringConverter(tpr_unit)
+            l = LanguageStringConverter(tpr_unit, self.use_fallback_languages)
             e = lambda k: tpr_unit.get(k, None)  # noqa: E731
 
             # ID's must be strings to avoid collisions
@@ -377,8 +377,8 @@ class LocationImporter(Importer[Root]):
             if tpr_unit.get("ontologyword_ids", None):
                 word_ontologies = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
                 tpr_unit["ontologyword_ids_enriched"] = word_ontologies
-                all_ontologies = all_ontologies + get_ontologywords_as_ontologies(
-                    word_ontologies
+                all_ontologies += get_ontologywords_as_ontologies(
+                    word_ontologies, self.use_fallback_languages
                 )
                 venue.ontologyWords = [
                     {
@@ -395,8 +395,8 @@ class LocationImporter(Importer[Root]):
             if tpr_unit.get("ontologytree_ids", None):
                 tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
                 tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
-                all_ontologies = all_ontologies + get_ontologytree_as_ontologies(
-                    tree_ontologies
+                all_ontologies += get_ontologytree_as_ontologies(
+                    tree_ontologies, self.use_fallback_languages
                 )
 
             root.suggest = get_suggestions_from_ontologies(all_ontologies)

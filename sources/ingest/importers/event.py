@@ -68,7 +68,7 @@ class EventImporter(Importer[Root]):
 
                 meta = NodeMeta(id=_id, createdAt=datetime.now())
 
-                l = LanguageStringConverter(entry)
+                l = LanguageStringConverter(entry, self.use_fallback_languages)
 
                 entry["keywords_enriched"] = keyword.enrich(entry["keywords"])
 
