@@ -39,23 +39,46 @@ class LanguageStringConverter:
 
     LANGUAGES = ("fi", "sv", "en")
 
-    def __init__(self, input: dict):
+    def __init__(self, input: dict, use_fallback_languages: bool = False):
         self.input = input
+        self.use_fallback_languages = use_fallback_languages
 
     def has_postfixed_fields(self):
         expected = [self.field_name + "_" + lang for lang in self.LANGUAGES]
         return any([self.input.get(key, False) for key in expected])
 
-    def get_postfixed_fields(self):
+    @staticmethod
+    def get_fields_with_fallback_languages(fields: dict) -> dict:
         return {
+            lang: (
+                fields.get(lang, None)
+                or fields.get("fi", None)  # Primary fallback language
+                or fields.get("en", None)  # Secondary fallback language
+                or fields.get("sv", None)  # Tertiary fallback language
+            )
+            for lang in fields.keys()
+        }
+
+    def get_postfixed_fields(self):
+        result = {
             lang: self.input.get(self.field_name + "_" + lang, None)
             for lang in self.LANGUAGES
         }
+        return (
+            self.get_fields_with_fallback_languages(result)
+            if self.use_fallback_languages
+            else result
+        )
 
     def get_sub_fields(self):
-        return {
+        result = {
             lang: self.input[self.field_name].get(lang, None) for lang in self.LANGUAGES
         }
+        return (
+            self.get_fields_with_fallback_languages(result)
+            if self.use_fallback_languages
+            else result
+        )
 
     def get_language_string(self, field_name: str):
         self.field_name = field_name
