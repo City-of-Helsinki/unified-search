@@ -3,6 +3,5 @@ Django
 opensearch-py
 requests
 pyhumps
-# TODO use PyPI version once available
-git+https://github.com/City-of-Helsinki/django-munigeo@d7a1caf1a065a02f2bcafc4821b94c01bbd5e362
+django-munigeo
 sentry-sdk
