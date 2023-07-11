@@ -21,7 +21,9 @@ class OntologyTreeImporter(Importer[OntologyTreeObject]):
 
         for tree_obj in ontology.ontology_tree:
             data = OntologyTreeObject(
-                name=LanguageStringConverter(tree_obj).get_language_string("name"),
+                name=LanguageStringConverter(
+                    tree_obj, self.use_fallback_languages
+                ).get_language_string("name"),
                 ancestorIds=ontology.get_ancestor_ids(tree_obj["id"]),
                 childIds=tree_obj["child_ids"],
                 ontologyWordReference=tree_obj.get("ontologyword_reference"),

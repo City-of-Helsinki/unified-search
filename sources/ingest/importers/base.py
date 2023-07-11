@@ -41,12 +41,13 @@ class Importer(ABC, Generic[IndexableData]):
 
     index_base_names: Tuple[str, ...]
 
-    def __init__(self) -> None:
+    def __init__(self, use_fallback_languages=False) -> None:
         if not getattr(self, "index_base_names", None):
             raise NotImplementedError(
                 f"Importer {self.__class__.__name__} is missing index_base_names."
             )
         self.es = OpenSearch([settings.ES_URI], timeout=60)
+        self.use_fallback_languages = use_fallback_languages
 
     @abstractmethod
     def run(self) -> None:

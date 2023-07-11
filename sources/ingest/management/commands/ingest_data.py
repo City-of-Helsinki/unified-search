@@ -39,11 +39,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        # Named (optional) argument
+        # Named (optional) arguments
         parser.add_argument(
             "--delete",
             action="store_true",
             help="Delete stored data",
+        )
+        parser.add_argument(
+            "--use-fallback-languages",
+            action="store_true",
+            help="Use fallback languages (Order: fi, en, sv)",
         )
 
         # Positional (optional) argument(s)
@@ -63,7 +68,10 @@ class Command(BaseCommand):
             self.handle_delete(importer_map)
             return
 
-        self.handle_import(importer_map)
+        self.handle_import(
+            importer_map,
+            use_fallback_languages=kwargs.get("use_fallback_languages", False),
+        )
 
         end_time = timezone.now()
         logger.info(
@@ -91,11 +99,13 @@ class Command(BaseCommand):
                 logger.exception(e)
                 raise e
 
-    def handle_import(self, importer_map: ImporterMap) -> None:
+    def handle_import(
+        self, importer_map: ImporterMap, use_fallback_languages: bool
+    ) -> None:
         for importer_name, importer_class in importer_map.items():
             logger.info(f"Importing {importer_name}")
             try:
-                importer_class().base_run()
+                importer_class(use_fallback_languages=use_fallback_languages).base_run()
             except Exception as e:  # noqa
                 logger.exception(e)
                 raise e

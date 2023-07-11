@@ -17,8 +17,8 @@ class OntologyWordsImporter(Importer[OntologyWordObject]):
 
         for word_obj in ontology.ontology_word:
             data = OntologyWordObject(
-                name=LanguageStringConverter(word_obj).get_language_string(
-                    "ontologyword"
-                ),
+                name=LanguageStringConverter(
+                    word_obj, self.use_fallback_languages
+                ).get_language_string("ontologyword"),
             )
             self.add_data(data, extra_params={"id": word_obj["id"]})
