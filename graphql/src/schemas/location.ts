@@ -10,13 +10,14 @@ export const locationSchema = gql`
     name: LanguageString
     location: LocationDescription @cacheControl(inheritMaxAge: true)
     description: LanguageString
+    serviceOwner: ServiceOwner
     descriptionResources: DescriptionResources
     partOf: Venue
     openingHours: OpeningHours
     manager: LegalEntity
     contactDetails: ContactInfo
     reservationPolicy: VenueReservationPolicy
-    accessibilityProfile: AccessibilityProfile
+    accessibility: Accessibility
     arrivalInstructions: String
     additionalInfo: String
     facilities: [VenueFacility!]
@@ -35,12 +36,56 @@ export const locationSchema = gql`
     administrativeDivisions: [AdministrativeDivision]
     venue: Venue
   }
-  """
-  TODO: take this from service map / TPREK
-  """
-  type AccessibilityProfile {
-    meta: NodeMeta
-    todo: String
+  enum ProviderType {
+    ASSOCIATION
+    CONTRACT_SCHOOL
+    MUNICIPALITY
+    OTHER_PRODUCTION_METHOD
+    PAYMENT_COMMITMENT
+    PRIVATE_COMPANY
+    PURCHASED_SERVICE
+    SELF_PRODUCED
+    SUPPORTED_OPERATIONS
+    UNKNOWN_PRODUCTION_METHOD
+    VOUCHER_SERVICE
+  }
+  enum ServiceOwnerType {
+    MUNICIPAL_SERVICE
+    NOT_DISPLAYED
+    PRIVATE_CONTRACT_SCHOOL
+    PRIVATE_SERVICE
+    PURCHASED_SERVICE
+    SERVICE_BY_JOINT_MUNICIPAL_AUTHORITY
+    SERVICE_BY_MUNICIPALLY_OWNED_COMPANY
+    SERVICE_BY_MUNICIPAL_GROUP_ENTITY
+    SERVICE_BY_OTHER_MUNICIPALITY
+    SERVICE_BY_REGIONAL_COOPERATION_ORGANIZATION
+    SERVICE_BY_WELLBEING_AREA
+    STATE_CONTRACT_SCHOOL
+    STATE_SERVICE
+    SUPPORTED_OPERATIONS
+    VOUCHER_SERVICE
+  }
+  type ServiceOwner {
+    providerType: ProviderType
+    type: ServiceOwnerType
+    name: LanguageString
+  }
+  enum AccessibilityViewpointValue {
+    unknown
+    red
+    green
+  }
+  type AccessibilityViewpoint {
+    id: ID
+    name: LanguageString
+    value: AccessibilityViewpointValue
+  }
+  type Accessibility {
+    email: String
+    phone: String
+    www: String
+    viewpoints: [AccessibilityViewpoint]
   }
   """
   TODO: combine beta.kultus Venue stuff with respa equipment type

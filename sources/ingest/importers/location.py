@@ -5,7 +5,8 @@ import functools
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Union
+from enum import Enum
+from typing import Dict, List, Optional, Union
 
 from .base import Importer
 from .utils import (
@@ -86,12 +87,75 @@ class Image:
     caption: LanguageString
 
 
+class ProviderType(Enum):
+    ASSOCIATION = "ASSOCIATION"
+    CONTRACT_SCHOOL = "CONTRACT_SCHOOL"
+    MUNICIPALITY = "MUNICIPALITY"
+    OTHER_PRODUCTION_METHOD = "OTHER_PRODUCTION_METHOD"
+    PAYMENT_COMMITMENT = "PAYMENT_COMMITMENT"
+    PRIVATE_COMPANY = "PRIVATE_COMPANY"
+    PURCHASED_SERVICE = "PURCHASED_SERVICE"
+    SELF_PRODUCED = "SELF_PRODUCED"
+    SUPPORTED_OPERATIONS = "SUPPORTED_OPERATIONS"
+    UNKNOWN_PRODUCTION_METHOD = "UNKNOWN_PRODUCTION_METHOD"
+    VOUCHER_SERVICE = "VOUCHER_SERVICE"
+
+
+class ServiceOwnerType(Enum):
+    MUNICIPAL_SERVICE = "MUNICIPAL_SERVICE"
+    NOT_DISPLAYED = "NOT_DISPLAYED"
+    PRIVATE_CONTRACT_SCHOOL = "PRIVATE_CONTRACT_SCHOOL"
+    PRIVATE_SERVICE = "PRIVATE_SERVICE"
+    PURCHASED_SERVICE = "PURCHASED_SERVICE"
+    SERVICE_BY_JOINT_MUNICIPAL_AUTHORITY = "SERVICE_BY_JOINT_MUNICIPAL_AUTHORITY"
+    SERVICE_BY_MUNICIPALLY_OWNED_COMPANY = "SERVICE_BY_MUNICIPALLY_OWNED_COMPANY"
+    SERVICE_BY_MUNICIPAL_GROUP_ENTITY = "SERVICE_BY_MUNICIPAL_GROUP_ENTITY"
+    SERVICE_BY_OTHER_MUNICIPALITY = "SERVICE_BY_OTHER_MUNICIPALITY"
+    SERVICE_BY_REGIONAL_COOPERATION_ORGANIZATION = (
+        "SERVICE_BY_REGIONAL_COOPERATION_ORGANIZATION"
+    )
+    SERVICE_BY_WELLBEING_AREA = "SERVICE_BY_WELLBEING_AREA"
+    STATE_CONTRACT_SCHOOL = "STATE_CONTRACT_SCHOOL"
+    STATE_SERVICE = "STATE_SERVICE"
+    SUPPORTED_OPERATIONS = "SUPPORTED_OPERATIONS"
+    VOUCHER_SERVICE = "VOUCHER_SERVICE"
+
+
+@dataclass
+class ServiceOwner:
+    providerType: str  # ProviderType as string to fix OpenSearch serialization
+    type: str  # ServiceOwnerType as string to fix OpenSearch serialization
+    name: LanguageString
+
+
+class AccessibilityViewpointValue(Enum):
+    UNKNOWN = "unknown"
+    RED = "red"
+    GREEN = "green"
+
+
+@dataclass
+class AccessibilityViewpoint:
+    id: str
+    name: LanguageString
+    value: str  # AccessibilityViewpointValue as string to fix OpenSearch serialization
+
+
+@dataclass
+class Accessibility:
+    email: str
+    phone: str
+    www: str
+    viewpoints: List[AccessibilityViewpoint]
+
+
 @dataclass
 class Venue:
     meta: NodeMeta = None
     name: LanguageString = None
     location: Location = None
     description: LanguageString = None
+    serviceOwner: Optional[ServiceOwner] = None
 
     # TODO
     descriptionResources: str = None
@@ -100,7 +164,7 @@ class Venue:
     openingHours: OpeningHours = None
     manager: str = None
     reservationPolicy: str = None
-    accessibilityProfile: str = None
+    accessibility: Optional[Accessibility] = None
     arrivalInstructions: str = None
     additionalInfo: str = None
     facilities: str = None
@@ -123,7 +187,10 @@ class Root:
 
 
 def get_tpr_units():
-    url = "https://www.hel.fi/palvelukarttaws/rest/v4/unit/"
+    # Use newfeatures=yes parameter to get displayed_service_owner_type and
+    # displayed_service_owner_(fi|sv|en) fields included, see documentation at
+    # https://www.hel.fi/palvelukarttaws/restpages/ver4.html
+    url = "https://www.hel.fi/palvelukarttaws/rest/v4/unit/?newfeatures=yes"
     data = request_json(url)
     return data
 
@@ -283,6 +350,144 @@ custom_mappings = {
 }
 
 
+def get_accessibility_viewpoint_id_to_name_mapping(
+    use_fallback_languages: bool,
+) -> Dict[str, LanguageString]:
+    """
+    Get accessibility viewpoint ID to name mapping from service map API.
+
+    Documentation about the service map API's accessibility viewpoint endpoint:
+    - https://www.hel.fi/palvelukarttaws/restpages/ver4.html#_accessibility_viewpoint
+
+    :return: Mapping from accessibility viewpoint ID to accessibility viewpoint name.
+
+    Example of a possible return value:
+    {
+        "11": LanguageString(fi="Olen pyörätuolin käyttäjä",
+                             sv="Jag är en rullstolsanvändare",
+                             en="I am a wheelchair user")
+        },
+        "61": LanguageString(fi="Käytän kuulolaitetta",
+                             sv="Jag använder en hörapparat",
+                             en="I use a hearing aid")
+        }
+    }
+    """
+    url = "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_viewpoint/"
+    accessibility_viewpoints = request_json(url)
+    return {
+        viewpoint["id"]: LanguageStringConverter(
+            viewpoint, use_fallback_languages
+        ).get_language_string("name")
+        for viewpoint in accessibility_viewpoints
+    }
+
+
+def get_accessibility_viewpoint_id_to_value_mapping(
+    accessibility_viewpoints: Optional[str],
+) -> Dict[str, str]:
+    """
+    Converts service map API's unit's accessibility_viewpoints string to a mapping from
+    the accessibility viewpoint ID to the unit's accessibility viewpoint value.
+
+    :param accessibility_viewpoints: A string of comma separated pairs of accessibility
+                                     viewpoint IDs and their values separated with
+                                     colons, e.g. "00:unknown,11:red".
+    :return: A dictionary of accessibility viewpoint IDs and their values, e.g.
+             {"00": "unknown", "11": "red"}.
+
+    Documentation about accessibility viewpoint endpoint:
+    - https://www.hel.fi/palvelukarttaws/restpages/ver4.html#_accessibility_viewpoint
+
+    Accessibility viewpoint values:
+    - https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_viewpoint/
+
+    The IDs are the same as in the accessibility viewpoint endpoint, e.g.
+    https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_viewpoint/
+    ...
+    {
+        "id": "11",
+        "name_fi": "Olen pyörätuolin käyttäjä",
+        "name_sv": "Jag är en rullstolsanvändare",
+        "name_en": "I am a wheelchair user",
+        "values": [
+            "unknown",
+            "green",
+            "red"
+        ]
+    },
+    ...
+
+    All accessibility viewpoints' values are limited to "unknown", "green" and "red".
+    """
+    return (
+        dict(
+            accessibility_viewpoint.split(":")
+            for accessibility_viewpoint in accessibility_viewpoints.split(",")
+        )
+        if accessibility_viewpoints
+        else {}
+    )
+
+
+def get_enriched_accessibility_viewpoints(
+    accessibility_viewpoints: Optional[str],
+    accessibility_viewpoint_id_to_name_mapping: Dict[str, LanguageString],
+    omit_unknowns: bool,
+) -> List[AccessibilityViewpoint]:
+    """
+    Converts service map API's unit's accessibility_viewpoints string to a list of
+    AccessibilityViewpoint objects.
+
+    :param accessibility_viewpoints: A string of comma separated pairs of accessibility
+                                     viewpoint IDs and their values separated with
+                                     colons, e.g. "00:unknown,11:red".
+    :param accessibility_viewpoint_id_to_name_mapping: A dictionary of accessibility
+                                                       viewpoint IDs mapped to their
+                                                       names.
+    :param omit_unknowns: Whether to omit accessibility viewpoints with value "unknown".
+    :return: A list of AccessibilityViewpoint objects without viewpoints with value
+             "unknown" if omit_unknowns is True, otherwise with all viewpoints.
+
+    Example return value:
+        get_enriched_accessibility_viewpoints(
+            '11:red,21:green,61:unknown',
+            get_accessibility_viewpoint_id_to_name_mapping(use_fallback_languages=True),
+            omit_unknowns=True
+        ) == [
+            AccessibilityViewpoint(
+                id='11',
+                name=LanguageString(fi='Olen pyörätuolin käyttäjä',
+                                    sv='Jag är en rullstolsanvändare',
+                                    en='I am a wheelchair user'),
+                value='red'
+            ),
+            AccessibilityViewpoint(
+                id='21',
+                name=LanguageString(fi='Olen liikkumisesteinen, mutta kävelen',
+                                    sv='Jag är rörelsehindrad, men jag går',
+                                    en='I have reduced mobility, but I walk'),
+                value='green'
+            )
+        ]
+    """
+    id_to_value_mapping = get_accessibility_viewpoint_id_to_value_mapping(
+        accessibility_viewpoints
+    )
+    return [
+        AccessibilityViewpoint(
+            id=viewpoint_id,
+            name=accessibility_viewpoint_id_to_name_mapping[viewpoint_id],
+            value=AccessibilityViewpointValue(viewpoint_value).value,
+        )
+        for viewpoint_id, viewpoint_value in id_to_value_mapping.items()
+        if (
+            not omit_unknowns
+            or viewpoint_value != AccessibilityViewpointValue.UNKNOWN.value
+        )
+    ]
+
+
 class LocationImporter(Importer[Root]):
     index_base_names = ("location",)
 
@@ -293,6 +498,9 @@ class LocationImporter(Importer[Root]):
 
         ontology = Ontology()
 
+        accessibility_viewpoint_id_to_name_mapping = (
+            get_accessibility_viewpoint_id_to_name_mapping(self.use_fallback_languages)
+        )
         tpr_units = get_tpr_units()
 
         opening_hours_fetcher = HaukiOpeningHoursFetcher(t["id"] for t in tpr_units)
@@ -348,9 +556,29 @@ class LocationImporter(Importer[Root]):
             venue = Venue(
                 name=l.get_language_string("name"),
                 description=l.get_language_string("desc"),
+                serviceOwner=ServiceOwner(
+                    providerType=ProviderType(
+                        e("provider_type") or ProviderType.UNKNOWN_PRODUCTION_METHOD
+                    ).value,
+                    type=ServiceOwnerType(
+                        e("displayed_service_owner_type")
+                        or ServiceOwnerType.NOT_DISPLAYED
+                    ).value,
+                    name=l.get_language_string("displayed_service_owner"),
+                ),
                 location=location,
                 meta=meta,
                 openingHours=opening_hours,
+                accessibility=Accessibility(
+                    email=e("accessibility_email"),
+                    phone=e("accessibility_phone"),
+                    www=e("accessibility_www"),
+                    viewpoints=get_enriched_accessibility_viewpoints(
+                        e("accessibility_viewpoints"),
+                        accessibility_viewpoint_id_to_name_mapping,
+                        omit_unknowns=True,
+                    ),
+                ),
                 images=images,
             )
             root = Root(venue=venue)
