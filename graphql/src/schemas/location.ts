@@ -82,11 +82,24 @@ export const locationSchema = gql`
     name: LanguageString
     value: AccessibilityViewpointValue
   }
+  enum AccessibilityProfile {
+    hearing_aid
+    reduced_mobility
+    rollator
+    stroller
+    visually_impaired
+    wheelchair
+  }
+  type AccessibilityShortcoming {
+    profile: AccessibilityProfile
+    count: Int
+  }
   type Accessibility {
     email: String
     phone: String
     www: String
     viewpoints: [AccessibilityViewpoint]
+    shortcomings: [AccessibilityShortcoming]
   }
   enum ResourceMainType {
     item
