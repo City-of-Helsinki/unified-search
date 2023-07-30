@@ -11,6 +11,7 @@ export const locationSchema = gql`
     location: LocationDescription @cacheControl(inheritMaxAge: true)
     description: LanguageString
     serviceOwner: ServiceOwner
+    resources: [Resource!]!
     descriptionResources: DescriptionResources
     partOf: Venue
     openingHours: OpeningHours
@@ -86,6 +87,33 @@ export const locationSchema = gql`
     phone: String
     www: String
     viewpoints: [AccessibilityViewpoint]
+  }
+  enum ResourceMainType {
+    item
+    person
+    space
+  }
+  type ResourceType {
+    id: ID
+    mainType: ResourceMainType
+    name: LanguageString
+  }
+  type ResourceUserPermissions {
+    canMakeReservations: Boolean
+  }
+  type Resource {
+    id: ID
+    name: LanguageString
+    description: LanguageString
+    type: ResourceType
+    userPermissions: ResourceUserPermissions
+    reservable: Boolean
+    reservationInfo: LanguageString
+    genericTerms: LanguageString
+    paymentTerms: LanguageString
+    specificTerms: LanguageString
+    responsibleContactInfo: LanguageString
+    externalReservationUrl: String
   }
   """
   TODO: combine beta.kultus Venue stuff with respa equipment type
