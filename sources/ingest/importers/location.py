@@ -142,12 +142,33 @@ class AccessibilityViewpoint:
     value: str  # AccessibilityViewpointValue as string to fix OpenSearch serialization
 
 
+class AccessibilityProfile(Enum):
+    HEARING_AID = "hearing_aid"
+    REDUCED_MOBILITY = "reduced_mobility"
+    ROLLATOR = "rollator"
+    STROLLER = "stroller"
+    VISUALLY_IMPAIRED = "visually_impaired"
+    WHEELCHAIR = "wheelchair"
+
+
+@dataclass(order=True)
+class AccessibilityShortcoming:
+    """
+    Accessibility shortcoming of an AccessibilityProfile,
+    e.g. hearing_aid has 3 shortcomings
+    """
+
+    profile: str  # AccessibilityProfile as string to fix OpenSearch serialization
+    count: int
+
+
 @dataclass
 class Accessibility:
     email: str
     phone: str
     www: str
     viewpoints: List[AccessibilityViewpoint]
+    shortcomings: List[AccessibilityShortcoming]
 
 
 class ResourceMainType(Enum):
@@ -399,6 +420,59 @@ def get_respa_resources() -> List[dict]:
     return accumulated_results
 
 
+def get_unit_ids_and_accessibility_shortcoming_counts() -> List[dict]:
+    """
+    Get all unit IDs and their accessibility shortcoming counts from new service map API
+
+    :return: A list of dictionaries each containing unit ID ("id") as integer and its
+             accessibility shortcoming counts ("accessibility_shortcoming_count") in a
+             dictionary.
+    """
+    accumulated_results = []
+    url = "https://api.hel.fi/servicemap/v2/unit/?format=json&only=accessibility_shortcoming_count&page_size=1000"
+    while url:
+        units = request_json(url)
+        accumulated_results += units["results"]
+        url = units["next"]
+    return accumulated_results
+
+
+def create_accessibility_shortcomings(
+    accessibility_shortcoming_counts: Dict[str, int]
+) -> List[AccessibilityShortcoming]:
+    """
+    Create a list of accessibility shortcomings from a dictionary of accessibility
+    shortcoming counts
+
+    :param accessibility_shortcoming_counts: A dictionary of accessibility shortcoming
+                                             counts of a unit.
+    :return: A list of accessibility shortcomings.
+    """
+    return sorted(
+        (
+            AccessibilityShortcoming(
+                profile=AccessibilityProfile(accessibility_profile).value,
+                count=shortcoming_count,
+            )
+            for accessibility_profile, shortcoming_count in accessibility_shortcoming_counts.items()
+        )
+    )
+
+
+def get_unit_id_to_accessibility_shortcomings_mapping() -> Dict[
+    str, List[AccessibilityShortcoming]
+]:
+    """
+    Get mapping of unit IDs to their accessibility shortcomings from new service map API
+    """
+    return {
+        str(unit["id"]): create_accessibility_shortcomings(
+            unit.get("accessibility_shortcoming_count", {})
+        )
+        for unit in get_unit_ids_and_accessibility_shortcoming_counts()
+    }
+
+
 def get_accessibility_viewpoint_id_to_name_mapping(
     use_fallback_languages: bool,
 ) -> Dict[str, LanguageString]:
@@ -611,6 +685,9 @@ class LocationImporter(Importer[Root]):
 
         ontology = Ontology()
 
+        unit_id_to_accessibility_shortcomings_mapping = (
+            get_unit_id_to_accessibility_shortcomings_mapping()
+        )
         unit_id_to_resources_mapping = get_unit_id_to_resources_mapping(
             self.use_fallback_languages
         )
@@ -694,6 +771,9 @@ class LocationImporter(Importer[Root]):
                         e("accessibility_viewpoints"),
                         accessibility_viewpoint_id_to_name_mapping,
                         omit_unknowns=True,
+                    ),
+                    shortcomings=unit_id_to_accessibility_shortcomings_mapping.get(
+                        _id, []
                     ),
                 ),
                 images=images,
