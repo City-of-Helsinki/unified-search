@@ -94,11 +94,17 @@ export const locationSchema = gql`
     profile: AccessibilityProfile
     count: Int
   }
+  type AccessibilitySentence {
+    sentenceGroupName: String
+    sentenceGroup: LanguageString
+    sentence: LanguageString
+  }
   type Accessibility {
     email: String
     phone: String
     www: String
     viewpoints: [AccessibilityViewpoint]
+    sentences: [AccessibilitySentence]
     shortcomings: [AccessibilityShortcoming]
   }
   enum ResourceMainType {
