@@ -81,6 +81,7 @@ export const locationSchema = gql`
     id: ID
     name: LanguageString
     value: AccessibilityViewpointValue
+    shortages: [LanguageString]
   }
   enum AccessibilityProfile {
     hearing_aid
