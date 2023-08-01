@@ -7,7 +7,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Set, Union
 
 from .base import Importer
 from .utils import (
@@ -86,6 +86,17 @@ class OntologyObject:
 class Image:
     url: str
     caption: LanguageString
+
+
+class TargetGroup(Enum):
+    ASSOCIATIONS = "ASSOCIATIONS"
+    CHILDREN_AND_FAMILIES = "CHILDREN_AND_FAMILIES"
+    DISABLED = "DISABLED"
+    ELDERLY_PEOPLE = "ELDERLY_PEOPLE"
+    ENTERPRISES = "ENTERPRISES"
+    IMMIGRANTS = "IMMIGRANTS"
+    INDIVIDUALS = "INDIVIDUALS"
+    YOUTH = "YOUTH"
 
 
 class ProviderType(Enum):
@@ -229,6 +240,8 @@ class Venue:
     description: LanguageString = None
     serviceOwner: Optional[ServiceOwner] = None
     resources: List[Resource] = field(default_factory=list)
+    # List[TargetGroup] as List[str] to fix OpenSearch serialization:
+    targetGroups: List[str] = field(default_factory=list)
 
     # TODO
     descriptionResources: str = None
@@ -762,6 +775,22 @@ def get_unit_id_to_resources_mapping(
     return result
 
 
+def get_unit_id_to_target_groups_mapping() -> Dict[str, Set[TargetGroup]]:
+    """
+    Get a mapping of unit IDs to their target groups from palvelukuvausrekisteri, see
+    https://www.hel.fi/palvelukarttaws/restpages/palvelurekisteri.html for documentation
+    """
+    url = "https://www.hel.fi/palvelukarttaws/rest/vpalvelurekisteri/description/?alldata=yes"
+    services = request_json(url, timeout_seconds=120)
+    result = defaultdict(set)
+    for service in services:
+        unit_ids = service.get("unit_ids", [])
+        target_groups = service.get("target_groups", [])
+        for unit_id in unit_ids:
+            result[str(unit_id)] |= set(map(TargetGroup, target_groups))
+    return result
+
+
 class LocationImporter(Importer[Root]):
     index_base_names = ("location",)
 
@@ -786,6 +815,7 @@ class LocationImporter(Importer[Root]):
         unit_id_to_resources_mapping = get_unit_id_to_resources_mapping(
             self.use_fallback_languages
         )
+        unit_id_to_target_groups_mapping = get_unit_id_to_target_groups_mapping()
         accessibility_viewpoint_id_to_name_mapping = (
             get_accessibility_viewpoint_id_to_name_mapping(self.use_fallback_languages)
         )
@@ -855,6 +885,10 @@ class LocationImporter(Importer[Root]):
                     name=l.get_language_string("displayed_service_owner"),
                 ),
                 resources=unit_id_to_resources_mapping.get(_id, []),
+                targetGroups=sorted(
+                    target_group.value
+                    for target_group in unit_id_to_target_groups_mapping.get(_id, set())
+                ),
                 location=location,
                 meta=meta,
                 openingHours=opening_hours,
