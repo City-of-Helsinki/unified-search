@@ -12,6 +12,7 @@ export const locationSchema = gql`
     description: LanguageString
     serviceOwner: ServiceOwner
     resources: [Resource!]!
+    targetGroups: [TargetGroup]
     descriptionResources: DescriptionResources
     partOf: Venue
     openingHours: OpeningHours
@@ -36,6 +37,16 @@ export const locationSchema = gql`
       @origin(service: "linked", type: "event", attr: "location_extra_info")
     administrativeDivisions: [AdministrativeDivision]
     venue: Venue
+  }
+  enum TargetGroup {
+    ASSOCIATIONS
+    CHILDREN_AND_FAMILIES
+    DISABLED
+    ELDERLY_PEOPLE
+    ENTERPRISES
+    IMMIGRANTS
+    INDIVIDUALS
+    YOUTH
   }
   enum ProviderType {
     ASSOCIATION
