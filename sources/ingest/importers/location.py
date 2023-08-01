@@ -163,11 +163,19 @@ class AccessibilityShortcoming:
 
 
 @dataclass
+class AccessibilitySentence:
+    sentenceGroupName: str
+    sentenceGroup: LanguageString
+    sentence: LanguageString
+
+
+@dataclass
 class Accessibility:
     email: str
     phone: str
     www: str
     viewpoints: List[AccessibilityViewpoint]
+    sentences: List[AccessibilitySentence]
     shortcomings: List[AccessibilityShortcoming]
 
 
@@ -506,6 +514,59 @@ def get_accessibility_viewpoint_id_to_name_mapping(
     }
 
 
+def create_accessibility_sentence(
+    accessibility_sentence: dict, use_fallback_languages: bool
+) -> AccessibilitySentence:
+    """
+    Create AccessibilitySentence object from a dictionary containing a single
+    accessibility sentence from
+    https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_sentence/
+
+    Documentation about the endpoint:
+    - https://www.hel.fi/palvelukarttaws/restpages/ver4_en.html
+
+    Example of input:
+    e.g.
+    {
+        "unit_id": 6365,
+        "sentence_group_name": "Sisätilat",
+        "sentence_group_fi": "Sisätilat",
+        "sentence_group_sv": "I lokalen",
+        "sentence_group_en": "In the facility",
+        "sentence_fi": "Asiointipisteen ovet erottuvat selkeästi.",
+        "sentence_sv": "Dörrarna vid servicepunkten är lätta att urskilja.",
+        "sentence_en": "The doors in the customer service point stand out clearly."
+    }
+
+    :return: AccessibilitySentence object containing the given accessibility sentence
+    """
+    return AccessibilitySentence(
+        sentenceGroupName=accessibility_sentence["sentence_group_name"],
+        sentenceGroup=LanguageStringConverter(
+            accessibility_sentence, use_fallback_languages
+        ).get_language_string("sentence_group"),
+        sentence=LanguageStringConverter(
+            accessibility_sentence, use_fallback_languages
+        ).get_language_string("sentence"),
+    )
+
+
+def get_unit_id_to_accessibility_sentences_mapping(
+    use_fallback_languages: bool,
+) -> Dict[str, List[AccessibilitySentence]]:
+    """
+    Get a mapping of unit IDs to their accessibility sentences from service map API.
+    """
+    url = "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_sentence/"
+    accessibility_sentences = request_json(url, timeout_seconds=120)
+    result = defaultdict(list)
+    for sentence in accessibility_sentences:
+        result[str(sentence["unit_id"])].append(
+            create_accessibility_sentence(sentence, use_fallback_languages)
+        )
+    return result
+
+
 def get_accessibility_viewpoint_id_to_value_mapping(
     accessibility_viewpoints: Optional[str],
 ) -> Dict[str, str]:
@@ -688,6 +749,9 @@ class LocationImporter(Importer[Root]):
         unit_id_to_accessibility_shortcomings_mapping = (
             get_unit_id_to_accessibility_shortcomings_mapping()
         )
+        unit_id_to_accessibility_sentences_mapping = (
+            get_unit_id_to_accessibility_sentences_mapping(self.use_fallback_languages)
+        )
         unit_id_to_resources_mapping = get_unit_id_to_resources_mapping(
             self.use_fallback_languages
         )
@@ -772,6 +836,7 @@ class LocationImporter(Importer[Root]):
                         accessibility_viewpoint_id_to_name_mapping,
                         omit_unknowns=True,
                     ),
+                    sentences=unit_id_to_accessibility_sentences_mapping.get(_id, []),
                     shortcomings=unit_id_to_accessibility_shortcomings_mapping.get(
                         _id, []
                     ),
