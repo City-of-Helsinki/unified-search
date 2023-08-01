@@ -140,6 +140,7 @@ class AccessibilityViewpoint:
     id: str
     name: LanguageString
     value: str  # AccessibilityViewpointValue as string to fix OpenSearch serialization
+    shortages: List[LanguageString] = field(default_factory=list)
 
 
 class AccessibilityProfile(Enum):
@@ -177,6 +178,13 @@ class Accessibility:
     viewpoints: List[AccessibilityViewpoint]
     sentences: List[AccessibilitySentence]
     shortcomings: List[AccessibilityShortcoming]
+
+    def set_accessibility_shortages(
+        self,
+        viewpoint_id_to_shortages: Dict[str, List[LanguageString]],
+    ) -> None:
+        for viewpoint in self.viewpoints:
+            viewpoint.shortages = viewpoint_id_to_shortages.get(viewpoint.id, [])[:]
 
 
 class ResourceMainType(Enum):
@@ -567,6 +575,24 @@ def get_unit_id_to_accessibility_sentences_mapping(
     return result
 
 
+def get_unit_id_to_accessibility_viewpoint_shortages_mapping(
+    use_fallback_languages: bool,
+) -> Dict[str, Dict[str, List[LanguageString]]]:
+    """
+    Get a mapping of unit IDs to their accessibility viewpoints' IDs to their
+    list of accessibility shortages from service map API.
+    """
+    url = "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_shortage/"
+    accessibility_shortages = request_json(url, timeout_seconds=120)
+    result = defaultdict(lambda: defaultdict(list))
+    for shortage in accessibility_shortages:
+        unit_id = str(shortage["unit_id"])
+        viewpoint_id = str(shortage["viewpoint_id"])
+        l = LanguageStringConverter(shortage, use_fallback_languages)
+        result[unit_id][viewpoint_id].append(l.get_language_string("shortage"))
+    return result
+
+
 def get_accessibility_viewpoint_id_to_value_mapping(
     accessibility_viewpoints: Optional[str],
 ) -> Dict[str, str]:
@@ -752,6 +778,11 @@ class LocationImporter(Importer[Root]):
         unit_id_to_accessibility_sentences_mapping = (
             get_unit_id_to_accessibility_sentences_mapping(self.use_fallback_languages)
         )
+        unit_id_to_accessibility_viewpoint_shortages_mapping = (
+            get_unit_id_to_accessibility_viewpoint_shortages_mapping(
+                self.use_fallback_languages
+            )
+        )
         unit_id_to_resources_mapping = get_unit_id_to_resources_mapping(
             self.use_fallback_languages
         )
@@ -843,6 +874,12 @@ class LocationImporter(Importer[Root]):
                 ),
                 images=images,
             )
+
+            # Add accessibility viewpoints' shortages to the venue
+            venue.accessibility.set_accessibility_shortages(
+                unit_id_to_accessibility_viewpoint_shortages_mapping.get(_id, dict())
+            )
+
             root = Root(venue=venue)
 
             if opening_hours_link:
