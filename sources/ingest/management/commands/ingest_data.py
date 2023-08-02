@@ -46,9 +46,14 @@ class Command(BaseCommand):
             help="Delete stored data",
         )
         parser.add_argument(
-            "--use-fallback-languages",
-            action="store_true",
-            help="Use fallback languages (Order: fi, en, sv)",
+            "--ignore-fallback-languages",  # Turn off use_fallback_languages
+            dest="use_fallback_languages",
+            action="store_false",  # Means use_fallback_languages=False because of dest
+            default=True,  # Means use_fallback_languages=True because of dest
+            help=(
+                "Ignore the use of fallback languages. By default "
+                "fallback languages are used in order fi, en, sv."
+            ),
         )
 
         # Positional (optional) argument(s)
@@ -70,7 +75,7 @@ class Command(BaseCommand):
 
         self.handle_import(
             importer_map,
-            use_fallback_languages=kwargs.get("use_fallback_languages", False),
+            use_fallback_languages=kwargs.get("use_fallback_languages", True),
         )
 
         end_time = timezone.now()
