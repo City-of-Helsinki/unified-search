@@ -238,6 +238,18 @@ const resolvers = {
     ontologyWords({ venue }: any) {
       return venue.ontologyWords;
     },
+    serviceOwner({ venue }: any, args: any, context: any, info: any) {
+      return venue.serviceOwner;
+    },
+    resources({ venue }: any, args: any, context: any, info: any) {
+      return venue.resources;
+    },
+    targetGroups({ venue }: any, args: any, context: any, info: any) {
+      return venue.targetGroups;
+    },
+    accessibility({ venue }: any, args: any, context: any, info: any) {
+      return venue.accessibility;
+    },
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
     },

@@ -15,60 +15,6 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
     "results": [
         {
             "id": "axayciqmqfja",
-            "products": [
-                {
-                    "id": "axay4b73rdva",
-                    "type": "rent",
-                    "name": {"fi": "Tenniskenttä 2 - Ala-Malmi"},
-                    "description": {"fi": "Tenniskenttä 2 - Ala-Malmi"},
-                    "price": {
-                        "type": "per_period",
-                        "tax_percentage": "10.00",
-                        "amount": "7.30",
-                        "period": "01:00:00",
-                    },
-                    "max_quantity": 1,
-                }
-            ],
-            "purposes": [
-                {
-                    "name": {
-                        "fi": "Liikkua tai pelata",
-                        "en": "Sports or games",
-                        "sv": "Motionera eller spela",
-                    },
-                    "parent": None,
-                    "id": "sports",
-                }
-            ],
-            "images": [
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1181",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1179",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1178",
-                    "type": "main",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1180",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1204",
-                    "type": "ground_plan",
-                    "caption": None,
-                },
-            ],
-            "equipment": [],
             "type": {
                 "name": {
                     "fi": "Liikuntapaikka",
@@ -78,52 +24,15 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "main_type": "space",
                 "id": "awqjgibywfvq",
             },
-            "opening_hours": [
-                {
-                    "date": "2023-07-26",
-                    "opens": "2023-07-26T08:00:00+03:00",
-                    "closes": "2023-07-26T21:00:00+03:00",
-                }
-            ],
-            "reservations": None,
             "user_permissions": {
                 "can_make_reservations": True,
-                "can_ignore_opening_hours": False,
-                "is_admin": False,
-                "is_manager": False,
-                "is_viewer": False,
-                "can_bypass_payment": False,
             },
-            "supported_reservation_extra_fields": [
-                "billing_email_address",
-                "billing_first_name",
-                "billing_last_name",
-                "billing_phone_number",
-                "participants",
-            ],
-            "required_reservation_extra_fields": [
-                "billing_email_address",
-                "billing_first_name",
-                "billing_last_name",
-            ],
-            "is_favorite": False,
             "generic_terms": {"fi": "terms fi", "en": "terms en", "sv": "terms sv"},
             "payment_terms": {
                 "fi": "payment_terms_fi",
                 "en": "payment_terms_en",
                 "sv": "payment_terms_sv",
             },
-            "accessibility_base_url": "https://example.org/axayciqmqfja",
-            "reservable_days_in_advance": 14,
-            "reservable_max_days_in_advance": 14,
-            "reservable_before": "2023-08-10T00:00:00Z",
-            "reservable_min_days_in_advance": None,
-            "reservable_after": None,
-            "max_price_per_hour": 7.0,
-            "min_price_per_hour": 7.0,
-            "created_at": "2021-05-04T16:34:09.717587+03:00",
-            "modified_at": "2021-05-04T16:34:09.717606+03:00",
-            "public": True,
             "name": {
                 "fi": "Tenniskenttä 2 - Ala-Malmi",
                 "en": "Tennis court 2 - Ala-Malmi",
@@ -134,14 +43,6 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "en": "Reservable for season 2023!",
                 "sv": "Bokningen för säsongen 2023 är öppen!",
             },
-            "need_manual_confirmation": False,
-            "authentication": "weak",
-            "people_capacity": 4,
-            "area": 260,
-            "min_period": "00:30:00",
-            "max_period": "02:00:00",
-            "slot_size": "00:30:00",
-            "max_reservations_per_user": 2,
             "reservable": True,
             "reservation_info": {
                 "fi": "reservation_info_fi",
@@ -158,74 +59,11 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "en": "specific_terms_en",
                 "sv": "specific_terms_sv",
             },
-            "min_price": "7.00",
-            "max_price": "7.00",
-            "price_type": "hourly",
-            "generate_access_codes": True,
             "external_reservation_url": None,
-            "reservation_extra_questions": "",
-            "created_by": None,
-            "modified_by": None,
             "unit": "tprek:42086",
-            "attachments": [],
-            "location": None,
         },
         {
             "id": "axaxxck4ub7a",
-            "products": [
-                {
-                    "id": "axay4cnjl37a",
-                    "type": "rent",
-                    "name": {"fi": "Tenniskenttä 3 - Ala-Malmi"},
-                    "description": {"fi": "Tenniskenttä 3 - Ala-Malmi"},
-                    "price": {
-                        "type": "per_period",
-                        "tax_percentage": "10.00",
-                        "amount": "7.30",
-                        "period": "01:00:00",
-                    },
-                    "max_quantity": 1,
-                }
-            ],
-            "purposes": [
-                {
-                    "name": {
-                        "fi": "Liikkua tai pelata",
-                        "en": "Sports or games",
-                        "sv": "Motionera eller spela",
-                    },
-                    "parent": None,
-                    "id": "sports",
-                }
-            ],
-            "images": [
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1185",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1183",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1182",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1184",
-                    "type": "main",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1205",
-                    "type": "ground_plan",
-                    "caption": None,
-                },
-            ],
-            "equipment": [],
             "type": {
                 "name": {
                     "fi": "Liikuntapaikka",
@@ -235,35 +73,9 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "main_type": "space",
                 "id": "awqjgibywfvq",
             },
-            "opening_hours": [
-                {
-                    "date": "2023-07-26",
-                    "opens": "2023-07-26T08:00:00+03:00",
-                    "closes": "2023-07-26T21:00:00+03:00",
-                }
-            ],
-            "reservations": None,
             "user_permissions": {
                 "can_make_reservations": True,
-                "can_ignore_opening_hours": False,
-                "is_admin": False,
-                "is_manager": False,
-                "is_viewer": False,
-                "can_bypass_payment": False,
             },
-            "supported_reservation_extra_fields": [
-                "billing_email_address",
-                "billing_first_name",
-                "billing_last_name",
-                "billing_phone_number",
-                "participants",
-            ],
-            "required_reservation_extra_fields": [
-                "billing_email_address",
-                "billing_first_name",
-                "billing_last_name",
-            ],
-            "is_favorite": False,
             "generic_terms": {
                 "fi": "generic_terms_fi",
                 "en": "generic_terms_en",
@@ -274,17 +86,6 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "en": "payment_terms_en",
                 "sv": "payment_terms_sv",
             },
-            "accessibility_base_url": "https://example.org/axaxxck4ub7a",
-            "reservable_days_in_advance": 14,
-            "reservable_max_days_in_advance": 14,
-            "reservable_before": "2023-08-10T00:00:00Z",
-            "reservable_min_days_in_advance": None,
-            "reservable_after": None,
-            "max_price_per_hour": 7.0,
-            "min_price_per_hour": 7.0,
-            "created_at": "2021-05-04T09:53:33.217020+03:00",
-            "modified_at": "2021-05-04T09:53:33.217040+03:00",
-            "public": True,
             "name": {
                 "fi": "Tenniskenttä 3 - Ala-Malmi",
                 "en": "Tennis court 3 - Ala-Malmi",
@@ -295,14 +96,6 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "en": "description_en",
                 "sv": "description_sv",
             },
-            "need_manual_confirmation": False,
-            "authentication": "weak",
-            "people_capacity": 4,
-            "area": None,
-            "min_period": "00:30:00",
-            "max_period": "02:00:00",
-            "slot_size": "00:30:00",
-            "max_reservations_per_user": 2,
             "reservable": True,
             "reservation_info": {
                 "fi": "reservation_info_fi",
@@ -319,55 +112,11 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "en": "specific_terms_en",
                 "sv": "specific_terms_sv",
             },
-            "min_price": "7.00",
-            "max_price": "7.00",
-            "price_type": "hourly",
-            "generate_access_codes": True,
             "external_reservation_url": None,
-            "reservation_extra_questions": "",
-            "created_by": None,
-            "modified_by": None,
             "unit": "tprek:42086",
-            "attachments": [],
-            "location": None,
         },
         {
             "id": "aweyzvgot72q",
-            "products": [],
-            "purposes": [
-                {
-                    "name": {
-                        "fi": "Järjestää tapahtuman",
-                        "en": "Organize event",
-                        "sv": "Arrangera evenemanget",
-                    },
-                    "parent": None,
-                    "id": "events",
-                }
-            ],
-            "images": [
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1175",
-                    "type": "main",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1176",
-                    "type": "other",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/641",
-                    "type": "map",
-                    "caption": None,
-                },
-                {
-                    "url": "https://api.hel.fi/respa/resource_image/1177",
-                    "type": "other",
-                    "caption": None,
-                },
-            ],
-            "equipment": [],
             "type": {
                 "name": {
                     "fi": "Tapahtumatila",
@@ -377,75 +126,46 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
                 "main_type": "space",
                 "id": "event_space",
             },
-            "opening_hours": [{"date": "2023-07-26", "opens": None, "closes": None}],
-            "reservations": None,
             "user_permissions": {
                 "can_make_reservations": True,
-                "can_ignore_opening_hours": False,
-                "is_admin": False,
-                "is_manager": False,
-                "is_viewer": False,
-                "can_bypass_payment": False,
             },
-            "supported_reservation_extra_fields": [
-                "reserver_name",
-                "reserver_phone_number",
-                "event_description",
-                "number_of_participants",
-                "reserver_email_address",
-                "event_subject",
-            ],
-            "required_reservation_extra_fields": [
-                "reserver_name",
-                "reserver_phone_number",
-                "event_description",
-                "number_of_participants",
-                "reserver_email_address",
-                "event_subject",
-            ],
-            "is_favorite": False,
             "generic_terms": {"fi": "info fi", "en": "info en", "sv": "info sv"},
             "payment_terms": "",
-            "accessibility_base_url": "https://example.org/aweyzvgot72q",
-            "reservable_days_in_advance": None,
-            "reservable_max_days_in_advance": None,
-            "reservable_before": None,
-            "reservable_min_days_in_advance": None,
-            "reservable_after": None,
-            "max_price_per_hour": None,
-            "min_price_per_hour": None,
-            "created_at": "2019-05-23T15:00:42.247090+03:00",
-            "modified_at": "2019-05-23T15:00:42.247111+03:00",
-            "public": True,
             "name": {
                 "fi": "Ala-Malmin puisto",
                 "en": "Ala-Malmin puisto park",
                 "sv": "Nedre Malms park",
             },
             "description": {"fi": "test fi", "en": "test en", "sv": "test sv"},
-            "need_manual_confirmation": False,
-            "authentication": "strong",
-            "people_capacity": 200,
-            "area": 1000,
-            "min_period": "01:00:00",
-            "max_period": "10:00:00",
-            "slot_size": "01:00:00",
-            "max_reservations_per_user": 11,
             "reservable": True,
             "reservation_info": None,
             "responsible_contact_info": {"fi": "Yhteissähköposti: ulkoilma@hel.fi"},
             "specific_terms": {"fi": "testi"},
-            "min_price": None,
-            "max_price": None,
-            "price_type": "hourly",
-            "generate_access_codes": True,
             "external_reservation_url": "https://tilavaraus.hel.fi/reservation-unit/479",
-            "reservation_extra_questions": "",
-            "created_by": None,
-            "modified_by": 10043,
             "unit": "tprek:59763",
-            "attachments": [],
-            "location": None,
+        },
+        {
+            "id": "axi7463oupta",
+            "type": {
+                "name": {"fi": "Työpiste", "en": "Workstation", "sv": "Arbetsstation"},
+                "main_type": "space",
+                "id": "workstation",
+            },
+            "user_permissions": {
+                "can_make_reservations": True,
+            },
+            "generic_terms": {"fi": "info fi", "en": "info en", "sv": "info sv"},
+            "payment_terms": "",
+            "name": {"fi": "Ompelukone (Brother RL425)"},
+            "description": {"fi": "Ompelukone Brother RL425"},
+            "reservable": True,
+            "reservation_info": {
+                "fi": "Sinulla voi olla yksi voimassa oleva ompelukonevaraus kerrallaan."
+            },
+            "responsible_contact_info": {"fi": "test@example.org"},
+            "specific_terms": None,
+            "external_reservation_url": None,
+            "unit": "awtrnbtl2wca",
         },
     ],
 }
@@ -465,7 +185,7 @@ def mocked_respa_resource_response(module_mocker):
         (
             False,
             {
-                "tprek:42086": [
+                "42086": [
                     Resource(
                         id="axayciqmqfja",
                         name=LanguageString(
@@ -569,7 +289,7 @@ def mocked_respa_resource_response(module_mocker):
                         externalReservationUrl=None,
                     ),
                 ],
-                "tprek:59763": [
+                "59763": [
                     Resource(
                         id="aweyzvgot72q",
                         name=LanguageString(
@@ -605,12 +325,48 @@ def mocked_respa_resource_response(module_mocker):
                         externalReservationUrl="https://tilavaraus.hel.fi/reservation-unit/479",
                     )
                 ],
+                "awtrnbtl2wca": [
+                    Resource(
+                        id="axi7463oupta",
+                        name=LanguageString(
+                            fi="Ompelukone (Brother RL425)", sv=None, en=None
+                        ),
+                        description=LanguageString(
+                            fi="Ompelukone Brother RL425", sv=None, en=None
+                        ),
+                        type=ResourceType(
+                            id="workstation",
+                            mainType="space",
+                            name=LanguageString(
+                                fi="Työpiste", sv="Arbetsstation", en="Workstation"
+                            ),
+                        ),
+                        userPermissions=ResourceUserPermissions(
+                            canMakeReservations=True
+                        ),
+                        reservable=True,
+                        reservationInfo=LanguageString(
+                            fi="Sinulla voi olla yksi voimassa oleva ompelukonevaraus kerrallaan.",
+                            sv=None,
+                            en=None,
+                        ),
+                        genericTerms=LanguageString(
+                            fi="info fi", sv="info sv", en="info en"
+                        ),
+                        paymentTerms=None,
+                        specificTerms=None,
+                        responsibleContactInfo=LanguageString(
+                            fi="test@example.org", sv=None, en=None
+                        ),
+                        externalReservationUrl=None,
+                    )
+                ],
             },
         ),
         (
             True,
             {
-                "tprek:42086": [
+                "42086": [
                     Resource(
                         id="axayciqmqfja",
                         name=LanguageString(
@@ -714,7 +470,7 @@ def mocked_respa_resource_response(module_mocker):
                         externalReservationUrl=None,
                     ),
                 ],
-                "tprek:59763": [
+                "59763": [
                     Resource(
                         id="aweyzvgot72q",
                         name=LanguageString(
@@ -752,6 +508,48 @@ def mocked_respa_resource_response(module_mocker):
                             en="Yhteissähköposti: ulkoilma@hel.fi",
                         ),
                         externalReservationUrl="https://tilavaraus.hel.fi/reservation-unit/479",
+                    )
+                ],
+                "awtrnbtl2wca": [
+                    Resource(
+                        id="axi7463oupta",
+                        name=LanguageString(
+                            fi="Ompelukone (Brother RL425)",
+                            sv="Ompelukone (Brother RL425)",
+                            en="Ompelukone (Brother RL425)",
+                        ),
+                        description=LanguageString(
+                            fi="Ompelukone Brother RL425",
+                            sv="Ompelukone Brother RL425",
+                            en="Ompelukone Brother RL425",
+                        ),
+                        type=ResourceType(
+                            id="workstation",
+                            mainType="space",
+                            name=LanguageString(
+                                fi="Työpiste", sv="Arbetsstation", en="Workstation"
+                            ),
+                        ),
+                        userPermissions=ResourceUserPermissions(
+                            canMakeReservations=True
+                        ),
+                        reservable=True,
+                        reservationInfo=LanguageString(
+                            fi="Sinulla voi olla yksi voimassa oleva ompelukonevaraus kerrallaan.",
+                            sv="Sinulla voi olla yksi voimassa oleva ompelukonevaraus kerrallaan.",
+                            en="Sinulla voi olla yksi voimassa oleva ompelukonevaraus kerrallaan.",
+                        ),
+                        genericTerms=LanguageString(
+                            fi="info fi", sv="info sv", en="info en"
+                        ),
+                        paymentTerms=None,
+                        specificTerms=None,
+                        responsibleContactInfo=LanguageString(
+                            fi="test@example.org",
+                            sv="test@example.org",
+                            en="test@example.org",
+                        ),
+                        externalReservationUrl=None,
                     )
                 ],
             },
