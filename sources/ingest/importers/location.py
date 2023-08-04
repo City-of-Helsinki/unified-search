@@ -769,7 +769,12 @@ def get_unit_id_to_resources_mapping(
     """
     result = defaultdict(list)
     for respa_resource in get_respa_resources():
-        result[respa_resource.get("unit")].append(
+        unit_id = str(respa_resource.get("unit", ""))
+        # Remove 'tprek:' prefix from unit IDs (e.g. "tprek:50174" or "axarwdco746q")
+        removable_prefix = "tprek:"
+        if unit_id.startswith(removable_prefix):
+            unit_id = unit_id[len(removable_prefix) :]
+        result[unit_id].append(
             create_exportable_resource(respa_resource, use_fallback_languages)
         )
     return result
