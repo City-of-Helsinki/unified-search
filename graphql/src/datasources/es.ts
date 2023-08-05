@@ -80,11 +80,16 @@ type OpenAtFilter = {
 type TermField =
   | 'venue.location.administrativeDivisions.id.keyword'
   | 'links.raw_data.ontologytree_ids_enriched.id'
-  | 'links.raw_data.ontologyword_ids_enriched.id';
+  | 'links.raw_data.ontologyword_ids_enriched.id'
+  | 'venue.serviceOwner.providerType.keyword'
+  | 'venue.serviceOwner.type.keyword'
+  | 'venue.targetGroups.keyword';
+
+type BooleanQueryOccurrenceType = 'filter' | 'must' | 'must_not' | 'should';
 
 type ArrayFilter = {
   bool: {
-    should: Array<{
+    [key in BooleanQueryOccurrenceType]?: Array<{
       term: {
         [key: string]: string;
       };
@@ -113,6 +118,57 @@ function buildArrayFilter(
   ];
 }
 
+type MustHaveReservableResourceFilter = {
+  bool: {
+    should: [
+      {
+        term: {
+          [key: string]: boolean;
+        };
+      },
+      {
+        exists: {
+          field: string;
+        };
+      }
+    ];
+  };
+};
+
+const buildMustHaveReservableResourceFilter =
+  (): MustHaveReservableResourceFilter => ({
+    bool: {
+      should: [
+        // i.e. OR
+        {
+          term: {
+            'venue.resources.reservable': true,
+          },
+        },
+        {
+          exists: {
+            field: 'venue.resources.externalReservationUrl',
+          },
+        },
+      ],
+    },
+  });
+
+const buildAccessibilityProfilesWithoutShortcomingsArrayFilter = (
+  accessibilityProfiles: string[]
+): ArrayFilter[] => [
+  {
+    bool: {
+      must_not: accessibilityProfiles.map((accessibilityProfile) => ({
+        term: {
+          'venue.accessibility.shortcomings.profile.keyword':
+            accessibilityProfile,
+        },
+      })),
+    },
+  },
+];
+
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
@@ -128,6 +184,11 @@ class ElasticSearchAPI extends RESTDataSource {
     ontologyTreeId?: string,
     ontologyTreeIds?: string[],
     ontologyWordIds?: string[],
+    providerTypes?: string[],
+    serviceOwnerTypes?: string[],
+    targetGroups?: string[],
+    mustHaveReservableResource?: boolean,
+    accessibilityProfilesWithoutShortcomings?: string[],
     index?: string,
     from?: number,
     size?: number,
@@ -245,7 +306,9 @@ class ElasticSearchAPI extends RESTDataSource {
       ? openAtDateTime.toISO()
       : openAt;
 
-    const filters: Array<ArrayFilter | OpenAtFilter> = [
+    const filters: Array<
+      ArrayFilter | OpenAtFilter | MustHaveReservableResourceFilter
+    > = [
       ...buildArrayFilter(
         'venue.location.administrativeDivisions.id.keyword',
         divisionIds
@@ -257,6 +320,21 @@ class ElasticSearchAPI extends RESTDataSource {
       ...buildArrayFilter(
         'links.raw_data.ontologyword_ids_enriched.id',
         ontologyWordIds
+      ),
+      ...buildArrayFilter(
+        'venue.serviceOwner.providerType.keyword',
+        providerTypes ?? []
+      ),
+      ...buildArrayFilter(
+        'venue.serviceOwner.type.keyword',
+        serviceOwnerTypes ?? []
+      ),
+      ...buildArrayFilter('venue.targetGroups.keyword', targetGroups ?? []),
+      ...(mustHaveReservableResource
+        ? [buildMustHaveReservableResourceFilter()]
+        : []),
+      ...buildAccessibilityProfilesWithoutShortcomingsArrayFilter(
+        accessibilityProfilesWithoutShortcomings ?? []
       ),
       ...(finalOpenAt
         ? [
