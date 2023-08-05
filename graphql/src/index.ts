@@ -47,6 +47,11 @@ type UnifiedSearchQuery = {
   ontologyTreeId?: string;
   ontologyTreeIds?: string[];
   ontologyWordIds?: string[];
+  providerTypes?: string[];
+  serviceOwnerTypes?: string[];
+  targetGroups?: string[];
+  mustHaveReservableResource?: boolean;
+  accessibilityProfilesWithoutShortcomings?: string[];
   index?: string;
   languages?: string[];
   openAt?: string;
@@ -94,6 +99,11 @@ const resolvers = {
         ontologyTreeId,
         ontologyTreeIds,
         ontologyWordIds,
+        providerTypes,
+        serviceOwnerTypes,
+        targetGroups,
+        mustHaveReservableResource,
+        accessibilityProfilesWithoutShortcomings,
         index,
         before,
         after,
@@ -130,6 +140,11 @@ const resolvers = {
         ontologyTreeId,
         ontologyTreeIds,
         ontologyWordIds,
+        providerTypes,
+        serviceOwnerTypes,
+        targetGroups,
+        mustHaveReservableResource,
+        accessibilityProfilesWithoutShortcomings,
         index,
         from,
         size,

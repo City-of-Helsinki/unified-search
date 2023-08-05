@@ -111,6 +111,33 @@ export const querySchema = gql`
         ontologyWordIds: [ID],
 
         """
+        Optional, filter to match any of these provider types
+        """
+        providerTypes: [ProviderType],
+
+        """
+        Optional, filter to match any of these service owner types
+        """
+        serviceOwnerTypes: [ServiceOwnerType],
+
+        """
+        Optional, filter to match any of these target groups
+        """
+        targetGroups: [TargetGroup],
+
+        """
+        Optional, filter to show only venues that have at least one reservable resource.
+        If not given or false, all venues are shown.
+        """
+        mustHaveReservableResource: Boolean,
+
+        """
+        Optional, filter to show only venues that have no known shortcomings for any of
+        the given accessibility profiles.
+        """
+        accessibilityProfilesWithoutShortcomings: [AccessibilityProfile],
+
+        """
         Optional search index.
         """
         index: String,
