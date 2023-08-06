@@ -45,7 +45,7 @@ export const querySchema = gql`
   type SearchResultNode {
     _score: Float
     id: ID!
-    venue: Venue @cacheControl(inheritMaxAge: true)
+    venue: UnifiedSearchVenue @cacheControl(inheritMaxAge: true)
     event: Event
     searchCategories: [UnifiedSearchResultCategory!]!
   }

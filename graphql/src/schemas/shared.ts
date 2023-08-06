@@ -8,7 +8,7 @@ export const sharedSchema = gql`
   }
   """
   TODO: merge all free tags, categories, and keywords
-  KEYWORDS ARE GIVEN FROM events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql)
+  KEYWORDS ARE GIVEN FROM events-proxy (https://events-graphql-proxy.test.hel.ninja/proxy/graphql)
   """
   type KeywordString {
     name: String!
