@@ -234,7 +234,7 @@ const resolvers = {
     },
   },
 
-  Venue: {
+  UnifiedSearchVenue: {
     name({ venue }: any, args: any, context: any, info: any) {
       return venue.name;
     },
