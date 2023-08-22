@@ -68,7 +68,7 @@ def test_get_language_string_without_fallback_languages(
         (
             {"foo_fi": "kissa", "foo_en": "cat", "bar_fi": "koira"},
             "foo",
-            LanguageString(fi="kissa", sv="kissa", en="cat"),
+            LanguageString(fi="kissa", sv="cat", en="cat"),
         ),
         (
             {"foo_fi": "kissa", "bar_fi": "koira"},
@@ -120,7 +120,7 @@ def test_get_language_string_without_fallback_languages(
         (
             {"foo_fi": "kissa", "foo_en": "cat"},
             "foo",
-            LanguageString(fi="kissa", sv="kissa", en="cat"),
+            LanguageString(fi="kissa", sv="cat", en="cat"),
         ),
         (
             {"foo_fi": "kissa", "foo_sv": "katt"},
@@ -155,12 +155,12 @@ def test_get_language_string_without_fallback_languages(
         (
             {"foo_fi": "kissa", "foo_en": "cat", "foo_sv": ""},
             "foo",
-            LanguageString(fi="kissa", sv="kissa", en="cat"),
+            LanguageString(fi="kissa", sv="cat", en="cat"),
         ),
         (
             {"foo_fi": "kissa", "foo_en": "cat", "foo_sv": None},
             "foo",
-            LanguageString(fi="kissa", sv="kissa", en="cat"),
+            LanguageString(fi="kissa", sv="cat", en="cat"),
         ),
     ],
 )
