@@ -52,8 +52,8 @@ class LanguageStringConverter:
         return {
             lang: (
                 fields.get(lang, None)
-                or fields.get("fi", None)  # Primary fallback language
-                or fields.get("en", None)  # Secondary fallback language
+                or fields.get("en", None)  # Primary fallback language
+                or fields.get("fi", None)  # Secondary fallback language
                 or fields.get("sv", None)  # Tertiary fallback language
             )
             for lang in fields.keys()

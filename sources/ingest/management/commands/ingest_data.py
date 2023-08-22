@@ -52,7 +52,7 @@ class Command(BaseCommand):
             default=True,  # Means use_fallback_languages=True because of dest
             help=(
                 "Ignore the use of fallback languages. By default "
-                "fallback languages are used in order fi, en, sv."
+                "fallback languages are used in order en, fi, sv."
             ),
         )
 
