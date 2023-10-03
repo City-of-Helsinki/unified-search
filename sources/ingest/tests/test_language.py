@@ -172,3 +172,53 @@ def test_get_language_string_with_fallback_languages(
 
     assert converter1.get_language_string(field_name) == expected_output
     assert converter2.get_language_string(field_name) == expected_output
+
+
+@pytest.mark.parametrize(
+    "language_strings,expected_unique_count",
+    [
+        (
+            [
+                LanguageString(fi="fi", sv="sv", en="en"),
+                LanguageString(fi="fi", sv="sv", en="en"),
+                LanguageString(fi="fi", sv="sv", en="en"),
+            ],
+            1,
+        ),
+        (
+            [
+                LanguageString(fi="fi", sv="sv", en="en"),
+                LanguageString(fi=None, sv=None, en=None),
+                LanguageString(fi=None, sv="sv", en=None),
+                LanguageString(fi=None, sv=None, en=None),
+                LanguageString(fi="fi", sv="sv", en="en"),
+            ],
+            3,
+        ),
+        (
+            [
+                LanguageString(fi="fi", sv="sv", en="en"),
+                LanguageString(fi="fi", sv="sv", en=None),
+                LanguageString(fi="fi", sv=None, en="en"),
+                LanguageString(fi=None, sv="sv", en="en"),
+                LanguageString(fi=None, sv=None, en="en"),
+                LanguageString(fi=None, sv="sv", en=None),
+                LanguageString(fi="fi", sv=None, en=None),
+                LanguageString(fi=None, sv=None, en=None),
+                LanguageString(fi="fi2", sv="sv", en="en"),
+                LanguageString(fi="fi", sv="sv2", en="en"),
+                LanguageString(fi="fi", sv="sv", en="en2"),
+                # Duplicates
+                LanguageString(fi="fi", sv="sv", en="en"),
+                LanguageString(fi="fi", sv="sv", en="en2"),
+                LanguageString(fi="fi", sv="sv", en=None),
+                LanguageString(fi="fi", sv=None, en=None),
+                LanguageString(fi=None, sv="sv", en=None),
+                LanguageString(fi=None, sv="sv", en=None),
+            ],
+            11,
+        ),
+    ],
+)
+def test_language_string_uniqueness(language_strings, expected_unique_count):
+    assert len(set(language_strings)) == expected_unique_count
