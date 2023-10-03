@@ -140,18 +140,66 @@ class ServiceOwner:
     name: LanguageString
 
 
+class AccessibilityViewpointID(Enum):
+    """
+    Accessibility viewpoint ID values
+     - 00: Choose accessibility perspective
+     - 11: I am a wheelchair user
+     - 12: I am a wheelchair user - arrive by my car
+     - 13: I am a wheelchair user - arrive with pick-up and drop-off traffic
+     - 21: I have reduced mobility, but I walk
+     - 22: I have reduced mobility, but I walk - arrive by my car
+     - 23: I have reduced mobility, but I walk - arrive with pick-up and drop-off traffic
+     - 31: I am a rollator user
+     - 32: I am a rollator user - arrive by my car
+     - 33: I am a rollator user - arrive with pick-up and drop-off traffic
+     - 41: I am a stroller pusher
+     - 51: I am visually impaired
+     - 52: I am visually impaired - arrive with pick-up and drop-off traffic
+     - 61: I use a hearing aid
+    Values taken from https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_viewpoint/
+    """
+
+    CHOOSE_ACCESSIBILITY_PERSPECTIVE = "00"  # Has value "unknown", for UI purposes
+    HEARING_AID = "61"
+    REDUCED_MOBILITY = "21"
+    REDUCED_MOBILITY_ARRIVE_BY_OWN_CAR = "22"
+    REDUCED_MOBILITY_ARRIVE_BY_DROPOFF = "23"
+    ROLLATOR = "31"
+    ROLLATOR_ARRIVE_BY_OWN_CAR = "32"
+    ROLLATOR_ARRIVE_BY_DROPOFF = "33"
+    STROLLER = "41"
+    VISUALLY_IMPAIRED = "51"
+    VISUALLY_IMPAIRED_ARRIVE_BY_DROPOFF = "52"
+    WHEELCHAIR = "11"
+    WHEELCHAIR_ARRIVE_BY_OWN_CAR = "12"
+    WHEELCHAIR_ARRIVE_BY_DROPOFF = "13"
+
+
 class AccessibilityViewpointValue(Enum):
     UNKNOWN = "unknown"
     RED = "red"
     GREEN = "green"
 
 
-@dataclass
+# Accessibility shortage texts that mean "no accessibility shortcomings",
+# see e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/5/accessibility_shortage/
+NO_SHORTCOMINGS_SHORTAGE_TEXT_VARIANTS: List[LanguageString] = [
+    LanguageString(fi="Ei puutteita.", sv="Inga brister.", en="No shortcomings."),
+    LanguageString(
+        fi="Ei tiedettyjä puutteita.",
+        sv="Inga kända brister.",
+        en="No known shortcomings.",
+    ),
+]
+
+
+@dataclass(eq=True, order=True)
 class AccessibilityViewpoint:
-    id: str
+    id: str  # AccessibilityViewpointID as string to fix OpenSearch serialization
     name: LanguageString
     value: str  # AccessibilityViewpointValue as string to fix OpenSearch serialization
-    shortages: List[LanguageString] = field(default_factory=list)
+    shortages: Optional[List[LanguageString]] = None
 
 
 class AccessibilityProfile(Enum):
@@ -163,7 +211,38 @@ class AccessibilityProfile(Enum):
     WHEELCHAIR = "wheelchair"
 
 
-@dataclass(order=True)
+# AccessibilityProfile to AccessibilityViewpointID values mapping i.e.
+# Dict[AccessibilityProfile, List[AccessibilityViewpointID]] but as Dict[str, List[str]]
+ACCESSIBILITY_PROFILE_VIEWPOINTS: Dict[str, List[str]] = {
+    AccessibilityProfile.HEARING_AID.value: [
+        AccessibilityViewpointID.HEARING_AID.value,
+    ],
+    AccessibilityProfile.REDUCED_MOBILITY.value: [
+        AccessibilityViewpointID.REDUCED_MOBILITY.value,
+        AccessibilityViewpointID.REDUCED_MOBILITY_ARRIVE_BY_OWN_CAR.value,
+        AccessibilityViewpointID.REDUCED_MOBILITY_ARRIVE_BY_DROPOFF.value,
+    ],
+    AccessibilityProfile.ROLLATOR.value: [
+        AccessibilityViewpointID.ROLLATOR.value,
+        AccessibilityViewpointID.ROLLATOR_ARRIVE_BY_OWN_CAR.value,
+        AccessibilityViewpointID.ROLLATOR_ARRIVE_BY_DROPOFF.value,
+    ],
+    AccessibilityProfile.STROLLER.value: [
+        AccessibilityViewpointID.STROLLER.value,
+    ],
+    AccessibilityProfile.VISUALLY_IMPAIRED.value: [
+        AccessibilityViewpointID.VISUALLY_IMPAIRED.value,
+        AccessibilityViewpointID.VISUALLY_IMPAIRED_ARRIVE_BY_DROPOFF.value,
+    ],
+    AccessibilityProfile.WHEELCHAIR.value: [
+        AccessibilityViewpointID.WHEELCHAIR.value,
+        AccessibilityViewpointID.WHEELCHAIR_ARRIVE_BY_OWN_CAR.value,
+        AccessibilityViewpointID.WHEELCHAIR_ARRIVE_BY_DROPOFF.value,
+    ],
+}
+
+
+@dataclass(eq=True, order=True)
 class AccessibilityShortcoming:
     """
     Accessibility shortcoming of an AccessibilityProfile,
@@ -171,10 +250,10 @@ class AccessibilityShortcoming:
     """
 
     profile: str  # AccessibilityProfile as string to fix OpenSearch serialization
-    count: int
+    count: Optional[int]  # None means unknown
 
 
-@dataclass
+@dataclass(eq=True)
 class AccessibilitySentence:
     sentenceGroupName: str
     sentenceGroup: LanguageString
@@ -196,6 +275,77 @@ class Accessibility:
     ) -> None:
         for viewpoint in self.viewpoints:
             viewpoint.shortages = viewpoint_id_to_shortages.get(viewpoint.id, [])[:]
+
+    def fix_unknown_and_zero_shortcomings(self) -> bool:
+        """
+        Fix unknown and zero accessibility shortcomings using accessibility viewpoints
+        and accessibility shortages.
+
+        @warning This method should only be called after set_accessibility_shortages()
+                 has been called.
+        @raises ValueError If any viewpoints' shortages have not been set i.e.
+                           any(vp.shortages is None for vp in self.viewpoints)
+        @return True if any shortcomings were fixed, False otherwise.
+        """
+        profile_shortcomings: Dict[str, Optional[int]] = {
+            profile.value: None for profile in AccessibilityProfile
+        }
+        for shortcoming in self.shortcomings:
+            profile_shortcomings[shortcoming.profile] = shortcoming.count
+
+        viewpoint_id_to_shortages: Dict[str, List[LanguageString]] = {
+            viewpoint_id.value: [] for viewpoint_id in AccessibilityViewpointID
+        }
+        for viewpoint in self.viewpoints:
+            if viewpoint.shortages is None:
+                raise ValueError(
+                    "Viewpoint's shortages have not been set, please call "
+                    "self.set_accessibility_shortages before calling this method"
+                )
+            viewpoint_id_to_shortages[viewpoint.id] = viewpoint.shortages
+
+        viewpoint_id_to_value: Dict[str, str] = {
+            viewpoint_id.value: AccessibilityViewpointValue.UNKNOWN.value
+            for viewpoint_id in AccessibilityViewpointID
+        }
+        for viewpoint in self.viewpoints:
+            viewpoint_id_to_value[viewpoint.id] = viewpoint.value
+
+        for profile, viewpoint_ids in ACCESSIBILITY_PROFILE_VIEWPOINTS.items():
+            profile_statuses = {viewpoint_id_to_value[_id] for _id in viewpoint_ids}
+            any_reds = AccessibilityViewpointValue.RED.value in profile_statuses
+            any_unknowns = AccessibilityViewpointValue.UNKNOWN.value in profile_statuses
+            all_greens = profile_statuses == {AccessibilityViewpointValue.GREEN.value}
+            if profile_shortcomings[profile] in [None, 0]:
+                if any_unknowns:
+                    profile_shortcomings[profile] = None  # Mark as unknown
+                elif any_reds:
+                    unique_shortages_count_for_profile = (
+                        len(
+                            set(
+                                shortage
+                                for viewpoint_id in viewpoint_ids
+                                for shortage in viewpoint_id_to_shortages.get(
+                                    viewpoint_id, []
+                                )
+                            )
+                            - set(NO_SHORTCOMINGS_SHORTAGE_TEXT_VARIANTS)
+                        )
+                        or None
+                    )  # If "red" but no shortages mark as unknown
+                    profile_shortcomings[profile] = unique_shortages_count_for_profile
+                elif all_greens:
+                    profile_shortcomings[profile] = 0
+
+        fixed_shortcomings = [
+            AccessibilityShortcoming(profile=profile, count=count)
+            for profile, count in profile_shortcomings.items()
+        ]
+        has_changed = len(self.shortcomings) != len(fixed_shortcomings) or any(
+            sc1 != sc2 for sc1, sc2 in zip(self.shortcomings, fixed_shortcomings)
+        )
+        self.shortcomings = fixed_shortcomings
+        return has_changed
 
 
 class ResourceMainType(Enum):
@@ -918,6 +1068,8 @@ class LocationImporter(Importer[Root]):
             venue.accessibility.set_accessibility_shortages(
                 unit_id_to_accessibility_viewpoint_shortages_mapping.get(_id, dict())
             )
+
+            venue.accessibility.fix_unknown_and_zero_shortcomings()
 
             root = Root(venue=venue)
 

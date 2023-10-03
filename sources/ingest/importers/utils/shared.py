@@ -1,12 +1,15 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
 
 
-@dataclass
+@dataclass(eq=True)
 class LanguageString:
-    fi: str = None
-    sv: str = None
-    en: str = None
+    fi: Optional[str] = None
+    sv: Optional[str] = None
+    en: Optional[str] = None
+
+    def __hash__(self):
+        return hash((self.fi, self.sv, self.en))
 
 
 @dataclass

@@ -89,10 +89,10 @@ export const locationSchema = gql`
     green
   }
   type AccessibilityViewpoint {
-    id: ID
-    name: LanguageString
-    value: AccessibilityViewpointValue
-    shortages: [LanguageString]
+    id: ID!
+    name: LanguageString!
+    value: AccessibilityViewpointValue!
+    shortages: [LanguageString!]!
   }
   enum AccessibilityProfile {
     hearing_aid
@@ -103,7 +103,7 @@ export const locationSchema = gql`
     wheelchair
   }
   type AccessibilityShortcoming {
-    profile: AccessibilityProfile
+    profile: AccessibilityProfile!
     count: Int
   }
   type AccessibilitySentence {
@@ -115,9 +115,9 @@ export const locationSchema = gql`
     email: String
     phone: String
     www: String
-    viewpoints: [AccessibilityViewpoint]
-    sentences: [AccessibilitySentence]
-    shortcomings: [AccessibilityShortcoming]
+    viewpoints: [AccessibilityViewpoint!]!
+    sentences: [AccessibilitySentence!]!
+    shortcomings: [AccessibilityShortcoming!]!
   }
   enum ResourceMainType {
     item
