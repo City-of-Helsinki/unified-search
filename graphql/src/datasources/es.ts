@@ -183,6 +183,7 @@ class ElasticSearchAPI extends RESTDataSource {
     administrativeDivisionIds?: string[],
     ontologyTreeId?: string,
     ontologyTreeIds?: string[],
+    ontologyTreeIdsOrSet2?: string[],
     ontologyWordIds?: string[],
     providerTypes?: string[],
     serviceOwnerTypes?: string[],
@@ -316,6 +317,10 @@ class ElasticSearchAPI extends RESTDataSource {
       ...buildArrayFilter(
         'links.raw_data.ontologytree_ids_enriched.id',
         ontologyIds
+      ),
+      ...buildArrayFilter(
+        'links.raw_data.ontologytree_ids_enriched.id',
+        ontologyTreeIdsOrSet2 ?? []
       ),
       ...buildArrayFilter(
         'links.raw_data.ontologyword_ids_enriched.id',
