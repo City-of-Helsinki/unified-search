@@ -154,21 +154,6 @@ const buildMustHaveReservableResourceFilter =
     },
   });
 
-const buildAccessibilityProfilesWithoutShortcomingsArrayFilter = (
-  accessibilityProfiles: string[]
-): ArrayFilter[] => [
-  {
-    bool: {
-      must_not: accessibilityProfiles.map((accessibilityProfile) => ({
-        term: {
-          'venue.accessibility.shortcomings.profile.keyword':
-            accessibilityProfile,
-        },
-      })),
-    },
-  },
-];
-
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
@@ -188,7 +173,7 @@ class ElasticSearchAPI extends RESTDataSource {
     serviceOwnerTypes?: string[],
     targetGroups?: string[],
     mustHaveReservableResource?: boolean,
-    accessibilityProfilesWithoutShortcomings?: string[],
+    orderByAccessibilityProfile?: string,
     index?: string,
     from?: number,
     size?: number,
@@ -333,9 +318,6 @@ class ElasticSearchAPI extends RESTDataSource {
       ...(mustHaveReservableResource
         ? [buildMustHaveReservableResourceFilter()]
         : []),
-      ...buildAccessibilityProfilesWithoutShortcomingsArrayFilter(
-        accessibilityProfilesWithoutShortcomings ?? []
-      ),
       ...(finalOpenAt
         ? [
             {
@@ -353,6 +335,9 @@ class ElasticSearchAPI extends RESTDataSource {
     }
 
     if (['event', 'location'].includes(es_index)) {
+      const type = es_index === 'location' ? 'venue' : 'event';
+      const language = languages[0] ?? 'fi';
+
       if (isDefined(orderByDistance)) {
         query.sort = {
           _geo_distance: {
@@ -365,14 +350,39 @@ class ElasticSearchAPI extends RESTDataSource {
           },
         };
       } else if (isDefined(orderByName)) {
-        const type = es_index === 'location' ? 'venue' : 'event';
-        const language = languages[0] ?? 'fi';
         query.sort = {
           [`${type}.name.${language}.keyword`]: {
             order: orderByName.order === 'DESCENDING' ? 'desc' : 'asc',
             missing: '_last',
           },
         };
+      } else if (isDefined(orderByAccessibilityProfile) && type === 'venue') {
+        query.sort = [
+          // Primary sort field (chosen accessibility profile's shortcoming count)
+          {
+            'venue.accessibility.shortcomings.count': {
+              order: 'asc',
+              nested: {
+                path: 'venue.accessibility.shortcomings',
+                filter: {
+                  term: {
+                    'venue.accessibility.shortcomings.profile':
+                      orderByAccessibilityProfile,
+                  },
+                },
+                max_children: 1,
+              },
+              missing: '_last',
+            },
+          },
+          // Secondary sort field (venue's name)
+          {
+            [`${type}.name.${language}.keyword`]: {
+              order: 'asc',
+              missing: '_last',
+            },
+          },
+        ];
       }
     }
 

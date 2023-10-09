@@ -132,12 +132,6 @@ export const querySchema = gql`
         mustHaveReservableResource: Boolean,
 
         """
-        Optional, filter to show only venues that have no known shortcomings for any of
-        the given accessibility profiles.
-        """
-        accessibilityProfilesWithoutShortcomings: [AccessibilityProfile],
-
-        """
         Optional search index.
         """
         index: String,
@@ -180,14 +174,26 @@ export const querySchema = gql`
         openAt: String
 
         """
-        Order results by distance to given coordinates. Cannot be used with "orderByName".
+        Order results by distance to given coordinates.
+        Mutually exclusive with other orderBy* parameters.
         """
         orderByDistance: OrderByDistance
 
         """
-        Order results by venue name in language given as the first value in "languages" argument. Cannot be used with "orderByDistance".
+        Order results by venue name in language given as the first value in "languages" argument.
+        Mutually exclusive with other orderBy* parameters.
         """
         orderByName: OrderByName
+
+        """
+        Optional, order venues by given accessibility profile's shortcomings,
+        first the results that have no accessibility shortcomings for the given profile,
+        then the ones with 1 shortcoming, 2 shortcomings, ..., N shortcomings and
+        last the ones with unknown shortcomings (i.e. no data for or against).
+
+        Mutually exclusive with other orderBy* parameters.
+        """
+        orderByAccessibilityProfile: AccessibilityProfile,
 
       ): SearchResultConnection
 

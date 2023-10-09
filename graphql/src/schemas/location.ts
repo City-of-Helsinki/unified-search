@@ -20,6 +20,9 @@ export const locationSchema = gql`
     contactDetails: ContactInfo
     reservationPolicy: VenueReservationPolicy
     accessibility: Accessibility
+    orderedByAccessibilityShortcoming(
+      profile: AccessibilityProfile
+    ): AccessibilityShortcoming
     arrivalInstructions: String
     additionalInfo: String
     facilities: [VenueFacility!]

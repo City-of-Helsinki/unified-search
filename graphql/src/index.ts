@@ -51,7 +51,7 @@ type UnifiedSearchQuery = {
   serviceOwnerTypes?: string[];
   targetGroups?: string[];
   mustHaveReservableResource?: boolean;
-  accessibilityProfilesWithoutShortcomings?: string[];
+  orderByAccessibilityProfile?: string;
   index?: string;
   languages?: string[];
   openAt?: string;
@@ -103,7 +103,7 @@ const resolvers = {
         serviceOwnerTypes,
         targetGroups,
         mustHaveReservableResource,
-        accessibilityProfilesWithoutShortcomings,
+        orderByAccessibilityProfile,
         index,
         before,
         after,
@@ -120,16 +120,25 @@ const resolvers = {
       const connectionArguments = { before, after, first, last };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
 
-      if (isDefined(orderByDistance) && isDefined(orderByName)) {
+      const orderByArgs = {
+        orderByDistance,
+        orderByName,
+        orderByAccessibilityProfile,
+      };
+
+      const isOrderByAmbiguous =
+        Object.values(orderByArgs).map(isDefined).filter(Boolean).length > 1;
+
+      if (isOrderByAmbiguous) {
         throw new ValidationError(
-          'Cannot use both "orderByDistance" and "orderByName".'
+          `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`
         );
       }
-      if (orderByDistance === null) {
-        throw new ValidationError('"orderByDistance" cannot be null.');
-      }
-      if (orderByName === null) {
-        throw new ValidationError('"orderByName" cannot be null.');
+
+      for (const [orderByArgName, value] of Object.entries(orderByArgs)) {
+        if (value === null) {
+          throw new ValidationError(`"${orderByArgName}" cannot be null.`);
+        }
       }
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
@@ -144,7 +153,7 @@ const resolvers = {
         serviceOwnerTypes,
         targetGroups,
         mustHaveReservableResource,
-        accessibilityProfilesWithoutShortcomings,
+        orderByAccessibilityProfile,
         index,
         from,
         size,
@@ -264,6 +273,22 @@ const resolvers = {
     },
     accessibility({ venue }: any, args: any, context: any, info: any) {
       return venue.accessibility;
+    },
+    orderedByAccessibilityShortcoming(
+      { venue }: any,
+      args: any,
+      context: any,
+      info: any
+    ) {
+      if (args.profile) {
+        const shortcoming = venue.accessibility.shortcomings.filter(
+          (shortcoming) => shortcoming.profile == args.profile
+        );
+        if (shortcoming && shortcoming.length > 0) {
+          return shortcoming[0];
+        }
+      }
+      return undefined;
     },
     meta({ venue }: any, args: any, context: any, info: any) {
       return venue.meta;
