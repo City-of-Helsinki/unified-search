@@ -579,6 +579,20 @@ custom_mappings = {
                         }
                     }
                 },
+                "accessibility": {
+                    "properties": {
+                        "shortcomings": {
+                            "type": "nested",
+                            "properties": {
+                                "profile": {"type": "keyword"},
+                                "count": {
+                                    "type": "integer",
+                                    "null_value": 9999,  # Larger than any real value
+                                },
+                            },
+                        }
+                    }
+                },
             }
         },
         "location": {"type": "geo_point"},
