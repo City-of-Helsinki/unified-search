@@ -106,6 +106,13 @@ export const querySchema = gql`
         ontologyTreeIds: [ID],
 
         """
+        Optional, filter to match only these ontology tree ids,
+        if ontologyTreeIds is also given then it must match separately i.e.
+        at least one ontology tree ID must match in both sets separately.
+        """
+        ontologyTreeIdsOrSet2: [ID],
+
+        """
         Optional, filter to match only these ontology word ids
         """
         ontologyWordIds: [ID],
