@@ -14,12 +14,8 @@ attrs==21.4.0
     #   requests-cache
 cattrs==1.10.0
     # via requests-cache
-certifi==2021.10.8
-    # via
-    #   -r requirements.in
-    #   opensearch-py
-    #   requests
-    #   sentry-sdk
+certifi==2023.7.22
+    # via -r requirements.in
 charset-normalizer==2.0.10
     # via requests
 django==3.2.11

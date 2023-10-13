@@ -1,4 +1,4 @@
-certifi
+certifi>=2023.7.22
 Django
 opensearch-py
 requests
