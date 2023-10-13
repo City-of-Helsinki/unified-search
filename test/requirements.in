@@ -1,3 +1,4 @@
+certifi>=2023.7.22
 elasticsearch
 requests
 pytest

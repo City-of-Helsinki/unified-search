@@ -6,10 +6,8 @@
 #
 attrs==20.3.0
     # via pytest
-certifi==2020.12.5
-    # via
-    #   elasticsearch
-    #   requests
+certifi==2023.7.22
+    # via -r requirements.in
 chardet==4.0.0
     # via requests
 elasticsearch==7.11.0
