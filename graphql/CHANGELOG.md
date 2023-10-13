@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.2.0...graphql-v1.3.0) (2023-10-13)
+
+
+### Features
+
+* **graphql:** Add ontologyTreeIdsOrSet2 query parameter ([b17fefe](https://github.com/City-of-Helsinki/unified-search/commit/b17fefe77771215b87c03aa1954258f1f518cea2))
+* **graphql:** Order by accessibility profile's shortcoming count ([e688fb2](https://github.com/City-of-Helsinki/unified-search/commit/e688fb2d0fe534c40570aad2079dac935631c13f))
+
+
+### Bug Fixes
+
+* Fix unknown and zero accessibility shortcoming counts ([3ed0a3c](https://github.com/City-of-Helsinki/unified-search/commit/3ed0a3c6bf914083e45784d8a8f15650736ff564))
+
 ## [1.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.1.0...graphql-v1.2.0) (2023-08-23)
 
 
