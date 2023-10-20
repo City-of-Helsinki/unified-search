@@ -96,11 +96,6 @@ export const querySchema = gql`
         administrativeDivisionIds: [ID],
 
         """
-        Optional, filter to match only this ontology tree id. DEPRECATED! use ontologyTreeIds instead.
-        """
-        ontologyTreeId: ID
-
-        """
         Optional, filter to match only these ontology tree ids
         """
         ontologyTreeIds: [ID],

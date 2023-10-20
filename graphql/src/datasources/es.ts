@@ -166,7 +166,6 @@ class ElasticSearchAPI extends RESTDataSource {
     ontology?: string,
     administrativeDivisionId?: string,
     administrativeDivisionIds?: string[],
-    ontologyTreeId?: string,
     ontologyTreeIds?: string[],
     ontologyTreeIdsOrSet2?: string[],
     ontologyWordIds?: string[],
@@ -280,9 +279,6 @@ class ElasticSearchAPI extends RESTDataSource {
       divisionIds.push(administrativeDivisionId);
     }
     let ontologyIds = ontologyTreeIds ?? [];
-    if (ontologyTreeId) {
-      ontologyIds.push(ontologyTreeId);
-    }
 
     // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
     const openAtDateTime = DateTime.fromISO(openAt, {
