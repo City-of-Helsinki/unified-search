@@ -44,8 +44,7 @@ type UnifiedSearchQuery = {
   ontology?: string;
   administrativeDivisionId?: string;
   administrativeDivisionIds?: string[];
-  ontologyTreeIds?: string[];
-  ontologyTreeIdsOrSet2?: string[];
+  ontologyTreeIdOrSets?: string[][];
   ontologyWordIds?: string[];
   providerTypes?: string[];
   serviceOwnerTypes?: string[];
@@ -96,8 +95,7 @@ const resolvers = {
         ontology,
         administrativeDivisionId,
         administrativeDivisionIds,
-        ontologyTreeIds,
-        ontologyTreeIdsOrSet2,
+        ontologyTreeIdOrSets,
         ontologyWordIds,
         providerTypes,
         serviceOwnerTypes,
@@ -146,8 +144,7 @@ const resolvers = {
         ontology,
         administrativeDivisionId,
         administrativeDivisionIds,
-        ontologyTreeIds,
-        ontologyTreeIdsOrSet2,
+        ontologyTreeIdOrSets,
         ontologyWordIds,
         providerTypes,
         serviceOwnerTypes,
