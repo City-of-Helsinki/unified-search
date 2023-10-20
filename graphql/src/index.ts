@@ -40,7 +40,7 @@ const OK = 'OK';
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
 type UnifiedSearchQuery = {
-  q?: String;
+  text?: string;
   ontology?: string;
   administrativeDivisionIds?: string[];
   ontologyTreeIdOrSets?: string[][];
@@ -90,7 +90,7 @@ const resolvers = {
     unifiedSearch: async (
       _source: any,
       {
-        q,
+        text,
         ontology,
         administrativeDivisionIds,
         ontologyTreeIdOrSets,
@@ -138,7 +138,7 @@ const resolvers = {
       }
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
-        q,
+        text,
         ontology,
         administrativeDivisionIds,
         ontologyTreeIdOrSets,

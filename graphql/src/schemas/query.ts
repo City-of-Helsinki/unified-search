@@ -78,7 +78,7 @@ export const querySchema = gql`
         """
         Free form query string, corresponding to user search input
         """
-        q: String,
+        text: String,
 
         """
         Optional, filter to match only these ontology words
