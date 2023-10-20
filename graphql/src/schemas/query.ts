@@ -86,11 +86,6 @@ export const querySchema = gql`
         ontology: String,
 
         """
-        Optional, filter to match only this administrative division. DEPRECATED! use administrativeDivisionIds instead.
-        """
-        administrativeDivisionId: ID
-
-        """
         Optional, filter to match only these administrative divisions
         """
         administrativeDivisionIds: [ID],
