@@ -20,7 +20,10 @@ export const locationSchema = gql`
     contactDetails: ContactInfo
     reservationPolicy: VenueReservationPolicy
     accessibility: Accessibility
-    orderedByAccessibilityShortcoming(
+    """
+    Accessibility shortcoming for a specific accessibility profile.
+    """
+    accessibilityShortcomingFor(
       profile: AccessibilityProfile
     ): AccessibilityShortcoming
     arrivalInstructions: String
