@@ -166,8 +166,7 @@ class ElasticSearchAPI extends RESTDataSource {
     ontology?: string,
     administrativeDivisionId?: string,
     administrativeDivisionIds?: string[],
-    ontologyTreeIds?: string[],
-    ontologyTreeIdsOrSet2?: string[],
+    ontologyTreeIdOrSets?: string[][],
     ontologyWordIds?: string[],
     providerTypes?: string[],
     serviceOwnerTypes?: string[],
@@ -278,7 +277,6 @@ class ElasticSearchAPI extends RESTDataSource {
     if (administrativeDivisionId) {
       divisionIds.push(administrativeDivisionId);
     }
-    let ontologyIds = ontologyTreeIds ?? [];
 
     // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
     const openAtDateTime = DateTime.fromISO(openAt, {
@@ -295,13 +293,11 @@ class ElasticSearchAPI extends RESTDataSource {
         'venue.location.administrativeDivisions.id.keyword',
         divisionIds
       ),
-      ...buildArrayFilter(
-        'links.raw_data.ontologytree_ids_enriched.id',
-        ontologyIds
-      ),
-      ...buildArrayFilter(
-        'links.raw_data.ontologytree_ids_enriched.id',
-        ontologyTreeIdsOrSet2 ?? []
+      ...(ontologyTreeIdOrSets ?? []).flatMap((ontologyTreeIdOrSet) =>
+        buildArrayFilter(
+          'links.raw_data.ontologytree_ids_enriched.id',
+          ontologyTreeIdOrSet ?? []
+        )
       ),
       ...buildArrayFilter(
         'links.raw_data.ontologyword_ids_enriched.id',
