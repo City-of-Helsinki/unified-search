@@ -266,7 +266,7 @@ const resolvers = {
     accessibility({ venue }: any, args: any, context: any, info: any) {
       return venue.accessibility;
     },
-    orderedByAccessibilityShortcoming(
+    accessibilityShortcomingFor(
       { venue }: any,
       args: any,
       context: any,
