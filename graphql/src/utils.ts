@@ -19,26 +19,16 @@ export function readCursor<T>(cursor: String | null): T {
 }
 
 export function getEsOffsetPaginationQuery({
-  before,
   after,
   first = null,
-  last = null,
 }: ConnectionArguments): ElasticSearchPagination {
-  if (before) {
-    throw new Error('The before parameter is not supported');
-  }
-
-  if (last) {
-    throw new Error('The last parameter is not supported');
-  }
-
   if ((first !== null && typeof first !== 'number') || first < 0) {
     throw new Error('First must be a positive number');
   }
 
   let offset = 0;
   // If no size can be inferred, let elastic use its default logic
-  const size = (last || first) ?? undefined;
+  const size = first ?? undefined;
 
   if (after) {
     const afterObject = readCursor<ConnectionCursorObject>(after);

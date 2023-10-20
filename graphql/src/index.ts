@@ -101,10 +101,8 @@ const resolvers = {
         mustHaveReservableResource,
         orderByAccessibilityProfile,
         index,
-        before,
         after,
         first,
-        last,
         languages,
         openAt,
         orderByDistance,
@@ -113,7 +111,7 @@ const resolvers = {
       { dataSources }: any,
       info: any
     ) => {
-      const connectionArguments = { before, after, first, last };
+      const connectionArguments = { after, first };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
 
       const orderByArgs = {
