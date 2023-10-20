@@ -97,7 +97,7 @@ It is recommended to use GraphQL client such as Altair for sending queries.
 ### Search all with specified ontology
 
     query {
-      unifiedSearch(index: "event", q: "*", ontology: "vapaaehtoistoiminta", languages:FINNISH) {
+      unifiedSearch(index: "event", text: "*", ontology: "vapaaehtoistoiminta", languages:FINNISH) {
         edges {
           cursor
           node {
@@ -117,7 +117,7 @@ It is recommended to use GraphQL client such as Altair for sending queries.
 ### Free text search - event index
 
     query {
-      unifiedSearch(index: "event", q: "koira", languages:FINNISH) {
+      unifiedSearch(index: "event", text: "koira", languages:FINNISH) {
         edges {
           cursor
           node {
@@ -137,7 +137,7 @@ It is recommended to use GraphQL client such as Altair for sending queries.
 ### Free text search - location index
 
     query {
-      unifiedSearch(index: "location", q: "koira", languages:FINNISH) {
+      unifiedSearch(index: "location", text: "koira", languages:FINNISH) {
         edges {
           cursor
           node {
@@ -157,7 +157,7 @@ It is recommended to use GraphQL client such as Altair for sending queries.
 ### Pagination and scores
 
     query {
-      unifiedSearch(q: "koira", index: "location") {
+      unifiedSearch(text: "koira", index: "location") {
         count
         max_score
         pageInfo {
@@ -195,7 +195,7 @@ It is recommended to use GraphQL client such as Altair for sending queries.
 ### Raw data for debugging purposes
 
     query {
-      unifiedSearch(q: "koira", index: "location", first: 3) {
+      unifiedSearch(text: "koira", index: "location", first: 3) {
         count
         max_score
         edges {
@@ -264,7 +264,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-
 
 ## GraphQL search API - using curl
 
-    $ curl --insecure -X POST -H "Content-Type: application/json" --data '{"query":"query{unifiedSearch(q:\"leikkipuisto\", index:\"location\"){count}}"}' <GraphQL base URL>/search
+    $ curl --insecure -X POST -H "Content-Type: application/json" --data '{"query":"query{unifiedSearch(text:\"leikkipuisto\", index:\"location\"){count}}"}' <GraphQL base URL>/search
 
     {"data":{"unifiedSearch":{"count":61}}}
 

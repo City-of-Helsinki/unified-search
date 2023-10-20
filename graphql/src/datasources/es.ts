@@ -162,7 +162,7 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 
   async getQueryResults(
-    q?: string,
+    text?: string,
     ontology?: string,
     administrativeDivisionIds?: string[],
     ontologyTreeIdOrSets?: string[][],
@@ -226,7 +226,7 @@ class ElasticSearchAPI extends RESTDataSource {
           .filter(([, searchFields]) => searchFields(language, index).length)
           .map(([boost, searchFields]) => ({
             query_string: {
-              query: q,
+              query: text,
               boost: boost,
               fields: searchFields(language, index),
             },
@@ -484,11 +484,6 @@ class ElasticSearchAPI extends RESTDataSource {
         headers: { 'Content-Type': 'application/json' },
       }
     );
-  }
-
-  async getMapping(q) {
-    const data = await this.get(`test-index/_mapping`);
-    return data;
   }
 }
 
