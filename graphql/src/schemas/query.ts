@@ -137,29 +137,16 @@ export const querySchema = gql`
         first: Int
 
         """
-        NOTE: Unsupported
-
-        Optional pagination variable, match results before this cursor.
-        """
-        before: String
-
-        """
-        NOTE: Unsupported
-
-        Optional pagination variable, match the N last results.
-        """
-        last: Int
-
-        """
         Targets the search to fields of specified language
         """
         languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
 
         """
-        Return only venues that are open at the given moment. In addition to ISO 8601 datetimes, accepts values
-        conforming to Elastic Search date math (https://www.elastic.co/guide/en/elasticsearch/reference/7.x/common-options.html#date-math)
-        like "now+3h". When there is a datetime provided without a timezone offset, "Europe/Helsinki" will be assumed
-        as the time zone.
+        Return only venues that are open at the given moment. In addition to ISO 8601
+        datetimes, accepts values conforming to Elastic Search date math
+        https://www.elastic.co/guide/en/elasticsearch/reference/7.x/common-options.html#date-math
+        like "now+3h". When there is a datetime provided without a timezone offset,
+        "Europe/Helsinki" will be assumed as the time zone.
         """
         openAt: String
 
@@ -170,8 +157,8 @@ export const querySchema = gql`
         orderByDistance: OrderByDistance
 
         """
-        Order results by venue name in language given as the first value in "languages" argument.
-        Mutually exclusive with other orderBy* parameters.
+        Order results by venue name in language given as the first value in "languages"
+        argument. Mutually exclusive with other orderBy* parameters.
         """
         orderByName: OrderByName
 
@@ -211,7 +198,8 @@ export const querySchema = gql`
 
     administrativeDivisions(
         """
-        Return only Helsinki administrative divisions that make a sensible set to be used as an option list in an UI for example.
+        Return only Helsinki administrative divisions that make a sensible set to be
+        used as an option list in an UI for example.
         """
         helsinkiCommonOnly: Boolean): [AdministrativeDivision]
 

@@ -14,16 +14,9 @@ export type PageInfo = {
 };
 
 export type ConnectionArguments = {
-  before?: ConnectionCursor | null;
   after?: ConnectionCursor | null;
   first?: number | null;
-  last?: number | null;
 };
-
-export type SupportedConnectionArguments = Exclude<
-  ConnectionArguments,
-  'before' | 'last'
->;
 
 export type ElasticSearchPagination = {
   from?: number;
