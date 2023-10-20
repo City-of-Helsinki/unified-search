@@ -101,9 +101,9 @@ export const querySchema = gql`
         ontologyTreeIdOrSets: [[ID!]!],
 
         """
-        Optional, filter to match only these ontology word ids
+        Optional, filter to match at least one ontology word ID from each list
         """
-        ontologyWordIds: [ID],
+        ontologyWordIdOrSets: [[ID!]!],
 
         """
         Optional, filter to match any of these provider types
