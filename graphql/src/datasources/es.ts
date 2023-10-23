@@ -77,6 +77,14 @@ type OpenAtFilter = {
   };
 };
 
+export type AccessibilityProfileType =
+  | 'hearing_aid'
+  | 'reduced_mobility'
+  | 'rollator'
+  | 'stroller'
+  | 'visually_impaired'
+  | 'wheelchair';
+
 type TermField =
   | 'venue.location.administrativeDivisions.id.keyword'
   | 'links.raw_data.ontologytree_ids_enriched.id'
@@ -171,14 +179,14 @@ class ElasticSearchAPI extends RESTDataSource {
     serviceOwnerTypes?: string[],
     targetGroups?: string[],
     mustHaveReservableResource?: boolean,
-    orderByAccessibilityProfile?: string,
     index?: string,
     from?: number,
     size?: number,
     languages?: ElasticLanguage[],
     openAt?: string,
     orderByDistance?: OrderByDistanceParams,
-    orderByName?: OrderByNameParams
+    orderByName?: OrderByNameParams,
+    orderByAccessibilityProfile?: AccessibilityProfileType
   ) {
     const es_index = index ? index : this.defaultIndex;
 
