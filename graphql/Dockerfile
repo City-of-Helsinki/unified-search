@@ -16,7 +16,7 @@ ENV NPM_CONFIG_PREFIX=/app/.npm-global
 ENV PATH=$PATH:/app/.npm-global/bin
 
 ENV YARN_VERSION 1.19.1
-RUN yarn policies set-version $YARN_VERSION
+RUN yarn policies set-version "$YARN_VERSION"
 
 COPY --chown=appuser:appuser docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
