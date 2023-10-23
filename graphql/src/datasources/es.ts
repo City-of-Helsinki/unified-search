@@ -220,7 +220,7 @@ class ElasticSearchAPI extends RESTDataSource {
     orderByName?: OrderByNameParams,
     orderByAccessibilityProfile?: AccessibilityProfileType
   ) {
-    const es_index = index ? index : ES_DEFAULT_INDEX;
+    const es_index = index || ES_DEFAULT_INDEX;
 
     // Some fields should be boosted / weighted to get more relevant result set
     const searchFieldsBoostMapping = {
