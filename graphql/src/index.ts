@@ -20,7 +20,11 @@ import {
 } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
-import { OrderByDistanceParams, OrderByNameParams } from './datasources/es';
+import {
+  AccessibilityProfileType,
+  OrderByDistanceParams,
+  OrderByNameParams,
+} from './datasources/es';
 
 const { elasticSearchSchema } = require('./schemas/es');
 const { palvelukarttaSchema } = require('./schemas/palvelukartta');
@@ -49,12 +53,12 @@ type UnifiedSearchQuery = {
   serviceOwnerTypes?: string[];
   targetGroups?: string[];
   mustHaveReservableResource?: boolean;
-  orderByAccessibilityProfile?: string;
   index?: string;
   languages?: string[];
   openAt?: string;
-  orderByDistance?: OrderByDistanceParams | null;
-  orderByName?: OrderByNameParams | null;
+  orderByDistance?: OrderByDistanceParams;
+  orderByName?: OrderByNameParams;
+  orderByAccessibilityProfile?: AccessibilityProfileType;
 } & ConnectionArguments;
 
 function edgesFromEsResults(results: any, getCursor: any) {
@@ -85,6 +89,33 @@ function getTodayString() {
   return [year, month, day].join('-');
 }
 
+function validateOrderByArguments(
+  orderByDistance?: OrderByDistanceParams,
+  orderByName?: OrderByNameParams,
+  orderByAccessibilityProfile?: AccessibilityProfileType
+) {
+  const orderByArgs = {
+    orderByDistance,
+    orderByName,
+    orderByAccessibilityProfile,
+  };
+
+  const isOrderByAmbiguous =
+    Object.values(orderByArgs).filter(isDefined).length > 1;
+
+  if (isOrderByAmbiguous) {
+    throw new ValidationError(
+      `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`
+    );
+  }
+
+  for (const [orderByArgName, value] of Object.entries(orderByArgs)) {
+    if (value === null) {
+      throw new ValidationError(`"${orderByArgName}" cannot be null.`);
+    }
+  }
+}
+
 const resolvers = {
   Query: {
     unifiedSearch: async (
@@ -99,7 +130,6 @@ const resolvers = {
         serviceOwnerTypes,
         targetGroups,
         mustHaveReservableResource,
-        orderByAccessibilityProfile,
         index,
         after,
         first,
@@ -107,6 +137,7 @@ const resolvers = {
         openAt,
         orderByDistance,
         orderByName,
+        orderByAccessibilityProfile,
       }: UnifiedSearchQuery,
       { dataSources }: any,
       info: any
@@ -114,26 +145,11 @@ const resolvers = {
       const connectionArguments = { after, first };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
 
-      const orderByArgs = {
+      validateOrderByArguments(
         orderByDistance,
         orderByName,
-        orderByAccessibilityProfile,
-      };
-
-      const isOrderByAmbiguous =
-        Object.values(orderByArgs).map(isDefined).filter(Boolean).length > 1;
-
-      if (isOrderByAmbiguous) {
-        throw new ValidationError(
-          `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`
-        );
-      }
-
-      for (const [orderByArgName, value] of Object.entries(orderByArgs)) {
-        if (value === null) {
-          throw new ValidationError(`"${orderByArgName}" cannot be null.`);
-        }
-      }
+        orderByAccessibilityProfile
+      );
 
       const result = await dataSources.elasticSearchAPI.getQueryResults(
         text,
@@ -145,14 +161,14 @@ const resolvers = {
         serviceOwnerTypes,
         targetGroups,
         mustHaveReservableResource,
-        orderByAccessibilityProfile,
         index,
         from,
         size,
         elasticLanguageFromGraphqlLanguage(languages),
         openAt,
         orderByDistance,
-        orderByName
+        orderByName,
+        orderByAccessibilityProfile
       );
 
       const getCursor = (offset: number) =>
