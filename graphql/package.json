@@ -4,7 +4,7 @@
   "description": "GraphQL API for unified search",
   "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon --ext ts --exec 'ts-node' src/index.ts",
+    "start": "nodemon --ext ts src/index.ts --exec ts-node",
     "transpile": "tsc",
     "serve": "node --max-http-header-size=16000 dist/index.js",
     "test": "jest --watch"

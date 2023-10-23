@@ -25,3 +25,5 @@ export type ElasticSearchPagination = {
 
 export type ElasticLanguage =
   typeof GraphQlToElasticLanguageMap[keyof typeof GraphQlToElasticLanguageMap];
+
+export const DEFAULT_ELASTIC_LANGUAGE: ElasticLanguage = 'fi';
