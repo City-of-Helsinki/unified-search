@@ -1,5 +1,5 @@
 # ===============================================
-FROM helsinkitest/node:16-slim as appbase
+FROM helsinkitest/node:16-slim AS appbase
 # ===============================================
 
 # Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
@@ -25,7 +25,7 @@ ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 USER appuser
 
 # =============================
-FROM appbase as development_base
+FROM appbase AS development_base
 # =============================
 
 # Set node environment to development to install all npm dependencies
@@ -51,21 +51,21 @@ COPY --chown=appuser:appuser . /app/.
 USER appuser
 
 # =============================
-FROM development_base as development
+FROM development_base AS development
 # =============================
 
 # Bake package.json start command into the image
 CMD ["npm", "start"]
 
 # =============================
-FROM development_base as transpiler
+FROM development_base AS transpiler
 # =============================
 
 # Transpile Typescript into Javascript
 RUN npm run transpile
 
 # =============================
-FROM appbase as production
+FROM appbase AS production
 # =============================
 
 # Copy the transpiled source files to this image
