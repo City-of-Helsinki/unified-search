@@ -1,19 +1,52 @@
 import { DateTime } from 'luxon';
-import { ElasticLanguage } from '../types';
+import { DEFAULT_ELASTIC_LANGUAGE, ElasticLanguage } from '../types';
 import { isDefined } from '../utils';
 
 const { RESTDataSource } = require('apollo-datasource-rest');
 
-const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
-const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division';
+const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division' as const;
 const ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX =
-  'helsinki_common_administrative_division';
-const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree';
-const ES_ONTOLOGY_WORD_INDEX = 'ontology_word';
-const DEFAULT_TIME_ZONE = 'Europe/Helsinki';
+  'helsinki_common_administrative_division' as const;
+const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree' as const;
+const ES_ONTOLOGY_WORD_INDEX = 'ontology_word' as const;
+const ES_EVENT_INDEX = 'event' as const;
+const ES_LOCATION_INDEX = 'location' as const;
+const ES_DEFAULT_INDEX = ES_LOCATION_INDEX;
+
+const ELASTIC_SEARCH_INDICES = [
+  ES_ADMINISTRATIVE_DIVISION_INDEX,
+  ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
+  ES_ONTOLOGY_TREE_INDEX,
+  ES_ONTOLOGY_WORD_INDEX,
+  ES_EVENT_INDEX,
+  ES_LOCATION_INDEX,
+] as const;
+
+type ElasticSearchIndex = typeof ELASTIC_SEARCH_INDICES[number];
+
+const EVENT_SEARCH_RESULT_FIELD = 'event' as const;
+const VENUE_SEARCH_RESULT_FIELD = 'venue' as const;
+
+const SEARCH_RESULT_FIELDS = [
+  EVENT_SEARCH_RESULT_FIELD,
+  VENUE_SEARCH_RESULT_FIELD,
+] as const;
+
+type SearchResultField = typeof SEARCH_RESULT_FIELDS[number];
+
+const ElasticSearchIndexToSearchResultField: Record<
+  Extract<ElasticSearchIndex, typeof ES_EVENT_INDEX | typeof ES_LOCATION_INDEX>,
+  SearchResultField
+> = {
+  [ES_EVENT_INDEX]: EVENT_SEARCH_RESULT_FIELD,
+  [ES_LOCATION_INDEX]: VENUE_SEARCH_RESULT_FIELD,
+};
+
+const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
+const DEFAULT_TIME_ZONE = 'Europe/Helsinki' as const;
 // The default page size when the first argument is not given.
 // This is the default page size set by OpenSearch / ElasticSearch
-const ES_DEFAULT_PAGE_SIZE = 10;
+const ES_DEFAULT_PAGE_SIZE = 10 as const;
 
 type OntologyTreeParams = {
   rootId?: string;
@@ -166,7 +199,6 @@ class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = ELASTIC_SEARCH_URI;
-    this.defaultIndex = 'location';
   }
 
   async getQueryResults(
@@ -179,7 +211,7 @@ class ElasticSearchAPI extends RESTDataSource {
     serviceOwnerTypes?: string[],
     targetGroups?: string[],
     mustHaveReservableResource?: boolean,
-    index?: string,
+    index?: ElasticSearchIndex,
     from?: number,
     size?: number,
     languages?: ElasticLanguage[],
@@ -188,7 +220,7 @@ class ElasticSearchAPI extends RESTDataSource {
     orderByName?: OrderByNameParams,
     orderByAccessibilityProfile?: AccessibilityProfileType
   ) {
-    const es_index = index ? index : this.defaultIndex;
+    const es_index = index ? index : ES_DEFAULT_INDEX;
 
     // Some fields should be boosted / weighted to get more relevant result set
     const searchFieldsBoostMapping = {
@@ -211,15 +243,15 @@ class ElasticSearchAPI extends RESTDataSource {
     };
 
     // Ontology fields for different indexes
-    const ontologyFields = (lang: string, index: string) => {
-      if (index === 'location') {
+    const ontologyFields = (lang: string, index: ElasticSearchIndex) => {
+      if (index === ES_LOCATION_INDEX) {
         return [
           `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${lang}`,
           `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
           `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
           `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
         ];
-      } else if (index === 'event') {
+      } else if (index === ES_EVENT_INDEX) {
         return [`ontology.${lang}`, `ontology.alt`];
       }
       return [];
@@ -335,9 +367,9 @@ class ElasticSearchAPI extends RESTDataSource {
       query.query.bool.filter = filters;
     }
 
-    if (['event', 'location'].includes(es_index)) {
-      const type = es_index === 'location' ? 'venue' : 'event';
-      const language = languages[0] ?? 'fi';
+    if (es_index == ES_EVENT_INDEX || es_index == ES_LOCATION_INDEX) {
+      const searchResultField = ElasticSearchIndexToSearchResultField[es_index];
+      const language = languages[0] ?? DEFAULT_ELASTIC_LANGUAGE;
 
       if (isDefined(orderByDistance)) {
         query.sort = {
@@ -352,12 +384,15 @@ class ElasticSearchAPI extends RESTDataSource {
         };
       } else if (isDefined(orderByName)) {
         query.sort = {
-          [`${type}.name.${language}.keyword`]: {
+          [`${searchResultField}.name.${language}.keyword`]: {
             order: orderByName.order === 'DESCENDING' ? 'desc' : 'asc',
             missing: '_last',
           },
         };
-      } else if (isDefined(orderByAccessibilityProfile) && type === 'venue') {
+      } else if (
+        isDefined(orderByAccessibilityProfile) &&
+        searchResultField === VENUE_SEARCH_RESULT_FIELD
+      ) {
         query.sort = [
           // Primary sort field (chosen accessibility profile's shortcoming count)
           {
@@ -378,7 +413,7 @@ class ElasticSearchAPI extends RESTDataSource {
           },
           // Secondary sort field (venue's name)
           {
-            [`${type}.name.${language}.keyword`]: {
+            [`${searchResultField}.name.${language}.keyword`]: {
               order: 'asc',
               missing: '_last',
             },
@@ -403,7 +438,7 @@ class ElasticSearchAPI extends RESTDataSource {
   async getSuggestions(
     prefix: string,
     languages: ElasticLanguage[],
-    index: string = this.defaultIndex,
+    index: ElasticSearchIndex = ES_DEFAULT_INDEX,
     size: number
   ) {
     const query = {
