@@ -438,8 +438,8 @@ class ElasticSearchAPI extends RESTDataSource {
   async getSuggestions(
     prefix: string,
     languages: ElasticLanguage[],
-    index: ElasticSearchIndex = ES_DEFAULT_INDEX,
-    size: number
+    size: number,
+    index: ElasticSearchIndex = ES_DEFAULT_INDEX
   ) {
     const query = {
       // Hide all source fields to decrease network load

@@ -196,8 +196,8 @@ const resolvers = {
       const res = await dataSources.elasticSearchAPI.getSuggestions(
         prefix,
         elasticLanguageFromGraphqlLanguage(languages),
-        index,
-        size
+        size,
+        index
       );
 
       return {
