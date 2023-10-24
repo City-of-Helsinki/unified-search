@@ -22,6 +22,7 @@ import pageInfoResolver from './resolvers/pageInfoResolver';
 import { ConnectionArguments, ConnectionCursorObject } from './types';
 import {
   AccessibilityProfileType,
+  ElasticSearchIndex,
   OrderByDistanceParams,
   OrderByNameParams,
 } from './datasources/es';
@@ -53,7 +54,7 @@ type UnifiedSearchQuery = {
   serviceOwnerTypes?: string[];
   targetGroups?: string[];
   mustHaveReservableResource?: boolean;
-  index?: string;
+  index?: ElasticSearchIndex;
   languages?: string[];
   openAt?: string;
   orderByDistance?: OrderByDistanceParams;

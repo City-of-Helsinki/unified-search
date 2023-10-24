@@ -73,6 +73,15 @@ export const querySchema = gql`
     order: SortOrder = ASCENDING
   }
 
+  enum UnifiedSearchIndex {
+    administrative_division
+    helsinki_common_administrative_division
+    ontology_tree
+    ontology_word
+    event
+    location
+  }
+
   type Query {
     unifiedSearch(
         """
@@ -124,7 +133,7 @@ export const querySchema = gql`
         """
         Optional search index.
         """
-        index: String,
+        index: UnifiedSearchIndex,
 
         """
         Optional pagination variable, match results after this cursor.
@@ -188,7 +197,7 @@ export const querySchema = gql`
       """
       Optional search index.
       """
-      index: String
+      index: UnifiedSearchIndex
 
       """
       Optional result size.
