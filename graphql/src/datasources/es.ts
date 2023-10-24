@@ -22,7 +22,7 @@ const ELASTIC_SEARCH_INDICES = [
   ES_LOCATION_INDEX,
 ] as const;
 
-type ElasticSearchIndex = typeof ELASTIC_SEARCH_INDICES[number];
+export type ElasticSearchIndex = typeof ELASTIC_SEARCH_INDICES[number];
 
 const EVENT_SEARCH_RESULT_FIELD = 'event' as const;
 const VENUE_SEARCH_RESULT_FIELD = 'venue' as const;
@@ -225,25 +225,31 @@ class ElasticSearchAPI extends RESTDataSource {
     // Some fields should be boosted / weighted to get more relevant result set
     const searchFieldsBoostMapping = {
       // Normally weighted search fields for different indexes
-      1: (lang: string, index: string) => {
+      1: (lang: ElasticLanguage, index: ElasticSearchIndex) => {
         return (
           {
-            location: [`venue.description.${lang}`],
-            event: [`event.name.${lang}`, `event.description.${lang}`],
+            [ES_LOCATION_INDEX]: [`venue.description.${lang}`],
+            [ES_EVENT_INDEX]: [
+              `event.name.${lang}`,
+              `event.description.${lang}`,
+            ],
           }[index] ?? []
         );
       },
-      3: (lang: string, index: string) => {
+      3: (lang: ElasticLanguage, index: ElasticSearchIndex) => {
         return (
           {
-            location: [`venue.name.${lang}`],
+            [ES_LOCATION_INDEX]: [`venue.name.${lang}`],
           }[index] ?? []
         );
       },
     };
 
     // Ontology fields for different indexes
-    const ontologyFields = (lang: string, index: ElasticSearchIndex) => {
+    const ontologyFields = (
+      lang: ElasticLanguage,
+      index: ElasticSearchIndex
+    ) => {
       if (index === ES_LOCATION_INDEX) {
         return [
           `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${lang}`,

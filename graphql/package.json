@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon --ext ts src/index.ts --exec ts-node",
     "transpile": "tsc",
+    "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "serve": "node --max-http-header-size=16000 dist/index.js",
     "test": "jest --watch"
   },
