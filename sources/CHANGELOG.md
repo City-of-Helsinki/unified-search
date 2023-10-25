@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.3.0...sources-v1.3.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* **importers:** Remove duplicated ontology word importer ([1c41741](https://github.com/City-of-Helsinki/unified-search/commit/1c41741445fdc6ca50d6a70c189dfe15f59174b5))
+
 ## [1.3.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.2.0...sources-v1.3.0) (2023-10-13)
 
 
