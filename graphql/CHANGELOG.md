@@ -1,5 +1,34 @@
 # Changelog
 
+## [2.0.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.3.0...graphql-v2.0.0) (2023-10-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **graphql:** rename orderedByAccessibilityShortcoming field
+* **graphql:** remove unsupported before & last arguments
+* **graphql:** rename graphql query argument "q" to "text"
+* **graphql:** remove deprecated administrativeDivisionId argument
+* **graphql:** unify ontologyWordId query args to ontologyWordIdOrSets
+* **graphql:** unify ontologyTreeId query args to ontologyTreeIdOrSets
+* **graphql:** remove deprecated ontologyTreeId argument
+
+### Features
+
+* **graphql:** Rename graphql query argument "q" to "text" ([9f01fe0](https://github.com/City-of-Helsinki/unified-search/commit/9f01fe0676a5e08f692102a65dfc073a139df774))
+* **graphql:** Rename orderedByAccessibilityShortcoming field ([1180717](https://github.com/City-of-Helsinki/unified-search/commit/1180717e1e57689da8b0d4be430cba3b2939bbe3))
+* **graphql:** Type graphql search index with an enumeration for clarity ([273180a](https://github.com/City-of-Helsinki/unified-search/commit/273180a514c749ca348461155864f16a513b8820))
+* **graphql:** Unify ontologyTreeId query args to ontologyTreeIdOrSets ([db4cf0a](https://github.com/City-of-Helsinki/unified-search/commit/db4cf0ad3610a6ebcdaf8f7d25f1bb9f551b0945))
+* **graphql:** Unify ontologyWordId query args to ontologyWordIdOrSets ([dce5a10](https://github.com/City-of-Helsinki/unified-search/commit/dce5a10a414976106b2f63540c5747100196dba4))
+
+
+### Bug Fixes
+
+* **dockerfile:** Use double quotes around $YARN_VERSION ([0fe05ff](https://github.com/City-of-Helsinki/unified-search/commit/0fe05ffee3dc250993ac0c3006d019a3dc724169))
+* **graphql:** Remove deprecated administrativeDivisionId argument ([91af86a](https://github.com/City-of-Helsinki/unified-search/commit/91af86a0a786d0e93c690cb47cc00f64d9751176))
+* **graphql:** Remove deprecated ontologyTreeId argument ([cd30f29](https://github.com/City-of-Helsinki/unified-search/commit/cd30f2956bf647e37f17065bbcc038221dd87a5e))
+* **graphql:** Remove unsupported before & last arguments ([9300a48](https://github.com/City-of-Helsinki/unified-search/commit/9300a48d5f2fbfd2f657b7ed765c8d4210067c89))
+
 ## [1.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.2.0...graphql-v1.3.0) (2023-10-13)
 
 
