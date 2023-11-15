@@ -7,8 +7,19 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowJs": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    "**/*.js",
+    "**/*.cjs",
+    "**/*.mjs",
+    "**/*.jsx",
+    "**/*.json"
+  ],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }
