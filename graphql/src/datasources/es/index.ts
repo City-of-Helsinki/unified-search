@@ -1,38 +1,39 @@
 import { DateTime } from 'luxon';
-import { DEFAULT_ELASTIC_LANGUAGE, ElasticLanguage } from '../types';
-import { isDefined } from '../utils';
-
-const { RESTDataSource } = require('apollo-datasource-rest');
-
-const ES_ADMINISTRATIVE_DIVISION_INDEX = 'administrative_division' as const;
-const ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX =
-  'helsinki_common_administrative_division' as const;
-const ES_ONTOLOGY_TREE_INDEX = 'ontology_tree' as const;
-const ES_ONTOLOGY_WORD_INDEX = 'ontology_word' as const;
-const ES_EVENT_INDEX = 'event' as const;
-const ES_LOCATION_INDEX = 'location' as const;
-const ES_DEFAULT_INDEX = ES_LOCATION_INDEX;
-
-const ELASTIC_SEARCH_INDICES = [
+import { DEFAULT_ELASTIC_LANGUAGE, ElasticLanguage } from '../../types';
+import { isDefined } from '../../utils';
+import {
+  DEFAULT_TIME_ZONE,
+  ELASTIC_SEARCH_URI,
   ES_ADMINISTRATIVE_DIVISION_INDEX,
+  ES_DEFAULT_INDEX,
+  ES_DEFAULT_PAGE_SIZE,
+  ES_EVENT_INDEX,
   ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
+  ES_LOCATION_INDEX,
   ES_ONTOLOGY_TREE_INDEX,
   ES_ONTOLOGY_WORD_INDEX,
-  ES_EVENT_INDEX,
-  ES_LOCATION_INDEX,
-] as const;
-
-export type ElasticSearchIndex = typeof ELASTIC_SEARCH_INDICES[number];
-
-const EVENT_SEARCH_RESULT_FIELD = 'event' as const;
-const VENUE_SEARCH_RESULT_FIELD = 'venue' as const;
-
-const SEARCH_RESULT_FIELDS = [
   EVENT_SEARCH_RESULT_FIELD,
   VENUE_SEARCH_RESULT_FIELD,
-] as const;
+} from './constants';
+import type {
+  ElasticSearchIndex,
+  SearchResultField,
+  TermField,
+  ArrayFilter,
+  MustHaveReservableResourceFilter,
+  OrderByDistanceParams,
+  OrderByNameParams,
+  AccessibilityProfileType,
+  AdministrativeDivisionParams,
+  OntologyTreeParams,
+  OntologyTreeQueryBool,
+  OntologyTreeQuery,
+  OntologyWordParams,
+  OpenAtFilter,
+} from './types';
+import { buildArrayFilter } from './utils';
 
-type SearchResultField = typeof SEARCH_RESULT_FIELDS[number];
+import { RESTDataSource } from 'apollo-datasource-rest';
 
 const ElasticSearchIndexToSearchResultField: Record<
   Extract<ElasticSearchIndex, typeof ES_EVENT_INDEX | typeof ES_LOCATION_INDEX>,
@@ -40,140 +41,6 @@ const ElasticSearchIndexToSearchResultField: Record<
 > = {
   [ES_EVENT_INDEX]: EVENT_SEARCH_RESULT_FIELD,
   [ES_LOCATION_INDEX]: VENUE_SEARCH_RESULT_FIELD,
-};
-
-const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
-const DEFAULT_TIME_ZONE = 'Europe/Helsinki' as const;
-// The default page size when the first argument is not given.
-// This is the default page size set by OpenSearch / ElasticSearch
-const ES_DEFAULT_PAGE_SIZE = 10 as const;
-
-type OntologyTreeParams = {
-  rootId?: string;
-  leavesOnly?: boolean;
-};
-
-type OntologyWordParams = {
-  ids?: string[];
-};
-
-type OntologyTreeQuery = {
-  size: number;
-  query?: {
-    bool: OntologyTreeQueryBool;
-  };
-};
-
-type OntologyTreeQueryBool = {
-  filter?: {
-    bool: {
-      should: [
-        {
-          term: {
-            ancestorIds: string;
-          };
-        },
-        {
-          term: {
-            _id: string;
-          };
-        }
-      ];
-    };
-  };
-  must_not?: {
-    exists: {
-      field: 'childIds';
-    };
-  };
-};
-
-type AdministrativeDivisionParams = {
-  helsinkiCommonOnly?: boolean;
-};
-
-type OrderingDirection = 'ASCENDING' | 'DESCENDING';
-
-export type OrderByDistanceParams = {
-  latitude: number;
-  longitude: number;
-  order: OrderingDirection;
-};
-
-export type OrderByNameParams = {
-  order: OrderingDirection;
-};
-
-type OpenAtFilter = {
-  term: {
-    'venue.openingHours.openRanges': string;
-  };
-};
-
-export type AccessibilityProfileType =
-  | 'hearing_aid'
-  | 'reduced_mobility'
-  | 'rollator'
-  | 'stroller'
-  | 'visually_impaired'
-  | 'wheelchair';
-
-type TermField =
-  | 'venue.location.administrativeDivisions.id.keyword'
-  | 'links.raw_data.ontologytree_ids_enriched.id'
-  | 'links.raw_data.ontologyword_ids_enriched.id'
-  | 'venue.serviceOwner.providerType.keyword'
-  | 'venue.serviceOwner.type.keyword'
-  | 'venue.targetGroups.keyword';
-
-type BooleanQueryOccurrenceType = 'filter' | 'must' | 'must_not' | 'should';
-
-type ArrayFilter = {
-  bool: {
-    [key in BooleanQueryOccurrenceType]?: Array<{
-      term: {
-        [key: string]: string;
-      };
-    }>;
-  };
-};
-
-function buildArrayFilter(
-  field: TermField,
-  values: string[] = []
-): ArrayFilter[] {
-  if (values.length === 0) {
-    return [];
-  }
-
-  return [
-    {
-      bool: {
-        should: values.map((value) => ({
-          term: {
-            [field]: value,
-          },
-        })),
-      },
-    },
-  ];
-}
-
-type MustHaveReservableResourceFilter = {
-  bool: {
-    should: [
-      {
-        term: {
-          [key: string]: boolean;
-        };
-      },
-      {
-        exists: {
-          field: string;
-        };
-      }
-    ];
-  };
 };
 
 const buildMustHaveReservableResourceFilter =
