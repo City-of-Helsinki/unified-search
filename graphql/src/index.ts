@@ -1,4 +1,4 @@
-const { ApolloServer } = require('apollo-server-express');
+import { ApolloServer } from 'apollo-server-express';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import {
   ApolloServerPluginLandingPageGraphQLPlayground,
@@ -25,21 +25,21 @@ import {
   ElasticSearchIndex,
   OrderByDistanceParams,
   OrderByNameParams,
-} from './datasources/es';
+} from './datasources/es/types';
 
-const { elasticSearchSchema } = require('./schemas/es');
-const { palvelukarttaSchema } = require('./schemas/palvelukartta');
-const { linkedeventsSchema } = require('./schemas/linkedevents');
-const { locationSchema } = require('./schemas/location');
-const { sharedSchema } = require('./schemas/shared');
-const { reservationSchema } = require('./schemas/reservation');
-const { eventSchema } = require('./schemas/event');
-const { actorSchema } = require('./schemas/actor');
-const { geoSchema } = require('./schemas/geojson');
-const { querySchema } = require('./schemas/query');
-const { ontologySchema } = require('./schemas/ontology');
+import { elasticSearchSchema } from './schemas/es';
+import { palvelukarttaSchema } from './schemas/palvelukartta';
+import { linkedeventsSchema } from './schemas/linkedevents';
+import { locationSchema } from './schemas/location';
+import { sharedSchema } from './schemas/shared';
+import { reservationSchema } from './schemas/reservation';
+import { eventSchema } from './schemas/event';
+import { actorSchema } from './schemas/actor';
+import { geoSchema } from './schemas/geojson';
+import { querySchema } from './schemas/query';
+import { ontologySchema } from './schemas/ontology';
 
-const { ElasticSearchAPI } = require('./datasources/es');
+import { ElasticSearchAPI } from './datasources/es';
 
 const OK = 'OK';
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
@@ -397,9 +397,9 @@ const combinedSchema = buildSubgraphSchema({
 
 const sentryConfig = {
   // adapted from https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
-  requestDidStart(_) {
+  async requestDidStart(_) {
     return {
-      didEncounterErrors(ctx) {
+      async didEncounterErrors(ctx) {
         // If we couldn't parse the operation, don't
         // do anything here
         if (!ctx.operation) {
@@ -438,8 +438,6 @@ const sentryConfig = {
         elasticSearchAPI: new ElasticSearchAPI(),
       };
     },
-    playground:
-      process.env.PLAYGROUND !== null ? Boolean(process.env.PLAYGROUND) : true,
     introspection: true,
     plugins: [responseCachePlugin(), sentryConfig],
   });
