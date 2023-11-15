@@ -137,7 +137,7 @@ class ElasticSearchAPI extends RESTDataSource {
           // Don't map empty field sets to query
           .filter(([, searchFields]) => searchFields(language, index).length)
           .map(([boost, searchFields]) => ({
-            query_string: {
+            simple_query_string: {
               query: text,
               boost,
               fields: searchFields(language, index),
