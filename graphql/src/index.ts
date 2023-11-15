@@ -1,12 +1,7 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, ValidationError } from 'apollo-server-express';
 import { buildSubgraphSchema } from '@apollo/subgraph';
-import {
-  ApolloServerPluginLandingPageGraphQLPlayground,
-  ApolloServerPluginLandingPageDisabled,
-} from 'apollo-server-core';
 
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
-import { ValidationError } from 'apollo-server-express';
 
 import cors from 'cors';
 import express from 'express';
@@ -19,12 +14,12 @@ import {
   isDefined,
 } from './utils';
 import pageInfoResolver from './resolvers/pageInfoResolver';
-import { ConnectionArguments, ConnectionCursorObject } from './types';
+import { type ConnectionArguments, type ConnectionCursorObject } from './types';
 import {
-  AccessibilityProfileType,
-  ElasticSearchIndex,
-  OrderByDistanceParams,
-  OrderByNameParams,
+  type AccessibilityProfileType,
+  type ElasticSearchIndex,
+  type OrderByDistanceParams,
+  type OrderByNameParams,
 } from './datasources/es/types';
 
 import { elasticSearchSchema } from './schemas/es';
@@ -208,9 +203,8 @@ const resolvers = {
       };
     },
     administrativeDivisions: async (_, args, { dataSources }: any) => {
-      const res = await dataSources.elasticSearchAPI.getAdministrativeDivisions(
-        args
-      );
+      const res =
+        await dataSources.elasticSearchAPI.getAdministrativeDivisions(args);
       return res.hits.hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
@@ -241,8 +235,8 @@ const resolvers = {
     max_score({ es_results }: any) {
       return es_results[0].hits.max_score;
     },
-    pageInfo({ edges, hits, connectionArguments }: any) {
-      return pageInfoResolver(edges, hits, connectionArguments);
+    async pageInfo({ edges, hits, connectionArguments }: any) {
+      return await pageInfoResolver(edges, hits, connectionArguments);
     },
     edges({ edges }: any) {
       return edges;
@@ -291,7 +285,7 @@ const resolvers = {
     ) {
       if (args.profile) {
         const shortcoming = venue.accessibility.shortcomings.filter(
-          (shortcoming) => shortcoming.profile == args.profile
+          (shortcoming: any) => shortcoming.profile === args.profile
         );
         if (shortcoming && shortcoming.length > 0) {
           return shortcoming[0];
@@ -430,7 +424,7 @@ const sentryConfig = {
   },
 };
 
-(async () => {
+void (async () => {
   const server = new ApolloServer({
     schema: combinedSchema,
     dataSources: () => {

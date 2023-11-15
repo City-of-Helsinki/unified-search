@@ -1,11 +1,14 @@
 import { ES_DEFAULT_PAGE_SIZE } from '../datasources/es';
-import { ConnectionArguments, ConnectionCursorObject } from '../types';
+import {
+  type ConnectionArguments,
+  type ConnectionCursorObject,
+} from '../types';
 import { readCursor } from '../utils';
 
-type Edge = {
+interface Edge {
   cursor: string;
   node: Record<string, unknown>;
-};
+}
 
 export async function pageInfoResolver(
   edges: Edge[],

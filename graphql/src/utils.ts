@@ -1,16 +1,16 @@
 import { GraphQlToElasticLanguageMap } from './constants';
 import {
-  ConnectionArguments,
-  ElasticSearchPagination,
-  ConnectionCursorObject,
-  ElasticLanguage,
+  type ConnectionArguments,
+  type ElasticSearchPagination,
+  type ConnectionCursorObject,
+  type ElasticLanguage,
 } from './types';
 
 export function createCursor<T>(query: T): string {
   return Buffer.from(JSON.stringify(query)).toString('base64');
 }
 
-export function readCursor<T>(cursor: String | null): T {
+export function readCursor<T>(cursor: string | null): T {
   if (!cursor) {
     return null;
   }

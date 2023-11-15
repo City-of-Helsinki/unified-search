@@ -1,8 +1,16 @@
 import { gql } from 'graphql-tag';
 export const querySchema = gql`
-  extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+  extend schema
+    @link(
+      url: "https://specs.apollo.dev/federation/v2.0"
+      import: ["@key", "@shareable"]
+    )
 
-  directive @origin(service: String, type: String, attr: String) repeatable on FIELD_DEFINITION | OBJECT
+  directive @origin(
+    service: String
+    type: String
+    attr: String
+  ) repeatable on FIELD_DEFINITION | OBJECT
 
   enum UnifiedSearchResultCategory {
     POINT_OF_INTEREST
@@ -21,7 +29,9 @@ export const querySchema = gql`
   }
 
   type SearchResultConnection {
-    """ Elasticsearch raw results """
+    """
+    Elasticsearch raw results
+    """
     es_results: [ElasticSearchResult]
 
     count: Int
@@ -84,104 +94,103 @@ export const querySchema = gql`
 
   type Query {
     unifiedSearch(
-        """
-        Free form query string, corresponding to user search input
-        """
-        text: String,
+      """
+      Free form query string, corresponding to user search input
+      """
+      text: String
 
-        """
-        Optional, filter to match only these ontology words
-        """
-        ontology: String,
+      """
+      Optional, filter to match only these ontology words
+      """
+      ontology: String
 
-        """
-        Optional, filter to match only these administrative divisions
-        """
-        administrativeDivisionIds: [ID],
+      """
+      Optional, filter to match only these administrative divisions
+      """
+      administrativeDivisionIds: [ID]
 
-        """
-        Optional, filter to match at least one ontology tree ID from each list
-        """
-        ontologyTreeIdOrSets: [[ID!]!],
+      """
+      Optional, filter to match at least one ontology tree ID from each list
+      """
+      ontologyTreeIdOrSets: [[ID!]!]
 
-        """
-        Optional, filter to match at least one ontology word ID from each list
-        """
-        ontologyWordIdOrSets: [[ID!]!],
+      """
+      Optional, filter to match at least one ontology word ID from each list
+      """
+      ontologyWordIdOrSets: [[ID!]!]
 
-        """
-        Optional, filter to match any of these provider types
-        """
-        providerTypes: [ProviderType],
+      """
+      Optional, filter to match any of these provider types
+      """
+      providerTypes: [ProviderType]
 
-        """
-        Optional, filter to match any of these service owner types
-        """
-        serviceOwnerTypes: [ServiceOwnerType],
+      """
+      Optional, filter to match any of these service owner types
+      """
+      serviceOwnerTypes: [ServiceOwnerType]
 
-        """
-        Optional, filter to match any of these target groups
-        """
-        targetGroups: [TargetGroup],
+      """
+      Optional, filter to match any of these target groups
+      """
+      targetGroups: [TargetGroup]
 
-        """
-        Optional, filter to show only venues that have at least one reservable resource.
-        If not given or false, all venues are shown.
-        """
-        mustHaveReservableResource: Boolean,
+      """
+      Optional, filter to show only venues that have at least one reservable resource.
+      If not given or false, all venues are shown.
+      """
+      mustHaveReservableResource: Boolean
 
-        """
-        Optional search index.
-        """
-        index: UnifiedSearchIndex,
+      """
+      Optional search index.
+      """
+      index: UnifiedSearchIndex
 
-        """
-        Optional pagination variable, match results after this cursor.
-        """
-        after: String
+      """
+      Optional pagination variable, match results after this cursor.
+      """
+      after: String
 
-        """
-        Optional pagination variable, limit the amount of results to N.
-        """
-        first: Int
+      """
+      Optional pagination variable, limit the amount of results to N.
+      """
+      first: Int
 
-        """
-        Targets the search to fields of specified language
-        """
-        languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
+      """
+      Targets the search to fields of specified language
+      """
+      languages: [UnifiedSearchLanguage!]! = [FINNISH, SWEDISH, ENGLISH]
 
-        """
-        Return only venues that are open at the given moment. In addition to ISO 8601
-        datetimes, accepts values conforming to Elastic Search date math
-        https://www.elastic.co/guide/en/elasticsearch/reference/7.x/common-options.html#date-math
-        like "now+3h". When there is a datetime provided without a timezone offset,
-        "Europe/Helsinki" will be assumed as the time zone.
-        """
-        openAt: String
+      """
+      Return only venues that are open at the given moment. In addition to ISO 8601
+      datetimes, accepts values conforming to Elastic Search date math
+      https://www.elastic.co/guide/en/elasticsearch/reference/7.x/common-options.html#date-math
+      like "now+3h". When there is a datetime provided without a timezone offset,
+      "Europe/Helsinki" will be assumed as the time zone.
+      """
+      openAt: String
 
-        """
-        Order results by distance to given coordinates.
-        Mutually exclusive with other orderBy* parameters.
-        """
-        orderByDistance: OrderByDistance
+      """
+      Order results by distance to given coordinates.
+      Mutually exclusive with other orderBy* parameters.
+      """
+      orderByDistance: OrderByDistance
 
-        """
-        Order results by venue name in language given as the first value in "languages"
-        argument. Mutually exclusive with other orderBy* parameters.
-        """
-        orderByName: OrderByName
+      """
+      Order results by venue name in language given as the first value in "languages"
+      argument. Mutually exclusive with other orderBy* parameters.
+      """
+      orderByName: OrderByName
 
-        """
-        Optional, order venues by given accessibility profile's shortcomings,
-        first the results that have no accessibility shortcomings for the given profile,
-        then the ones with 1 shortcoming, 2 shortcomings, ..., N shortcomings and
-        last the ones with unknown shortcomings (i.e. no data for or against).
+      """
+      Optional, order venues by given accessibility profile's shortcomings,
+      first the results that have no accessibility shortcomings for the given profile,
+      then the ones with 1 shortcoming, 2 shortcomings, ..., N shortcomings and
+      last the ones with unknown shortcomings (i.e. no data for or against).
 
-        Mutually exclusive with other orderBy* parameters.
-        """
-        orderByAccessibilityProfile: AccessibilityProfile,
-
-      ): SearchResultConnection
+      Mutually exclusive with other orderBy* parameters.
+      """
+      orderByAccessibilityProfile: AccessibilityProfile
+    ): SearchResultConnection
 
     unifiedSearchCompletionSuggestions(
       """
@@ -206,19 +215,15 @@ export const querySchema = gql`
     ): SearchSuggestionConnection
 
     administrativeDivisions(
-        """
-        Return only Helsinki administrative divisions that make a sensible set to be
-        used as an option list in an UI for example.
-        """
-        helsinkiCommonOnly: Boolean): [AdministrativeDivision]
+      """
+      Return only Helsinki administrative divisions that make a sensible set to be
+      used as an option list in an UI for example.
+      """
+      helsinkiCommonOnly: Boolean
+    ): [AdministrativeDivision]
 
-    ontologyTree(
-      rootId: ID
-      leavesOnly: Boolean
-     ): [OntologyTree]
+    ontologyTree(rootId: ID, leavesOnly: Boolean): [OntologyTree]
 
-    ontologyWords(
-      ids: [ID!]
-    ): [OntologyWord]
+    ontologyWords(ids: [ID!]): [OntologyWord]
   }
 `;
