@@ -1,26 +1,29 @@
-import { ELASTIC_SEARCH_INDICES, SEARCH_RESULT_FIELDS } from './constants';
+import {
+  type ELASTIC_SEARCH_INDICES,
+  type SEARCH_RESULT_FIELDS,
+} from './constants';
 
-export type ElasticSearchIndex = typeof ELASTIC_SEARCH_INDICES[number];
+export type ElasticSearchIndex = (typeof ELASTIC_SEARCH_INDICES)[number];
 
-export type SearchResultField = typeof SEARCH_RESULT_FIELDS[number];
+export type SearchResultField = (typeof SEARCH_RESULT_FIELDS)[number];
 
-export type OntologyTreeParams = {
+export interface OntologyTreeParams {
   rootId?: string;
   leavesOnly?: boolean;
-};
+}
 
-export type OntologyWordParams = {
+export interface OntologyWordParams {
   ids?: string[];
-};
+}
 
-export type OntologyTreeQuery = {
+export interface OntologyTreeQuery {
   size: number;
   query?: {
     bool: OntologyTreeQueryBool;
   };
-};
+}
 
-export type OntologyTreeQueryBool = {
+export interface OntologyTreeQueryBool {
   filter?: {
     bool: {
       should: [
@@ -33,7 +36,7 @@ export type OntologyTreeQueryBool = {
           term: {
             _id: string;
           };
-        }
+        },
       ];
     };
   };
@@ -42,29 +45,29 @@ export type OntologyTreeQueryBool = {
       field: 'childIds';
     };
   };
-};
+}
 
-export type AdministrativeDivisionParams = {
+export interface AdministrativeDivisionParams {
   helsinkiCommonOnly?: boolean;
-};
+}
 
 export type OrderingDirection = 'ASCENDING' | 'DESCENDING';
 
-export type OrderByDistanceParams = {
+export interface OrderByDistanceParams {
   latitude: number;
   longitude: number;
   order: OrderingDirection;
-};
+}
 
-export type OrderByNameParams = {
+export interface OrderByNameParams {
   order: OrderingDirection;
-};
+}
 
-export type OpenAtFilter = {
+export interface OpenAtFilter {
   term: {
     'venue.openingHours.openRanges': string;
   };
-};
+}
 
 export type AccessibilityProfileType =
   | 'hearing_aid'
@@ -88,29 +91,25 @@ export type BooleanQueryOccurrenceType =
   | 'must_not'
   | 'should';
 
-export type ArrayFilter = {
+export interface ArrayFilter {
   bool: {
     [key in BooleanQueryOccurrenceType]?: Array<{
-      term: {
-        [key: string]: string;
-      };
+      term: Record<string, string>;
     }>;
   };
-};
+}
 
-export type MustHaveReservableResourceFilter = {
+export interface MustHaveReservableResourceFilter {
   bool: {
     should: [
       {
-        term: {
-          [key: string]: boolean;
-        };
+        term: Record<string, boolean>;
       },
       {
         exists: {
           field: string;
         };
-      }
+      },
     ];
   };
-};
+}

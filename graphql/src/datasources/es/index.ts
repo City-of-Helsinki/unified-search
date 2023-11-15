@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { DEFAULT_ELASTIC_LANGUAGE, ElasticLanguage } from '../../types';
+import { DEFAULT_ELASTIC_LANGUAGE, type ElasticLanguage } from '../../types';
 import { isDefined } from '../../utils';
 import {
   DEFAULT_TIME_ZONE,
@@ -18,7 +18,6 @@ import {
 import type {
   ElasticSearchIndex,
   SearchResultField,
-  TermField,
   ArrayFilter,
   MustHaveReservableResourceFilter,
   OrderByDistanceParams,
@@ -125,7 +124,7 @@ class ElasticSearchAPI extends RESTDataSource {
           `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
         ];
       } else if (index === ES_EVENT_INDEX) {
-        return [`ontology.${lang}`, `ontology.alt`];
+        return [`ontology.${lang}`, 'ontology.alt'];
       }
       return [];
     };
@@ -140,7 +139,7 @@ class ElasticSearchAPI extends RESTDataSource {
           .map(([boost, searchFields]) => ({
             query_string: {
               query: text,
-              boost: boost,
+              boost,
               fields: searchFields(language, index),
             },
           })),
@@ -235,12 +234,12 @@ class ElasticSearchAPI extends RESTDataSource {
         : []),
     ];
 
-    if (filters.length) {
+    if (filters.length > 0) {
       query.query.bool.minimum_should_match = 1;
       query.query.bool.filter = filters;
     }
 
-    if (es_index == ES_EVENT_INDEX || es_index == ES_LOCATION_INDEX) {
+    if (es_index === ES_EVENT_INDEX || es_index === ES_LOCATION_INDEX) {
       const searchResultField = ElasticSearchIndexToSearchResultField[es_index];
       const language = languages[0] ?? DEFAULT_ELASTIC_LANGUAGE;
 
@@ -302,7 +301,7 @@ class ElasticSearchAPI extends RESTDataSource {
       ...query,
     };
 
-    return this.post(`${es_index}/_search`, undefined, {
+    return await this.post(`${es_index}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(query),
     });
@@ -332,7 +331,7 @@ class ElasticSearchAPI extends RESTDataSource {
       },
     };
 
-    return this.post(`${index}/_search`, undefined, {
+    return await this.post(`${index}/_search`, undefined, {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(query),
     });
@@ -344,7 +343,7 @@ class ElasticSearchAPI extends RESTDataSource {
     const index = helsinkiCommonOnly
       ? ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX
       : ES_ADMINISTRATIVE_DIVISION_INDEX;
-    return this.get(
+    return await this.get(
       `${index}/_search`,
       { size: 10000 },
       {
@@ -374,7 +373,7 @@ class ElasticSearchAPI extends RESTDataSource {
       ...(bool && { query: { bool } }),
     };
 
-    return this.post(
+    return await this.post(
       `${ES_ONTOLOGY_TREE_INDEX}/_search`,
       JSON.stringify(query),
       {
@@ -393,7 +392,7 @@ class ElasticSearchAPI extends RESTDataSource {
           },
         }
       : {};
-    return this.post(
+    return await this.post(
       `${ES_ONTOLOGY_WORD_INDEX}/_search`,
       JSON.stringify({ size: 10000, ...query }),
       {

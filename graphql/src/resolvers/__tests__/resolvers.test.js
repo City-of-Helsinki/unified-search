@@ -11,7 +11,7 @@ function makeEdge(cursor = {}) {
 async function getFirstPage() {
   const edges = [makeEdge(), makeEdge(), makeEdge()];
 
-  return pageInfoResolver(edges, 3, {
+  return await pageInfoResolver(edges, 3, {
     after: null,
     first: 1,
   });
@@ -20,7 +20,7 @@ async function getFirstPage() {
 async function getMiddlePage() {
   const edges = [makeEdge(), makeEdge(), makeEdge()];
 
-  return pageInfoResolver(edges, 3, {
+  return await pageInfoResolver(edges, 3, {
     after: createCursor({
       offset: 1,
     }),
@@ -31,7 +31,7 @@ async function getMiddlePage() {
 async function getLastPage() {
   const edges = [makeEdge(), makeEdge(), makeEdge()];
 
-  return pageInfoResolver(edges, 3, {
+  return await pageInfoResolver(edges, 3, {
     after: createCursor({
       offset: 2,
     }),

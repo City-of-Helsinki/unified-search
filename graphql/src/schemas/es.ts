@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag';
 export const elasticSearchSchema = gql`
   """
-   Elasticsearch results
+  Elasticsearch results
   """
   type ElasticSearchResult {
     took: Int

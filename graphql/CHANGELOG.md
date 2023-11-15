@@ -2,63 +2,57 @@
 
 ## [2.0.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.3.0...graphql-v2.0.0) (2023-10-25)
 
-
 ### ⚠ BREAKING CHANGES
 
-* **graphql:** rename orderedByAccessibilityShortcoming field
-* **graphql:** remove unsupported before & last arguments
-* **graphql:** rename graphql query argument "q" to "text"
-* **graphql:** remove deprecated administrativeDivisionId argument
-* **graphql:** unify ontologyWordId query args to ontologyWordIdOrSets
-* **graphql:** unify ontologyTreeId query args to ontologyTreeIdOrSets
-* **graphql:** remove deprecated ontologyTreeId argument
+- **graphql:** rename orderedByAccessibilityShortcoming field
+- **graphql:** remove unsupported before & last arguments
+- **graphql:** rename graphql query argument "q" to "text"
+- **graphql:** remove deprecated administrativeDivisionId argument
+- **graphql:** unify ontologyWordId query args to ontologyWordIdOrSets
+- **graphql:** unify ontologyTreeId query args to ontologyTreeIdOrSets
+- **graphql:** remove deprecated ontologyTreeId argument
 
 ### Features
 
-* **graphql:** Rename graphql query argument "q" to "text" ([9f01fe0](https://github.com/City-of-Helsinki/unified-search/commit/9f01fe0676a5e08f692102a65dfc073a139df774))
-* **graphql:** Rename orderedByAccessibilityShortcoming field ([1180717](https://github.com/City-of-Helsinki/unified-search/commit/1180717e1e57689da8b0d4be430cba3b2939bbe3))
-* **graphql:** Type graphql search index with an enumeration for clarity ([273180a](https://github.com/City-of-Helsinki/unified-search/commit/273180a514c749ca348461155864f16a513b8820))
-* **graphql:** Unify ontologyTreeId query args to ontologyTreeIdOrSets ([db4cf0a](https://github.com/City-of-Helsinki/unified-search/commit/db4cf0ad3610a6ebcdaf8f7d25f1bb9f551b0945))
-* **graphql:** Unify ontologyWordId query args to ontologyWordIdOrSets ([dce5a10](https://github.com/City-of-Helsinki/unified-search/commit/dce5a10a414976106b2f63540c5747100196dba4))
-
+- **graphql:** Rename graphql query argument "q" to "text" ([9f01fe0](https://github.com/City-of-Helsinki/unified-search/commit/9f01fe0676a5e08f692102a65dfc073a139df774))
+- **graphql:** Rename orderedByAccessibilityShortcoming field ([1180717](https://github.com/City-of-Helsinki/unified-search/commit/1180717e1e57689da8b0d4be430cba3b2939bbe3))
+- **graphql:** Type graphql search index with an enumeration for clarity ([273180a](https://github.com/City-of-Helsinki/unified-search/commit/273180a514c749ca348461155864f16a513b8820))
+- **graphql:** Unify ontologyTreeId query args to ontologyTreeIdOrSets ([db4cf0a](https://github.com/City-of-Helsinki/unified-search/commit/db4cf0ad3610a6ebcdaf8f7d25f1bb9f551b0945))
+- **graphql:** Unify ontologyWordId query args to ontologyWordIdOrSets ([dce5a10](https://github.com/City-of-Helsinki/unified-search/commit/dce5a10a414976106b2f63540c5747100196dba4))
 
 ### Bug Fixes
 
-* **dockerfile:** Use double quotes around $YARN_VERSION ([0fe05ff](https://github.com/City-of-Helsinki/unified-search/commit/0fe05ffee3dc250993ac0c3006d019a3dc724169))
-* **graphql:** Remove deprecated administrativeDivisionId argument ([91af86a](https://github.com/City-of-Helsinki/unified-search/commit/91af86a0a786d0e93c690cb47cc00f64d9751176))
-* **graphql:** Remove deprecated ontologyTreeId argument ([cd30f29](https://github.com/City-of-Helsinki/unified-search/commit/cd30f2956bf647e37f17065bbcc038221dd87a5e))
-* **graphql:** Remove unsupported before & last arguments ([9300a48](https://github.com/City-of-Helsinki/unified-search/commit/9300a48d5f2fbfd2f657b7ed765c8d4210067c89))
+- **dockerfile:** Use double quotes around $YARN_VERSION ([0fe05ff](https://github.com/City-of-Helsinki/unified-search/commit/0fe05ffee3dc250993ac0c3006d019a3dc724169))
+- **graphql:** Remove deprecated administrativeDivisionId argument ([91af86a](https://github.com/City-of-Helsinki/unified-search/commit/91af86a0a786d0e93c690cb47cc00f64d9751176))
+- **graphql:** Remove deprecated ontologyTreeId argument ([cd30f29](https://github.com/City-of-Helsinki/unified-search/commit/cd30f2956bf647e37f17065bbcc038221dd87a5e))
+- **graphql:** Remove unsupported before & last arguments ([9300a48](https://github.com/City-of-Helsinki/unified-search/commit/9300a48d5f2fbfd2f657b7ed765c8d4210067c89))
 
 ## [1.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.2.0...graphql-v1.3.0) (2023-10-13)
 
-
 ### Features
 
-* **graphql:** Add ontologyTreeIdsOrSet2 query parameter ([b17fefe](https://github.com/City-of-Helsinki/unified-search/commit/b17fefe77771215b87c03aa1954258f1f518cea2))
-* **graphql:** Order by accessibility profile's shortcoming count ([e688fb2](https://github.com/City-of-Helsinki/unified-search/commit/e688fb2d0fe534c40570aad2079dac935631c13f))
-
+- **graphql:** Add ontologyTreeIdsOrSet2 query parameter ([b17fefe](https://github.com/City-of-Helsinki/unified-search/commit/b17fefe77771215b87c03aa1954258f1f518cea2))
+- **graphql:** Order by accessibility profile's shortcoming count ([e688fb2](https://github.com/City-of-Helsinki/unified-search/commit/e688fb2d0fe534c40570aad2079dac935631c13f))
 
 ### Bug Fixes
 
-* Fix unknown and zero accessibility shortcoming counts ([3ed0a3c](https://github.com/City-of-Helsinki/unified-search/commit/3ed0a3c6bf914083e45784d8a8f15650736ff564))
+- Fix unknown and zero accessibility shortcoming counts ([3ed0a3c](https://github.com/City-of-Helsinki/unified-search/commit/3ed0a3c6bf914083e45784d8a8f15650736ff564))
 
 ## [1.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.1.0...graphql-v1.2.0) (2023-08-23)
 
-
 ### Features
 
-* Add GraphQL filters for serviceOwnerTypes, targetGroups etc ([91fc169](https://github.com/City-of-Helsinki/unified-search/commit/91fc169e3f976efd920e094085c1b00871892d75))
-* Import venues' accessibility info and service provider/owner info ([78c8f28](https://github.com/City-of-Helsinki/unified-search/commit/78c8f282e078a963ff2cf297ef07d38ea6200c56))
-* Import venues' accessibility sentences ([8f09613](https://github.com/City-of-Helsinki/unified-search/commit/8f09613d16f35c7eda5a6e3f9b9d4feb1338c238))
-* Import venues' accessibility shortages per accessibility viewpoint ([92ed0f3](https://github.com/City-of-Helsinki/unified-search/commit/92ed0f3d9d6575c3d560067b187610b66dd78e49))
-* Import venues' accessibility shortcomings from new service map API ([074b0dc](https://github.com/City-of-Helsinki/unified-search/commit/074b0dcddfe532cbff7d0f76bbec857ff6cab42c))
-* Import venues' Respa API resources, e.g. reservability ([94bc57b](https://github.com/City-of-Helsinki/unified-search/commit/94bc57bf644f4cdc665337a354ef9b0d116c814b))
-* Import venues' target groups from service description registry ([5ee8925](https://github.com/City-of-Helsinki/unified-search/commit/5ee8925469770f1f80a5ef59e51a665601be8cdc))
-
+- Add GraphQL filters for serviceOwnerTypes, targetGroups etc ([91fc169](https://github.com/City-of-Helsinki/unified-search/commit/91fc169e3f976efd920e094085c1b00871892d75))
+- Import venues' accessibility info and service provider/owner info ([78c8f28](https://github.com/City-of-Helsinki/unified-search/commit/78c8f282e078a963ff2cf297ef07d38ea6200c56))
+- Import venues' accessibility sentences ([8f09613](https://github.com/City-of-Helsinki/unified-search/commit/8f09613d16f35c7eda5a6e3f9b9d4feb1338c238))
+- Import venues' accessibility shortages per accessibility viewpoint ([92ed0f3](https://github.com/City-of-Helsinki/unified-search/commit/92ed0f3d9d6575c3d560067b187610b66dd78e49))
+- Import venues' accessibility shortcomings from new service map API ([074b0dc](https://github.com/City-of-Helsinki/unified-search/commit/074b0dcddfe532cbff7d0f76bbec857ff6cab42c))
+- Import venues' Respa API resources, e.g. reservability ([94bc57b](https://github.com/City-of-Helsinki/unified-search/commit/94bc57bf644f4cdc665337a354ef9b0d116c814b))
+- Import venues' target groups from service description registry ([5ee8925](https://github.com/City-of-Helsinki/unified-search/commit/5ee8925469770f1f80a5ef59e51a665601be8cdc))
 
 ### Bug Fixes
 
-* Fix importing of Respa resources & showing new data in GraphQL ([64c412f](https://github.com/City-of-Helsinki/unified-search/commit/64c412f157c557adda497e18cf9d39314afc0ec2))
-* **graphql:** Fix resolving of UnifiedSearchVenue type after rename ([37160d4](https://github.com/City-of-Helsinki/unified-search/commit/37160d4d26f053bae8144ecdeaa0877c6695810b))
-* **graphql:** Rename Venue to UnifiedSearchVenue & sync schema comments ([0a7b49d](https://github.com/City-of-Helsinki/unified-search/commit/0a7b49d5a271f6c4b0b276f6aa4d851c77dd2bcb))
-* Release-please US-106 ([9e74726](https://github.com/City-of-Helsinki/unified-search/commit/9e74726018e7b6264163aaf17e7fcc8740ade996))
+- Fix importing of Respa resources & showing new data in GraphQL ([64c412f](https://github.com/City-of-Helsinki/unified-search/commit/64c412f157c557adda497e18cf9d39314afc0ec2))
+- **graphql:** Fix resolving of UnifiedSearchVenue type after rename ([37160d4](https://github.com/City-of-Helsinki/unified-search/commit/37160d4d26f053bae8144ecdeaa0877c6695810b))
+- **graphql:** Rename Venue to UnifiedSearchVenue & sync schema comments ([0a7b49d](https://github.com/City-of-Helsinki/unified-search/commit/0a7b49d5a271f6c4b0b276f6aa4d851c77dd2bcb))
+- Release-please US-106 ([9e74726](https://github.com/City-of-Helsinki/unified-search/commit/9e74726018e7b6264163aaf17e7fcc8740ade996))
