@@ -7,13 +7,15 @@
   resolved "https://registry.yarnpkg.com/@apollo/cache-control-types/-/cache-control-types-1.0.2.tgz#f42ed3563acc7f1f50617d65d208483977adc68e"
   integrity sha512-Por80co1eUm4ATsvjCOoS/tIR8PHxqVjsA6z76I6Vw0rFn4cgyVElQcmQDIZiYsy41k8e5xkrMRECkM2WR8pNw==
 
-"@apollo/federation-internals@^2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@apollo/federation-internals/-/federation-internals-2.1.4.tgz#aa475c51fbc91d9e37e9a6e69446412ab8e32b88"
-  integrity sha512-Fpln5hHEh0Jjy0vaTpIlv1SF+zg2cjunsH2X5QDHwKOXoHsT4o7LF+Duoy7LgZj6W3HNW9Z/srmuOXXNTl2gjw==
+"@apollo/federation-internals@2.5.6":
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/@apollo/federation-internals/-/federation-internals-2.5.6.tgz#0dde918e8b755d473c1f2e68ada249276e6e4696"
+  integrity sha512-ZNJdEcWfKXlFDRYtoCftApQBJl1/aDUBnBfFJeXeTXW4FVhyGotVkWbJUIBlCHMISGmQQDNfRay9Dcp7uIda9A==
   dependencies:
+    "@types/uuid" "^9.0.0"
     chalk "^4.1.0"
     js-levenshtein "^1.1.6"
+    uuid "^9.0.0"
 
 "@apollo/protobufjs@1.2.6":
   version "1.2.6"
@@ -34,13 +36,13 @@
     "@types/node" "^10.1.0"
     long "^4.0.0"
 
-"@apollo/subgraph@^2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@apollo/subgraph/-/subgraph-2.1.4.tgz#a8e0c0eb0e2d6a7f8869dfecf8e0d07ed5236712"
-  integrity sha512-WrZuvCtTjLczkJq9BxyGgGB5lE0vr83ZFvbdVdByve+EbvfCh0rNtXNFaAXOkOcqzMcDv258AN44o7WBm+raYw==
+"@apollo/subgraph@^2.5.5":
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/@apollo/subgraph/-/subgraph-2.5.6.tgz#349f0be869f9f35562ffbeed3f2a5ccbb0a0cc67"
+  integrity sha512-Swn0+M32Xr7HHippE0zJU/1vfCZDfM86Yir199jdUEYH4/9tqmx+OSq3QSCaSwiPJnzJlGgVmZhDCcqG90pDUA==
   dependencies:
     "@apollo/cache-control-types" "^1.0.2"
-    "@apollo/federation-internals" "^2.1.4"
+    "@apollo/federation-internals" "2.5.6"
 
 "@apollo/utils.dropunuseddefinitions@^1.1.0":
   version "1.1.0"
@@ -1713,6 +1715,11 @@
   dependencies:
     "@types/mime" "^1"
     "@types/node" "*"
+
+"@types/uuid@^9.0.0":
+  version "9.0.7"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.7.tgz#b14cebc75455eeeb160d5fe23c2fcc0c64f724d8"
+  integrity sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==
 
 "@types/yargs-parser@*":
   version "20.2.1"
