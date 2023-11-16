@@ -1,4 +1,7 @@
-import { GraphQlToElasticLanguageMap } from './constants';
+import {
+  GraphQlToElasticLanguageMap,
+  elasticSearchQueryStringSpecialCharsRegExpPattern,
+} from './constants';
 import {
   type ConnectionArguments,
   type ElasticSearchPagination,
@@ -64,4 +67,21 @@ export function targetFieldLanguages(
 
 export function isDefined(value: any) {
   return typeof value !== 'undefined';
+}
+
+/**
+ * If you need to use any of the characters which function as operators in your query itself (and not as operators),
+ * then you should escape them with a leading backslash.
+ *
+ * The reserved special characters are:
+ * `+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /`.
+ * "Failing to escape these special characters correctly could lead to a syntax error which prevents your query from running."
+ *
+ * Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
+ */
+export function escapeQuery(text: string) {
+  return text.replace(
+    elasticSearchQueryStringSpecialCharsRegExpPattern,
+    '\\$1'
+  );
 }
