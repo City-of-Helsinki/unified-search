@@ -33,7 +33,7 @@
     "express": "^4.17.2",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
-    "luxon": "^2.3.0"
+    "luxon": "^2.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
