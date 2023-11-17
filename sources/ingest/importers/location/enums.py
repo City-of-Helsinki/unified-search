@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from enum import Enum
 
+
 class TargetGroup(Enum):
     ASSOCIATIONS = "ASSOCIATIONS"
     CHILDREN_AND_FAMILIES = "CHILDREN_AND_FAMILIES"
