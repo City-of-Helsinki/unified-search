@@ -18,7 +18,7 @@ from ingest.importers.location.enums import (
     ResourceMainType,
     TargetGroup,
 )
-from ingest.importers.utils import LanguageStringConverter, LanguageString, request_json 
+from ingest.importers.utils import LanguageString, LanguageStringConverter, request_json
 
 
 def get_tpr_units():
