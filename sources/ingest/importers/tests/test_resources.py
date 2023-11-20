@@ -1,12 +1,12 @@
 import pytest
 
-from ..location import (
-    get_unit_id_to_resources_mapping,
+from ingest.importers.location.dataclasses import (
     Resource,
     ResourceType,
     ResourceUserPermissions,
 )
-from ..utils import LanguageString
+from ingest.importers.location.utils import get_unit_id_to_resources_mapping
+from ingest.importers.utils.shared import LanguageString
 
 MOCKED_RESPA_RESOURCE_RESPONSE = {
     "count": 3,
@@ -174,7 +174,7 @@ MOCKED_RESPA_RESOURCE_RESPONSE = {
 @pytest.fixture(scope="module", autouse=True)
 def mocked_respa_resource_response(module_mocker):
     return module_mocker.patch(
-        "ingest.importers.location.request_json",
+        "ingest.importers.location.utils.request_json",
         return_value=MOCKED_RESPA_RESOURCE_RESPONSE,
     )
 

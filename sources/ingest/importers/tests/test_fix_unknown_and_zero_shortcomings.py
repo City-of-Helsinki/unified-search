@@ -2,15 +2,15 @@ from typing import List
 
 import pytest
 
-from ..location import (
+from ingest.importers.location.constants import NO_SHORTCOMINGS_SHORTAGE_TEXT_VARIANTS
+from ingest.importers.location.dataclasses import (
     Accessibility,
     AccessibilityShortcoming,
     AccessibilityViewpoint,
     AccessibilityViewpointID as VpID,
-    AccessibilityViewpointValue,
-    NO_SHORTCOMINGS_SHORTAGE_TEXT_VARIANTS,
 )
-from ..utils.shared import LanguageString
+from ingest.importers.location.enums import AccessibilityViewpointValue
+from ingest.importers.utils.shared import LanguageString
 
 SHORTAGE_1, SHORTAGE_2, SHORTAGE_3 = [
     LanguageString(fi=f"Puute {i}", sv=f"Brist {i}", en=f"Shortage {i}")

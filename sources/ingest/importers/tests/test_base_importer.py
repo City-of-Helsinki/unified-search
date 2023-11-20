@@ -5,7 +5,7 @@ import pytest
 from django.conf import settings
 from opensearchpy import OpenSearch
 
-from ..base import Importer
+from ingest.importers.base import Importer
 
 GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 
