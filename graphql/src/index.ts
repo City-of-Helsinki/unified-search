@@ -147,7 +147,7 @@ const resolvers = {
         orderByAccessibilityProfile
       );
 
-      const result = await dataSources.elasticSearchAPI.getQueryResults(
+      const result = await dataSources.elasticSearchAPI.getQueryResults({
         text,
         ontology,
         administrativeDivisionIds,
@@ -160,12 +160,12 @@ const resolvers = {
         index,
         from,
         size,
-        elasticLanguageFromGraphqlLanguage(languages),
+        languages: elasticLanguageFromGraphqlLanguage(languages),
         openAt,
         orderByDistance,
         orderByName,
-        orderByAccessibilityProfile
-      );
+        orderByAccessibilityProfile,
+      });
 
       const getCursor = (offset: number) =>
         createCursor<ConnectionCursorObject>({
@@ -189,12 +189,12 @@ const resolvers = {
       { prefix, languages, index, size }: any,
       { dataSources }: any
     ) => {
-      const res = await dataSources.elasticSearchAPI.getSuggestions(
+      const res = await dataSources.elasticSearchAPI.getSuggestions({
         prefix,
-        elasticLanguageFromGraphqlLanguage(languages),
+        languages: elasticLanguageFromGraphqlLanguage(languages),
         size,
-        index
-      );
+        index,
+      });
 
       return {
         suggestions: res.suggest.suggestions[0].options.map((option) => ({
