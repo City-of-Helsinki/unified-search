@@ -28,3 +28,15 @@ export type getQueryResultsProps = {
   languages?: ElasticLanguage[];
   openAt?: string;
 } & OrderByFields;
+
+export type QueryResultFilterProps = Pick<
+  getQueryResultsProps,
+  | 'administrativeDivisionIds'
+  | 'ontologyTreeIdOrSets'
+  | 'ontologyWordIdOrSets'
+  | 'providerTypes'
+  | 'serviceOwnerTypes'
+  | 'targetGroups'
+  | 'mustHaveReservableResource'
+  | 'openAt'
+>;

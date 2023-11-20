@@ -5,7 +5,7 @@ import type {
   MustHaveReservableResourceFilter,
   OpenAtFilter,
 } from '../../../types';
-import type { getQueryResultsProps } from '../types';
+import type { QueryResultFilterProps } from '../types';
 import { buildArrayFilter } from '../../../utils';
 
 const buildMustHaveReservableResourceFilter =
@@ -36,17 +36,9 @@ export function getFilters({
   targetGroups,
   mustHaveReservableResource,
   openAt,
-}: Pick<
-  getQueryResultsProps,
-  | 'administrativeDivisionIds'
-  | 'ontologyTreeIdOrSets'
-  | 'ontologyWordIdOrSets'
-  | 'providerTypes'
-  | 'serviceOwnerTypes'
-  | 'targetGroups'
-  | 'mustHaveReservableResource'
-  | 'openAt'
->): Array<ArrayFilter | OpenAtFilter | MustHaveReservableResourceFilter> {
+}: QueryResultFilterProps): Array<
+  ArrayFilter | OpenAtFilter | MustHaveReservableResourceFilter
+> {
   // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
   const openAtDateTime = DateTime.fromISO(openAt, {
     zone: DEFAULT_TIME_ZONE,
@@ -92,4 +84,12 @@ export function getFilters({
         ]
       : []),
   ];
+}
+
+export function filterQuery(query: any, filterProps: QueryResultFilterProps) {
+  const filters = getFilters(filterProps);
+  if (filters.length > 0) {
+    query.query.bool.minimum_should_match = 1;
+    query.query.bool.filter = filters;
+  }
 }
