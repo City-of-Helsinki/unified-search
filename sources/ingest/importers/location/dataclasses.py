@@ -91,6 +91,7 @@ class Location:
     geoLocation: GeoJSONFeature = None
     administrativeDivisions: List[AdministrativeDivision] = field(default_factory=list)
 
+
 @dataclass
 class OntologyObject:
     id: str
