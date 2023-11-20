@@ -19,6 +19,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/naming-convention': 0,
     '@typescript-eslint/semi': 0,
+    '@typescript-eslint/consistent-type-definitions': 0,
   },
   plugins: ['@typescript-eslint'],
 };

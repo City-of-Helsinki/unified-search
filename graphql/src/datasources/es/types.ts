@@ -7,23 +7,23 @@ export type ElasticSearchIndex = (typeof ELASTIC_SEARCH_INDICES)[number];
 
 export type SearchResultField = (typeof SEARCH_RESULT_FIELDS)[number];
 
-export interface OntologyTreeParams {
+export type OntologyTreeParams = {
   rootId?: string;
   leavesOnly?: boolean;
-}
+};
 
-export interface OntologyWordParams {
+export type OntologyWordParams = {
   ids?: string[];
-}
+};
 
-export interface OntologyTreeQuery {
+export type OntologyTreeQuery = {
   size: number;
   query?: {
     bool: OntologyTreeQueryBool;
   };
-}
+};
 
-export interface OntologyTreeQueryBool {
+export type OntologyTreeQueryBool = {
   filter?: {
     bool: {
       should: [
@@ -45,29 +45,29 @@ export interface OntologyTreeQueryBool {
       field: 'childIds';
     };
   };
-}
+};
 
-export interface AdministrativeDivisionParams {
+export type AdministrativeDivisionParams = {
   helsinkiCommonOnly?: boolean;
-}
+};
 
 export type OrderingDirection = 'ASCENDING' | 'DESCENDING';
 
-export interface OrderByDistanceParams {
+export type OrderByDistanceParams = {
   latitude: number;
   longitude: number;
   order: OrderingDirection;
-}
+};
 
-export interface OrderByNameParams {
+export type OrderByNameParams = {
   order: OrderingDirection;
-}
+};
 
-export interface OpenAtFilter {
+export type OpenAtFilter = {
   term: {
     'venue.openingHours.openRanges': string;
   };
-}
+};
 
 export type AccessibilityProfileType =
   | 'hearing_aid'
@@ -91,15 +91,15 @@ export type BooleanQueryOccurrenceType =
   | 'must_not'
   | 'should';
 
-export interface ArrayFilter {
+export type ArrayFilter = {
   bool: {
     [key in BooleanQueryOccurrenceType]?: Array<{
       term: Record<string, string>;
     }>;
   };
-}
+};
 
-export interface MustHaveReservableResourceFilter {
+export type MustHaveReservableResourceFilter = {
   bool: {
     should: [
       {
@@ -112,4 +112,4 @@ export interface MustHaveReservableResourceFilter {
       },
     ];
   };
-}
+};
