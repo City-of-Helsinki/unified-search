@@ -1,10 +1,10 @@
 import pytest
 
-from ..location import (
-    AccessibilitySentence,
+from ingest.importers.location.dataclasses import AccessibilitySentence
+from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_sentences_mapping,
 )
-from ..utils import LanguageString
+from ingest.importers.utils.shared import LanguageString
 
 MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE = [
     {
@@ -41,7 +41,7 @@ MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE = [
 @pytest.fixture
 def mocked_service_map_accessibility_sentence_viewpoint_response(mocker):
     return mocker.patch(
-        "ingest.importers.location.request_json",
+        "ingest.importers.location.utils.request_json",
         return_value=MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE,
     )
 
