@@ -2,13 +2,13 @@ from typing import Dict, List, Optional
 
 import pytest
 
-from ..location import (
-    AccessibilityViewpoint,
+from ingest.importers.location.dataclasses import AccessibilityViewpoint
+from ingest.importers.location.utils import (
     get_accessibility_viewpoint_id_to_name_mapping,
     get_accessibility_viewpoint_id_to_value_mapping,
     get_enriched_accessibility_viewpoints,
 )
-from ..utils import LanguageString
+from ingest.importers.utils.shared import LanguageString
 
 MOCKED_SERVICE_MAP_ACCESSIBILITY_VIEWPOINT_RESPONSE = [
     {
@@ -115,7 +115,7 @@ MOCKED_SERVICE_MAP_ACCESSIBILITY_VIEWPOINT_RESPONSE = [
 @pytest.fixture(scope="module", autouse=True)
 def mocked_service_map_accessibility_viewpoint_response(module_mocker):
     return module_mocker.patch(
-        "ingest.importers.location.request_json",
+        "ingest.importers.location.utils.request_json",
         return_value=MOCKED_SERVICE_MAP_ACCESSIBILITY_VIEWPOINT_RESPONSE,
     )
 

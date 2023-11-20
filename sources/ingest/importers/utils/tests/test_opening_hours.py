@@ -3,8 +3,7 @@ from dataclasses import asdict
 
 import pytest
 
-from .. import HaukiOpeningHoursFetcher
-from ..opening_hours import DateTimeRange
+from ingest.importers.utils.opening_hours import DateTimeRange, HaukiOpeningHoursFetcher
 
 MOCK_RESPONSE = {
     "count": 5,

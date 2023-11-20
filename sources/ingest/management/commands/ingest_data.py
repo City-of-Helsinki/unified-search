@@ -4,13 +4,11 @@ from typing import Dict, Optional, Type, Union
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
-from ...importers import (
-    AdministrativeDivisionImporter,
-    EventImporter,
-    LocationImporter,
-    OntologyTreeImporter,
-    OntologyWordImporter,
-)
+from ingest.importers.administrative_division import AdministrativeDivisionImporter
+from ingest.importers.event import EventImporter
+from ingest.importers.location import LocationImporter
+from ingest.importers.ontology_tree import OntologyTreeImporter
+from ingest.importers.ontology_word import OntologyWordImporter
 
 logger = logging.getLogger(__name__)
 
