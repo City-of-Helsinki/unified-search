@@ -49,6 +49,12 @@ const buildMustHaveReservableResourceFilter =
     },
   });
 
+export type OrderByFields = {
+  orderByDistance?: OrderByDistanceParams;
+  orderByName?: OrderByNameParams;
+  orderByAccessibilityProfile?: AccessibilityProfileType;
+};
+
 export type getQueryResultsProps = {
   text?: string;
   ontology?: string;
@@ -64,35 +70,28 @@ export type getQueryResultsProps = {
   size?: number;
   languages?: ElasticLanguage[];
   openAt?: string;
-  orderByDistance?: OrderByDistanceParams;
-  orderByName?: OrderByNameParams;
-  orderByAccessibilityProfile?: AccessibilityProfileType;
-};
+} & OrderByFields;
 
-export default async function getQueryResults(
-  request: ElasticSearchAPI['post'],
-  {
-    text,
-    ontology,
-    administrativeDivisionIds,
-    ontologyTreeIdOrSets,
-    ontologyWordIdOrSets,
-    providerTypes,
-    serviceOwnerTypes,
-    targetGroups,
-    mustHaveReservableResource,
-    index,
-    from,
-    size,
-    languages,
-    openAt,
-    orderByDistance,
-    orderByName,
-    orderByAccessibilityProfile,
-  }: getQueryResultsProps
-) {
-  const es_index = index || ES_DEFAULT_INDEX;
+// Ontology fields for different indexes
+function getOntologyFields(lang: ElasticLanguage, index: ElasticSearchIndex) {
+  if (index === ES_LOCATION_INDEX) {
+    return [
+      `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${lang}`,
+      `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
+      `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
+      `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
+    ];
+  } else if (index === ES_EVENT_INDEX) {
+    return [`ontology.${lang}`, 'ontology.alt'];
+  }
+  return [];
+}
 
+function getDefaultQuery({
+  index,
+  languages,
+  text,
+}: Pick<getQueryResultsProps, 'index' | 'languages' | 'text'>) {
   // Some fields should be boosted / weighted to get more relevant result set
   const searchFieldsBoostMapping = {
     // Normally weighted search fields for different indexes
@@ -111,21 +110,6 @@ export default async function getQueryResults(
         }[index] ?? []
       );
     },
-  };
-
-  // Ontology fields for different indexes
-  const ontologyFields = (lang: ElasticLanguage, index: ElasticSearchIndex) => {
-    if (index === ES_LOCATION_INDEX) {
-      return [
-        `links.raw_data.ontologyword_ids_enriched.extra_searchwords_${lang}`,
-        `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
-        `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
-        `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
-      ];
-    } else if (index === ES_EVENT_INDEX) {
-      return [`ontology.${lang}`, 'ontology.alt'];
-    }
-    return [];
   };
 
   // Default query is to search the same thing in every language
@@ -155,50 +139,28 @@ export default async function getQueryResults(
     }),
     {}
   );
+  return defaultQuery;
+}
 
-  // Resolve query
-  let query: any = {
-    query: {
-      bool: {
-        should: Object.values(defaultQuery).flat(),
-      },
-    },
-  };
-
-  // Resolve ontology
-  if (ontology) {
-    const ontologyMatchers = languages.reduce(
-      (acc, language) => ({
-        ...acc,
-        [language]: {
-          multi_match: {
-            query: ontology,
-            fields: ontologyFields(language, index),
-          },
-        },
-      }),
-      {}
-    );
-
-    query = {
-      query: {
-        bool: {
-          should: languages.map((language) => ({
-            bool: {
-              must: [defaultQuery[language], ontologyMatchers[language]],
-            },
-          })),
-        },
-      },
-    };
-  }
-
-  // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
-  const openAtDateTime = DateTime.fromISO(openAt, {
-    zone: DEFAULT_TIME_ZONE,
-  });
-  const finalOpenAt = openAtDateTime.isValid ? openAtDateTime.toISO() : openAt;
-
+function getFilters({
+  administrativeDivisionIds,
+  ontologyTreeIdOrSets,
+  ontologyWordIdOrSets,
+  providerTypes,
+  serviceOwnerTypes,
+  targetGroups,
+  mustHaveReservableResource,
+  finalOpenAt,
+}: Pick<
+  getQueryResultsProps,
+  | 'administrativeDivisionIds'
+  | 'ontologyTreeIdOrSets'
+  | 'ontologyWordIdOrSets'
+  | 'providerTypes'
+  | 'serviceOwnerTypes'
+  | 'targetGroups'
+  | 'mustHaveReservableResource'
+> & { finalOpenAt: string }) {
   const filters: Array<
     ArrayFilter | OpenAtFilter | MustHaveReservableResourceFilter
   > = [
@@ -241,14 +203,17 @@ export default async function getQueryResults(
       : []),
   ];
 
-  if (filters.length > 0) {
-    query.query.bool.minimum_should_match = 1;
-    query.query.bool.filter = filters;
-  }
+  return filters;
+}
 
+function sortQuery(
+  query: any,
+  es_index: getQueryResultsProps['index'],
+  language: ElasticLanguage,
+  { orderByDistance, orderByName, orderByAccessibilityProfile }: OrderByFields
+) {
   if (es_index === ES_EVENT_INDEX || es_index === ES_LOCATION_INDEX) {
     const searchResultField = ElasticSearchIndexToSearchResultField[es_index];
-    const language = languages[0] ?? DEFAULT_ELASTIC_LANGUAGE;
 
     if (isDefined(orderByDistance)) {
       query.sort = {
@@ -300,15 +265,111 @@ export default async function getQueryResults(
       ];
     }
   }
+}
+
+function getQuery({
+  index,
+  languages,
+  text,
+  ontology,
+  from,
+  size,
+  administrativeDivisionIds,
+  ontologyTreeIdOrSets,
+  ontologyWordIdOrSets,
+  providerTypes,
+  serviceOwnerTypes,
+  targetGroups,
+  mustHaveReservableResource,
+  openAt,
+  orderByAccessibilityProfile,
+  orderByDistance,
+  orderByName,
+}: getQueryResultsProps) {
+  const defaultQuery = getDefaultQuery({ index, languages, text });
+
+  // Resolve query
+  let query: any = {
+    query: {
+      bool: {
+        should: Object.values(defaultQuery).flat(),
+      },
+    },
+  };
+
+  // Resolve ontology
+  if (ontology) {
+    const ontologyMatchers = languages.reduce(
+      (acc, language) => ({
+        ...acc,
+        [language]: {
+          multi_match: {
+            query: ontology,
+            fields: getOntologyFields(language, index),
+          },
+        },
+      }),
+      {}
+    );
+
+    query = {
+      query: {
+        bool: {
+          should: languages.map((language) => ({
+            bool: {
+              must: [defaultQuery[language], ontologyMatchers[language]],
+            },
+          })),
+        },
+      },
+    };
+  }
+
+  // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
+  const openAtDateTime = DateTime.fromISO(openAt, {
+    zone: DEFAULT_TIME_ZONE,
+  });
+  const finalOpenAt = openAtDateTime.isValid ? openAtDateTime.toISO() : openAt;
+
+  const filters = getFilters({
+    administrativeDivisionIds,
+    ontologyTreeIdOrSets,
+    ontologyWordIdOrSets,
+    providerTypes,
+    serviceOwnerTypes,
+    targetGroups,
+    mustHaveReservableResource,
+    finalOpenAt,
+  });
+
+  if (filters.length > 0) {
+    query.query.bool.minimum_should_match = 1;
+    query.query.bool.filter = filters;
+  }
+
+  const language = languages[0] ?? DEFAULT_ELASTIC_LANGUAGE;
+
+  sortQuery(query, index, language, {
+    orderByAccessibilityProfile,
+    orderByDistance,
+    orderByName,
+  });
 
   // Resolve pagination
-  query = {
+  return {
     from,
     size,
     ...query,
   };
+}
 
-  return await request(`${es_index}/_search`, undefined, {
+export default async function getQueryResults(
+  request: ElasticSearchAPI['post'],
+  { index = ES_DEFAULT_INDEX, ...queryProps }: getQueryResultsProps
+) {
+  const query = getQuery({ index, ...queryProps });
+
+  return await request(`${index}/_search`, undefined, {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(query),
   });
