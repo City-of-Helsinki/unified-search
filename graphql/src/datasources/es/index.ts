@@ -67,25 +67,43 @@ class ElasticSearchAPI extends RESTDataSource {
     this.baseURL = ELASTIC_SEARCH_URI;
   }
 
-  async getQueryResults(
-    text?: string,
-    ontology?: string,
-    administrativeDivisionIds?: string[],
-    ontologyTreeIdOrSets?: string[][],
-    ontologyWordIdOrSets?: string[][],
-    providerTypes?: string[],
-    serviceOwnerTypes?: string[],
-    targetGroups?: string[],
-    mustHaveReservableResource?: boolean,
-    index?: ElasticSearchIndex,
-    from?: number,
-    size?: number,
-    languages?: ElasticLanguage[],
-    openAt?: string,
-    orderByDistance?: OrderByDistanceParams,
-    orderByName?: OrderByNameParams,
-    orderByAccessibilityProfile?: AccessibilityProfileType
-  ) {
+  async getQueryResults({
+    text,
+    ontology,
+    administrativeDivisionIds,
+    ontologyTreeIdOrSets,
+    ontologyWordIdOrSets,
+    providerTypes,
+    serviceOwnerTypes,
+    targetGroups,
+    mustHaveReservableResource,
+    index,
+    from,
+    size,
+    languages,
+    openAt,
+    orderByDistance,
+    orderByName,
+    orderByAccessibilityProfile,
+  }: {
+    text?: string;
+    ontology?: string;
+    administrativeDivisionIds?: string[];
+    ontologyTreeIdOrSets?: string[][];
+    ontologyWordIdOrSets?: string[][];
+    providerTypes?: string[];
+    serviceOwnerTypes?: string[];
+    targetGroups?: string[];
+    mustHaveReservableResource?: boolean;
+    index?: ElasticSearchIndex;
+    from?: number;
+    size?: number;
+    languages?: ElasticLanguage[];
+    openAt?: string;
+    orderByDistance?: OrderByDistanceParams;
+    orderByName?: OrderByNameParams;
+    orderByAccessibilityProfile?: AccessibilityProfileType;
+  }) {
     const es_index = index || ES_DEFAULT_INDEX;
 
     // Some fields should be boosted / weighted to get more relevant result set
@@ -317,12 +335,17 @@ class ElasticSearchAPI extends RESTDataSource {
     });
   }
 
-  async getSuggestions(
-    prefix: string,
-    languages: ElasticLanguage[],
-    size: number,
-    index: ElasticSearchIndex = ES_DEFAULT_INDEX
-  ) {
+  async getSuggestions({
+    prefix,
+    languages,
+    size,
+    index = ES_DEFAULT_INDEX,
+  }: {
+    prefix: string;
+    languages: ElasticLanguage[];
+    size: number;
+    index: ElasticSearchIndex;
+  }) {
     const query = {
       // Hide all source fields to decrease network load
       _source: '',
