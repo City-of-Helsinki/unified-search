@@ -2,26 +2,26 @@ import { type GraphQlToElasticLanguageMap } from './constants';
 
 export type ConnectionCursor = string;
 
-export interface ConnectionCursorObject {
+export type ConnectionCursorObject = {
   offset: number;
-}
+};
 
-export interface PageInfo {
+export type PageInfo = {
   startCursor: ConnectionCursor | null;
   endCursor: ConnectionCursor | null;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
-}
+};
 
-export interface ConnectionArguments {
+export type ConnectionArguments = {
   after?: ConnectionCursor | null;
   first?: number | null;
-}
+};
 
-export interface ElasticSearchPagination {
+export type ElasticSearchPagination = {
   from?: number;
   size?: number;
-}
+};
 
 export type ElasticLanguage =
   (typeof GraphQlToElasticLanguageMap)[keyof typeof GraphQlToElasticLanguageMap];
