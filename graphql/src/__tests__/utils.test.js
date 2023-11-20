@@ -1,4 +1,8 @@
-import { getEsOffsetPaginationQuery, createCursor } from '../utils';
+import {
+  getEsOffsetPaginationQuery,
+  createCursor,
+  escapeQuery,
+} from '../utils';
 
 describe('utils', () => {
   describe('getEsOffsetPaginationQuery', () => {
@@ -46,6 +50,26 @@ describe('utils', () => {
           });
         });
       });
+    });
+  });
+
+  describe('escapeQuery', () => {
+    it("should escape Elastic Search's special characters", () => {
+      expect(
+        escapeQuery('+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \\ /')
+      ).toEqual(
+        '\\+ \\- \\= \\&& \\|| \\> \\< \\! \\( \\) \\{ \\} \\[ \\] \\^ \\" \\~ \\* \\? \\: \\\\ \\/'
+      );
+    });
+
+    it("should not escape other than Elastic Search's special characters", () => {
+      expect(
+        escapeQuery(
+          'Test / Another + read-only: "More <text> & Ääni, öylätti, Åland"'
+        )
+      ).toEqual(
+        'Test \\/ Another \\+ read\\-only\\: \\"More \\<text\\> & Ääni, öylätti, Åland\\"'
+      );
     });
   });
 });
