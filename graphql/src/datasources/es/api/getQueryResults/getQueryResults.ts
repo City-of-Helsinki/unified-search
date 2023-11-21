@@ -4,10 +4,11 @@ import { type ElasticSearchAPI } from '../..';
 import type { getQueryResultsProps } from './types';
 import { getDefaultQuery, getOntologyFields, sortQuery } from './utils';
 import { filterQuery } from './utils/filterQuery';
+import { GraphQlToElasticLanguageMap } from '../../../../constants';
 
 function createQuery({
-  index,
-  languages,
+  index = ES_DEFAULT_INDEX,
+  languages = Object.values(GraphQlToElasticLanguageMap),
   text,
   ontology,
 }: Pick<getQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'>) {
@@ -53,7 +54,7 @@ function createQuery({
 }
 
 function queryBuilder({
-  index,
+  index = ES_DEFAULT_INDEX,
   languages,
   text,
   ontology,
@@ -84,7 +85,7 @@ function queryBuilder({
     openAt,
   });
 
-  const language = languages[0] ?? DEFAULT_ELASTIC_LANGUAGE;
+  const language = languages?.[0] ?? DEFAULT_ELASTIC_LANGUAGE;
 
   sortQuery(query, index, language, {
     orderByAccessibilityProfile,
