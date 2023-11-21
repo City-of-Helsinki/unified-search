@@ -7,7 +7,7 @@ import {
   VENUE_SEARCH_RESULT_FIELD,
 } from '../../../constants';
 import type { ElasticSearchIndex, SearchResultField } from '../../../types';
-import type { OrderByFields, getQueryResultsProps } from '../types';
+import type { OrderByFields, GetQueryResultsProps } from '../types';
 
 const ElasticSearchIndexToSearchResultField: Record<
   Extract<ElasticSearchIndex, typeof ES_EVENT_INDEX | typeof ES_LOCATION_INDEX>,
@@ -19,7 +19,7 @@ const ElasticSearchIndexToSearchResultField: Record<
 
 export function sortQuery(
   query: any,
-  es_index: getQueryResultsProps['index'],
+  es_index: GetQueryResultsProps['index'],
   language: ElasticLanguage,
   { orderByDistance, orderByName, orderByAccessibilityProfile }: OrderByFields
 ) {
