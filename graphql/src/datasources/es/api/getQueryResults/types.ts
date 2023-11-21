@@ -12,7 +12,7 @@ export type OrderByFields = {
   orderByAccessibilityProfile?: AccessibilityProfileType;
 };
 
-export type getQueryResultsProps = {
+export type GetQueryResultsProps = {
   text?: string;
   ontology?: string;
   administrativeDivisionIds?: string[];
@@ -30,7 +30,7 @@ export type getQueryResultsProps = {
 } & OrderByFields;
 
 export type QueryResultFilterProps = Pick<
-  getQueryResultsProps,
+  GetQueryResultsProps,
   | 'administrativeDivisionIds'
   | 'ontologyTreeIdOrSets'
   | 'ontologyWordIdOrSets'

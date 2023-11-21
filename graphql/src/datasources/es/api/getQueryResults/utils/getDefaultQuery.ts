@@ -1,12 +1,12 @@
 import { escapeQuery } from '../../../../../utils';
 import { searchFieldsBoostMapping } from '../constants';
-import type { getQueryResultsProps } from '../types';
+import type { GetQueryResultsProps } from '../types';
 
 export function getDefaultQuery({
   index,
   languages,
   text,
-}: Pick<getQueryResultsProps, 'index' | 'languages' | 'text'>) {
+}: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text'>) {
   // Default query is to search the same thing in every language
   const defaultQuery = languages.reduce(
     (acc, language) => ({

@@ -1,7 +1,7 @@
 import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types';
 import { ES_DEFAULT_INDEX } from '../../constants';
 import { type ElasticSearchAPI } from '../..';
-import type { getQueryResultsProps } from './types';
+import type { GetQueryResultsProps } from './types';
 import { getDefaultQuery, getOntologyFields, sortQuery } from './utils';
 import { filterQuery } from './utils/filterQuery';
 import { GraphQlToElasticLanguageMap } from '../../../../constants';
@@ -11,7 +11,7 @@ function createQuery({
   languages = Object.values(GraphQlToElasticLanguageMap),
   text,
   ontology,
-}: Pick<getQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'>) {
+}: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'>) {
   const defaultQuery = getDefaultQuery({ index, languages, text });
 
   // Resolve query
@@ -71,7 +71,7 @@ function queryBuilder({
   orderByAccessibilityProfile,
   orderByDistance,
   orderByName,
-}: getQueryResultsProps) {
+}: GetQueryResultsProps) {
   const query = createQuery({ index, languages, text, ontology });
 
   filterQuery(query, {
@@ -103,7 +103,7 @@ function queryBuilder({
 
 export default async function getQueryResults(
   request: ElasticSearchAPI['post'],
-  { index = ES_DEFAULT_INDEX, ...queryProps }: getQueryResultsProps
+  { index = ES_DEFAULT_INDEX, ...queryProps }: GetQueryResultsProps
 ) {
   const query = queryBuilder({ index, ...queryProps });
 
