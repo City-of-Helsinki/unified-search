@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from email.headerregistry import Address
 from typing import Any, Callable, List
 
 from ingest.importers.base import Importer
 from ingest.importers.location.dataclasses import (
     Accessibility,
+    Address,
     Coordinates,
     GeoJSONFeature,
     GeoJSONGeometry,
