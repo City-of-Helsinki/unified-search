@@ -22,23 +22,28 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 
   async getQueryResults(props: getQueryResultsProps) {
-    return await getQueryResults(this.post, props);
+    const request = this.post.bind(this);
+    return await getQueryResults(request, props);
   }
 
   async getSuggestions(props: getSuggestionProps) {
-    return await getSuggestions(this.post, props);
+    const request = this.post.bind(this);
+    return await getSuggestions(request, props);
   }
 
   async getAdministrativeDivisions(props: AdministrativeDivisionParams) {
-    return await getAdministrativeDivisions(this.get, props);
+    const request = this.get.bind(this);
+    return await getAdministrativeDivisions(request, props);
   }
 
   async getOntologyTree(props: OntologyTreeParams) {
-    return await getOntologyTree(this.post, props);
+    const request = this.post.bind(this);
+    return await getOntologyTree(request, props);
   }
 
   async getOntologyWords(props: OntologyWordParams) {
-    return await getOntologyWords(this.post, props);
+    const request = this.post.bind(this);
+    return await getOntologyWords(request, props);
   }
 }
 
