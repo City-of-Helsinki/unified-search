@@ -121,6 +121,10 @@ class LocationImporter(Importer[Root]):
         )
         self.administrative_division_fetcher = AdministrativeDivisionFetcher()
 
+        self.ontology = Ontology()
+
+        logger.info("LocationImporter initialized")
+
     def _create_location(self, l: LanguageStringConverter, e: Callable[[Any], Any]):
         return Location(
             url=l.get_language_string("www"),
@@ -222,7 +226,7 @@ class LocationImporter(Importer[Root]):
 
         return venue
 
-    def _collect_ontologies(self, tpr_unit: Any, ontology: Ontology):
+    def _collect_ontologies(self, tpr_unit: Any):
         # TODO: Separate words from tree
         # TODO: Remove duplicates
         #       Duplicates are not yet removed, because ontologies are not
@@ -231,7 +235,9 @@ class LocationImporter(Importer[Root]):
         ontology_words = []
         # Ontology ID's and tree contain plain integers, get corresponding texts
         if tpr_unit.get("ontologyword_ids", None):
-            word_ontologies = ontology.enrich_word_ids(tpr_unit["ontologyword_ids"])
+            word_ontologies = self.ontology.enrich_word_ids(
+                tpr_unit["ontologyword_ids"]
+            )
             tpr_unit["ontologyword_ids_enriched"] = word_ontologies
             all_ontologies += get_ontologywords_as_ontologies(
                 word_ontologies, self.use_fallback_languages
@@ -249,7 +255,9 @@ class LocationImporter(Importer[Root]):
             ]
 
         if tpr_unit.get("ontologytree_ids", None):
-            tree_ontologies = ontology.enrich_tree_ids(tpr_unit["ontologytree_ids"])
+            tree_ontologies = self.ontology.enrich_tree_ids(
+                tpr_unit["ontologytree_ids"]
+            )
             tpr_unit["ontologytree_ids_enriched"] = tree_ontologies
             all_ontologies += get_ontologytree_as_ontologies(
                 tree_ontologies, self.use_fallback_languages
@@ -258,7 +266,7 @@ class LocationImporter(Importer[Root]):
         return (all_ontologies, ontology_words)
 
     def _create_root_from_tpr_unit(self, tpr_unit: Any) -> Root:
-        ontology = Ontology()
+
         l = LanguageStringConverter(tpr_unit, self.use_fallback_languages)
         e = lambda k: tpr_unit.get(k, None)  # noqa: E731
         # ID's must be strings to avoid collisions
@@ -277,7 +285,7 @@ class LocationImporter(Importer[Root]):
             opening_hours_link,
         ) = self.opening_hours_fetcher.get_opening_hours_and_link(_id)
 
-        (all_ontologies, ontology_words) = self._collect_ontologies(tpr_unit, ontology)
+        (all_ontologies, ontology_words) = self._collect_ontologies(tpr_unit)
 
         venue = self._create_venue(l, e, _id, opening_hours, ontology_words)
 
@@ -308,12 +316,12 @@ class LocationImporter(Importer[Root]):
         count = 0
 
         for tpr_unit in self.tpr_units:
+            logger.debug(f"Fetching data for an id '{tpr_unit['id']}'.")
             root = self._create_root_from_tpr_unit(tpr_unit)
             data_buffer.append(root)
             if len(data_buffer) >= BATCH_SIZE:
                 self.add_data_bulk(data_buffer)
                 data_buffer = []
-
             logger.debug(f"Fetched data count: {count}")
             count = count + 1
 
