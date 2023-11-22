@@ -2,6 +2,7 @@ import base64
 import functools
 from collections import defaultdict
 from typing import Dict, List, Optional, Set
+from typing_extensions import deprecated
 
 from ingest.importers.location.dataclasses import (
     AccessibilitySentence,
@@ -156,6 +157,10 @@ def define_language_properties():
     return language_properties
 
 
+@deprecated(
+    version="1.4.0",
+    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
+)
 def get_respa_resources() -> List[dict]:
     """
     Get all resources from Respa API
@@ -430,6 +435,10 @@ def get_enriched_accessibility_viewpoints(
     ]
 
 
+@deprecated(
+    version="1.4.0",
+    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
+)
 def create_resource_type(
     respa_resource_type: dict, use_fallback_languages: bool
 ) -> ResourceType:
@@ -444,6 +453,10 @@ def create_resource_type(
     )
 
 
+@deprecated(
+    version="1.4.0",
+    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
+)
 def create_resource_user_permissions(
     respa_user_permissions: dict,
 ) -> ResourceUserPermissions:
@@ -455,6 +468,10 @@ def create_resource_user_permissions(
     )
 
 
+@deprecated(
+    version="1.4.0",
+    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
+)
 def create_exportable_resource(
     respa_resource: dict, use_fallback_languages: bool
 ) -> Resource:
@@ -480,6 +497,10 @@ def create_exportable_resource(
     )
 
 
+@deprecated(
+    version="1.4.0",
+    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
+)
 def get_unit_id_to_resources_mapping(
     use_fallback_languages: bool,
 ) -> Dict[str, List[Resource]]:
