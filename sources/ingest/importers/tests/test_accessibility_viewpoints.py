@@ -212,7 +212,6 @@ def test_get_enriched_accessibility_viewpoints(
     omit_unknowns: bool,
     expected_result: List[AccessibilityViewpoint],
 ):
-
     assert (
         get_enriched_accessibility_viewpoints(
             accessibility_viewpoints,

@@ -208,9 +208,9 @@ def create_accessibility_shortcomings(
     )
 
 
-def get_unit_id_to_accessibility_shortcomings_mapping() -> Dict[
-    str, List[AccessibilityShortcoming]
-]:
+def get_unit_id_to_accessibility_shortcomings_mapping() -> (
+    Dict[str, List[AccessibilityShortcoming]]
+):
     """
     Get mapping of unit IDs to their accessibility shortcomings from new service map API
     """
