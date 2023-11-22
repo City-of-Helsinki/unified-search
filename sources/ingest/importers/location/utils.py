@@ -174,8 +174,8 @@ def get_unit_ids_and_accessibility_shortcoming_counts() -> List[dict]:
     Get all unit IDs and their accessibility shortcoming counts from new service map API
 
     :return: A list of dictionaries each containing unit ID ("id") as integer and its
-             accessibility shortcoming counts ("accessibility_shortcoming_count") in a
-             dictionary.
+        accessibility shortcoming counts ("accessibility_shortcoming_count") in a
+        dictionary.
     """
     accumulated_results = []
     url = "https://api.hel.fi/servicemap/v2/unit/?format=json&only=accessibility_shortcoming_count&page_size=1000"
@@ -194,7 +194,7 @@ def create_accessibility_shortcomings(
     shortcoming counts
 
     :param accessibility_shortcoming_counts: A dictionary of accessibility shortcoming
-                                             counts of a unit.
+        counts of a unit.
     :return: A list of accessibility shortcomings.
     """
     return sorted(
@@ -236,12 +236,12 @@ def get_accessibility_viewpoint_id_to_name_mapping(
     Example of a possible return value:
     {
         "11": LanguageString(fi="Olen pyörätuolin käyttäjä",
-                             sv="Jag är en rullstolsanvändare",
-                             en="I am a wheelchair user")
+            sv="Jag är en rullstolsanvändare",
+            en="I am a wheelchair user")
         },
         "61": LanguageString(fi="Käytän kuulolaitetta",
-                             sv="Jag använder en hörapparat",
-                             en="I use a hearing aid")
+            sv="Jag använder en hörapparat",
+            en="I use a hearing aid")
         }
     }
     """
@@ -334,10 +334,10 @@ def get_accessibility_viewpoint_id_to_value_mapping(
     the accessibility viewpoint ID to the unit's accessibility viewpoint value.
 
     :param accessibility_viewpoints: A string of comma separated pairs of accessibility
-                                     viewpoint IDs and their values separated with
-                                     colons, e.g. "00:unknown,11:red".
+        viewpoint IDs and their values separated with
+        colons, e.g. "00:unknown,11:red".
     :return: A dictionary of accessibility viewpoint IDs and their values, e.g.
-             {"00": "unknown", "11": "red"}.
+        {"00": "unknown", "11": "red"}.
 
     Documentation about accessibility viewpoint endpoint:
     - https://www.hel.fi/palvelukarttaws/restpages/ver4.html#_accessibility_viewpoint
@@ -383,14 +383,13 @@ def get_enriched_accessibility_viewpoints(
     AccessibilityViewpoint objects.
 
     :param accessibility_viewpoints: A string of comma separated pairs of accessibility
-                                     viewpoint IDs and their values separated with
-                                     colons, e.g. "00:unknown,11:red".
+                    viewpoint IDs and their values separated with
+                    colons, e.g. "00:unknown,11:red".
     :param accessibility_viewpoint_id_to_name_mapping: A dictionary of accessibility
-                                                       viewpoint IDs mapped to their
-                                                       names.
+        viewpoint IDs mapped to theirnames.
     :param omit_unknowns: Whether to omit accessibility viewpoints with value "unknown".
     :return: A list of AccessibilityViewpoint objects without viewpoints with value
-             "unknown" if omit_unknowns is True, otherwise with all viewpoints.
+            "unknown" if omit_unknowns is True, otherwise with all viewpoints.
 
     Example return value:
         get_enriched_accessibility_viewpoints(
@@ -401,15 +400,15 @@ def get_enriched_accessibility_viewpoints(
             AccessibilityViewpoint(
                 id='11',
                 name=LanguageString(fi='Olen pyörätuolin käyttäjä',
-                                    sv='Jag är en rullstolsanvändare',
-                                    en='I am a wheelchair user'),
+                    sv='Jag är en rullstolsanvändare',
+                    en='I am a wheelchair user'),
                 value='red'
             ),
             AccessibilityViewpoint(
                 id='21',
                 name=LanguageString(fi='Olen liikkumisesteinen, mutta kävelen',
-                                    sv='Jag är rörelsehindrad, men jag går',
-                                    en='I have reduced mobility, but I walk'),
+                    sv='Jag är rörelsehindrad, men jag går',
+                    en='I have reduced mobility, but I walk'),
                 value='green'
             )
         ]
