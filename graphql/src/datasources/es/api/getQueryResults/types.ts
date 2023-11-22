@@ -21,6 +21,7 @@ export type GetQueryResultsProps = {
   providerTypes?: string[];
   serviceOwnerTypes?: string[];
   targetGroups?: string[];
+  /** @deprecated Removed with respa api. Will be reimplemented in https://helsinkisolutionoffice.atlassian.net/browse/LIIKUNTA-578. */
   mustHaveReservableResource?: boolean;
   index?: ElasticSearchIndex;
   from?: number;
