@@ -36,7 +36,6 @@ class Command(BaseCommand):
     }
 
     def add_arguments(self, parser):
-
         # Named (optional) arguments
         parser.add_argument(
             "--delete",

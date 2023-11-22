@@ -1,5 +1,5 @@
 # ==============================
-FROM helsinkitest/python:3.7-slim AS appbase
+FROM helsinkitest/python:3.9-slim AS appbase
 # ==============================
 
 ENV PYTHONUNBUFFERED 1

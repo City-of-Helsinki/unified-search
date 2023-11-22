@@ -266,7 +266,6 @@ class LocationImporter(Importer[Root]):
         return (all_ontologies, ontology_words)
 
     def _create_root_from_tpr_unit(self, tpr_unit: Any) -> Root:
-
         l = LanguageStringConverter(tpr_unit, self.use_fallback_languages)
         e = lambda k: tpr_unit.get(k, None)  # noqa: E731
         # ID's must be strings to avoid collisions
