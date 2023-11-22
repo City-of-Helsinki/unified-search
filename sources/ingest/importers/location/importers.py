@@ -94,7 +94,7 @@ custom_mappings = {
 class LocationImporter(Importer[Root]):
     index_base_names = ("location",)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fetch_resources_from_respa_api=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tpr_units = get_tpr_units()
         self.unit_id_to_accessibility_shortcomings_mapping = (
@@ -108,8 +108,10 @@ class LocationImporter(Importer[Root]):
                 self.use_fallback_languages
             )
         )
-        self.unit_id_to_resources_mapping = get_unit_id_to_resources_mapping(
-            self.use_fallback_languages
+        self.unit_id_to_resources_mapping = (
+            get_unit_id_to_resources_mapping(self.use_fallback_languages)
+            if fetch_resources_from_respa_api
+            else {}
         )
         self.unit_id_to_target_groups_mapping = get_unit_id_to_target_groups_mapping()
 
