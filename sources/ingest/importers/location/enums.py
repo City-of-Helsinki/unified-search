@@ -97,9 +97,3 @@ class AccessibilityProfile(Enum):
     STROLLER = "stroller"
     VISUALLY_IMPAIRED = "visually_impaired"
     WHEELCHAIR = "wheelchair"
-
-
-class ResourceMainType(Enum):
-    ITEM = "item"
-    PERSON = "person"
-    SPACE = "space"

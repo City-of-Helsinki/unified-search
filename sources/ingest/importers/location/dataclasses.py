@@ -116,34 +116,6 @@ class AccessibilityShortcoming:
 
 
 @dataclass
-class ResourceType:
-    id: str
-    mainType: str  # ResourceMainType as string to fix OpenSearch serialization
-    name: LanguageString
-
-
-@dataclass
-class ResourceUserPermissions:
-    canMakeReservations: bool
-
-
-@dataclass
-class Resource:
-    id: str
-    name: LanguageString
-    description: LanguageString
-    type: ResourceType
-    userPermissions: ResourceUserPermissions
-    reservable: bool
-    reservationInfo: Optional[LanguageString]
-    genericTerms: Optional[LanguageString]
-    paymentTerms: Optional[LanguageString]
-    specificTerms: Optional[LanguageString]
-    responsibleContactInfo: Optional[LanguageString]
-    externalReservationUrl: Optional[str]
-
-
-@dataclass
 class GeoPoint:
     latitude: float
     longitude: float
@@ -284,7 +256,6 @@ class Venue:
     location: Location = None
     description: LanguageString = None
     serviceOwner: Optional[ServiceOwner] = None
-    resources: List[Resource] = field(default_factory=list)
     # List[TargetGroup] as List[str] to fix OpenSearch serialization:
     targetGroups: List[str] = field(default_factory=list)
 
