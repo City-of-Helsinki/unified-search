@@ -2,21 +2,16 @@ import base64
 import functools
 from collections import defaultdict
 from typing import Dict, List, Optional, Set
-from typing_extensions import deprecated
 
 from ingest.importers.location.dataclasses import (
     AccessibilitySentence,
     AccessibilityShortcoming,
     AccessibilityViewpoint,
     OntologyObject,
-    Resource,
-    ResourceType,
-    ResourceUserPermissions,
 )
 from ingest.importers.location.enums import (
     AccessibilityProfile,
     AccessibilityViewpointValue,
-    ResourceMainType,
     TargetGroup,
 )
 from ingest.importers.utils import LanguageString, LanguageStringConverter, request_json
@@ -155,23 +150,6 @@ def define_language_properties():
         }
 
     return language_properties
-
-
-@deprecated(
-    version="1.4.0",
-    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
-)
-def get_respa_resources() -> List[dict]:
-    """
-    Get all resources from Respa API
-    """
-    accumulated_results = []
-    url = "https://api.hel.fi/respa/v1/resource/?format=json&page_size=500"
-    while url:
-        respa_resources = request_json(url, timeout_seconds=120)
-        accumulated_results += respa_resources["results"]
-        url = respa_resources["next"]
-    return accumulated_results
 
 
 def get_unit_ids_and_accessibility_shortcoming_counts() -> List[dict]:
@@ -433,91 +411,6 @@ def get_enriched_accessibility_viewpoints(
             or viewpoint_value != AccessibilityViewpointValue.UNKNOWN.value
         )
     ]
-
-
-@deprecated(
-    version="1.4.0",
-    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
-)
-def create_resource_type(
-    respa_resource_type: dict, use_fallback_languages: bool
-) -> ResourceType:
-    """
-    Create a ResourceType object from a Respa resource's type.
-    """
-    l = LanguageStringConverter(respa_resource_type, use_fallback_languages)
-    return ResourceType(
-        id=respa_resource_type["id"],
-        mainType=ResourceMainType(respa_resource_type["main_type"]).value,
-        name=l.get_language_string("name"),
-    )
-
-
-@deprecated(
-    version="1.4.0",
-    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
-)
-def create_resource_user_permissions(
-    respa_user_permissions: dict,
-) -> ResourceUserPermissions:
-    """
-    Create a ResourceUserPermissions object from a Respa user permissions
-    """
-    return ResourceUserPermissions(
-        canMakeReservations=respa_user_permissions["can_make_reservations"],
-    )
-
-
-@deprecated(
-    version="1.4.0",
-    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
-)
-def create_exportable_resource(
-    respa_resource: dict, use_fallback_languages: bool
-) -> Resource:
-    """
-    Create a Resource object from a Respa resource.
-    """
-    l = LanguageStringConverter(respa_resource, use_fallback_languages)
-    return Resource(
-        id=respa_resource["id"],
-        name=l.get_language_string("name"),
-        description=l.get_language_string("description"),
-        type=create_resource_type(respa_resource["type"], use_fallback_languages),
-        userPermissions=create_resource_user_permissions(
-            respa_resource["user_permissions"]
-        ),
-        reservable=respa_resource["reservable"],
-        reservationInfo=l.get_language_string("reservation_info"),
-        genericTerms=l.get_language_string("generic_terms"),
-        paymentTerms=l.get_language_string("payment_terms"),
-        specificTerms=l.get_language_string("specific_terms"),
-        responsibleContactInfo=l.get_language_string("responsible_contact_info"),
-        externalReservationUrl=respa_resource["external_reservation_url"],
-    )
-
-
-@deprecated(
-    version="1.4.0",
-    reason="There is no use for this since the reservable-status is fetched from the Palvelukartta.",
-)
-def get_unit_id_to_resources_mapping(
-    use_fallback_languages: bool,
-) -> Dict[str, List[Resource]]:
-    """
-    Get a mapping of unit IDs to their resources from Respa API.
-    """
-    result = defaultdict(list)
-    for respa_resource in get_respa_resources():
-        unit_id = str(respa_resource.get("unit", ""))
-        # Remove 'tprek:' prefix from unit IDs (e.g. "tprek:50174" or "axarwdco746q")
-        removable_prefix = "tprek:"
-        if unit_id.startswith(removable_prefix):
-            unit_id = unit_id[len(removable_prefix) :]
-        result[unit_id].append(
-            create_exportable_resource(respa_resource, use_fallback_languages)
-        )
-    return result
 
 
 def get_unit_id_to_target_groups_mapping() -> Dict[str, Set[TargetGroup]]:
