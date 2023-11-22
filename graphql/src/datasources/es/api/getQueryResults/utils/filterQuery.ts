@@ -40,7 +40,7 @@ export function getFilters({
   ArrayFilter | OpenAtFilter | MustHaveReservableResourceFilter
 > {
   // Assume time zone DEFAULT_TIME_ZONE when there is no time zone offset provided by the client.
-  const openAtDateTime = DateTime.fromISO(openAt, {
+  const openAtDateTime = DateTime.fromISO(openAt ?? '', {
     zone: DEFAULT_TIME_ZONE,
   });
   const finalOpenAt = openAtDateTime.isValid ? openAtDateTime.toISO() : openAt;
