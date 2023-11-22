@@ -1,8 +1,13 @@
 import { GraphQlToElasticLanguageMap } from '../../../../../constants';
 import { escapeQuery } from '../../../../../utils';
-import { ES_DEFAULT_INDEX } from '../../../constants';
+import { ES_DEFAULT_INDEX, SEARCH_ALL_SPECIAL_CHAR } from '../../../constants';
 import { searchFieldsBoostMapping } from '../constants';
 import type { GetQueryResultsProps } from '../types';
+
+const getQueryString = (text?: string) =>
+  text && text !== SEARCH_ALL_SPECIAL_CHAR
+    ? escapeQuery(text)
+    : SEARCH_ALL_SPECIAL_CHAR;
 
 export function getDefaultQuery({
   index = ES_DEFAULT_INDEX,
@@ -10,7 +15,7 @@ export function getDefaultQuery({
   text,
 }: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text'>) {
   // Default query is to search the same thing in every language
-  const defaultQuery = languages.reduce(
+  return languages.reduce(
     (acc, language) => ({
       ...acc,
       [language]: Object.entries(searchFieldsBoostMapping)
@@ -25,7 +30,7 @@ export function getDefaultQuery({
           // See: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html.
           query_string: {
             // Escape the query string so the special chars are not acting as operators.
-            query: text && text !== '*' ? escapeQuery(text) : '*',
+            query: getQueryString(text),
             // Creates a match_bool_prefix query on each field and combines the _score from each field.
             // See: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html#type-bool-prefix.
             type: 'bool_prefix',
@@ -36,5 +41,4 @@ export function getDefaultQuery({
     }),
     {}
   );
-  return defaultQuery;
 }
