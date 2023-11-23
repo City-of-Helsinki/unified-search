@@ -2,6 +2,7 @@ import base64
 import functools
 from collections import defaultdict
 from typing import Dict, List, Optional, Set
+from typing_extensions import deprecated
 
 from ingest.importers.location.dataclasses import (
     AccessibilitySentence,
@@ -275,6 +276,9 @@ def create_accessibility_sentence(
     )
 
 
+@deprecated(
+    "Collect the accessibility sentences from the response of `get_tpr_units()` instead. The accessibility sentences are included in the unit-query (e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes), which makes this request unnecessary.",
+)
 def get_unit_id_to_accessibility_sentences_mapping(
     use_fallback_languages: bool,
 ) -> Dict[str, List[AccessibilitySentence]]:
