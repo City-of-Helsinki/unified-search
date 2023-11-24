@@ -2,8 +2,7 @@ import os
 from dataclasses import dataclass
 
 import pytest
-from django.conf import settings
-from opensearchpy import OpenSearch
+
 
 from ingest.importers.base import Importer
 
@@ -34,13 +33,6 @@ def assert_snapshot_match_es_data_and_aliases(snapshot, es):
 
     aliases = es.indices.get_alias(index="test_*")
     snapshot.assert_match(aliases)
-
-
-@pytest.fixture
-def es():
-    es = OpenSearch([settings.ES_URI])
-    yield es
-    es.indices.delete("test_*")
 
 
 @pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")

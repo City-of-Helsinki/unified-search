@@ -9,17 +9,6 @@ from ingest.importers.location.utils import (
     get_enriched_accessibility_viewpoints,
 )
 from ingest.importers.utils.shared import LanguageString
-from ingest.importers.tests.mocks import (
-    MOCKED_SERVICE_MAP_ACCESSIBILITY_VIEWPOINT_RESPONSE,
-)
-
-
-@pytest.fixture(scope="module", autouse=True)
-def mocked_service_map_accessibility_viewpoint_response(module_mocker):
-    return module_mocker.patch(
-        "ingest.importers.location.utils.request_json",
-        return_value=MOCKED_SERVICE_MAP_ACCESSIBILITY_VIEWPOINT_RESPONSE,
-    )
 
 
 @pytest.mark.parametrize(
