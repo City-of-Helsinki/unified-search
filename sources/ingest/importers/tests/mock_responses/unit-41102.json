@@ -1,0 +1,439 @@
+{
+  "id": 41102,
+  "arealcity_id": 91,
+  "org_id": "83e74666-0836-4c1d-948a-4b34a8b90301",
+  "dept_id": "aea46dd4-caec-4f97-9206-10e939dc6b8d",
+  "provider_type": "SELF_PRODUCED",
+  "displayed_service_owner_type": "MUNICIPAL_SERVICE",
+  "displayed_service_owner_fi": "kunnallinen palvelu, Kulttuurin ja vapaa-ajan toimiala, Helsingin kaupunki",
+  "displayed_service_owner_sv": "kommunal tjänst, Kultur- och fritidssektorn, Helsingfors stad",
+  "displayed_service_owner_en": "municipal service, Culture and Leisure Division, City of Helsinki",
+  "data_source_url": "www.hel.fi",
+  "name_fi": "Yrjönkadun uimahalli",
+  "name_sv": "Georgsgatans simhall",
+  "name_en": "Yrjönkatu swimming hall",
+  "ontologyword_ids": [473, 729, 864, 917],
+  "ontologytree_ids": [693, 749, 2168],
+  "sources": [
+    { "source": "kaupunkialusta", "id": "262" },
+    { "source": "lipas", "id": "506031" }
+  ],
+  "provided_languages": ["fi", "sv"],
+  "regions": ["091"],
+  "short_desc_fi": "Kaupungin hallinnassa on neljä uimahallia. Lisäksi Helsingissä on yhdeksän yhtiöpohjaista uimahallia, joiden toimintaa kaupunki avustaa.",
+  "short_desc_sv": "Helsingfors stad förfogar över fyra simhallar. Därtill finns det i Helsingfors nio simhallar som drivs av bolag och vars verksamhet staden understöder",
+  "short_desc_en": "The City of Helsinki has four swimming halls. There are also nine swimming pools which are run by corporations with support from the City.",
+  "desc_fi": "Yrjönkadun uimahalli suljetaan 31.12.2023 jälkeen perusparannuksen vuoksi. Perusparannuksen valmistelutyöt alkavat tammikuussa 2024, ja hanke kestää noin kaksi vuotta. Uimahalli on suljettu koko tämän ajan. Alustavien suunnitelmien mukaan halli avataan asiakaskäyttöön taas tammikuussa 2026.\n\nSuomen ensimmäinen uimahalli henkii ainutlaatuista ja historiallista kylpylätunnelmaa aivan Helsingin ydinkeskustassa. Se on tähän päivään asti säilyttänyt alkuperäisen ilmeensä, ja houkuttelee polskimaan päivittäin 300-800 ihmistä. Yrjönkadun uimahalli on siitä ainutlaatuinen muihin kaupungin uimahalleihin verrattuna, että siellä ei tarvitse uida uimapuvussa! Tästä syystä uimahallin aukioloajat on jaettu naisten ja miesten vuoroihin. Uimahallin toisessa kerroksessa voi nauttia vanhan ajan spa-tunnelmasta lepohyttien, ravintolapalveluiden ja erilaisten saunojen parissa. Rakennustaiteellisesti uimahalli on arvokas, arkkitehti Väinö Vähäkallion suunnittelema aikansa 1920-luvun klassismin edustus.",
+  "desc_sv": "Georgsgatans simhall stängs för totalrenovering vid årsskiftet 2023. Förberedelserna inför totalrenoveringen inleds i januari 2024 och projektet tar cirka två år. Simhallen är stängd under hela den tiden. Enligt de preliminära planerna kommer hallen öppnas för kunder igen i januari 2026.\n\nFinlands första simhall utstrålar en unik och historisk badstämning precis i Helsingfors stadskärna. Den har hittills bevarat sitt ursprungliga utseende och lockar dagligen 300-800 personer för att bada. I jämförelse med stadens andra simhallar är Georgsgatans simhall unik eftersom man inte behöver simma i baddräkt där! På grund av detta har simhallens öppettider delats upp i turer för kvinnor och män. På andra våningen i simhallen kan man njuta av gammaldags spastämning med vilohytter, restaurangtjänster och olika bastur. Arkitektoniskt är simhallen en värdefull representation av 1920-talets klassicism, ritad av arkitekten Väinö Vähäkallio.",
+  "desc_en": "The Yrjönkatu Swimming Hall will be closed for renovations at the turn of the year 2023. Preparatory work for the renovation will begin in January 2024, and the project will take about two years. The indoor swimming pool will be closed throughout this time. According to preliminary plans, the pool will be reopen to the public in January 2026.\n\nThe first swimming hall in Finland exudes unique and historic spa atmosphere right in the heart of Helsinki. It has retained its original appearance to this day and attracts between 300-800 swimmers daily. Compared to other swimming halls in the city, Yrjönkatu swimming hall is unique in that bathing suits are not required, as the swimming pool's opening hours are divided into women's and men's sessions. You can also enjoy the historic spa atmosphere with lounge cabins, restaurant services and various saunas on the second floor of the swimming hall. The swimming hall building is architecturally significant: it was designed by architect Väinö Vähäkallio and represents the classical trend of the 1920s.",
+  "latitude": 60.16835,
+  "longitude": 24.93896,
+  "northing_etrs_gk25": 6672831,
+  "easting_etrs_gk25": 25496611,
+  "northing_etrs_tm35fin": 6671945,
+  "easting_etrs_tm35fin": 385637,
+  "manual_coordinates": true,
+  "street_address_fi": "Yrjönkatu 21 b",
+  "street_address_sv": "Georgsgatan 21 b",
+  "street_address_en": "Yrjönkatu 21 b",
+  "address_zip": "00100",
+  "address_city_fi": "Helsinki",
+  "address_city_sv": "Helsingfors",
+  "address_city_en": "Helsinki",
+  "vtj_prt": "103056009C",
+  "vtj_prt_verified": "VTJ_PRT_NOT_VERIFIED",
+  "phone": "+358 9 310 87401",
+  "call_charge_info_fi": "pvm/mpm",
+  "call_charge_info_sv": "lna/msa",
+  "call_charge_info_en": "local network charge/mobile call charge",
+  "picture_url": "https://liikunta.content.api.hel.fi/uploads/sites/2/2022/01/b5f352d9-yrjonkadun_uimahalli_2021_kuva_maarit_hohteri_41-1024x683.jpg",
+  "picture_caption_fi": "Historiallisen Yrjönkadun uimahallin uima-allas.",
+  "picture_caption_sv": "Simbassängen i den historiska Georgsgatans simhall.",
+  "picture_caption_en": "The pool of the historic Yrjönkatu swimming hall.",
+  "accessibility_www": "https://tpr.hel.fi/kapaesteettomyys/app/summary/tpr:20744/",
+  "accessibility_viewpoints": "00:unknown,11:red,12:red,13:red,21:red,22:red,23:red,31:red,32:red,33:red,41:red,51:red,52:red,61:red",
+  "created_time": "2014-09-05T13:29:49",
+  "modified_time": "2023-11-13T12:50:18",
+  "connections": [
+    {
+      "section_type": "OPENING_HOURS",
+      "name_fi": "Naiset (uintiaika 2 h):\n- ma\n     12.00-20.00 1. kerros\n     Suljettu \"2. kerros\"\n- ke, pe\n     6.30-20.00 1. kerros\n     13.00-20.00 2. kerros\n- su 9.00-10.00 1. krs erityisuimakortilla\n- su 11.00-20.00 1. kerros\n- su 13.00-20.00 2. kerros\nMiehet (uintiaika 2 h):\n- ti, to\n     6.30-20.00 1. kerros\n     13.00-20.00 2. kerros\n- la\n     7.00-20.00 1. kerros\n     13.00-20.00 2. kerros\n- su 7.00-8.00 1. krs erityisuimakortilla\nAikajakso: 5.12.2023 - 6.30-17.00 1. krs miehet\n- ti Suljettu \"2. krs\"\nItsenäisyyspäivä: 6.12.2023 - Suljettu\nJouluaaton aatto: 23.12.2023 - 7.00-15.00 1. krs miehet\n- la Suljettu \"2. kerros\"\nJouluaatto: 24.12.2023 - Suljettu\nJoulupäivä: 25.12.2023 - Suljettu\n2. joulupäivä: 26.12.2023 - Suljettu\nUudenvuodenaatto: 31.12.2023 - 7.00-8.00 1. krs, miehet erityisuimakortilla\n- su 9.00-10.00 1. krs, naiset erityisuimakortilla\n- su 11.00-15.00 1. krs naiset\n- su Suljettu \"2. kerros\"",
+      "name_en": "Women (swimming time 2 hrs):\n- Mon\n     12.00-20.00 1st floor\n     Closed \"2nd floor\"\n- Wed, Fri\n     6.30-20.00 1st floor\n     13.00-20.00 2nd floor\n- Sun 9.00-10.00 1st floor with the special swimming card\n- Sun 11.00-20.00 1st floor\n- Sun 13.00-20.00 2nd floor\nMen (swimming time 2 hours):\n- Tue, Thu\n     6.30-20.00 1st floor\n     13.00-20.00 2nd floor\n- Sat\n     7.00-20.00 1st floor\n     13.00-20.00 2nd floor\n- Sun 7.00-8.00 1st floor with the special swimming card \nDate period: Dec. 5, 2023 - 6.30-17.00 1st floor men\n- Tue Closed \"2nd floor\"\nIndependence Day: Dec. 6, 2023 - Closed\nDay before Christmas Eve: Dec. 23, 2023 - 7.00-15.00 1st floor men\n- Sat Closed \"2nd floor\"\nChristmas Eve: Dec. 24, 2023 - Closed\nChristmas Day: Dec. 25, 2023 - Closed\nBoxing Day: Dec. 26, 2023 - Closed\nNew Year's Eve: Dec. 31, 2023 - 7.00-8.00 1st floor, men with the special swimming card\n- Sun 9.00-10.00 1st floor, women with the special swimming card\n- Sun 11.00-15.00 1st floor women\n- Sun Closed \"2nd floor\"",
+      "name_sv": "Damer (simningstid 2 timmar):\n- mån\n     12.00-20.00 1. våningen\n     Stängt \"2. våningen\"\n- ons, fre\n     6.30-20.00 1. våningen\n     13.00-20.00 2. våningen\n- sön 9.00-10.00 1. vån med specialsimningskortet\n- sön 11.00-20.00 1. våningen\n- sön 13.00-20.00 2. våningen\nHerrar (simningstid 2 timmar):\n- tis, tor\n     6.30-20.00 1. våningen\n     13.00-20.00 2. våningen\n- lör\n     7.00-20.00 1. våningen\n     13.00-20.00 2. våningen\n- sön 7.00-8.00 1. vån med specialsimningskortet \nPeriod: 5.12.2023 - 6.30-17.00 1. vån herrar\n- tis Stängt \"2. vån\"\nSjälvständighetsdagen: 6.12.2023 - Stängt\nDagen före julafton: 23.12.2023 - 7.00-15.00 1. vån herrar\n- lör Stängt \"2. vån\"\nJulafton: 24.12.2023 - Stängt\nJuldagen: 25.12.2023 - Stängt\nAnnandag jul: 26.12.2023 - Stängt\nNyårsafton: 31.12.2023 - 7.00-8.00 1. vån, herrar med specialsimningskortet\n- sön 9.00-10.00 1. vån, damer med specialsimningskortet\n- sön 11.00-15.00 1. vån damer\n- sön Stängt \"2. vån\""
+    },
+    {
+      "section_type": "OPENING_HOURS",
+      "name_fi": "Sisäänpääsy päättyy 20, uintiaika 20.30, peseytymisaika 20.45. Alueelta poistuttava 21 mennessä.",
+      "name_en": "Admission ends at 20.00, swimming time at 20.30, washing time at 20.45. Leave the area by 21.00.",
+      "name_sv": "Insläppet slutar 20, simtid 20.30, tvätttid 20.45. Lämna området vid 21."
+    },
+    {
+      "section_type": "OPENING_HOURS",
+      "name_fi": "Yrjönkadun uimahalli suljetaan vuodenvaihteessa 2023 perusparannuksen vuoksi.",
+      "name_en": "The Yrjönkatu Swimming Hall will be closed for renovations at the turn of the year 2023.",
+      "name_sv": "Georgsgatans simhall stängs för totalrenovering vid årsskiftet 2023."
+    },
+    {
+      "section_type": "PHONE_OR_EMAIL",
+      "name_fi": "Kassa",
+      "name_en": "Cashier",
+      "name_sv": "Kassa",
+      "phone": "+358 9 310 87401"
+    },
+    {
+      "section_type": "PHONE_OR_EMAIL",
+      "name_fi": "Liikunnanohjaus",
+      "name_en": "Sports Supervisors",
+      "name_sv": "Instruerad motion",
+      "phone": "+358 9 310 87403"
+    },
+    {
+      "section_type": "PHONE_OR_EMAIL",
+      "name_fi": "Tiimiesihenkilö",
+      "name_en": "Manager",
+      "name_sv": "Teamchef",
+      "contact_person": "Kara Koskinen",
+      "phone": "+358 9 310 24713"
+    },
+    {
+      "section_type": "OTHER_INFO",
+      "name_fi": "Alueella on kuvauskielto.",
+      "name_en": "Taking photos is prohibited in the swimming hall area.",
+      "name_sv": "Fotograferingsförbud i simhallens utrymmen."
+    },
+    {
+      "section_type": "OTHER_INFO",
+      "name_fi": "Hallissa on yksi 25 metriä pitkä allas, syvyys 0,9 - 3,4 m. Uimataito pakollinen.\n\nKaikkina aukioloaikoina työvuorossa on sekä nais- että miespuolista henkilökuntaa. \n\nPalvelut: \nCafe Yrjö, puh. 09 677 318, avoinna ti-su 13.00-21.00.\n\nKokoushuone 20 henkilölle ma - su klo 8.00 - 21.00. Käytössä kahvinkeitin, vedenkeitin ja mikro. Cafe Yrjön palvelut käytettävissä. Vain kokouskäyttöön.\n\nSaunat: \n1. krs: kaksi sähkösaunaa\n2. krs: puulämmitteinen sauna, höyrysauna, infrapunasauna ja tilaussauna\n4. krs: tilaussauna\n\nMuuta:\nForumin parkkihalli, klooripuhdistus",
+      "name_en": "Please note that our staff consists of both men and women during all opening hours.\n\nServices: \nCafe Yrjö, tel. 09 677 318, open Tue-Sun 13.00 - 21.00.\n\nMeeting room for 20 persons Mon - Sun 8.00 - 21.00. Coffee maker, kettle and microwave.\nCafe Yrjö's services are available. Only for meeting use. \n\nSaunas:\n1st floor: two electric saunas\n2nd floor: infrared sauna, wood-heated sauna, steam sauna, private sauna\n4th floor: private sauna. \n\nOther info:\nForum's parking hall, Chlorine purification.",
+      "name_sv": "I hallen finns en 25 meter lång bassäng, djupet 0,9 - 3,4m. Observera att alla som använder simbassängen måste vara simkunniga.\n\nPå alla öppettider kan personalen består av både kvinnor och män.\n\nTjänster: \nCafe Yrjö, tfn. 09 677 318, öppet ti-sö 13.00 - 21.00.\n\nMötesrum må - sö kl. 8.00 - 21.00 för 20 personer\nKaffekokare, vattenkokare och mikrovågsugn. Café Yrjös tjänster finns tillgängliga. Endast för möten.\n\nBastur:\n1. våningen: två elbastur\n2. våningen: infraröd bastu, vedeldad bastu, ångbastu och beställningsbastu\n4. våningen: beställningsbastu\n\nÖvrigt:\nForums parkeringshall, klorrening."
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Yrjönkadun uimahalli suljetaan vuodenvaihteessa perusparannuksen vuoksi",
+      "name_en": "The Yrjönkatu Swimming Hall will be closed for renovations at the turn of the year",
+      "name_sv": "Georgsgatans simhall stängs för totalrenovering vid årsskiftet",
+      "www_fi": "https://liikunta.hel.fi/fi/articles/yleinen/yrjonkadun-uimahalli-suljetaan-vuodenvaihteessa-perusparannuksen-vuoksi",
+      "www_en": "https://liikunta.hel.fi/en/articles/adults/the-yrjonkatu-swimming-hall-will-be-closed-for-renovations-at-the-turn-of-the-year",
+      "www_sv": "https://liikunta.hel.fi/sv/artiklar/vuxna/georgsgatans-simhall-stangs-for-totalrenovering-vid-arsskiftet"
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Nettilippu 2. kerrokseen",
+      "name_en": "Advance tickets to the 2nd floor",
+      "name_sv": "Förskottsbiljett till den 2:a våningen",
+      "www_fi": "https://ssl.eventilla.com/cal/yrjonkadunuimahalli",
+      "www_en": "https://ssl.eventilla.com/cal/yrjonkadunuimahalli?lang=EN",
+      "www_sv": "https://ssl.eventilla.com/cal/yrjonkadunuimahalli?lang=SV",
+      "tags": ["#nettilippu"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Cafe Yrjö",
+      "name_en": "Cafe Yrjö",
+      "name_sv": "Cafe Yrjö",
+      "www_fi": "http://www.cafeyrjo.net/",
+      "www_en": "http://www.cafeyrjo.net/english.html",
+      "www_sv": "http://www.cafeyrjo.net/svenska.html"
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Vesijumpat ke 7.45 - 8.15",
+      "name_en": "Hydrobic Wed 7.45 - 8.15",
+      "name_sv": "Vattengymnastik ons 7.45 - 8.15",
+      "www_fi": "https://www.hel.fi/helsinki/fi/kulttuuri-ja-vapaa-aika/liikunta/liikuntakurssit/tyoikaiset/vesijumpat",
+      "www_en": "https://www.hel.fi/helsinki/fi/kulttuuri-ja-vapaa-aika/liikunta/liikuntakurssit/tyoikaiset/vesijumpat",
+      "www_sv": "https://www.hel.fi/helsinki/fi/kulttuuri-ja-vapaa-aika/liikunta/liikuntakurssit/tyoikaiset/vesijumpat"
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Yrjönkadun uimahalliin luotu turvallisemman tilan periaatteet",
+      "www_fi": "https://www.hel.fi/fi/uutiset/yrjonkadun-uimahalliin-turvallisemman-tilan-periaatteet"
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Asiakaskortin sopimusehdot",
+      "name_en": "Chargeable customer cards contract terms",
+      "name_sv": "Kundavtalsvillkor",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maksut-ja-hinnasto/ladattava-asiakaskortti/ladattavan-asiakaskortin-sopimusehdot",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/pricing/chargeable-customer-card/chargeable-customer-cards-contract-terms",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/priser/laddningsbart-kundkort/kundavtalsvillkor",
+      "tags": ["#asiakaskortin_sopimusehdot"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Erityisuimakortti",
+      "name_en": "Special swimming card",
+      "name_sv": "Specialsimningskort",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/erityisuimakortti",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/special-swimming-card",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/specialsimkort",
+      "tags": ["#erityisuimakortti"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Tilaussaunat",
+      "name_en": "Private saunas",
+      "name_sv": "Beställningbastur",
+      "www_fi": "https://varaamo.hel.fi/search?purpose=sauna",
+      "www_en": "https://varaamo.hel.fi/search?purpose=sauna",
+      "www_sv": "https://varaamo.hel.fi/search?purpose=sauna",
+      "tags": ["#tilaussaunat"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Hintaryhmien määrittelyt",
+      "name_en": "Definitions for the price groups",
+      "name_sv": "Fastställande av prisgrupper",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maksut-ja-hinnasto/hintaryhmien-maarittely",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/pricing/definitions-for-the-price-groups",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/priser/faststallande-av-prisgrupper",
+      "tags": ["#hintaryhmien_määrittelyt"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Uimapukuohjeistus",
+      "name_en": "Swimwear guide",
+      "name_sv": "Badgläder guide",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maaraykset-ja-ohjeet/uimapukuohjeistus-helsingin-kaupungin-uimahalleissa",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/regulations-and-instructions/swimwear-guide",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/bestammelser-och-anvisningar/badglader-guide",
+      "tags": ["#uimapukuohjeistus"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Järjestyssäännöt",
+      "name_en": "Rules and regulations",
+      "name_sv": "Allmänna ordningsregler",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maaraykset-ja-ohjeet/uimahallien-ja-uimaloiden-yleiset-jarjestyssaannot",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/regulations-and-instructions/rules-and-regulations-for-indoor-and-outdoor-pools",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/bestammelser-och-anvisningar/allmanna-ordningsregler-for-simhallar-och-friluftsbad",
+      "tags": ["#järjestyssäännot"]
+    },
+    {
+      "section_type": "PRICE",
+      "name_fi": "1. krs kaappi\n\nAikuiset \n- kertamaksu 5,80 e \n- 10 kerran sarjakortti tai kk-kortti (30 pv) 46 e\n- kausikortti (120 pv) 138 e\n\nLapset (7-17 v.) ja muut (opiskelijat, työttömät, eläkeläiset, varusmies- ja siviilipalvelusta suorittavat, invalidit, tilapäistä suojelua hakeneet ja asiasta päätöksen jo saaneet)\n- kertamaksu 3,20 e\n- 10 kerran sarjakortti tai kk-kortti (30 pv) 25 e\n- kausikortti (120 pv) 75 e\n\n- henkilökohtainen asiakaskortti (kausi-, kuukausi- ja sarjaliput) 4 e\n- pyyhe 7 e\n- uimapuku 7 e\n- kylpytakki 10 e\n- pefletti, saippua, shampoo 1 e/kpl\n- istumahyttilisä 1 e\n\n2. krs (uinti 1. kerroksen altaassa) \n\nAikuiset\n- kertamaksu 16 e\n\nLapset (7-17 v.) ja muut (opiskelijat, työttömät, eläkeläiset, invalidit, tilapäistä suojelua hakeneet ja asiasta päätöksen jo saaneet)\n- kertamaksu 11 e\n\nSisältää: lepohytti, pyyhe, kylpytakki (saatavuuden mukaan), pefletti, uinti, höyrysauna, puulämmitteinen sauna ja infrapunasauna.",
+      "name_en": "1st floor with locker\n\nAdults \n- one visit €5.80 \n- 10 visits or 1 month €46 \n- season card (120 days) €138 \n\nChildren (7-17 y/o) and others (senior citizens, students, unemployed, disabled, conscripts and conscientious objectors, asylum or temporary protection seekers and those who have received a decision on the matter)\n- one visit €3,20 \n- 10 visits or 1 month €25 \n- season card (120 days) €75\n\n- personal customer card (10 visits, 1 month or season card) €4 \n- towel €7\n- swimming suit €7\n- seat cover, shampoo €1/each\n- cabins, per visit + €1\n\n2nd floor cabins (swimming in 1st floor pool) \n\nAdults \n- one visit €16\n\nChildren (7-17 y/o) and others (senior citizen, student, unemployed, military service, asylum or temporary protection seekers)\n- one visit €11\n\nExtra hour\n- €9 per hour\n\nIncludes: cabin with bed, towel, bathrobe (subject to availability), seat cover, swimming, steam sauna, infrared sauna, wood-heated sauna.",
+      "name_sv": "1. våningen skåp\n\nVuxna \n- engångsavgift 5,80 e\n- 10 gångers seriekort eller månadskort 46 e\n- säsongkort (120 dagar) 138 e\n\nBarn (7-17 år) och andra (studerande, arbetslösa, pensionärer, värnpliktiga och civiltjänstgörare, rörelsehindrade, asylsökande, personer som söker om tillfälligt skydd och de som redan har fått et beslut)\n- engångsavgift 3,20 e\n- 10 gångers seriekort eller månadskort 25 e\n- säsongkort (120 dagar) 75 e\n\n- personligt kundkort (10 gångers seriekort, månadskort och säsongkort) 4 e\n- handduk 7 e\n- badkläder 7 e\n- hytt plus 1 e\n\n2. våningen \n\nVuxna \n- engångsavgift 16 e\n\nBarn (7-17 år) och andra (pensionärer, värnpliktiga och civiltjänstgörare, studerande, arbetslösa, asylsökande och sökande av tillfälligt skydd)\n- engångsavgift 11 e\n\nExtratimme\n- 9 e per timme\n\nHytt, hyra för badrock (i mån av möjlighet) och badhandduk och sittunderlag samt tillgång till ång-, infraröd- och vedbastun ingår i priset."
+    }
+  ],
+  "ontologyword_details": [
+    { "id": 917 },
+    { "id": 864 },
+    { "id": 729 },
+    { "id": 473 }
+  ],
+  "service_descriptions": [
+    { "id": 4147, "available_languages": ["en", "fi", "sv"] },
+    { "id": 4151, "available_languages": ["en", "fi", "sv"] },
+    { "id": 7518, "available_languages": ["fi"] }
+  ],
+  "accessibility_sentences": [
+    {
+      "sentence_group_name": "Kulkureitti pääsisäänkäynnille",
+      "sentence_group_fi": "Reitti pääsisäänkäynnille",
+      "sentence_group_sv": "Rutten till huvudingången",
+      "sentence_group_en": "The route to the main entrance",
+      "sentence_fi": "Kulkureitti sisäänkäynnille on epätasainen.",
+      "sentence_sv": "Rutten till ingången är ojämn.",
+      "sentence_en": "The route to the entrance is rough."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Sisäänkäynti erottuu selkeästi. Sisäänkäynnin yläpuolella on katos.",
+      "sentence_sv": "Ingången är lätt att urskilja. Ingången har ett tak.",
+      "sentence_en": "The entrance stands out clearly. There is a canopy above the entrance."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Sisäänkäynnin ovet erottuvat selkeästi. Oven ulkopuolella on riittävästi vapaata tilaa liikkumiselle esim. pyörätuolin kanssa. Ovi on raskas tai muuten vaikeasti avattavissa.",
+      "sentence_sv": "Dörrarna vid ingången är lätta att urskilja. Utanför dörren finns tillräckligt med fritt utrymme för att röra sig t.ex. med rullstol. Dörren är tung eller annars svår att öppna.",
+      "sentence_en": "The doors connected to the entrance stand out clearly. Outside the door there is sufficient room for moving e.g. with a wheelchair. The door is heavy or otherwise hard to open."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Sisäänkäynnin yhteydessä on yli 2 cm korkeita kynnyksiä.",
+      "sentence_sv": "Vid ingången finns trösklar som är över 2 cm höga.",
+      "sentence_en": "The entrance has thresholds over 2 cm high."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Tuulikaappi on ahdas.",
+      "sentence_sv": "Vindfånget är trångt.",
+      "sentence_en": "The foyer is cramped."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Liikuntatilat sijaitsevat kerroksessa -1.",
+      "sentence_sv": "Motionssalarna ligger på plan -1.",
+      "sentence_en": "The sports facilities are located on floor -1."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Tilassa on pyörätuolin kannalta ahdas vaikeasti havaittava hissi, jonka edessä on tilaa niukasti ja jonka ovi aukeaa automaattisesti. Hissin kerrosnumerot eivät ole sormin tunnusteltavissa. Uloskäyntikerroksen painike erottuu muista. (Esteettömän hissin vähimmäismitat ovat leveys 1,1 m ja syvyys 1,4 m.)",
+      "sentence_sv": "Lokalerna har en hiss som är trång för en rullstol som är svår att överblicka med lite rörelseutrymme framför och med en automatdörr. Hissens nummerknappar kan inte avläsas med fingrarna. Bottenvåningens knapp är annorlunda än de andra. (Minimimåtten för en tillgänglig hiss är bredd 1,1 m och djup 1,4 m.)",
+      "sentence_en": "For moving around, there is a lift cramped for wheelchair users that is difficult to perceive, with little room in front of it; the door opens automatically. The floor numbers in the lift cannot be felt with fingers. The button for the exit floor stands out from the other buttons. (The minimum dimensions for an accessible lift are width 1.1 m and depth 1.4 m.)"
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Toimipisteessä on opasteet eri tiloihin.",
+      "sentence_sv": "Vid verksamhetsstället finns skyltar till olika lokaler.",
+      "sentence_en": "The service point has directions to the different facilities."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Tilan keskeisillä kulkureiteillä on 3 peräkkäistä porrasaskelmaa.",
+      "sentence_sv": "De inomhus gångvägarna har 3 trappsteg efter varandra.",
+      "sentence_en": "The indoor walkways have 3 consecutive steps."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Tilassa on esteetön wc kerroksessa 2.",
+      "sentence_sv": "I lokalerna finns en tillgänglig toalett på plan 2.",
+      "sentence_en": "The facility has an accessible toilet on floor 2."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Palvelutiski/kassa sijaitsee samassa kerroksessa kuin sisäänkäynti.",
+      "sentence_sv": "Servicedisken/kassan ligger på samma plan som ingången.",
+      "sentence_en": "The customer service/cashier's desk is located on the entrance floor."
+    },
+    {
+      "sentence_group_name": "Palvelutiski/kassa ja aulatilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Palvelutiski/kassa löytyy helposti. Palvelutiskillä/kassalla on mahdollista asioida vain seisaaltaan.",
+      "sentence_sv": "Servicedisken/kassan är enkel att hitta. I servicedisken/kassan det är möjligt att uträtta ärenden bara stående.",
+      "sentence_en": "The customer service/cashier's desk can be found easily. The desk is accessible to customers standing only."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pukutilat sijaitsevat kerroksessa 0.",
+      "sentence_sv": "Omklädningsrummen ligger på plan 0.",
+      "sentence_en": "The dressing rooms are located on floor 0."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pukutiloja on myös kerroksessa 2.",
+      "sentence_sv": "Det finns omklädningsrum även på plan 2.",
+      "sentence_en": "Dressing rooms are also located on floor 2."
+    },
+    {
+      "sentence_group_name": "Erillinen esteetön pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Toimipisteessä ei ole esteetöntä pukutilaa, vaan on käytettävä miesten/naisten pukutiloja. Pukutilan ovi avautuu käsin helposti.",
+      "sentence_sv": "Vid verksamhetsstället finns inget tillgängligt omklädningsrum, utan man måste använda omklädningsrummen för herrar/damer. Dörren till omklädningsrummet öppnas enkelt för hand.",
+      "sentence_en": "The facility does not have an accessible dressing room. The men's/women's dressing rooms must be used instead. The door of the dressing room opens easily manually."
+    },
+    {
+      "sentence_group_name": "Erillinen esteetön pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pukutilassa on niukasti tilaa toimia pyörätuolin ja avustajan kanssa. Pukutilassa on pukukaappeja.",
+      "sentence_sv": "I omklädningsrummet finns knappt om utrymme för en rullstol och en assistent. Det finns klädskåpen i omklädningsrummet.",
+      "sentence_en": "The dressing room has little room for a wheelchair and assistant. There are lockers in the dressing room."
+    },
+    {
+      "sentence_group_name": "Miesten/naisten pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pesutila on miesten/naisten pukutilan yhteydessä. Pesutilan ovi avautuu käsin helposti.",
+      "sentence_sv": "Det finns ett duschrum i anslutning till herrarnas/damernas omklädningsrum. Dörren till duschrummet öppnas enkelt för hand.",
+      "sentence_en": "The shower room is connected to the men's/women's dressing room. The door of the shower room opens easily manually."
+    },
+    {
+      "sentence_group_name": "Miesten/naisten pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pesutilassa on tilavampi, esteetön suihkupaikka.",
+      "sentence_sv": "I duschrummet finns en rymligare, tillgänglig duschplats.",
+      "sentence_en": "The shower room has a more spacious and accessible showering spot."
+    },
+    {
+      "sentence_group_name": "Miesten/naisten pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Sauna on miesten/naisten pukutilan yhteydessä. Sen ovi avautuu käsin helposti.",
+      "sentence_sv": "Det finns en bastu i anslutning till herrarnas/damernas omklädningsrum. Dörren öppnas enkelt för hand.",
+      "sentence_en": "The sauna is connected to the men's/women's dressing room. The door opens easily manually."
+    },
+    {
+      "sentence_group_name": "Miesten/naisten pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Saunaan mahtuu yksi pyörätuoli kerrallaan. Pyörätuolista on mahdollista siirtyä alimmalle lauteelle. Ylälauteille johtaa helppokulkuiset portaat, joiden yhteydessä on käsijohteet.",
+      "sentence_sv": "I bastun ryms en rullstol i taget. Man kan förflytta sig från en rullstol till den lägsta laven. De övre lavarna nås via trappsteg som är enkla att använda och som är försedda med räcken.",
+      "sentence_en": "The sauna has room for one wheelchair. It is possible to move onto the lowest bench from the wheelchair. The upper benches can be accessed through easily navigable stepswith handrails."
+    },
+    {
+      "sentence_group_name": "Liikuntatila",
+      "sentence_group_fi": "Liikuntatila",
+      "sentence_group_sv": "Motionssalarna",
+      "sentence_group_en": "Sports facilities",
+      "sentence_fi": "Isoon/syvään altaaseen ei ole esteetöntä pääsyä (jyrkät portaat tai allastikkaat).",
+      "sentence_sv": "Den stora/djupa bassängen är inte tillgänglig (branta trappor eller bassängstege).",
+      "sentence_en": "The large/deep pool does not feature accessible entry (steep steps or a pool ladder)."
+    },
+    {
+      "sentence_group_name": "Liikuntatila",
+      "sentence_group_fi": "Liikuntatila",
+      "sentence_group_sv": "Motionssalarna",
+      "sentence_group_en": "Sports facilities",
+      "sentence_fi": "Erillistä opetusallasta ei ole. Opetus tapahtuu eri altaissa tilanteen mukaan.",
+      "sentence_sv": "Det finns ingen separat undervisningsbassäng. Undervisningen sker i olika bassänger beroende på situationen.",
+      "sentence_en": "A separate teaching pool is not available. Teaching is provided in various pools depending on the situation."
+    },
+    {
+      "sentence_group_name": "Liikuntatila",
+      "sentence_group_fi": "Liikuntatila",
+      "sentence_group_sv": "Motionssalarna",
+      "sentence_group_en": "Sports facilities",
+      "sentence_fi": "Allastiloissa ei ole esteetöntä wc:tä.",
+      "sentence_sv": "Det finns ingen tillgänglig toalett i bassängavdelningen.",
+      "sentence_en": "An accessible toilet is not available in the pool area."
+    }
+  ]
+}

@@ -5,37 +5,9 @@ from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_viewpoint_shortages_mapping,
 )
 from ingest.importers.utils.shared import LanguageString
-
-MOCKED_SERVICE_MAP_ACCESSIBILITY_SHORTAGE_VIEWPOINT_RESPONSE = [
-    {
-        "unit_id": 2,
-        "viewpoint_id": "32",
-        "shortage_fi": "Esteettömiä autopaikkoja ei ole.",
-        "shortage_sv": "Inga p-platser för personer med rörelsehinder.",
-        "shortage_en": "No parking places for persons with a disability.",
-    },
-    {
-        "unit_id": 2,
-        "viewpoint_id": "32",
-        "shortage_fi": "Sisäänkäynnissä on ahdas tuulikaappi.",
-        "shortage_sv": "Det finns ett trångt vindfång vid ingången.",
-        "shortage_en": "The entrance has a cramped foyer.",
-    },
-    {
-        "unit_id": 2,
-        "viewpoint_id": "21",
-        "shortage_fi": "Ei puutteita.",
-        "shortage_sv": "Inga brister.",
-        "shortage_en": "No shortcomings.",
-    },
-    {
-        "unit_id": 16,
-        "viewpoint_id": "33",
-        "shortage_fi": "Toimipisteessä ei ole esteetöntä wc:tä.",
-        "shortage_sv": "Det finns ingen tillgänglig toalett i verksamhetsstället.",
-        "shortage_en": "The facility does not have an accessible toilet.",
-    },
-]
+from ingest.importers.tests.mocks import (
+    MOCKED_SERVICE_MAP_ACCESSIBILITY_SHORTAGE_VIEWPOINT_RESPONSE,
+)
 
 
 @pytest.fixture

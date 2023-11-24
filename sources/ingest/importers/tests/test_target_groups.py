@@ -2,29 +2,9 @@ import pytest
 
 from ingest.importers.location.enums import TargetGroup
 from ingest.importers.location.utils import get_unit_id_to_target_groups_mapping
-
-MOCKED_SERVICE_REGISTRY_DESCRIPTION_VIEWPOINT_RESPONSE = [
-    {
-        "id": 11,
-        "target_groups": ["CHILDREN_AND_FAMILIES", "INDIVIDUALS", "YOUTH"],
-        "unit_ids": [1, 2, 3, 4, 5],
-    },
-    {"id": 12, "target_groups": ["IMMIGRANTS"], "unit_ids": [1, 3, 13, 36]},
-    {"id": 634, "target_groups": [], "unit_ids": [1234]},
-    {
-        "id": 634,
-        "target_groups": [
-            "ASSOCIATIONS",
-            "CHILDREN_AND_FAMILIES",
-            "DISABLED",
-            "ELDERLY_PEOPLE",
-            "IMMIGRANTS",
-            "INDIVIDUALS",
-            "YOUTH",
-        ],
-        "unit_ids": [2, 5],
-    },
-]
+from ingest.importers.tests.mocks import (
+    MOCKED_SERVICE_REGISTRY_DESCRIPTION_VIEWPOINT_RESPONSE,
+)
 
 
 @pytest.fixture
