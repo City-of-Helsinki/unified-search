@@ -16,6 +16,7 @@ from ingest.importers.location.dataclasses import (
     Location,
     NodeMeta,
     OntologyObject,
+    Reservation,
     Root,
     ServiceOwner,
     Venue,
@@ -25,6 +26,7 @@ from ingest.importers.location.utils import (
     define_language_properties,
     get_accessibility_viewpoint_id_to_name_mapping,
     get_enriched_accessibility_viewpoints,
+    is_venue_reservable,
     get_ontologytree_as_ontologies,
     get_ontologywords_as_ontologies,
     get_suggestions_from_ontologies,
@@ -41,6 +43,7 @@ from ingest.importers.utils import (
     OpeningHours,
 )
 from ingest.importers.utils.administrative_division import AdministrativeDivisionFetcher
+from ingest.importers.location.types import TPRUnitConnection
 
 BATCH_SIZE = 100
 
@@ -152,6 +155,13 @@ class LocationImporter(Importer[Root]):
             )
         ]
 
+    def _create_reservation(self, connections: TPRUnitConnection):
+        return Reservation(
+            reservable=is_venue_reservable(connections),
+            externalReservationUrl=None,
+            reservationPolicy=None,
+        )
+
     def _create_venue(
         self,
         l: LanguageStringConverter,
@@ -164,7 +174,7 @@ class LocationImporter(Importer[Root]):
         meta = NodeMeta(id=_id, createdAt=datetime.now())
         # Assuming single image
         images = self._create_images(l, e)
-
+        reservation = self._create_reservation(e("connections"))
         venue = Venue(
             name=l.get_language_string("name"),
             description=l.get_language_string("desc"),
@@ -186,6 +196,7 @@ class LocationImporter(Importer[Root]):
             location=location,
             meta=meta,
             openingHours=opening_hours,
+            reservation=reservation,
             accessibility=Accessibility(
                 email=e("accessibility_email"),
                 phone=e("accessibility_phone"),

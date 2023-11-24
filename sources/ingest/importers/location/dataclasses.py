@@ -250,6 +250,12 @@ class Accessibility:
 
 
 @dataclass
+class Reservation:
+    reservable: bool
+    externalReservationUrl: Optional[LanguageString]
+
+
+@dataclass
 class Venue:
     meta: NodeMeta = None
     name: LanguageString = None
@@ -264,7 +270,7 @@ class Venue:
     partOf: "Venue" = None
     openingHours: OpeningHours = None
     manager: str = None
-    reservationPolicy: str = None
+    reservation: Optional[Reservation] = None
     accessibility: Optional[Accessibility] = None
     arrivalInstructions: str = None
     additionalInfo: str = None
