@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import Enum
 
 
@@ -97,3 +95,7 @@ class AccessibilityProfile(Enum):
     STROLLER = "stroller"
     VISUALLY_IMPAIRED = "visually_impaired"
     WHEELCHAIR = "wheelchair"
+
+
+class ConnectionTag(Enum):
+    RESERVABLE = "#tilojen_varaaminen"

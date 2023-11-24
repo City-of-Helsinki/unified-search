@@ -13,12 +13,14 @@ from ingest.importers.location.dataclasses import (
 from ingest.importers.location.enums import (
     AccessibilityProfile,
     AccessibilityViewpointValue,
+    ConnectionTag,
     TargetGroup,
 )
 from ingest.importers.utils import LanguageString, LanguageStringConverter, request_json
+from ingest.importers.location.types import TPRUnitResponse, TPRUnitConnection
 
 
-def get_tpr_units():
+def get_tpr_units() -> List[TPRUnitResponse]:
     # Use newfeatures=yes parameter to get displayed_service_owner_type and
     # displayed_service_owner_(fi|sv|en) fields included, see documentation at
     # https://www.hel.fi/palvelukarttaws/restpages/ver4.html
@@ -431,3 +433,12 @@ def get_unit_id_to_target_groups_mapping() -> Dict[str, Set[TargetGroup]]:
         for unit_id in unit_ids:
             result[str(unit_id)] |= set(map(TargetGroup, target_groups))
     return result
+
+
+def is_venue_reservable(connections: List[TPRUnitConnection]):
+    """The venue is reservable if there is a tag "#tilojen_varaaminen" in the list of connections."""
+    return any(
+        tag == ConnectionTag.RESERVABLE
+        for connection in connections
+        for tag in connection["tags"]
+    )
