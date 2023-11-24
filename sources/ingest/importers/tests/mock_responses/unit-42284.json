@@ -1,0 +1,335 @@
+{
+  "id": 42284,
+  "is_public": true,
+  "arealcity_id": 91,
+  "org_id": "83e74666-0836-4c1d-948a-4b34a8b90301",
+  "dept_id": "8c653b91-d54a-4616-a3a5-1e3d82dbff63",
+  "provider_type": "SELF_PRODUCED",
+  "displayed_service_owner_type": "MUNICIPAL_SERVICE",
+  "displayed_service_owner_fi": "kunnallinen palvelu, Kulttuurin ja vapaa-ajan toimiala, Helsingin kaupunki",
+  "displayed_service_owner_sv": "kommunal tjänst, Kultur- och fritidssektorn, Helsingfors stad",
+  "displayed_service_owner_en": "municipal service, Culture and Leisure Division, City of Helsinki",
+  "data_source_url": "www.hel.fi",
+  "name_fi": "Talin jalkapallohalli",
+  "name_sv": "Tal fotbollshall",
+  "name_en": "Tali football hall",
+  "ontologyword_ids": [204],
+  "ontologytree_ids": [615],
+  "sources": [
+    { "source": "lipas", "id": "89180" },
+    { "source": "internal", "id": "10516" }
+  ],
+  "provided_languages": ["fi", "sv"],
+  "regions": ["091"],
+  "short_desc_fi": "Liikuntapalvelulla on 14 liikuntahallia, mm. palloiluhalli, jalkapallohalli ja hiihtohalli. Liikuntahalleissa voi harrastaa monenlaista liikuntaa.",
+  "short_desc_sv": "Idrott services förfogar över 14 idrottshallar; bollhall, skidhall och fotbollshall. Idrottshallar ger möjligheter till flera slags motion.",
+  "short_desc_en": "Sports Services has 14 sports halls; ski hall, ball hall, Football hall. Sports halls offer many types of sports activities.",
+  "desc_fi": "Talin liikuntapuiston jalkapallohalli palvelee päivittäin lukuisia eri lajien liikkujia ja urheilijoita. Täysikokoisella tekonurmikentällä voi harrastaa muun muassa jalkapalloa, amerikkalaista jalkapalloa sekä cheerleadingiä. Kentän vieressä on myös juoksusuora.",
+  "desc_sv": "Fotbollshallen i Tali idrottspark lockar dagligen motionärer och idrottare inom olika grenar. Konstgräsplanen i full storlek är perfekt för fotboll, amerikansk fotboll och cheerleading. Det finns också en sprintraka intill planen.",
+  "desc_en": "The football hall in Tali sports park serves numerous fitness enthusiasts and athletes on a daily basis. You can, for example, practice football, American football and cheerleading on the full-size artificial turf field. There is also a straight running track next to the field.",
+  "latitude": 60.21403,
+  "longitude": 24.868238,
+  "northing_etrs_gk25": 6677926,
+  "easting_etrs_gk25": 25492695,
+  "northing_etrs_tm35fin": 6677155,
+  "easting_etrs_tm35fin": 381878,
+  "manual_coordinates": true,
+  "street_address_fi": "Purotie 8",
+  "street_address_sv": "Bäckvägen 8",
+  "street_address_en": "Purotie 8",
+  "address_zip": "00380",
+  "address_city_fi": "Helsinki",
+  "address_city_sv": "Helsingfors",
+  "address_city_en": "Helsinki",
+  "vtj_prt": "1019854164",
+  "vtj_prt_verified": "VTJ_PRT_NOT_VERIFIED",
+  "phone": "+358 9 310 87703",
+  "call_charge_info_fi": "pvm/mpm",
+  "call_charge_info_sv": "lna/msa",
+  "call_charge_info_en": "local network charge/mobile call charge",
+  "picture_url": "https://liikunta.content.api.hel.fi/uploads/sites/2/2022/02/b2d153b2-talin_jalkapallohalli_2021_kuva_aki_rask_-02.jpg-muokattu.jpg",
+  "picture_caption_fi": "Eri-ikäisiä henkilöitä pelaamassa ja harjoittelemassa jalkapalloa Talin liikuntapuiston jalkapallohallissa.",
+  "picture_caption_sv": "Personer i olika åldrar spelar och tränar fotboll i fotbollshallen i Tali idrottspark.",
+  "picture_caption_en": "Persons of different ages playing and practicing football in the football hall of Tali sports park.",
+  "accessibility_phone": "+358 9 310 87703",
+  "accessibility_email": "talin.liikuntapuisto@hel.fi",
+  "accessibility_www": "https://tpr.hel.fi/kapaesteettomyys/app/summary/tpr:10516/",
+  "accessibility_viewpoints": "00:unknown,11:red,12:red,13:red,21:red,22:red,23:red,31:red,32:red,33:red,41:red,51:red,52:red,61:red",
+  "created_time": "2014-09-05T13:29:49",
+  "modified_time": "2023-09-08T14:29:23",
+  "connections": [
+    {
+      "section_type": "OPENING_HOURS",
+      "name_fi": "Poikkeusaukioloajat: \n\n26.5. Suljetaan klo 17.00\n23.6. Suljetaan klo 15.00\n24.6. - 26.6. Suljettu",
+      "name_en": "Exceptional opening hours: \n\n26.5. Closes at 17.00\n23.6. Closes at 15.00\n24.6. - 26.6. Closed",
+      "name_sv": "Avvikande öppettider: \n\n26.5. Stänger kl 17.00\n23.6. Stänger kl 15.00\n24.6. - 26.6. Stängd"
+    },
+    {
+      "section_type": "OPENING_HOURS",
+      "name_fi": "Aukioloajat:\nKausi \nma - su 8.00 - 22.00\nYleisövuoro sunnuntaisin klo 09.00 - 11.30",
+      "name_en": "Opening hours:\nPeriod \nMon - Sun 8.00 - 22.00",
+      "name_sv": "Öppettider:\nPerioden\nmå - sö 8.00 - 22.00"
+    },
+    {
+      "section_type": "PHONE_OR_EMAIL",
+      "name_fi": "liikuntapaikanhoitajat; kenttävuorot, kentän kunto ja löytötavarat",
+      "name_en": "facility supervisors; field reservations, field condition and lost property",
+      "name_sv": "anläggningspersonalen; planbokningar, planens skick och hittegods",
+      "phone": "+358 1 123 12345"
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Tilojen varaaminen",
+      "name_en": "Reservation of sports facilities",
+      "name_sv": "Bokning av idrottsutrymmen",
+      "www_fi": "https://www.hel.fi/helsinki/fi/kulttuuri-ja-vapaa-aika/liikunta/liikuntatilojen-varaaminen/liikuntatilojen-varaaminen",
+      "www_en": "https://www.hel.fi/helsinki/en/culture/sports/reservation/reservation-of-sports-facilities",
+      "www_sv": "https://www.hel.fi/helsinki/sv/kultur-och-fritid/motion/bokning-av-idrottsutrymmen/bokning-av-idrottsutrymmen",
+      "tags": ["#tilojen_varaaminen"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Järjestyssäännöt",
+      "name_en": "Regulations and instructions",
+      "name_sv": "Bestämmelser och anvisningar",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maaraykset-ja-ohjeet/liikuntasalien-yleiset-jarjestyssaannot",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/regulations-and-instructions/rules-and-regulations-for-indoor-sports-facilities",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/bestammelser-och-anvisningar/allmanna-ordningsregler-for-idrottshallar",
+      "tags": ["#järjestyssäännöt"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Hintaryhmien määrittelyt",
+      "name_en": "Definitions for the price groups",
+      "name_sv": "Fastställande av prisgrupper",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maksut-ja-hinnasto/hintaryhmien-maarittely",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/pricing/definitions-for-the-price-groups",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/priser/faststallande-av-prisgrupper",
+      "tags": ["#hintaryhmien_määrittelyt"]
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Ohjatun liikunnan ilmoittautumisohjeet sekä ohjelma",
+      "name_en": "Enrolment instructions and schedule",
+      "name_sv": "Anmälning till instruerad motionskurser och program",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/ohjattu-liikunta/ilmoittautuminen-liikuntakursseille",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/guided-exercise/enrolment-instructions",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/handledd-motion/anmalning-till-instruerad-motion"
+    },
+    {
+      "section_type": "LINK",
+      "name_fi": "Asiakaskortin sopimusehdot",
+      "name_en": "Chargeable customer cards contract terms",
+      "name_sv": "Kundavtalsvillkor",
+      "www_fi": "https://liikunta.hel.fi/fi/pages/liikuntapalvelut/maksut-ja-hinnasto/ladattava-asiakaskortti/ladattavan-asiakaskortin-sopimusehdot",
+      "www_en": "https://liikunta.hel.fi/en/pages/support-for-physical-activity/pricing/chargeable-customer-card/chargeable-customer-cards-contract-terms",
+      "www_sv": "https://liikunta.hel.fi/sv/sidor/stod-for-motion/priser/laddningsbart-kundkort/kundavtalsvillkor",
+      "tags": ["#asiakaskortin_sopimusehdot"]
+    }
+  ],
+  "ontologyword_details": [{ "id": 204 }],
+  "service_descriptions": [
+    { "id": 4208, "available_languages": ["en", "fi", "sv"] },
+    { "id": 4205, "available_languages": ["en", "fi", "sv"] }
+  ],
+  "accessibility_sentences": [
+    {
+      "sentence_group_name": "Esteettömät autopaikat",
+      "sentence_group_fi": "Reitti pääsisäänkäynnille",
+      "sentence_group_sv": "Rutten till huvudingången",
+      "sentence_group_en": "The route to the main entrance",
+      "sentence_fi": "3 esteetöntä autopaikkaa sijaitsee ulkona yli 10 m sisäänkäynnistä. Pysäköintiruudun leveys on vähintään 3,6 m.",
+      "sentence_sv": "3 bilplatser för rörelsehindrade ligger utomhus över 10 m från ingången. Parkeringsrutans bredd är minst 3,6 m.",
+      "sentence_en": "The 3 accessible parking spaces are located outdoors over 10 m from the entrance. The width of the parking spaces is at least 3.6 m."
+    },
+    {
+      "sentence_group_name": "Esteettömät autopaikat",
+      "sentence_group_fi": "Reitti pääsisäänkäynnille",
+      "sentence_group_sv": "Rutten till huvudingången",
+      "sentence_group_en": "The route to the main entrance",
+      "sentence_fi": "Esteettömät parkkipaikat ovat yksityisellä parkkialueella.",
+      "sentence_sv": "Handikappanpassade parkeringsplatser finns på en privat parkeringsplats.",
+      "sentence_en": "Accessible parking spaces are in a private parking area."
+    },
+    {
+      "sentence_group_name": "Saattoliikenne",
+      "sentence_group_fi": "Reitti pääsisäänkäynnille",
+      "sentence_group_sv": "Rutten till huvudingången",
+      "sentence_group_en": "The route to the main entrance",
+      "sentence_fi": "Saattoliikenteen pysähtymispaikka sijaitsee sisäänkäynnin läheisyydessä (etäisyys enintään 5 metriä), josta sisäänkäynnille pääsee siirtymään sujuvasti.",
+      "sentence_sv": "Hållplatsen för skjutstrafik ligger i närheten av ingången, på en plats varifrån det är lätt att ta sig till trottoaren.",
+      "sentence_en": "The pick-up and drop-off area is located in the vicinity of the entrance, giving easy access to the pavement."
+    },
+    {
+      "sentence_group_name": "Saattoliikenne",
+      "sentence_group_fi": "Reitti pääsisäänkäynnille",
+      "sentence_group_sv": "Rutten till huvudingången",
+      "sentence_group_en": "The route to the main entrance",
+      "sentence_fi": "Saattoliikenne voi ajaa etuoven eteen. Oven eteen johtavalla tiellä on portti, jonka numero on 050 4013623.",
+      "sentence_sv": "Ledsagare kan köra framför ytterdörren. Det finns en grind på vägen som leder framför dörren med nummer 050 4013623.",
+      "sentence_en": "Escorts can drive in front of the front door. There is a gate on the road leading infront of the door with the number 050 4013623."
+    },
+    {
+      "sentence_group_name": "Kulkureitti pääsisäänkäynnille",
+      "sentence_group_fi": "Reitti pääsisäänkäynnille",
+      "sentence_group_sv": "Rutten till huvudingången",
+      "sentence_group_en": "The route to the main entrance",
+      "sentence_fi": "Kulkureitti sisäänkäynnille on epätasainen.",
+      "sentence_sv": "Rutten till ingången är ojämn.",
+      "sentence_en": "The route to the entrance is rough."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Sisäänkäynti erottuu selkeästi ja on valaistu. Sisäänkäynnin yläpuolella on katos.",
+      "sentence_sv": "Ingången är lätt att urskilja och belyst. Ingången har ett tak.",
+      "sentence_en": "The entrance stands out clearly and is illuminated. There is a canopy above the entrance."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Sisäänkäynnin ovet ovat vaikeasti havaittavat. Oven ulkopuolella on riittävästi vapaata tilaa liikkumiselle esim. pyörätuolin kanssa. Ovi aukeaa automaattisesti liikkeentunnistimella.",
+      "sentence_sv": "Dörrarna vid ingången är svåra att överblicka. Utanför dörren finns tillräckligt med fritt utrymme för att röra sig t.ex. med rullstol. Dörren öppnas automatiskt med en rörelsedetektor.",
+      "sentence_en": "The doors connected to the entrance are hard to perceive. Outside the door there is sufficient room for moving e.g. with a wheelchair. The door opens automatically with a motion sensor."
+    },
+    {
+      "sentence_group_name": "Pääsisäänkäynti",
+      "sentence_group_fi": "Pääsisäänkäynti",
+      "sentence_group_sv": "Huvudingången",
+      "sentence_group_en": "The main entrance",
+      "sentence_fi": "Sisäänkäynnin yhteydessä on yli 2 cm korkeita kynnyksiä.",
+      "sentence_sv": "Vid ingången finns trösklar som är över 2 cm höga.",
+      "sentence_en": "The entrance has thresholds over 2 cm high."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Sisäänkäynti, liikuntatilat ja pukutilat sijaitsevat samassa kerroksessa.",
+      "sentence_sv": "Ingången, motionssalarna och omklädningsrummen ligger på samma plan.",
+      "sentence_en": "The entrance, sports facilities and dressing rooms are located on the same floor."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Toimipisteessä on opasteet eri tiloihin.",
+      "sentence_sv": "Vid verksamhetsstället finns skyltar till olika lokaler.",
+      "sentence_en": "The service point has directions to the different facilities."
+    },
+    {
+      "sentence_group_name": "Sisätilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Aulassa tai muussa yleisessä tilassa on esteetön wc.",
+      "sentence_sv": "Det finns en tillgänglig toalett i lobbyn eller annat allmänt utrymme.",
+      "sentence_en": "There is an accessible toilet in the lobby or nearby public area."
+    },
+    {
+      "sentence_group_name": "Palvelutiski/kassa ja aulatilat",
+      "sentence_group_fi": "Sisätilat",
+      "sentence_group_sv": "I lokalen",
+      "sentence_group_en": "In the facility",
+      "sentence_fi": "Palvelutiski/kassa löytyy helposti. Palvelutiskillä/kassalla on mahdollista asioida vain seisaaltaan.",
+      "sentence_sv": "Servicedisken/kassan är enkel att hitta. I servicedisken/kassan det är möjligt att uträtta ärenden bara stående.",
+      "sentence_en": "The customer service/cashier's desk can be found easily. The desk is accessible to customers standing only."
+    },
+    {
+      "sentence_group_name": "Erillinen esteetön pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Toimipisteessä ei ole esteetöntä pukutilaa, vaan on käytettävä miesten/naisten pukutiloja. Pukutilan ovi avautuu käsin helposti.",
+      "sentence_sv": "Vid verksamhetsstället finns inget tillgängligt omklädningsrum, utan man måste använda omklädningsrummen för herrar/damer. Dörren till omklädningsrummet öppnas enkelt för hand.",
+      "sentence_en": "The facility does not have an accessible dressing room. The men's/women's dressing rooms must be used instead. The door of the dressing room opens easily manually."
+    },
+    {
+      "sentence_group_name": "Erillinen esteetön pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pukutilassa on riittävästi tilaa toimia pyörätuolin ja avustajan kanssa. Hyvä valaistus ja tummuuserot helpottavat tilan hahmottamista. Pukutilassa on pukukaappeja.",
+      "sentence_sv": "I omklädningsrummet finns tillräckligt med utrymme för en rullstol och en assistent. God belysning och kontrastskillnader gör rummet lättare att uppfatta. Det finns klädskåpen i omklädningsrummet.",
+      "sentence_en": "The dressing room has sufficient room for a wheelchair and assistant. Good illumination and clear contrasts facilitate spatial perception. There are lockers in the dressing room."
+    },
+    {
+      "sentence_group_name": "Miesten/naisten pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Pesutila on miesten/naisten pukutilan yhteydessä. Pesutilan ovi avautuu käsin helposti.",
+      "sentence_sv": "Det finns ett duschrum i anslutning till herrarnas/damernas omklädningsrum. Dörren till duschrummet öppnas enkelt för hand.",
+      "sentence_en": "The shower room is connected to the men's/women's dressing room. The door of the shower room opens easily manually."
+    },
+    {
+      "sentence_group_name": "Miesten/naisten pukutila, pesutila ja sauna",
+      "sentence_group_fi": "Pukutila, pesutila ja sauna",
+      "sentence_group_sv": "Omklädningsrummet, duschrummet och bastun",
+      "sentence_group_en": "Dressing room, shower room and sauna",
+      "sentence_fi": "Toimipisteessä ei ole saunaa.",
+      "sentence_sv": "Det finns ingen bastu i verksamhetsstället.",
+      "sentence_en": "The facility does not have a sauna."
+    },
+    {
+      "sentence_group_name": "Liikuntatila",
+      "sentence_group_fi": "Liikuntatila",
+      "sentence_group_sv": "Motionssalarna",
+      "sentence_group_en": "Sports facilities",
+      "sentence_fi": "Monitoimihallissa voi harrastaa mm. jalkapalloa, juoksua, kuntosalia.",
+      "sentence_sv": "I allaktivitetshallen kan man utöva bl.a. fotboll, gymträning, löpning.",
+      "sentence_en": "In the multipurpose sports facility, you can engage in sports such as football, gym exercise, running."
+    },
+    {
+      "sentence_group_name": "Liikuntatila",
+      "sentence_group_fi": "Liikuntatila",
+      "sentence_group_sv": "Motionssalarna",
+      "sentence_group_en": "Sports facilities",
+      "sentence_fi": "Osan liikuntasaleista/pelikentistä sivuilla on tilaa apuvälineiden säilyttämiseen.",
+      "sentence_sv": "Det finns plats för förvaring av hjälpmedel vid sidan av en del motionssalar/spelplaner.",
+      "sentence_en": "The sides of some sports areas/fields have room for storing aids."
+    },
+    {
+      "sentence_group_name": "Liikuntatila",
+      "sentence_group_fi": "Liikuntatila",
+      "sentence_group_sv": "Motionssalarna",
+      "sentence_group_en": "Sports facilities",
+      "sentence_fi": "Monitoimihallin kulkureittien korkeus on asianmukainen. Kulkureiteillä on törmäysvaaraa aiheuttavia ulkonevia rakenteita ja tolppia, joita ei ole pehmustettu, mutta jotka jotka erottuvat tummuuskontrastilla muista pinnoista. Pistorasiat ovat sopivalla korkeudella (0,4-1,1 metriä). Monitoimihallissa on kiinteä äänentoistojärjestelmä ja langallinen mikrofoni. Hälytysjärjestelmä (palohälytys) toimii äänimerkillä. Henkilökunta auttaa pelikenttien rakentamisessa etukäteen tilattaessa (esim. paraurheilun väliaikaiset merkintäteippaukset).",
+      "sentence_sv": "Höjden på gångarna i allaktivitetshallen är ändamålsenlig. Gångarna har utstående konstruktioner och stolpar som utgör en risk för kollision, som har inte madrasserats, men som skiljer sig genom sin ljushetskontrast från de övriga ytorna. Eluttag är på lämplig höjd (0,4-1,1 meter). I allaktivitetshallen finns ett fast ljudåtergivningssystem och en trådbunden mikrofon. Alarmsystemet (brandlarm) fungerar med en ljudsignal.Personalen kan hjälpa med att bygga spelplanerna på förhandsbeställning (t.ex. parasportens tillfälliga markeringstejpningar).",
+      "sentence_en": "The height of the passageways in the multi-purpose arena is appropriate. There are projecting constructions and pillars that pose a risk of collision, however they stand out from the other surfaces through luminance contrast. The wall sockets are on a suitable height (0.4–1.1 meters). The multi-purpose arena has a fixed PA system and a wired microphone. The alarm system (fire alarm) works with a sound signal. The personnel helps with the building of the courts, when booked in advance (e.g. temporary tape markings for parasports)."
+    },
+    {
+      "sentence_group_name": "Katsomo",
+      "sentence_group_fi": "Katsomo",
+      "sentence_group_sv": "Läktaren",
+      "sentence_group_en": "Seating area",
+      "sentence_fi": "Liikuntatilassa on katsomo, jossa on portaat. Istumapaikat erottuvat tummuuskontrastilla ympäristöstä.",
+      "sentence_sv": "I motionssalen finns en läktare med trappor. Sittplatserna urskiljs från omgivningen med hjälp av ljushetskontrast.",
+      "sentence_en": "The sports facility features a spectators' seating area which has stairs. The seats have been highlighted from their surroundings with contrast."
+    },
+    {
+      "sentence_group_name": "Katsomo",
+      "sentence_group_fi": "Katsomo",
+      "sentence_group_sv": "Läktaren",
+      "sentence_group_en": "Seating area",
+      "sentence_fi": "Katsomossa ei ole pyörätuolille sopivia esteettömiä paikkoja.",
+      "sentence_sv": "På läktaren finns inga rullstolsanpassade platser.",
+      "sentence_en": "The seating area does not have accessible spots for wheelchairs."
+    },
+    {
+      "sentence_group_name": "Boccia / paraurheilu",
+      "sentence_group_fi": "Paraurheilulajit",
+      "sentence_group_sv": "Parasport",
+      "sentence_group_en": "Parasports",
+      "sentence_fi": "Monitoimihallissa voi harrastaa paraurheilua kuten .",
+      "sentence_sv": "I allaktivitetshallen är det möjligt att utöva parasporter, såsom .",
+      "sentence_en": "The multi-purpose arena has facilities for a variety of parasports, such as ."
+    }
+  ]
+}

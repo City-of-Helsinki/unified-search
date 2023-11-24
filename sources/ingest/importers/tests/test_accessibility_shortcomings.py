@@ -4,35 +4,7 @@ from ingest.importers.location.dataclasses import AccessibilityShortcoming
 from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_shortcomings_mapping,
 )
-
-MOCKED_SERVICE_MAP_UNIT_VIEWPOINT_RESPONSE = {
-    "count": 3,
-    "next": None,
-    "previous": None,
-    "results": [
-        {
-            "id": 72023,
-            "accessibility_shortcoming_count": {
-                "rollator": 2,
-                "wheelchair": 2,
-                "hearing_aid": 1,
-                "reduced_mobility": 1,
-                "visually_impaired": 2,
-                "stroller": 5,
-            },
-        },
-        {
-            "id": 71689,
-            "accessibility_shortcoming_count": {
-                "rollator": 4,
-                "wheelchair": 4,
-                "reduced_mobility": 3,
-                "visually_impaired": 6,
-            },
-        },
-        {"id": 71688, "accessibility_shortcoming_count": {}},
-    ],
-}
+from ingest.importers.tests.mocks import MOCKED_SERVICE_MAP_UNIT_VIEWPOINT_RESPONSE
 
 
 @pytest.fixture
