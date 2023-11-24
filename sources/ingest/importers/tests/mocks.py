@@ -1,7 +1,13 @@
 import json
+import os
 
-unit_swimhall = json.load("mock_responses/unit-41102")
-unit_indoor_arena = json.load("mock_responses/unit-42284")
+mocks_dir = os.path.dirname(__file__)
+unit_swimhall = json.load(
+    open(os.path.join(mocks_dir, "mock_responses/unit-41102.json"))
+)
+unit_indoor_arena = json.load(
+    open(os.path.join(mocks_dir, "mock_responses/unit-42284.json"))
+)
 
 MOCKED_SERVICE_MAP_UNITS_RESPONSE = [unit_swimhall, unit_indoor_arena]
 
@@ -221,3 +227,146 @@ MOCKED_SERVICE_REGISTRY_DESCRIPTION_VIEWPOINT_RESPONSE = [
         "unit_ids": [2, 5],
     },
 ]
+
+
+MOCK_OPENING_HOURS_RESPONSE = {
+    "count": 5,
+    "next": None,
+    "previous": None,
+    "results": [
+        {
+            "resource": {
+                "id": 11,
+                "name": {
+                    "fi": "Leikkipuisto Kannelmäki",
+                    "sv": "Lekparken Kannelmäki",
+                    "en": "Playground Kannelmäki",
+                },
+                "timezone": "Europe/Helsinki",
+                "origins": [
+                    {
+                        "data_source": {
+                            "id": "tprek",
+                            "name": {"fi": None, "sv": None, "en": None},
+                        },
+                        "origin_id": "1",
+                    }
+                ],
+            },
+            "opening_hours": [
+                {
+                    "date": "2021-09-03",
+                    "times": [
+                        {
+                            "name": "",
+                            "description": "",
+                            "start_time": "11:00:00",
+                            "end_time": "18:00:00",
+                            "end_time_on_next_day": False,
+                            "resource_state": "open",
+                            "full_day": False,
+                            "periods": [1267],
+                        }
+                    ],
+                }
+            ],
+        },
+        {
+            "resource": {
+                "id": 22,
+                "name": {
+                    "fi": "Leikkipuisto Kaunokki",
+                    "sv": "Lekparken Kaunokki",
+                    "en": "Playground Kaunokki",
+                },
+                "timezone": "Europe/Helsinki",
+                "origins": [
+                    {
+                        "data_source": {
+                            "id": "tprek",
+                            "name": {"fi": None, "sv": None, "en": None},
+                        },
+                        "origin_id": "4",
+                    }
+                ],
+            },
+            "opening_hours": [
+                {
+                    "date": "2021-09-03",
+                    "times": [
+                        {
+                            "name": "",
+                            "description": "",
+                            "start_time": "09:00:00",
+                            "end_time": "16:00:00",
+                            "end_time_on_next_day": False,
+                            "resource_state": "open",
+                            "full_day": False,
+                            "periods": [1306],
+                        }
+                    ],
+                },
+                {
+                    "date": "2021-09-03",
+                    "times": [
+                        {
+                            "name": "",
+                            "description": "",
+                            "start_time": "10:00:00",
+                            "end_time": "11:00:00",
+                            "end_time_on_next_day": False,
+                            "resource_state": "closed",
+                            "full_day": False,
+                            "periods": [1306],
+                        }
+                    ],
+                },
+                {
+                    "date": "2021-09-04",
+                    "times": [
+                        {
+                            "name": "",
+                            "description": "",
+                            "start_time": None,
+                            "end_time": None,
+                            "end_time_on_next_day": False,
+                            "resource_state": "open",
+                            "full_day": True,
+                            "periods": [1306],
+                        }
+                    ],
+                },
+                {
+                    "date": "2021-09-05",
+                    "times": [
+                        {
+                            "name": "",
+                            "description": "",
+                            "start_time": None,
+                            "end_time": None,
+                            "end_time_on_next_day": False,
+                            "resource_state": "closed",
+                            "full_day": True,
+                            "periods": [1306],
+                        }
+                    ],
+                },
+                {
+                    "date": "2021-09-06",
+                    "times": [
+                        {
+                            "name": "",
+                            "description": "",
+                            "start_time": "09:00:00",
+                            "end_time": "05:00:00",
+                            "end_time_on_next_day": True,
+                            "resource_state": "open",
+                            "full_day": False,
+                            "periods": [1306],
+                        }
+                    ],
+                },
+            ],
+        },
+    ],
+}

@@ -2,17 +2,6 @@ import pytest
 
 from ingest.importers.location.enums import TargetGroup
 from ingest.importers.location.utils import get_unit_id_to_target_groups_mapping
-from ingest.importers.tests.mocks import (
-    MOCKED_SERVICE_REGISTRY_DESCRIPTION_VIEWPOINT_RESPONSE,
-)
-
-
-@pytest.fixture
-def mocked_service_registry_description_viewpoint_response(mocker):
-    return mocker.patch(
-        "ingest.importers.location.utils.request_json",
-        return_value=MOCKED_SERVICE_REGISTRY_DESCRIPTION_VIEWPOINT_RESPONSE,
-    )
 
 
 def test_get_unit_id_to_target_groups_mapping(

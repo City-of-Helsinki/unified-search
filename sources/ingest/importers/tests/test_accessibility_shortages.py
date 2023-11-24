@@ -5,17 +5,6 @@ from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_viewpoint_shortages_mapping,
 )
 from ingest.importers.utils.shared import LanguageString
-from ingest.importers.tests.mocks import (
-    MOCKED_SERVICE_MAP_ACCESSIBILITY_SHORTAGE_VIEWPOINT_RESPONSE,
-)
-
-
-@pytest.fixture
-def mocked_service_map_accessibility_shortage_viewpoint_response(mocker):
-    return mocker.patch(
-        "ingest.importers.location.utils.request_json",
-        return_value=MOCKED_SERVICE_MAP_ACCESSIBILITY_SHORTAGE_VIEWPOINT_RESPONSE,
-    )
 
 
 def test_get_unit_id_to_accessibility_shortcomings_mapping(
