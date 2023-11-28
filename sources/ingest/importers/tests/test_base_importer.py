@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 import pytest
 
-
 from ingest.importers.base import Importer
 
 GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"

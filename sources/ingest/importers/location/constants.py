@@ -6,7 +6,7 @@ from ingest.importers.location.enums import (
     AccessibilityProfile,
     AccessibilityViewpointID,
 )
-from ingest.importers.utils import LanguageString
+from ingest.importers.utils.shared import LanguageString
 
 NO_SHORTCOMINGS_SHORTAGE_TEXT_VARIANTS: List[LanguageString] = [
     LanguageString(fi="Ei puutteita.", sv="Inga brister.", en="No shortcomings."),
