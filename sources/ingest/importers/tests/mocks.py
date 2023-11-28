@@ -15,7 +15,17 @@ ontology_words = json.load(
     open(os.path.join(mocks_dir, "mock_responses/ontology_words.json"))
 )
 
-MOCKED_SERVICE_MAP_UNITS_RESPONSE = [unit_swimhall, unit_indoor_arena]
+
+MOCKED_SERVICE_MAP_UNITS_RESPONSE = [
+    {k: v for k, v in unit.items() if k not in {"connections"}}
+    for unit in [unit_swimhall, unit_indoor_arena]
+]
+
+MOCKED_SERVICE_MAP_CONNECTIONS_RESPONSE = [
+    {**connection, "unit_id": unit["id"]}
+    for unit in [unit_swimhall, unit_indoor_arena]
+    for connection in unit["connections"]
+]
 
 MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE = [
     {

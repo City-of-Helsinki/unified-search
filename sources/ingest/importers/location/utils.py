@@ -1,7 +1,7 @@
 import base64
 import functools
 from collections import defaultdict
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Union
 
 from typing_extensions import deprecated
 
@@ -11,6 +11,7 @@ from ingest.importers.location.dataclasses import (
     AccessibilityShortcoming,
     AccessibilityViewpoint,
     OntologyObject,
+    Connection,
 )
 from ingest.importers.location.enums import (
     AccessibilityProfile,
@@ -18,7 +19,6 @@ from ingest.importers.location.enums import (
     ConnectionTag,
     TargetGroup,
 )
-from ingest.importers.location.types import TPRUnitConnection
 from ingest.importers.utils import LanguageString, LanguageStringConverter
 
 
@@ -410,23 +410,77 @@ def get_unit_id_to_target_groups_mapping() -> Dict[str, Set[TargetGroup]]:
     return result
 
 
-def is_venue_reservable(connections: List[TPRUnitConnection]):
+def create_connection(connection: dict, use_fallback_languages=True) -> Connection:
+    """
+    Create Connection object from a dictionary containing a single
+    connection from
+    https://www.hel.fi/palvelukarttaws/rest/v4/connection/
+
+    Documentation about the endpoint:
+    - https://www.hel.fi/palvelukarttaws/restpages/ver4.html#_data_provided_by_the_rest_api
+
+    Example of input:
+    e.g.
+        {
+                "unit_id": 40364,
+                "section_type": "OTHER_INFO",
+                "name_fi": "Uimavedenlaatu",
+                "name_en": "Swimming water quality",
+                "name_sv": "Badvattnets kvalitet",
+                "www_fi": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/ulkoilu-puistot-ja-luontokohteet/uimarannat/uimaveden-laatu-ja-sinilevat",
+                "www_en": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/ulkoilu-puistot-ja-luontokohteet/uimarannat/uimaveden-laatu-ja-sinilevat",
+                "www_sv": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/ulkoilu-puistot-ja-luontokohteet/uimarannat/uimaveden-laatu-ja-sinilevat",
+                "tags": [
+                        "#uimavedenlaatu"
+                ]
+        },
+
+    :return: Connection object containing the given connection
+    """
+    return Connection(
+        section_type=connection["section_type"],
+        name=LanguageStringConverter(
+            connection, use_fallback_languages
+        ).get_language_string("name"),
+        www=LanguageStringConverter(
+            connection, use_fallback_languages
+        ).get_language_string("www"),
+        phone=connection["phone"] if "phone" in connection else None,
+        tags=connection["tags"] if "tags" in connection else None,
+    )
+
+
+def get_unit_id_to_connections_mapping(
+    use_fallback_languages: bool,
+) -> Dict[str, List[Connection]]:
+    """
+    Get a mapping of unit IDs to their connections from service map API.
+    """
+    connections = LocationImporterAPI.fetch_connections()
+    result = defaultdict(list)
+    for connection in connections:
+        result[str(connection["unit_id"])].append(
+            create_connection(connection, use_fallback_languages)
+        )
+    return result
+
+
+def is_venue_reservable(connections: List[Connection]):
     """The venue is reservable if there is a tag "#tilojen_varaaminen" in the list of connections."""
     return any(
         tag == ConnectionTag.RESERVABLE.value
         for connection in connections
-        if "tags" in connection
-        for tag in connection["tags"]
+        if connection.tags
+        for tag in connection.tags
     )
 
 
-def find_reservable_connection(connections: List[TPRUnitConnection]):
+def find_reservable_connection(connections: List[Connection]):
     return next(
         (
             connection
             for connection in connections
-            if ("tags" in connection)
-            and (ConnectionTag.RESERVABLE.value in connection["tags"])
+            if connection.tags and ConnectionTag.RESERVABLE.value in connection.tags
         ),
         None,
     )

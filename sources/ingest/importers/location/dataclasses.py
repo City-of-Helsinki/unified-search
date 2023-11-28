@@ -11,9 +11,12 @@ from ingest.importers.location.enums import (
     AccessibilityProfile,
     AccessibilityViewpointID,
     AccessibilityViewpointValue,
+    ConnectionTag,
 )
 from ingest.importers.utils import LanguageString, OpeningHours
 from ingest.importers.utils.administrative_division import AdministrativeDivision
+from ingest.importers.utils.language import LanguageStringConverter
+from ingest.importers.decorators import default_on_exception
 
 BATCH_SIZE = 100
 
@@ -25,6 +28,15 @@ class ServiceOwner:
     providerType: str  # ProviderType as string to fix OpenSearch serialization
     type: str  # ServiceOwnerType as string to fix OpenSearch serialization
     name: LanguageString
+
+
+@dataclass
+class Connection:
+    section_type: str
+    name: LanguageString
+    www: Optional[LanguageString] = None
+    phone: Optional[str] = None
+    tags: Optional[List[Union[str, ConnectionTag]]] = None
 
 
 @dataclass(eq=True)

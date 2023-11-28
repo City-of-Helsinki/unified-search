@@ -7,6 +7,7 @@ from ingest.importers.tests.mocks import (
     MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE,
     MOCKED_SERVICE_MAP_ACCESSIBILITY_SHORTAGE_VIEWPOINT_RESPONSE,
     MOCKED_SERVICE_MAP_ACCESSIBILITY_VIEWPOINT_RESPONSE,
+    MOCKED_SERVICE_MAP_CONNECTIONS_RESPONSE,
     MOCKED_SERVICE_MAP_UNIT_VIEWPOINT_RESPONSE,
     MOCKED_SERVICE_MAP_UNITS_RESPONSE,
     MOCKED_SERVICE_REGISTRY_DESCRIPTION_VIEWPOINT_RESPONSE,
@@ -36,6 +37,14 @@ def mocked_tpr_units_response(mocker):
     return mocker.patch(
         "ingest.importers.location.api.LocationImporterAPI.fetch_tpr_units",
         return_value=MOCKED_SERVICE_MAP_UNITS_RESPONSE,
+    )
+
+
+@pytest.fixture()
+def mocked_service_map_connections_response(mocker):
+    return mocker.patch(
+        "ingest.importers.location.api.LocationImporterAPI.fetch_connections",
+        return_value=MOCKED_SERVICE_MAP_CONNECTIONS_RESPONSE,
     )
 
 

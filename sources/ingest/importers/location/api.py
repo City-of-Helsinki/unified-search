@@ -1,6 +1,7 @@
 from typing import List
 
 from ingest.importers.utils.traffic import request_json
+from ingest.importers.location.types import TPRUnitResponse
 
 DEFAULT_TIMEOUT = 20
 
@@ -20,9 +21,10 @@ class LocationImporterAPI:
         "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_shortage/"
     )
     services_endpoint = "https://www.hel.fi/palvelukarttaws/rest/vpalvelurekisteri/description/?alldata=yes"
+    connections_endpoint = "https://www.hel.fi/palvelukarttaws/rest/v4/connection/"
 
     @classmethod
-    def fetch_tpr_units(cls, timeout_seconds=DEFAULT_TIMEOUT):
+    def fetch_tpr_units(cls, timeout_seconds=DEFAULT_TIMEOUT) -> TPRUnitResponse:
         return request_json(cls.tpr_units_endpoint, timeout_seconds=timeout_seconds)
 
     @classmethod
@@ -71,3 +73,7 @@ class LocationImporterAPI:
     @classmethod
     def fetch_services(cls, timeout_seconds=120):
         return request_json(cls.services_endpoint, timeout_seconds=timeout_seconds)
+
+    @classmethod
+    def fetch_connections(cls, timeout_seconds=DEFAULT_TIMEOUT):
+        return request_json(cls.connections_endpoint, timeout_seconds=timeout_seconds)
