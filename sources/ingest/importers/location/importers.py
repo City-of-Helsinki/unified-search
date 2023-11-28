@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Optional
 
 from ingest.importers.base import Importer
 from ingest.importers.location.api import LocationImporterAPI
@@ -26,6 +26,7 @@ from ingest.importers.location.enums import ProviderType, ServiceOwnerType
 from ingest.importers.location.types import TPRUnitConnection
 from ingest.importers.location.utils import (
     define_language_properties,
+    find_reservable_connection,
     get_accessibility_viewpoint_id_to_name_mapping,
     get_enriched_accessibility_viewpoints,
     get_ontologytree_as_ontologies,
@@ -35,7 +36,6 @@ from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_shortcomings_mapping,
     get_unit_id_to_accessibility_viewpoint_shortages_mapping,
     get_unit_id_to_target_groups_mapping,
-    is_venue_reservable,
 )
 from ingest.importers.utils import (
     HaukiOpeningHoursFetcher,
@@ -44,6 +44,7 @@ from ingest.importers.utils import (
     OpeningHours,
 )
 from ingest.importers.utils.administrative_division import AdministrativeDivisionFetcher
+from ingest.importers.decorators import with_conditional
 
 BATCH_SIZE = 100
 
@@ -96,56 +97,73 @@ custom_mappings = {
 class LocationImporter(Importer[Root]):
     index_base_names = ("location",)
 
-    def __init__(self, fetch_data_on_init=True, *args, **kwargs):
+    def __init__(self, *args, enable_data_fetching=True, **kwargs):
         super().__init__(*args, **kwargs)
+        self.enable_data_fetching = enable_data_fetching
+        self._init_base_data()
+
+    def _init_base_data(self):
+        if not self.enable_data_fetching:
+            logger.info(
+                "The LocationImporter instance enable_data_fetching is set to `False`."
+                "This means that the LocationImporter instance will be initialized with an empty base data."
+                "To actually fetch some base data, set the `enable_data_fetching` to `True`."
+            )
 
         api = LocationImporterAPI()
-        self.tpr_units = api.fetch_tpr_units() if fetch_data_on_init else []
-        self.unit_id_to_accessibility_shortcomings_mapping = (
-            (get_unit_id_to_accessibility_shortcomings_mapping())
-            if fetch_data_on_init
-            else {}
-        )
-        self.unit_id_to_accessibility_sentences_mapping = (
-            (
-                get_unit_id_to_accessibility_sentences_mapping(
-                    self.use_fallback_languages
-                )
-            )
-            if fetch_data_on_init
-            else {}
-        )
-        self.unit_id_to_accessibility_viewpoint_shortages_mapping = (
-            (
-                get_unit_id_to_accessibility_viewpoint_shortages_mapping(
-                    self.use_fallback_languages
-                )
-            )
-            if fetch_data_on_init
-            else {}
-        )
-        self.unit_id_to_target_groups_mapping = (
-            ((get_unit_id_to_target_groups_mapping()) if fetch_data_on_init else {})
-            if fetch_data_on_init
-            else {}
-        )
-        self.accessibility_viewpoint_id_to_name_mapping = (
-            (
-                get_accessibility_viewpoint_id_to_name_mapping(
-                    self.use_fallback_languages
-                )
-            )
-            if fetch_data_on_init
-            else {}
-        )
-        self.opening_hours_fetcher = HaukiOpeningHoursFetcher(
-            t["id"] for t in self.tpr_units
-        )
-        self.administrative_division_fetcher = AdministrativeDivisionFetcher()
 
-        self.ontology = Ontology()
+        self.tpr_units = with_conditional(
+            self.enable_data_fetching, lambda: api.fetch_tpr_units(), []
+        )
 
-        logger.info("LocationImporter initialized")
+        self.unit_id_to_accessibility_shortcomings_mapping = with_conditional(
+            self.enable_data_fetching,
+            lambda: get_unit_id_to_accessibility_shortcomings_mapping(),
+            {},
+        )
+
+        self.unit_id_to_accessibility_sentences_mapping = with_conditional(
+            self.enable_data_fetching,
+            lambda: get_unit_id_to_accessibility_sentences_mapping(
+                self.use_fallback_languages
+            ),
+            {},
+        )
+
+        self.unit_id_to_accessibility_viewpoint_shortages_mapping = with_conditional(
+            self.enable_data_fetching,
+            lambda: get_unit_id_to_accessibility_viewpoint_shortages_mapping(
+                self.use_fallback_languages
+            ),
+            {},
+        )
+
+        self.unit_id_to_target_groups_mapping = with_conditional(
+            self.enable_data_fetching,
+            lambda: get_unit_id_to_target_groups_mapping(),
+            {},
+        )
+
+        self.accessibility_viewpoint_id_to_name_mapping = with_conditional(
+            self.enable_data_fetching,
+            lambda: get_accessibility_viewpoint_id_to_name_mapping(
+                self.use_fallback_languages
+            ),
+            {},
+        )
+
+        self.opening_hours_fetcher = (
+            HaukiOpeningHoursFetcher(t["id"] for t in self.tpr_units)
+            if self.enable_data_fetching and len(self.tpr_units)
+            else None
+        )
+
+        self.administrative_division_fetcher = (
+            AdministrativeDivisionFetcher() if self.enable_data_fetching else None
+        )
+
+        self.ontology = Ontology() if self.enable_data_fetching else None
+        logger.info("LocationImporter base data initialized")
 
     def _create_location(self, l: LanguageStringConverter, e: Callable[[Any], Any]):
         return Location(
@@ -179,11 +197,19 @@ class LocationImporter(Importer[Root]):
             )
         ]
 
-    def _create_reservation(self, connections: TPRUnitConnection):
-        return Reservation(
-            reservable=is_venue_reservable(connections),
-            externalReservationUrl=None,
-        )
+    def _create_reservation(self, connections: Optional[TPRUnitConnection]):
+        if connections and len(connections):
+            reservation_connection = find_reservable_connection(connections)
+            if reservation_connection:
+                l = LanguageStringConverter(
+                    reservation_connection, self.use_fallback_languages
+                )
+                return Reservation(
+                    reservable=True,
+                    externalReservationUrl=l.get_language_string("www"),
+                )
+            return Reservation(reservable=False, externalReservationUrl=None)
+        return None
 
     def _create_venue(
         self,
@@ -242,15 +268,16 @@ class LocationImporter(Importer[Root]):
         venue.accessibility.set_accessibility_shortages(
             self.unit_id_to_accessibility_viewpoint_shortages_mapping.get(_id, dict())
         )
-
         venue.accessibility.fix_unknown_and_zero_shortcomings()
 
         coordinates = venue.location.geoLocation.geometry.coordinates
-        venue.location.administrativeDivisions = (
-            self.administrative_division_fetcher.get_by_coordinates(
-                longitude=coordinates.longitude, latitude=coordinates.latitude
+
+        if self.administrative_division_fetcher:
+            venue.location.administrativeDivisions = (
+                self.administrative_division_fetcher.get_by_coordinates(
+                    longitude=coordinates.longitude, latitude=coordinates.latitude
+                )
             )
-        )
 
         return venue
 
@@ -310,7 +337,11 @@ class LocationImporter(Importer[Root]):
         (
             opening_hours,
             opening_hours_link,
-        ) = self.opening_hours_fetcher.get_opening_hours_and_link(_id)
+        ) = (
+            self.opening_hours_fetcher.get_opening_hours_and_link(_id)
+            if self.opening_hours_fetcher
+            else ([], "")
+        )
 
         (all_ontologies, ontology_words) = self._collect_ontologies(tpr_unit)
 
@@ -346,18 +377,19 @@ class LocationImporter(Importer[Root]):
         data_buffer: List[Root] = []
         count = 0
 
-        for tpr_unit in self.tpr_units:
-            logger.debug(f"Fetching data for an id '{tpr_unit['id']}'.")
-            root = self._create_root_from_tpr_unit(tpr_unit)
-            data_buffer.append(root)
-            if len(data_buffer) >= BATCH_SIZE:
+        if self.enable_data_fetching:
+            for tpr_unit in self.tpr_units:
+                logger.debug(f"Fetching data for an id '{tpr_unit['id']}'.")
+                root = self._create_root_from_tpr_unit(tpr_unit)
+                data_buffer.append(root)
+                if len(data_buffer) >= BATCH_SIZE:
+                    self.add_data_bulk(data_buffer)
+                    data_buffer = []
+                logger.debug(f"Fetched data count: {count}")
+                count = count + 1
+
+            if data_buffer:
                 self.add_data_bulk(data_buffer)
-                data_buffer = []
-            logger.debug(f"Fetched data count: {count}")
-            count = count + 1
 
-        if data_buffer:
-            self.add_data_bulk(data_buffer)
-
-        logger.info(f"Fetched {count} items in total")
+            logger.info(f"Fetched {count} items in total")
         return count
