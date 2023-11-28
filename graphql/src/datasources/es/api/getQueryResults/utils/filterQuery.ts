@@ -8,29 +8,24 @@ import type {
 import type { QueryResultFilterProps } from '../types';
 import { buildArrayFilter } from '../../../utils';
 
-/**
- * @deprecated
- *
- * TODO: Reservable is still needed and should be re-implemented in https://helsinkisolutionoffice.atlassian.net/browse/LIIKUNTA-578.
- */
-// const buildMustHaveReservableResourceFilter =
-//   (): MustHaveReservableResourceFilter => ({
-//     bool: {
-//       should: [
-//         // i.e. OR
-//         {
-//           term: {
-//             'venue.resources.reservable': true,
-//           },
-//         },
-//         {
-//           exists: {
-//             field: 'venue.resources.externalReservationUrl',
-//           },
-//         },
-//       ],
-//     },
-//   });
+const buildMustHaveReservableResourceFilter =
+  (): MustHaveReservableResourceFilter => ({
+    bool: {
+      should: [
+        // i.e. OR
+        {
+          term: {
+            'venue.reservation.reservable': true,
+          },
+        },
+        {
+          exists: {
+            field: 'venue.reservation.externalReservationUrl',
+          },
+        },
+      ],
+    },
+  });
 
 export function getFilters({
   administrativeDivisionIds,
@@ -76,10 +71,9 @@ export function getFilters({
       serviceOwnerTypes ?? []
     ),
     ...buildArrayFilter('venue.targetGroups.keyword', targetGroups ?? []),
-    // TODO: Reservable is still needed and should be re-implemented in https://helsinkisolutionoffice.atlassian.net/browse/LIIKUNTA-578.
-    // ...(mustHaveReservableResource
-    //   ? [buildMustHaveReservableResourceFilter()]
-    //   : []),
+    ...(mustHaveReservableResource
+      ? [buildMustHaveReservableResourceFilter()]
+      : []),
     ...(finalOpenAt
       ? [
           {
