@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any, Callable, List
 
 from ingest.importers.base import Importer
+from ingest.importers.location.api import LocationImporterAPI
 from ingest.importers.location.dataclasses import (
     Accessibility,
     Address,
@@ -22,19 +23,19 @@ from ingest.importers.location.dataclasses import (
     Venue,
 )
 from ingest.importers.location.enums import ProviderType, ServiceOwnerType
+from ingest.importers.location.types import TPRUnitConnection
 from ingest.importers.location.utils import (
     define_language_properties,
     get_accessibility_viewpoint_id_to_name_mapping,
     get_enriched_accessibility_viewpoints,
-    is_venue_reservable,
     get_ontologytree_as_ontologies,
     get_ontologywords_as_ontologies,
     get_suggestions_from_ontologies,
-    get_tpr_units,
     get_unit_id_to_accessibility_sentences_mapping,
     get_unit_id_to_accessibility_shortcomings_mapping,
     get_unit_id_to_accessibility_viewpoint_shortages_mapping,
     get_unit_id_to_target_groups_mapping,
+    is_venue_reservable,
 )
 from ingest.importers.utils import (
     HaukiOpeningHoursFetcher,
@@ -43,7 +44,6 @@ from ingest.importers.utils import (
     OpeningHours,
 )
 from ingest.importers.utils.administrative_division import AdministrativeDivisionFetcher
-from ingest.importers.location.types import TPRUnitConnection
 
 BATCH_SIZE = 100
 
@@ -96,23 +96,47 @@ custom_mappings = {
 class LocationImporter(Importer[Root]):
     index_base_names = ("location",)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fetch_data_on_init=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.tpr_units = get_tpr_units()
+
+        api = LocationImporterAPI()
+        self.tpr_units = api.fetch_tpr_units() if fetch_data_on_init else []
         self.unit_id_to_accessibility_shortcomings_mapping = (
-            get_unit_id_to_accessibility_shortcomings_mapping()
+            (get_unit_id_to_accessibility_shortcomings_mapping())
+            if fetch_data_on_init
+            else {}
         )
         self.unit_id_to_accessibility_sentences_mapping = (
-            get_unit_id_to_accessibility_sentences_mapping(self.use_fallback_languages)
+            (
+                get_unit_id_to_accessibility_sentences_mapping(
+                    self.use_fallback_languages
+                )
+            )
+            if fetch_data_on_init
+            else {}
         )
         self.unit_id_to_accessibility_viewpoint_shortages_mapping = (
-            get_unit_id_to_accessibility_viewpoint_shortages_mapping(
-                self.use_fallback_languages
+            (
+                get_unit_id_to_accessibility_viewpoint_shortages_mapping(
+                    self.use_fallback_languages
+                )
             )
+            if fetch_data_on_init
+            else {}
         )
-        self.unit_id_to_target_groups_mapping = get_unit_id_to_target_groups_mapping()
+        self.unit_id_to_target_groups_mapping = (
+            ((get_unit_id_to_target_groups_mapping()) if fetch_data_on_init else {})
+            if fetch_data_on_init
+            else {}
+        )
         self.accessibility_viewpoint_id_to_name_mapping = (
-            get_accessibility_viewpoint_id_to_name_mapping(self.use_fallback_languages)
+            (
+                get_accessibility_viewpoint_id_to_name_mapping(
+                    self.use_fallback_languages
+                )
+            )
+            if fetch_data_on_init
+            else {}
         )
         self.opening_hours_fetcher = HaukiOpeningHoursFetcher(
             t["id"] for t in self.tpr_units
@@ -159,7 +183,6 @@ class LocationImporter(Importer[Root]):
         return Reservation(
             reservable=is_venue_reservable(connections),
             externalReservationUrl=None,
-            reservationPolicy=None,
         )
 
     def _create_venue(
@@ -312,6 +335,10 @@ class LocationImporter(Importer[Root]):
         return root
 
     def run(self):  # noqa C901 this function could use some refactoring
+        """
+        Import location data.
+        :return the count of units imported.
+        """
         self.apply_mapping(custom_mappings)
 
         logger.debug("Requesting data at {}".format(__name__))
@@ -333,3 +360,4 @@ class LocationImporter(Importer[Root]):
             self.add_data_bulk(data_buffer)
 
         logger.info(f"Fetched {count} items in total")
+        return count

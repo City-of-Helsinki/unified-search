@@ -2,8 +2,10 @@ import base64
 import functools
 from collections import defaultdict
 from typing import Dict, List, Optional, Set
+
 from typing_extensions import deprecated
 
+from ingest.importers.location.api import LocationImporterAPI
 from ingest.importers.location.dataclasses import (
     AccessibilitySentence,
     AccessibilityShortcoming,
@@ -16,17 +18,8 @@ from ingest.importers.location.enums import (
     ConnectionTag,
     TargetGroup,
 )
-from ingest.importers.utils import LanguageString, LanguageStringConverter, request_json
-from ingest.importers.location.types import TPRUnitResponse, TPRUnitConnection
-
-
-def get_tpr_units() -> List[TPRUnitResponse]:
-    # Use newfeatures=yes parameter to get displayed_service_owner_type and
-    # displayed_service_owner_(fi|sv|en) fields included, see documentation at
-    # https://www.hel.fi/palvelukarttaws/restpages/ver4.html
-    url = "https://www.hel.fi/palvelukarttaws/rest/v4/unit/?newfeatures=yes"
-    data = request_json(url)
-    return data
+from ingest.importers.location.types import TPRUnitConnection
+from ingest.importers.utils import LanguageString, LanguageStringConverter
 
 
 def prefix_and_mask(prefix, body):
@@ -155,23 +148,6 @@ def define_language_properties():
     return language_properties
 
 
-def get_unit_ids_and_accessibility_shortcoming_counts() -> List[dict]:
-    """
-    Get all unit IDs and their accessibility shortcoming counts from new service map API
-
-    :return: A list of dictionaries each containing unit ID ("id") as integer and its
-        accessibility shortcoming counts ("accessibility_shortcoming_count") in a
-        dictionary.
-    """
-    accumulated_results = []
-    url = "https://api.hel.fi/servicemap/v2/unit/?format=json&only=accessibility_shortcoming_count&page_size=1000"
-    while url:
-        units = request_json(url)
-        accumulated_results += units["results"]
-        url = units["next"]
-    return accumulated_results
-
-
 def create_accessibility_shortcomings(
     accessibility_shortcoming_counts: Dict[str, int]
 ) -> List[AccessibilityShortcoming]:
@@ -204,7 +180,7 @@ def get_unit_id_to_accessibility_shortcomings_mapping() -> (
         str(unit["id"]): create_accessibility_shortcomings(
             unit.get("accessibility_shortcoming_count", {})
         )
-        for unit in get_unit_ids_and_accessibility_shortcoming_counts()
+        for unit in LocationImporterAPI.fetch_unit_ids_and_accessibility_shortcoming_counts()
     }
 
 
@@ -231,8 +207,7 @@ def get_accessibility_viewpoint_id_to_name_mapping(
         }
     }
     """
-    url = "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_viewpoint/"
-    accessibility_viewpoints = request_json(url)
+    accessibility_viewpoints = LocationImporterAPI.fetch_accessibility_viewpoint()
     return {
         viewpoint["id"]: LanguageStringConverter(
             viewpoint, use_fallback_languages
@@ -279,7 +254,7 @@ def create_accessibility_sentence(
 
 
 @deprecated(
-    "Collect the accessibility sentences from the response of `get_tpr_units()` instead. The accessibility sentences are included in the unit-query (e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes), which makes this request unnecessary.",
+    "Collect the accessibility sentences from the response of `LocationImporterAPI.fetch_tpr_units()` instead. The accessibility sentences are included in the unit-query (e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes), which makes this request unnecessary.",
 )
 def get_unit_id_to_accessibility_sentences_mapping(
     use_fallback_languages: bool,
@@ -287,8 +262,7 @@ def get_unit_id_to_accessibility_sentences_mapping(
     """
     Get a mapping of unit IDs to their accessibility sentences from service map API.
     """
-    url = "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_sentence/"
-    accessibility_sentences = request_json(url, timeout_seconds=120)
+    accessibility_sentences = LocationImporterAPI.fetch_accessibility_sentence()
     result = defaultdict(list)
     for sentence in accessibility_sentences:
         result[str(sentence["unit_id"])].append(
@@ -304,8 +278,7 @@ def get_unit_id_to_accessibility_viewpoint_shortages_mapping(
     Get a mapping of unit IDs to their accessibility viewpoints' IDs to their
     list of accessibility shortages from service map API.
     """
-    url = "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_shortage/"
-    accessibility_shortages = request_json(url, timeout_seconds=120)
+    accessibility_shortages = LocationImporterAPI.fetch_accessibility_shortages()
     result = defaultdict(lambda: defaultdict(list))
     for shortage in accessibility_shortages:
         unit_id = str(shortage["unit_id"])
@@ -413,8 +386,11 @@ def get_enriched_accessibility_viewpoints(
         )
         for viewpoint_id, viewpoint_value in id_to_value_mapping.items()
         if (
-            not omit_unknowns
-            or viewpoint_value != AccessibilityViewpointValue.UNKNOWN.value
+            (
+                not omit_unknowns
+                or viewpoint_value != AccessibilityViewpointValue.UNKNOWN.value
+            )
+            and viewpoint_id in accessibility_viewpoint_id_to_name_mapping
         )
     ]
 
@@ -424,8 +400,7 @@ def get_unit_id_to_target_groups_mapping() -> Dict[str, Set[TargetGroup]]:
     Get a mapping of unit IDs to their target groups from palvelukuvausrekisteri, see
     https://www.hel.fi/palvelukarttaws/restpages/palvelurekisteri.html for documentation
     """
-    url = "https://www.hel.fi/palvelukarttaws/rest/vpalvelurekisteri/description/?alldata=yes"
-    services = request_json(url, timeout_seconds=120)
+    services = LocationImporterAPI.fetch_services()
     result = defaultdict(set)
     for service in services:
         unit_ids = service.get("unit_ids", [])
@@ -438,7 +413,8 @@ def get_unit_id_to_target_groups_mapping() -> Dict[str, Set[TargetGroup]]:
 def is_venue_reservable(connections: List[TPRUnitConnection]):
     """The venue is reservable if there is a tag "#tilojen_varaaminen" in the list of connections."""
     return any(
-        tag == ConnectionTag.RESERVABLE
+        tag == ConnectionTag.RESERVABLE.value
         for connection in connections
+        if "tags" in connection
         for tag in connection["tags"]
     )

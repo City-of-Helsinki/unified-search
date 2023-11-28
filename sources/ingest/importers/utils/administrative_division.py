@@ -24,6 +24,10 @@ def geo_import_finnish_municipalities():
     call_command("geo_import", "finland", "--municipalities")
 
 
+def geo_import_helsinki_divisions():
+    call_command("geo_import", "helsinki", "--divisions")
+
+
 class AdministrativeDivisionFetcher:
     def __init__(self):
         with transaction.atomic():
@@ -43,7 +47,7 @@ class AdministrativeDivisionFetcher:
                 )
                 geo_import_finnish_municipalities()
 
-            call_command("geo_import", "helsinki", "--divisions")
+            geo_import_helsinki_divisions()
 
         self.administrative_divisions_qs = AdministrativeDivisionModel.objects.filter(
             type__type__in=DIVISION_TYPES

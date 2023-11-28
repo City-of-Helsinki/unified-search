@@ -1,11 +1,11 @@
-from typing import Optional, TypedDict, List
+from typing import List, Optional, TypedDict
 
-from ingest.importers.utils.shared import LanguageString
 from ingest.importers.location.enums import (
     ConnectionTag,
     ProviderType,
     ServiceOwnerType,
 )
+from ingest.importers.utils.shared import LanguageString
 
 
 class TPRUnitConnection(TypedDict):

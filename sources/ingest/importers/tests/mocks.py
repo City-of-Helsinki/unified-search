@@ -8,6 +8,12 @@ unit_swimhall = json.load(
 unit_indoor_arena = json.load(
     open(os.path.join(mocks_dir, "mock_responses/unit-42284.json"))
 )
+ontology_tree = json.load(
+    open(os.path.join(mocks_dir, "mock_responses/ontology_tree.json"))
+)
+ontology_words = json.load(
+    open(os.path.join(mocks_dir, "mock_responses/ontology_words.json"))
+)
 
 MOCKED_SERVICE_MAP_UNITS_RESPONSE = [unit_swimhall, unit_indoor_arena]
 
