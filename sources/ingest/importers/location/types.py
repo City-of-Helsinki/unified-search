@@ -1,19 +1,12 @@
-from typing import List, Optional, TypedDict
+from typing import List, Optional, TypedDict, TYPE_CHECKING
 
-from ingest.importers.location.enums import (
-    ConnectionTag,
-    ProviderType,
-    ServiceOwnerType,
-)
-from ingest.importers.utils.shared import LanguageString
-
-
-class TPRUnitConnection(TypedDict):
-    section_type: str
-    name: LanguageString
-    www: LanguageString
-    phone: Optional[str]
-    tags: Optional[List[ConnectionTag]]
+if TYPE_CHECKING:
+    from ingest.importers.utils.shared import LanguageString
+    from ingest.importers.location.dataclasses import Connection
+    from ingest.importers.location.enums import (
+        ProviderType,
+        ServiceOwnerType,
+    )
 
 
 class TPRUnitSources(TypedDict):
@@ -29,18 +22,18 @@ class TPRUnitResponse(TypedDict):
     arealcity_id: Optional[int]
     org_id: Optional[str]
     dept_id: Optional[str]
-    provider_type: ProviderType
-    displayed_service_owner_type: ServiceOwnerType
-    displayed_service_owner: LanguageString
+    provider_type: "ProviderType"
+    displayed_service_owner_type: "ServiceOwnerType"
+    displayed_service_owner: "LanguageString"
     data_source_url: str
-    name: LanguageString
+    name: "LanguageString"
     ontologyword_ids: List[int]
     ontologytree_ids: List[int]
-    sources: Optional[List[TPRUnitSources]]
+    sources: Optional[List["TPRUnitSources"]]
     provided_languages: Optional[List[str]]
     regions: Optional[List[str]]
-    short_desc: Optional[LanguageString]
-    desc: Optional[LanguageString]
+    short_desc: Optional["LanguageString"]
+    desc: Optional["LanguageString"]
     latitude: Optional[float]
     longitude: Optional[float]
     northing_etrs_gk25: Optional[int]
@@ -48,19 +41,19 @@ class TPRUnitResponse(TypedDict):
     northing_etrs_tm35fin: Optional[int]
     easting_etrs_tm35fin: Optional[int]
     manual_coordinates: Optional[bool]
-    street_address: Optional[LanguageString]
+    street_address: Optional["LanguageString"]
     address_zip: Optional[str]
     address_city: Optional[str]
     vtj_prt: Optional[str]
     vtj_prt_verified: Optional[str]
     phone: Optional[str]
-    call_charge_info: Optional[LanguageString]
+    call_charge_info: Optional["LanguageString"]
     picture_url: Optional[str]
-    picture_caption: Optional[LanguageString]
+    picture_caption: Optional["LanguageString"]
     accessibility_phone: Optional[str]
     accessibility_email: Optional[str]
     accessibility_www: Optional[str]
     accessibility_viewpoints: Optional[str]
     created_time: str
     modified_time: str
-    connections: List[TPRUnitConnection]
+    connections: List["Connection"]

@@ -21,9 +21,9 @@ from ingest.importers.location.dataclasses import (
     Root,
     ServiceOwner,
     Venue,
+    Connection,
 )
 from ingest.importers.location.enums import ProviderType, ServiceOwnerType
-from ingest.importers.location.types import TPRUnitConnection
 from ingest.importers.location.utils import (
     define_language_properties,
     find_reservable_connection,
@@ -35,6 +35,7 @@ from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_sentences_mapping,
     get_unit_id_to_accessibility_shortcomings_mapping,
     get_unit_id_to_accessibility_viewpoint_shortages_mapping,
+    get_unit_id_to_connections_mapping,
     get_unit_id_to_target_groups_mapping,
 )
 from ingest.importers.utils import (
@@ -152,6 +153,12 @@ class LocationImporter(Importer[Root]):
             {},
         )
 
+        self.unit_id_to_connections_mapping = with_conditional(
+            self.enable_data_fetching,
+            lambda: get_unit_id_to_connections_mapping(self.use_fallback_languages),
+            {},
+        )
+
         self.opening_hours_fetcher = (
             HaukiOpeningHoursFetcher(t["id"] for t in self.tpr_units)
             if self.enable_data_fetching and len(self.tpr_units)
@@ -197,16 +204,13 @@ class LocationImporter(Importer[Root]):
             )
         ]
 
-    def _create_reservation(self, connections: Optional[TPRUnitConnection]):
+    def _create_reservation(self, connections: Optional[Connection]):
         if connections and len(connections):
             reservation_connection = find_reservable_connection(connections)
             if reservation_connection:
-                l = LanguageStringConverter(
-                    reservation_connection, self.use_fallback_languages
-                )
                 return Reservation(
                     reservable=True,
-                    externalReservationUrl=l.get_language_string("www"),
+                    externalReservationUrl=reservation_connection.www,
                 )
             return Reservation(reservable=False, externalReservationUrl=None)
         return None
@@ -223,7 +227,8 @@ class LocationImporter(Importer[Root]):
         meta = NodeMeta(id=_id, createdAt=datetime.now())
         # Assuming single image
         images = self._create_images(l, e)
-        reservation = self._create_reservation(e("connections"))
+        connections = self.unit_id_to_connections_mapping.get(_id)
+        reservation = self._create_reservation(connections)
         venue = Venue(
             name=l.get_language_string("name"),
             description=l.get_language_string("desc"),
