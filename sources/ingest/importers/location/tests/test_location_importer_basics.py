@@ -1,10 +1,14 @@
 import pytest
 
 from ingest.importers.location.importers import LocationImporter
+from ingest.importers.location.types import TPRUnitConnection
+from ingest.importers.location.dataclasses import Reservation
+from ingest.importers.location.enums import ConnectionTag
+from ingest.importers.utils.language import LanguageStringConverter
 
 
 @pytest.mark.django_db
-def test_location_importer_run_happy_path(
+def test_location_importer_with_data_init(
     mocked_ontology_trees,
     mocked_ontology_words,
     mocked_tpr_units_response,
@@ -17,7 +21,7 @@ def test_location_importer_run_happy_path(
     mocked_geo_municipalities,
     mocked_geo_divisions,
 ):
-    importer = LocationImporter()
+    importer = LocationImporter(enable_data_fetching=True)
     assert len(importer.tpr_units) == 2
     assert len(importer.unit_id_to_accessibility_shortcomings_mapping) == 3
     assert len(importer.unit_id_to_accessibility_sentences_mapping) == 2
@@ -25,3 +29,47 @@ def test_location_importer_run_happy_path(
     assert len(importer.unit_id_to_target_groups_mapping) == 8
     assert len(importer.accessibility_viewpoint_id_to_name_mapping) == 14
     assert importer.run() == len(importer.tpr_units)
+
+
+@pytest.mark.django_db
+def test_location_importer_without_data_init():
+    importer = LocationImporter(enable_data_fetching=False)
+    assert len(importer.tpr_units) == 0
+    assert len(importer.unit_id_to_accessibility_shortcomings_mapping) == 0
+    assert len(importer.unit_id_to_accessibility_sentences_mapping) == 0
+    assert len(importer.unit_id_to_accessibility_viewpoint_shortages_mapping) == 0
+    assert len(importer.unit_id_to_target_groups_mapping) == 0
+    assert len(importer.accessibility_viewpoint_id_to_name_mapping) == 0
+    assert importer.run() == 0
+
+
+@pytest.mark.django_db
+def test_create_reservation():
+    importer = LocationImporter(enable_data_fetching=False)
+    assert importer._create_reservation(None) == None
+    test_connection: TPRUnitConnection = {
+        "section_type": "test_section_type",
+        "name_fi": "nimi",
+        "name_sv": "namn",
+        "name_en": "name",
+        "tags": [],
+    }
+    assert importer._create_reservation([test_connection]) == Reservation(
+        reservable=False,
+        externalReservationUrl=None,
+    )
+    test_connection: TPRUnitConnection = {
+        "section_type": "test_section_type",
+        "name_fi": "nimi",
+        "name_sv": "namn",
+        "name_en": "name",
+        "www_fi": "www.hel.fi",
+        "www_sv": "www.hel.fi/sv",
+        "www_en": "www.hel.fi/en",
+        "tags": [ConnectionTag.RESERVABLE.value],
+    }
+    reservation = importer._create_reservation([test_connection])
+    assert reservation.reservable == True
+    assert reservation.externalReservationUrl == LanguageStringConverter(
+        test_connection
+    ).get_language_string("www")

@@ -418,3 +418,15 @@ def is_venue_reservable(connections: List[TPRUnitConnection]):
         if "tags" in connection
         for tag in connection["tags"]
     )
+
+
+def find_reservable_connection(connections: List[TPRUnitConnection]):
+    return next(
+        (
+            connection
+            for connection in connections
+            if ("tags" in connection)
+            and (ConnectionTag.RESERVABLE.value in connection["tags"])
+        ),
+        None,
+    )
