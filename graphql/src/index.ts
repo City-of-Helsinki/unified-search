@@ -27,7 +27,6 @@ import { palvelukarttaSchema } from './schemas/palvelukartta';
 import { linkedeventsSchema } from './schemas/linkedevents';
 import { locationSchema } from './schemas/location';
 import { sharedSchema } from './schemas/shared';
-import { reservationSchema } from './schemas/reservation';
 import { eventSchema } from './schemas/event';
 import { actorSchema } from './schemas/actor';
 import { geoSchema } from './schemas/geojson';
@@ -268,8 +267,8 @@ const resolvers = {
     serviceOwner({ venue }: any, args: any, context: any, info: any) {
       return venue.serviceOwner;
     },
-    resources({ venue }: any, args: any, context: any, info: any) {
-      return venue.resources;
+    reservation({ venue }: any, args: any, context: any, info: any) {
+      return venue.reservation;
     },
     targetGroups({ venue }: any, args: any, context: any, info: any) {
       return venue.targetGroups;
@@ -380,7 +379,6 @@ const combinedSchema = buildSubgraphSchema({
     linkedeventsSchema,
     locationSchema,
     sharedSchema, // FIXME: OVerlapping with events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql); Keyword and Location Image
-    reservationSchema,
     eventSchema,
     actorSchema,
     geoSchema,

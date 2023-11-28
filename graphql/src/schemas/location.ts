@@ -17,7 +17,7 @@ export const locationSchema = gql`
     openingHours: OpeningHours
     manager: LegalEntity
     contactDetails: ContactInfo
-    reservationPolicy: VenueReservationPolicy
+    reservation: Reservation
     accessibility: Accessibility
     """
     Accessibility shortcoming for a specific accessibility profile.
@@ -123,6 +123,10 @@ export const locationSchema = gql`
     viewpoints: [AccessibilityViewpoint!]!
     sentences: [AccessibilitySentence!]!
     shortcomings: [AccessibilityShortcoming!]!
+  }
+  type Reservation {
+    reservable: Boolean
+    externalReservationUrl: LanguageString
   }
   """
   TODO: combine beta.kultus Venue stuff with respa equipment type
