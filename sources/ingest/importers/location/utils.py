@@ -132,7 +132,7 @@ def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
     suggest = []
     for [language, suggestions_in_language] in ontologies_grouped_by_language.items():
         suggestions_without_empty = list(
-            filter(lambda suggestion: type(suggestion) == str, suggestions_in_language)
+            filter(lambda suggestion: type(suggestion) is str, suggestions_in_language)
         )
 
         suggest.append(

@@ -3,7 +3,7 @@ from typing import List
 from .traffic import request_json
 
 
-class AlreadyFound(Exception):
+class AlreadyFoundError(Exception):
     """Custom expection for checking against duplicate entries."""
 
     pass
@@ -65,9 +65,9 @@ class Ontology:
                 try:
                     for old_elem in info:
                         if old_elem["id"] == i["id"]:
-                            raise AlreadyFound
+                            raise AlreadyFoundError
                     info.append(i)
-                except AlreadyFound:
+                except AlreadyFoundError:
                     # skip duplicate
                     pass
 
