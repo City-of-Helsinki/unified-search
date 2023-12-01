@@ -1,5 +1,5 @@
 import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types';
-import { ES_DEFAULT_INDEX } from '../../constants';
+import { ES_DEFAULT_INDEX, SEARCH_ALL_SPECIAL_CHAR } from '../../constants';
 import { type ElasticSearchAPI } from '../..';
 import type { GetQueryResultsProps } from './types';
 import { getDefaultBoolQuery, sortQuery } from './utils';
@@ -13,6 +13,16 @@ function createQuery({
   text,
   ontology,
 }: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'>) {
+  if (text === SEARCH_ALL_SPECIAL_CHAR) {
+    return {
+      query: {
+        bool: {
+          should: [{ query_string: { query: SEARCH_ALL_SPECIAL_CHAR } }],
+        },
+      },
+    };
+  }
+
   if (ontology) {
     // Resolve ontology
     // NOTE: This query has not been in use anymore in the events-helsinki-monorepo. It was earlier used with auto suggest menu.
