@@ -2,9 +2,10 @@ import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types';
 import { ES_DEFAULT_INDEX } from '../../constants';
 import { type ElasticSearchAPI } from '../..';
 import type { GetQueryResultsProps } from './types';
-import { getDefaultBoolQuery, getOntologyFields, sortQuery } from './utils';
+import { getDefaultBoolQuery, sortQuery } from './utils';
 import { filterQuery } from './utils/filterQuery';
 import { GraphQlToElasticLanguageMap } from '../../../../constants';
+import { getOntologyQuery } from './utils/getOntologyQuery';
 
 function createQuery({
   index = ES_DEFAULT_INDEX,
@@ -12,36 +13,12 @@ function createQuery({
   text,
   ontology,
 }: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'>) {
-  const query = getDefaultBoolQuery({ index, languages, text });
-  // Resolve ontology
   if (ontology) {
-    const ontologyMatchers = languages.reduce(
-      (acc, language) => ({
-        ...acc,
-        [language]: {
-          multi_match: {
-            query: ontology,
-            fields: getOntologyFields(language, index),
-          },
-        },
-      }),
-      {}
-    );
-
-    return {
-      query: {
-        bool: {
-          should: [
-            ...query.query.bool.should,
-            ...languages.map((language) => ({
-              bool: { must: [ontologyMatchers[language]] },
-            })),
-          ],
-        },
-      },
-    };
+    // Resolve ontology
+    // NOTE: This query has not been in use anymore in the events-helsinki-monorepo. It was earlier used with auto suggest menu.
+    return getOntologyQuery({ index, languages, ontology });
   }
-  return query;
+  return getDefaultBoolQuery({ index, languages, text });
 }
 
 function queryBuilder({
