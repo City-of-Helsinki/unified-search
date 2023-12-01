@@ -27,3 +27,12 @@ export type ElasticLanguage =
   (typeof GraphQlToElasticLanguageMap)[keyof typeof GraphQlToElasticLanguageMap];
 
 export const DEFAULT_ELASTIC_LANGUAGE: ElasticLanguage = 'fi';
+
+export type SearchableFields =
+  | 'venue.name'
+  | 'venue.description'
+  | 'event.name'
+  | 'event.description';
+
+export type TranslatableField<T extends string = SearchableFields> =
+  `${T}.${ElasticLanguage}`;

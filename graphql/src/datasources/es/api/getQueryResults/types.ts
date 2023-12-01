@@ -1,4 +1,4 @@
-import type { ElasticLanguage } from '../../../../types';
+import type { ElasticLanguage, TranslatableField } from '../../../../types';
 import type {
   AccessibilityProfileType,
   ElasticSearchIndex,
@@ -40,3 +40,14 @@ export type QueryResultFilterProps = Pick<
   | 'mustHaveReservableResource'
   | 'openAt'
 >;
+
+export type QueryFilterClauses = {
+  [key in TranslatableField]?: {
+    query: string;
+  } & Partial<{
+    boost?: number | string;
+    type?: string;
+    operator?: string;
+    fuzziness?: string;
+  }>;
+};
