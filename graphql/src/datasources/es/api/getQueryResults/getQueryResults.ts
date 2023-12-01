@@ -2,24 +2,17 @@ import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types';
 import { ES_DEFAULT_INDEX } from '../../constants';
 import { type ElasticSearchAPI } from '../..';
 import type { GetQueryResultsProps } from './types';
-import { getOntologyFields, sortQuery } from './utils';
+import { getDefaultBoolQuery, getOntologyFields, sortQuery } from './utils';
 import { filterQuery } from './utils/filterQuery';
 import { GraphQlToElasticLanguageMap } from '../../../../constants';
-import {
-  QueryType,
-  getDefaultQueryForQueryType,
-} from './utils/getDefaultQuery';
 
 function createQuery({
   index = ES_DEFAULT_INDEX,
   languages = Object.values(GraphQlToElasticLanguageMap),
   text,
   ontology,
-  type = QueryType.MatchBoolPrefix,
-}: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'> & {
-  type?: QueryType;
-}) {
-  const query = getDefaultQueryForQueryType(type)({ index, languages, text });
+}: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text' | 'ontology'>) {
+  const query = getDefaultBoolQuery({ index, languages, text });
   // Resolve ontology
   if (ontology) {
     const ontologyMatchers = languages.reduce(
