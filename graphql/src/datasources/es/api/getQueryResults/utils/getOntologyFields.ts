@@ -13,9 +13,9 @@ export function getOntologyFields(
       `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
       `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
       `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
-    ];
+    ] as const;
   } else if (index === ES_EVENT_INDEX) {
-    return [`ontology.${lang}`, 'ontology.alt'];
+    return [`ontology.${lang}`, 'ontology.alt'] as const;
   }
   return [];
 }
