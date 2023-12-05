@@ -38,7 +38,6 @@ def test_find_reservable_connection(tpr_unit, is_reservable):
 @pytest.mark.parametrize(
     "tpr_unit,is_reservable", [(unit_swimhall, False), (unit_indoor_arena, True)]
 )
-@pytest.mark.django_db
 def test_location_importer_adds_reservable_to_venue(
     tpr_unit,
     is_reservable,

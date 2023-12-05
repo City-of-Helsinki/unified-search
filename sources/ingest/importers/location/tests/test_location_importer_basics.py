@@ -32,7 +32,6 @@ def test_location_importer_with_data_init(
     assert importer.run() == len(importer.tpr_units)
 
 
-@pytest.mark.django_db
 def test_location_importer_without_data_init():
     importer = LocationImporter(enable_data_fetching=False)
     assert len(importer.tpr_units) == 0
@@ -45,7 +44,6 @@ def test_location_importer_without_data_init():
     assert importer.run() == 0
 
 
-@pytest.mark.django_db
 def test_create_reservation():
     importer = LocationImporter(enable_data_fetching=False)
     # assert importer._create_reservation(None) == None
