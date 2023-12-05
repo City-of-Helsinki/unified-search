@@ -1,10 +1,9 @@
 import pytest
 
-from ingest.importers.location.importers import LocationImporter
 from ingest.importers.location.dataclasses import Connection, Reservation
 from ingest.importers.location.enums import ConnectionTag
+from ingest.importers.location.importers import LocationImporter
 from ingest.importers.utils.shared import LanguageString
-from ingest.importers.utils.language import LanguageStringConverter
 
 
 @pytest.mark.django_db
@@ -78,5 +77,5 @@ def test_create_reservation():
         tags=[ConnectionTag.RESERVABLE.value],
     )
     reservation = importer._create_reservation([test_connection])
-    assert reservation.reservable == True
+    assert reservation.reservable is True
     assert reservation.externalReservationUrl == test_connection.www

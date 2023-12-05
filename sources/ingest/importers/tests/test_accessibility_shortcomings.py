@@ -1,5 +1,3 @@
-import pytest
-
 from ingest.importers.location.dataclasses import AccessibilityShortcoming
 from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_shortcomings_mapping,

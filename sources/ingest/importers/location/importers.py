@@ -5,10 +5,12 @@ from datetime import datetime
 from typing import Any, Callable, List, Optional
 
 from ingest.importers.base import Importer
+from ingest.importers.decorators import with_conditional
 from ingest.importers.location.api import LocationImporterAPI
 from ingest.importers.location.dataclasses import (
     Accessibility,
     Address,
+    Connection,
     Coordinates,
     GeoJSONFeature,
     GeoJSONGeometry,
@@ -21,7 +23,6 @@ from ingest.importers.location.dataclasses import (
     Root,
     ServiceOwner,
     Venue,
-    Connection,
 )
 from ingest.importers.location.enums import ProviderType, ServiceOwnerType
 from ingest.importers.location.utils import (
@@ -45,7 +46,6 @@ from ingest.importers.utils import (
     OpeningHours,
 )
 from ingest.importers.utils.administrative_division import AdministrativeDivisionFetcher
-from ingest.importers.decorators import with_conditional
 
 BATCH_SIZE = 100
 

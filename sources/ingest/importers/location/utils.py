@@ -1,7 +1,7 @@
 import base64
 import functools
 from collections import defaultdict
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set
 
 from typing_extensions import deprecated
 
@@ -10,8 +10,8 @@ from ingest.importers.location.dataclasses import (
     AccessibilitySentence,
     AccessibilityShortcoming,
     AccessibilityViewpoint,
-    OntologyObject,
     Connection,
+    OntologyObject,
 )
 from ingest.importers.location.enums import (
     AccessibilityProfile,
@@ -254,7 +254,10 @@ def create_accessibility_sentence(
 
 
 @deprecated(
-    "Collect the accessibility sentences from the response of `LocationImporterAPI.fetch_tpr_units()` instead. The accessibility sentences are included in the unit-query (e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes), which makes this request unnecessary.",
+    "Collect the accessibility sentences from the response of `LocationImporterAPI.fetch_tpr_units()` instead. "
+    "The accessibility sentences are included in the unit-query "
+    "(e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes), "
+    "which makes this request unnecessary.",
 )
 def get_unit_id_to_accessibility_sentences_mapping(
     use_fallback_languages: bool,
@@ -427,9 +430,9 @@ def create_connection(connection: dict, use_fallback_languages=True) -> Connecti
                 "name_fi": "Uimavedenlaatu",
                 "name_en": "Swimming water quality",
                 "name_sv": "Badvattnets kvalitet",
-                "www_fi": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/ulkoilu-puistot-ja-luontokohteet/uimarannat/uimaveden-laatu-ja-sinilevat",
-                "www_en": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/ulkoilu-puistot-ja-luontokohteet/uimarannat/uimaveden-laatu-ja-sinilevat",
-                "www_sv": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/ulkoilu-puistot-ja-luontokohteet/uimarannat/uimaveden-laatu-ja-sinilevat",
+                "www_fi": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/",
+                "www_en": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/",
+                "www_sv": "https://www.hel.fi/fi/kulttuuri-ja-vapaa-aika/",
                 "tags": [
                         "#uimavedenlaatu"
                 ]

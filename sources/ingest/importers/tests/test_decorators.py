@@ -1,10 +1,8 @@
-import pytest
-
 from ingest.importers.decorators import default_on_exception, with_conditional
 
 
 def test_default_on_exception():
-    ### Test values
+    # Test values
 
     default = "default"
     d = {"key": "value"}
@@ -15,11 +13,11 @@ def test_default_on_exception():
     def __test_func(*args, **kwargs):
         return "success!"
 
-    ### Test valid cases
+    # Test valid cases
 
     assert (default_on_exception(lambda: 1, default)) == 1
-    assert (default_on_exception(lambda: 1 > 2, default)) == False
-    assert (default_on_exception(lambda: 1 < 2, default)) == True
+    assert (default_on_exception(lambda: 1 > 2, default)) is False
+    assert (default_on_exception(lambda: 1 < 2, default)) is True
     assert (default_on_exception(lambda: (lambda a, b: a + b)(1, 2), default)) == 3
     assert (default_on_exception(__test_func, default)) == "success!"
     assert (

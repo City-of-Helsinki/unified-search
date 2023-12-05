@@ -1,7 +1,7 @@
 from typing import List
 
-from ingest.importers.utils.traffic import request_json
 from ingest.importers.location.types import TPRUnitResponse
+from ingest.importers.utils.traffic import request_json
 
 DEFAULT_TIMEOUT = 20
 
@@ -10,7 +10,7 @@ class LocationImporterAPI:
     tpr_units_endpoint = (
         "https://www.hel.fi/palvelukarttaws/rest/v4/unit/?newfeatures=yes"
     )
-    accessibility_shortcoming_counts_endpoint = "https://api.hel.fi/servicemap/v2/unit/?format=json&only=accessibility_shortcoming_count&page_size=1000"
+    accessibility_shortcoming_counts_endpoint = "https://api.hel.fi/servicemap/v2/unit/?format=json&only=accessibility_shortcoming_count&page_size=1000"  # noqa
     accessibility_viewpoint_endpoint = (
         "https://www.hel.fi/palvelukarttaws/rest/v4/accessibility_viewpoint/"
     )

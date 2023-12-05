@@ -15,8 +15,6 @@ from ingest.importers.location.enums import (
 )
 from ingest.importers.utils import LanguageString, OpeningHours
 from ingest.importers.utils.administrative_division import AdministrativeDivision
-from ingest.importers.utils.language import LanguageStringConverter
-from ingest.importers.decorators import default_on_exception
 
 BATCH_SIZE = 100
 
