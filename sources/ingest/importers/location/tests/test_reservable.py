@@ -38,10 +38,7 @@ def test_find_reservable_connection(tpr_unit, is_reservable):
 @pytest.mark.parametrize(
     "tpr_unit,is_reservable", [(unit_swimhall, False), (unit_indoor_arena, True)]
 )
-def test_location_importer_adds_reservable_to_venue(
-    tpr_unit,
-    is_reservable,
-):
+def test_location_importer_adds_reservable_to_venue(tpr_unit, is_reservable, es):
     l = LanguageStringConverter(tpr_unit, False)
     e = lambda k: tpr_unit.get(k, None)  # noqa
     location_importer = LocationImporter(enable_data_fetching=False)

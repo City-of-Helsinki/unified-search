@@ -20,6 +20,7 @@ def test_location_importer_with_data_init(
     mocked_service_registry_description_viewpoint_response,
     mocked_geo_municipalities,
     mocked_geo_divisions,
+    es,
 ):
     importer = LocationImporter(enable_data_fetching=True)
     assert len(importer.tpr_units) == 2
@@ -32,7 +33,7 @@ def test_location_importer_with_data_init(
     assert importer.run() == len(importer.tpr_units)
 
 
-def test_location_importer_without_data_init():
+def test_location_importer_without_data_init(es):
     importer = LocationImporter(enable_data_fetching=False)
     assert len(importer.tpr_units) == 0
     assert len(importer.unit_id_to_accessibility_shortcomings_mapping) == 0
@@ -44,7 +45,7 @@ def test_location_importer_without_data_init():
     assert importer.run() == 0
 
 
-def test_create_reservation():
+def test_create_reservation(es):
     importer = LocationImporter(enable_data_fetching=False)
     # assert importer._create_reservation(None) == None
     test_connection = Connection(
