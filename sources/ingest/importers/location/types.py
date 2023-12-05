@@ -1,12 +1,9 @@
-from typing import List, Optional, TypedDict, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
-    from ingest.importers.utils.shared import LanguageString
     from ingest.importers.location.dataclasses import Connection
-    from ingest.importers.location.enums import (
-        ProviderType,
-        ServiceOwnerType,
-    )
+    from ingest.importers.location.enums import ProviderType, ServiceOwnerType
+    from ingest.importers.utils.shared import LanguageString
 
 
 class TPRUnitSources(TypedDict):
@@ -15,7 +12,10 @@ class TPRUnitSources(TypedDict):
 
 
 class TPRUnitResponse(TypedDict):
-    """A response type for endpoint in https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes."""
+    """
+    A response type for endpoint in
+    https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes.
+    """
 
     id: str
     is_public: Optional[bool]

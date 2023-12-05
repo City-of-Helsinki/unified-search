@@ -5,7 +5,7 @@ def default_on_exception(func: Callable, default: Any):
     def inner():
         try:
             return func()
-        except Exception as e:
+        except Exception:
             return default
 
     return inner()

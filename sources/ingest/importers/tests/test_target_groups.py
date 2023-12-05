@@ -1,5 +1,3 @@
-import pytest
-
 from ingest.importers.location.enums import TargetGroup
 from ingest.importers.location.utils import get_unit_id_to_target_groups_mapping
 

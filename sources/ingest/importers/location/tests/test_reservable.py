@@ -44,7 +44,7 @@ def test_location_importer_adds_reservable_to_venue(
     is_reservable,
 ):
     l = LanguageStringConverter(tpr_unit, False)
-    e = lambda k: tpr_unit.get(k, None)
+    e = lambda k: tpr_unit.get(k, None)  # noqa
     location_importer = LocationImporter(enable_data_fetching=False)
     location_importer.unit_id_to_connections_mapping = {
         tpr_unit["id"]: [

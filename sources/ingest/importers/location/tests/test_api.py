@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-import pytest
-
 from ingest.importers.location.api import LocationImporterAPI
 from ingest.importers.tests.mocks import (
     MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE,

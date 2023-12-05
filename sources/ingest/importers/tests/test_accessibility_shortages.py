@@ -1,5 +1,3 @@
-import pytest
-
 from ingest.importers.location.dataclasses import Accessibility, AccessibilityViewpoint
 from ingest.importers.location.utils import (
     get_unit_id_to_accessibility_viewpoint_shortages_mapping,
