@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from ingest.importers.location.dataclasses import Connection, Reservation
@@ -5,7 +7,10 @@ from ingest.importers.location.enums import ConnectionTag
 from ingest.importers.location.importers import LocationImporter
 from ingest.importers.utils.shared import LanguageString
 
+GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 
+
+@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 @pytest.mark.django_db
 def test_location_importer_with_data_init(
     mocked_ontology_trees,
@@ -33,7 +38,8 @@ def test_location_importer_with_data_init(
     assert importer.run() == len(importer.tpr_units)
 
 
-def test_location_importer_without_data_init(es):
+@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
+def test_location_importer_without_data_init():
     importer = LocationImporter(enable_data_fetching=False)
     assert len(importer.tpr_units) == 0
     assert len(importer.unit_id_to_accessibility_shortcomings_mapping) == 0
@@ -45,7 +51,8 @@ def test_location_importer_without_data_init(es):
     assert importer.run() == 0
 
 
-def test_create_reservation(es):
+@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
+def test_create_reservation():
     importer = LocationImporter(enable_data_fetching=False)
     # assert importer._create_reservation(None) == None
     test_connection = Connection(
