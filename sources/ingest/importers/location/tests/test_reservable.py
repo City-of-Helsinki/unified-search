@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from ingest.importers.location.importers import LocationImporter
@@ -8,6 +10,8 @@ from ingest.importers.location.utils import (
 )
 from ingest.importers.tests.mocks import unit_indoor_arena, unit_swimhall
 from ingest.importers.utils.language import LanguageStringConverter
+
+GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 
 
 @pytest.mark.parametrize(
@@ -35,6 +39,7 @@ def test_find_reservable_connection(tpr_unit, is_reservable):
         assert find_reservable_connection(connections) is None
 
 
+@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 @pytest.mark.parametrize(
     "tpr_unit,is_reservable", [(unit_swimhall, False), (unit_indoor_arena, True)]
 )
