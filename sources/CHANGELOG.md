@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.4.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.3.1...sources-v1.4.0) (2023-12-08)
+
+
+### Features
+
+* **sources:** Add connections endpoint and use it with reservation info ([4fb1429](https://github.com/City-of-Helsinki/unified-search/commit/4fb1429d85f3b505367702368a3d878c963d3dbd))
+* **sources:** Add LocationImporterAPI to clean and reusability ([752e8f2](https://github.com/City-of-Helsinki/unified-search/commit/752e8f210f4af94a508826a3c451386fa1a412a0))
+* **sources:** Add reservation data class to location importer ([a327af0](https://github.com/City-of-Helsinki/unified-search/commit/a327af0295c28c636823ca5c2b8380e932c021a0))
+
+
+### Bug Fixes
+
+* Imports ([a327af0](https://github.com/City-of-Helsinki/unified-search/commit/a327af0295c28c636823ca5c2b8380e932c021a0))
+* Linting issues ([66213a5](https://github.com/City-of-Helsinki/unified-search/commit/66213a52c41d981ea69b56c231d53b013121389e))
+* Location importer Address import ([b255398](https://github.com/City-of-Helsinki/unified-search/commit/b255398e07c978251e243f6a96ca489e4fbdc5b2))
+* **sources:** Linter issues ([5f90778](https://github.com/City-of-Helsinki/unified-search/commit/5f90778ef209334502761cfa92a794d53cb1ebcd))
+* **sources:** Ontology object should be created only once ([9275c07](https://github.com/City-of-Helsinki/unified-search/commit/9275c07ebcefe3d192939a6646af1168453f333b))
+
 ## [1.3.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.3.0...sources-v1.3.1) (2023-10-25)
 
 
