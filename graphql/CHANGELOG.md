@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.1.0...graphql-v2.2.0) (2024-01-04)
+
+
+### Features
+
+* **graphql:** Add Sentry environment argument to configuration ([8266034](https://github.com/City-of-Helsinki/unified-search/commit/8266034ed5cbe0868b71101417e2ea20c94d02ba))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.0.0...graphql-v2.1.0) (2023-12-08)
 
 
