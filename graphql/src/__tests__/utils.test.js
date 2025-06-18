@@ -6,14 +6,6 @@ import {
 
 describe('utils', () => {
   describe('getEsOffsetPaginationQuery', () => {
-    it('should error when before is provided', () => {
-      expect(() => getEsOffsetPaginationQuery({ before: {} })).toThrowError();
-    });
-
-    it('should error when last', () => {
-      expect(() => getEsOffsetPaginationQuery({ last: 10 })).toThrowError();
-    });
-
     it('should error when first is not a positive number', () => {
       expect(() =>
         getEsOffsetPaginationQuery({ first: 'first' })

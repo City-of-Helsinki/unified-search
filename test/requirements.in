@@ -1,4 +1,5 @@
 certifi>=2023.7.22
 elasticsearch
-requests
+opensearch-py
 pytest
+requests

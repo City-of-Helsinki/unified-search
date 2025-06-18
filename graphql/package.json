@@ -9,6 +9,7 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "serve": "node --max-http-header-size=16000 dist/index.js",
     "test": "jest --watch",
+    "test:ci": "jest --ci --coverage",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.cjs,.mjs --cache"
   },
   "author": "",
