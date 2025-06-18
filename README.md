@@ -4,29 +4,48 @@ This is common unified search: multi domain search over multiple services.
 
 Solution consists of following parts:
 
-[Data collector](https://github.com/City-of-Helsinki/unified-search/tree/develop/sources)
+[Data collector](https://github.com/City-of-Helsinki/unified-search/tree/main/sources)
 
 - Python Django application for fetching data from multiple sources and storing it to the OpenSearch (or earlier to the Elasticsearch).
 - Django management commands are triggered by Kubernetes cron jobs.
 
-OpenSearch
+[OpenSearch](https://opensearch.org/) (local dev) / [Elasticsearch](https://www.elastic.co/elasticsearch) (review/testing/staging/production)
 
 - Search engine for indexing the data.
 
-[GraphQL API](https://github.com/City-of-Helsinki/unified-search/tree/develop/graphql)
+[GraphQL API](https://github.com/City-of-Helsinki/unified-search/tree/main/graphql)
 
 - GraphQL API on top of OpenSearch providing high level interface for end (frontend) users.
 
-# Endpoints
+# Environments
 
-- Stable at https://unified-search.prod.kuva.hel.ninja/search
-- Staging at https://unified-search.test.kuva.hel.ninja/search
+Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/kuva-unified-search) Azure DevOps project:
+
+## Data collector
+
+- Review per PR (e.g. PR #321): https://kuva-unified-search-sources-pr321.api.dev.hel.ninja/
+- Testing: https://kuva-unified-search-sources.api.test.hel.ninja/
+- Staging: https://kuva-unified-search-sources.api.stage.hel.ninja/
+- Production: https://kuva-unified-search-sources.api.hel.ninja/
+
+## OpenSearch / Elasticsearch
+
+OpenSearch is used only for local development.
+
+All other environments (i.e. review/testing/staging/production) use Elasticsearch.
+
+## GraphQL API
+
+- Review per PR (e.g. PR #321): https://kuva-unified-search-pr321.api.dev.hel.ninja/search
+- Testing: https://kuva-unified-search.api.test.hel.ninja/search
+- Staging: https://kuva-unified-search.api.stage.hel.ninja/search
+- Production: https://kuva-unified-search.api.hel.fi/search
 
 # Development
 
 Docker compose sets up 3 node local test environment with Kibana. Make sure at least 4 GB of RAM is allocated to Docker.
 
-    docker-compose up
+    docker compose up
 
 To verify nodes are up and running:
 
@@ -40,27 +59,23 @@ Services:
 - OpenSearch at http://localhost:9200
 - Data sources (data collector) at http://localhost:5000/
 
-Deprecated:
-
-- Graphene based testing GraphQL search API at http://localhost:5001/graphql
-
 ## Fetching data with data collector
 
 Following management command can be used to fetch data from external data sources and store it to OpenSearch:
 
-    docker-compose exec sources python manage.py ingest_data
+    docker compose exec sources python manage.py ingest_data
 
 It is also possible to limit command to certain importer:
 
-    docker-compose exec sources python manage.py ingest_data location
+    docker compose exec sources python manage.py ingest_data location
 
 Delete all data:
 
-    docker-compose exec sources python manage.py ingest_data --delete
+    docker compose exec sources python manage.py ingest_data --delete
 
 Delete data imported by given importer:
 
-    docker-compose exec sources python manage.py ingest_data location --delete
+    docker compose exec sources python manage.py ingest_data location --delete
 
 Currently implemented importers and the indexes they create:
 
@@ -72,21 +87,24 @@ Currently implemented importers and the indexes they create:
 
 ## Testing
 
-Following test script is available for basic health check:
+Following test script is available for basic health check<br>
+(Install Python 3.9 [virtual env](https://docs.astral.sh/uv/pip/environments/) with [uv](https://github.com/astral-sh/uv)
+using `uv venv --python 3.9`, `uv pip install -r test/requirements.txt` and activate it with
+`source .venv/bin/activate` or `.venv/Scripts/activate` first):
 
-    pytest --log-cli-level=debug test_es_health.py
+    pytest test/test_es_health.py --log-cli-level=debug
 
-Sources tests, in docker-compose:
+Sources tests, with `docker compose`:
 
-    docker-compose exec sources pytest
+    docker compose exec sources pytest
 
-GraphQL tests:
+GraphQL tests under `graphql` folder (Install dependencies with `yarn` first):
 
-    npx jest
+    yarn test:ci
 
 ## GraphQL search API
 
-If not running with docker-compose, start Apollo based GraphQL server at `unified-search/graphql/`:
+If not running with `docker compose`, start Apollo based GraphQL server at `unified-search/graphql/`:
 
     node index.js
 
@@ -269,6 +287,10 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-
     {"data":{"unifiedSearch":{"count":61}}}
 
 ## Python dependencies
+
+Install pip-tools to obtain pip-compile command:
+
+    pip install pip-tools
 
 Compile requirements.in to requirements.txt:
 

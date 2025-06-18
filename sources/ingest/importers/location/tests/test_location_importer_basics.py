@@ -35,7 +35,7 @@ def test_location_importer_with_data_init(
     assert len(importer.unit_id_to_target_groups_mapping) == 8
     assert len(importer.unit_id_to_connections_mapping) == 2
     assert len(importer.accessibility_viewpoint_id_to_name_mapping) == 14
-    assert importer.run() == len(importer.tpr_units)
+    assert importer.base_run() == len(importer.tpr_units)
 
 
 @pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
@@ -48,7 +48,7 @@ def test_location_importer_without_data_init():
     assert len(importer.unit_id_to_target_groups_mapping) == 0
     assert len(importer.unit_id_to_connections_mapping) == 0
     assert len(importer.accessibility_viewpoint_id_to_name_mapping) == 0
-    assert importer.run() == 0
+    assert importer.base_run() == 0
 
 
 @pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")

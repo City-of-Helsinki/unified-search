@@ -54,9 +54,14 @@ class Importer(ABC, Generic[IndexableData]):
         pass
 
     def base_run(self):
+        """
+        Initializes, runs and finishes the importing.
+        :return: the count of units imported or None if there was no importer.
+        """
         self._initialize()
-        self.run()
+        result = self.run()
         self._finish()
+        return result
 
     def add_data(
         self,

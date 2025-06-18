@@ -373,7 +373,7 @@ class LocationImporter(Importer[Root]):
     def run(self):  # noqa C901 this function could use some refactoring
         """
         Import location data.
-        :return the count of units imported.
+        :return: the count of units imported.
         """
         self.apply_mapping(custom_mappings)
 

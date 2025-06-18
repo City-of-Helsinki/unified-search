@@ -29,6 +29,7 @@ pr:
     - '*-test.yml'
     - '*sources-review.yml'
     - 'docker-compose*'
+    - 'compose.*'
 
 # By default, use self-hosted agents
 pool: Default
