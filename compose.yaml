@@ -7,7 +7,7 @@ services:
     <<: *base
     build:
       context: ./sources
-      target: development
+      target: ${DOCKER_TARGET:-development}  # target Dockerfile stage
     ports:
       - "5000:5000"
     environment:
@@ -22,7 +22,9 @@ services:
     <<: *base
     build:
       context: ./graphql
-      target: development
+      target: ${DOCKER_TARGET:-development}  # target Dockerfile stage
+    environment:
+      NODE_ENV: ${DOCKER_TARGET:-development} # which node env the build uses. NOTE: Usually same as the ${DOCKER_TARGET}.
     volumes:
       - ./graphql:/app
       - /app/node_modules

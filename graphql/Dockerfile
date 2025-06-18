@@ -1,103 +1,79 @@
 # ===============================================
-FROM helsinkitest/node:16-slim AS appbase
+FROM registry.access.redhat.com/ubi10/nodejs-22 AS appbase
 # ===============================================
+# install yarn
+USER root
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+RUN yum -y install yarn
 
-# Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
-ENV NPM_CONFIG_LOGLEVEL warn
+WORKDIR /app
 
-ARG DEBUG
-ENV DEBUG $DEBUG
+# Set HOME to a writable dir to overcome "Error: EACCES: permission denied, open /opt/app-root/src/.config/yarn"
+ENV HOME=/app
 
-# header size issue
-ENV NODE_OPTIONS=--max-http-header-size=16384
+# set our node environment, either development or production
+# defaults to production, compose overrides this to development on build and run
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
 
-# Global npm deps in a non-root user directory
-ENV NPM_CONFIG_PREFIX=/app/.npm-global
-ENV PATH=$PATH:/app/.npm-global/bin
+# Yarn
+ENV YARN_VERSION 1.22.22
+RUN yarn policies set-version ${YARN_VERSION}
 
-ENV YARN_VERSION 1.19.1
-RUN yarn policies set-version "$YARN_VERSION"
+# Copy package.json and package-lock.json/yarn.lock files
+COPY --chown=root:root package*.json *yarn* ./
 
-COPY --chown=appuser:appuser docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
+COPY --chown=root:root docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
-
-# Use non-root user
-USER appuser
 
 # =============================
 FROM appbase AS development_base
 # =============================
 
-# Set node environment to development to install all npm dependencies
+# Set node environment to development to install all dependencies
 ENV NODE_ENV=development
-
-# Copy package.json and package-lock.json/yarn.lock files
-COPY --chown=appuser:appuser package*.json *yarn* ./
-
-# Install npm depepndencies
-ENV PATH /app/node_modules/.bin:$PATH
-
-USER root
-RUN apt-install.sh build-essential
-
-USER appuser
 RUN yarn && yarn cache clean --force
 
-USER root
-RUN apt-cleanup.sh build-essential
+# Enable hot reload by default by polling for file changes.
+#
+# NOTE: Can be disabled by setting CHOKIDAR_USEPOLLING=false in file `.env`
+#       if hot reload works on your system without polling to save CPU time.
+ARG CHOKIDAR_USEPOLLING=true
+ENV CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING}
 
-COPY --chown=appuser:appuser . /app/.
-
-USER appuser
+COPY --chown=root:root . .
 
 # =============================
 FROM development_base AS development
 # =============================
 
+ARG DEBUG
+ENV DEBUG $DEBUG
+
 # Bake package.json start command into the image
-CMD ["npm", "start"]
+USER default
+CMD ["yarn", "start"]
 
 # =============================
 FROM development_base AS transpiler
 # =============================
 
 # Transpile Typescript into Javascript
-RUN npm run transpile
+RUN yarn transpile
 
 # =============================
 FROM appbase AS production
 # =============================
 
 # Copy the transpiled source files to this image
-COPY --from=transpiler --chown=appuser:appuser /app/dist /app/dist
+COPY --from=transpiler --chown=root:root /app/dist /app/dist
 
 # Set node environment to production to install only main dependencies
-ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
-
-COPY --chown=appuser:appuser package*.json *yarn* ./
-
-# Install npm depepndencies
-ENV PATH /app/node_modules/.bin:$PATH
-
-USER root
-RUN apt-install.sh build-essential
-
-USER appuser
+ENV NODE_ENV=production
 RUN yarn && yarn cache clean --force
-
-USER root
-RUN apt-cleanup.sh build-essential
-
-# OpenShift write accesses issue, runtime error:
-# npm ERR! Log files were not written due to an error writing to the directory: /.npm/_logs
-RUN mkdir -p /.npm
-RUN chgrp -R 0 /.npm && chmod g+w -R /.npm
-
-USER appuser
 
 EXPOSE 3000/tcp
 
 # Bake package.json serve command into the image
-CMD ["npm", "run", "serve"]
-
+USER default
+CMD ["yarn", "serve"]
