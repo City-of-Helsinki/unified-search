@@ -61,8 +61,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -141,3 +139,14 @@ dmypy.json
 docker-compose.dev.yml
 
 graphql/.eslintcache
+
+# Directory created by django-munigeo's geo_import, e.g.
+# "python manage.py ingest_data administrative_division" ->
+# "geo_import finland --municipalities", see
+# https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/importer/base.py#L71
+data/
+
+# Database directory and files
+db_data/
+db.sqlite3
+db.sqlite3-journal
