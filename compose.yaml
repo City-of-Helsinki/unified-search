@@ -15,6 +15,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./sources:/app
+      # Exclude directories to avoid host/container incompatibility & permission issues:
+      - /app/.pytest_cache
     networks:
       - opensearch-net
 
@@ -27,6 +29,7 @@ services:
       NODE_ENV: ${DOCKER_TARGET:-development} # which node env the build uses. NOTE: Usually same as the ${DOCKER_TARGET}.
     volumes:
       - ./graphql:/app
+      # Exclude directories to avoid host/container incompatibility & permission issues:
       - /app/node_modules
     ports:
       - "4000:4000"
