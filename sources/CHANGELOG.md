@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.4.0...sources-v1.4.1) (2025-06-19)
+
+
+### Bug Fixes
+
+* Tests, update README & docker compose & .dockerignore ([8864887](https://github.com/City-of-Helsinki/unified-search/commit/886488734b7f5f1b9f7898970688e74d7c4dcab7))
+
 ## [1.4.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.3.1...sources-v1.4.0) (2023-12-08)
 
 
