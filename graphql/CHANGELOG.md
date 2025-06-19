@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.2.0...graphql-v2.3.0) (2025-06-19)
+
+
+### Features
+
+* **graphql:** Use ubi10 node.js v22 image in Dockerfile ([96c9f97](https://github.com/City-of-Helsinki/unified-search/commit/96c9f97fad4e493e937b485fdbbaeee9b315ad03))
+
+
+### Bug Fixes
+
+* Tests, update README & docker compose & .dockerignore ([8864887](https://github.com/City-of-Helsinki/unified-search/commit/886488734b7f5f1b9f7898970688e74d7c4dcab7))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.1.0...graphql-v2.2.0) (2024-01-04)
 
 
