@@ -106,9 +106,9 @@ class LocationImporter(Importer[Root]):
     def _init_base_data(self):
         if not self.enable_data_fetching:
             logger.info(
-                "The LocationImporter instance enable_data_fetching is set to `False`."
-                "This means that the LocationImporter instance will be initialized with an empty base data."
-                "To actually fetch some base data, set the `enable_data_fetching` to `True`."
+                "LocationImporter instance's `enable_data_fetching` is set to `False`."
+                "Because of this the instance will be initialized without base data."
+                "To fetch some base data, set `enable_data_fetching` to `True`."
             )
 
         api = LocationImporterAPI()

@@ -36,11 +36,12 @@ class LocationImporterAPI:
         cls, timeout_seconds=DEFAULT_TIMEOUT
     ) -> List[dict]:
         """
-        Get all unit IDs and their accessibility shortcoming counts from new service map API
+        Get all unit IDs and their accessibility shortcoming counts
+        from new service map API.
 
-        :return: A list of dictionaries each containing unit ID ("id") as integer and its
-            accessibility shortcoming counts ("accessibility_shortcoming_count") in a
-            dictionary.
+        :return: A list of dictionaries each containing unit ID ("id") as integer and
+            its accessibility shortcoming counts ("accessibility_shortcoming_count")
+            in a dictionary.
         """
         accumulated_results = []
         url = cls.accessibility_shortcoming_counts_endpoint

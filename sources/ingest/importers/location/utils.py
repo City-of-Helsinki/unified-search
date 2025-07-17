@@ -149,7 +149,7 @@ def define_language_properties():
 
 
 def create_accessibility_shortcomings(
-    accessibility_shortcoming_counts: Dict[str, int]
+    accessibility_shortcoming_counts: Dict[str, int],
 ) -> List[AccessibilityShortcoming]:
     """
     Create a list of accessibility shortcomings from a dictionary of accessibility
@@ -162,17 +162,17 @@ def create_accessibility_shortcomings(
     return sorted(
         (
             AccessibilityShortcoming(
-                profile=AccessibilityProfile(accessibility_profile).value,
-                count=shortcoming_count,
+                profile=AccessibilityProfile(profile).value,
+                count=count,
             )
-            for accessibility_profile, shortcoming_count in accessibility_shortcoming_counts.items()
+            for profile, count in accessibility_shortcoming_counts.items()
         )
     )
 
 
-def get_unit_id_to_accessibility_shortcomings_mapping() -> (
-    Dict[str, List[AccessibilityShortcoming]]
-):
+def get_unit_id_to_accessibility_shortcomings_mapping() -> Dict[
+    str, List[AccessibilityShortcoming]
+]:
     """
     Get mapping of unit IDs to their accessibility shortcomings from new service map API
     """
@@ -180,7 +180,9 @@ def get_unit_id_to_accessibility_shortcomings_mapping() -> (
         str(unit["id"]): create_accessibility_shortcomings(
             unit.get("accessibility_shortcoming_count", {})
         )
-        for unit in LocationImporterAPI.fetch_unit_ids_and_accessibility_shortcoming_counts()
+        for unit in (
+            LocationImporterAPI.fetch_unit_ids_and_accessibility_shortcoming_counts()
+        )
     }
 
 
@@ -254,9 +256,9 @@ def create_accessibility_sentence(
 
 
 @deprecated(
-    "Collect the accessibility sentences from the response of `LocationImporterAPI.fetch_tpr_units()` instead. "
-    "The accessibility sentences are included in the unit-query "
-    "(e.g. https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes), "
+    "Collect accessibility sentences from LocationImporterAPI.fetch_tpr_units instead."
+    "The accessibility sentences are included in the unit query, e.g. "
+    "https://www.hel.fi/palvelukarttaws/rest/v4/unit/42284?official=yes&format=json&newfeatures=yes "  # noqa: E501
     "which makes this request unnecessary.",
 )
 def get_unit_id_to_accessibility_sentences_mapping(
@@ -469,7 +471,7 @@ def get_unit_id_to_connections_mapping(
 
 
 def is_venue_reservable(connections: List[Connection]):
-    """The venue is reservable if there is a tag "#tilojen_varaaminen" in the list of connections."""
+    """Venue is reservable if it has a tag "#tilojen_varaaminen" in connections list."""
     return any(
         tag == ConnectionTag.RESERVABLE.value
         for connection in connections

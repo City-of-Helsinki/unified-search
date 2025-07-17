@@ -7,6 +7,8 @@ from ingest.importers.location.dataclasses import (
     Accessibility,
     AccessibilityShortcoming,
     AccessibilityViewpoint,
+)
+from ingest.importers.location.dataclasses import (
     AccessibilityViewpointID as VpID,
 )
 from ingest.importers.location.enums import AccessibilityViewpointValue

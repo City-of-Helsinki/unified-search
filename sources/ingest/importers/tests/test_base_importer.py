@@ -25,7 +25,7 @@ class SomeImporter(Importer[SomeData]):
 
 
 def assert_snapshot_match_es_data_and_aliases(snapshot, es):
-    es.indices.refresh("test")
+    es.indices.refresh(index="test")
 
     hits = es.search(index="test")["hits"]
     snapshot.assert_match(hits)
@@ -58,8 +58,8 @@ def test_importer_wip_results(snapshot, es, has_old_data):
             assert_snapshot_match_es_data_and_aliases(snapshot, es)
 
     if has_old_data:
-        es.indices.create("test_1", body={"aliases": {"test": {}}})
-        es.index("test_1", {"foo": "old data"}, id="foo")
+        es.indices.create(index="test_1", body={"aliases": {"test": {}}})
+        es.index(index="test_1", body={"foo": "old data"}, id="foo")
 
     importer = WipTestImporter()
     importer.base_run()

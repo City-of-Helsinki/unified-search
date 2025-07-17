@@ -100,7 +100,7 @@ def mocked_service_registry_description_viewpoint_response(mocker):
 def es():
     es = OpenSearch([settings.ES_URI])
     yield es
-    es.indices.delete("test_*")
+    es.indices.delete(index="test_*")
 
 
 @pytest.fixture
