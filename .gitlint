@@ -1,0 +1,30 @@
+[general]
+# Match anywhere (search) instead of just at the beginning of the line
+# https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
+regex-style-search=true
+
+[title-max-length]
+line-length=72
+
+[ignore-body-lines]
+# Ignore all lines containing >72 character http:// or https:// URLs
+# because URLs can not be easily wrapped to multiple lines without
+# breaking them somehow.
+#
+# Explanation of the regular expression:
+#
+# "(?=\S{73,})" uses a positive lookahead with 73 non-whitespace characters
+# which means there must be at least 73 non-whitespace characters ahead.
+# It doesn't change the position in input string though. So if there are at
+# least 73 non-whitespace characters ahead then those must start with
+# either "http://" or "https://".
+regex=^.*(?=\S{73,})(http://|https://)
+
+[title-min-length]
+min-length=3
+
+[body-max-line-length]
+line-length=72
+
+[body-min-length]
+min-length=0

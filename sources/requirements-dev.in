@@ -1,12 +1,8 @@
 -c requirements.txt
-black
-flake8
-flake8-bugbear
 ipython
-isort
-pep8-naming
 pytest
 pytest-cov
 pytest-django
 pytest-mock
-snapshottest
+ruff
+snapshottest>=1.0.0a1

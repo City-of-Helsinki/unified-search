@@ -1,5 +1,5 @@
 # ==============================
-FROM helsinki.azurecr.io/ubi9/python-39-gdal AS appbase
+FROM helsinki.azurecr.io/ubi9/python-312-gdal AS appbase
 # ==============================
 
 ENV PYTHONUNBUFFERED 1
@@ -53,7 +53,7 @@ RUN mkdir -p /app/.pytest_cache \
 
 USER default
 
-EXPOSE 5000/tcp
+EXPOSE 5001/tcp
 
 # ==============================
 FROM appbase AS production
@@ -68,4 +68,4 @@ RUN pip install --no-cache-dir -r /app/requirements-prod.txt \
 
 USER default
 
-EXPOSE 5000/tcp
+EXPOSE 5001/tcp

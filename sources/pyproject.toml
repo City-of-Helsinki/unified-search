@@ -1,2 +1,51 @@
-[tool.black]
-extend-exclude = 'snapshots'
+[project]
+name = "unified-search-sources"
+version = "1.4.0"
+requires-python = ">= 3.12"
+
+[tool.ruff]
+extend-exclude = ["migrations", "snapshots"]
+
+[tool.ruff.lint]
+# See https://docs.astral.sh/ruff/rules/ for documentation of rules
+extend-select = [
+    "B01", # Enable B01* part of flake8-bugbear (B) rules, e.g. B015 and B018
+    "C90", # Enable mccabe (C90) rules
+    "E",   # Enable pycodestyle error (E) rules
+    "F",   # Enable Pyflakes (F) rules
+    "I",   # Enable isort (I) rules
+    "W",   # Enable pycodestyle warning (W) rules
+]
+ignore = [
+    # FIXME: Fix underlying problems and remove ignores:
+    "E741",    # Ignore ambiguous-variable-name (E741), e.g. using "l" as a variable name
+]
+
+[tool.ruff.lint.isort]
+# isort options for ruff:
+# https://docs.astral.sh/ruff/settings/#lintisort
+order-by-type = false # Don't use type (i.e. case) to sort imports
+known-first-party = ["ingest", "sources"]
+
+[tool.ruff.format]
+docstring-code-format = true # Format code in docstrings
+
+[tool.coverage.run]
+# Coverage run options:
+# https://coverage.readthedocs.io/en/latest/config.html#run
+branch = true
+omit = ["*migrations*", "*site-packages*", "*venv*"]
+
+[tool.pytest.ini_options]
+# pytest-django options:
+# https://pytest-django.readthedocs.io/en/latest/configuring_django.html
+DJANGO_SETTINGS_MODULE = "sources.settings"
+
+# pytest options:
+# https://docs.pytest.org/en/stable/reference/reference.html#configuration-options
+norecursedirs = ["node_modules", ".git", ".venv*", "venv*", ".pytest_cache"]
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "IGNORE_EXCEPTION_DETAIL",
+    "ALLOW_UNICODE",
+]

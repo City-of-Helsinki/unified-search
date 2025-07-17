@@ -1,3 +1,5 @@
+# Ignore line-too-long (E501) for this file
+# ruff: noqa: E501
 import json
 import os
 

@@ -9,7 +9,7 @@ services:
       context: ./sources
       target: ${DOCKER_TARGET:-development}  # target Dockerfile stage
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
       APPLY_MIGRATIONS: 1
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
       - node.name=opensearch-node1
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
-      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - bootstrap.memory_lock=false  # disabled because doesn't work on macOS -> thus, swapping is enabled
       - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
     ulimits:
@@ -72,7 +72,7 @@ services:
       - node.name=opensearch-node2
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
-      - bootstrap.memory_lock=true
+      - bootstrap.memory_lock=false  # disabled because doesn't work on macOS -> thus, swapping is enabled
       - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -95,7 +95,7 @@ services:
       - node.name=opensearch-node3
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
-      - bootstrap.memory_lock=true
+      - bootstrap.memory_lock=false  # disabled because doesn't work on macOS -> thus, swapping is enabled
       - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:

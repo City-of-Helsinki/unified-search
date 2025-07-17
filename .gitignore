@@ -138,6 +138,7 @@ dmypy.json
 .DS_Store
 docker-compose.dev.yml
 
+graphql/.config/
 graphql/.eslintcache
 
 # Directory created by django-munigeo's geo_import, e.g.
@@ -146,7 +147,6 @@ graphql/.eslintcache
 # https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/importer/base.py#L71
 data/
 
-# Database directory and files
-db_data/
+# Database files
 db.sqlite3
 db.sqlite3-journal

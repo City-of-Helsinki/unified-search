@@ -43,6 +43,9 @@ All other environments (i.e. review/testing/staging/production) use Elasticsearc
 
 # Development
 
+1. First copy [.env.example](./.env.example) to `.env`
+1. Then read the file's contents and set environment variables according to your environment.
+
 Docker compose sets up 3 node local test environment with Kibana. Make sure at least 4 GB of RAM is allocated to Docker.
 
     docker compose up
@@ -57,7 +60,7 @@ Services:
 - OpenSearch Dashboard at http://localhost:5601
 - OpenSearch Dashboard Dev Tools at http://localhost:5601/app/dev_tools#/console
 - OpenSearch at http://localhost:9200
-- Data sources (data collector) at http://localhost:5000/
+- Data sources (data collector) at http://localhost:5001/
 
 ## Fetching data with data collector
 
@@ -88,8 +91,8 @@ Currently implemented importers and the indexes they create:
 ## Testing
 
 Following test script is available for basic health check<br>
-(Install Python 3.9 [virtual env](https://docs.astral.sh/uv/pip/environments/) with [uv](https://github.com/astral-sh/uv)
-using `uv venv --python 3.9`, `uv pip install -r test/requirements.txt` and activate it with
+(Install Python 3.12 [virtual env](https://docs.astral.sh/uv/pip/environments/) with [uv](https://github.com/astral-sh/uv)
+using `uv venv --python 3.12`, `uv pip install -r test/requirements.txt` and activate it with
 `source .venv/bin/activate` or `.venv/Scripts/activate` first):
 
     pytest test/test_es_health.py --log-cli-level=debug
@@ -299,6 +302,34 @@ Compile requirements.in to requirements.txt:
 Install dependencies from requirements.txt:
 
     pip install -r requirements.txt
+
+## Code linting & formatting
+
+This project uses [ruff](https://github.com/astral-sh/ruff) for Python code linting and formatting
+for files under [sources](./sources/) directory.
+Ruff is configured through [pyproject.toml](./sources/pyproject.toml).
+
+Basic `ruff` commands:
+ - Check linting & formatting:
+   - `ruff check` (check linting)
+   - `ruff format --check` (check formatting)
+ - Fix linting & formatting:
+   - `ruff check --fix` (fix linting, i.e. what `flake8` and `isort` did before)
+   - `ruff format` (fix formatting, i.e. what `black` did before)
+
+## Pre-commit hooks
+
+You can use [`pre-commit`](https://pre-commit.com/) to lint and format your code before committing:
+
+1. Install `pre-commit` (there are many ways to do that, but let's use pip as an example):
+   - `pip install pre-commit`
+2. Set up git hooks from `.pre-commit-config.yaml` by running these commands from project root:
+   - `pre-commit install` to enable pre-commit code formatting & linting
+   - `pre-commit install --hook-type commit-msg` to enable pre-commit commit message linting
+
+After that, linting and formatting hooks will run against all changed files before committing.
+
+Git commit message linting is configured in [.gitlint](./.gitlint)
 
 ## Known issues
 

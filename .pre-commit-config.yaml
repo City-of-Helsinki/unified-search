@@ -1,0 +1,37 @@
+# Disclaimer:
+#   Because pre-commit does not natively support monorepos this
+#   configuration file is in the repository's root and contains
+#   hooks for different parts of the monorepo.
+#
+# Pre-commit hook documentation:
+# - https://pre-commit.com/
+# - https://pre-commit.com/hooks.html
+#
+# Ruff pre-commit hook documentation:
+# - https://github.com/astral-sh/ruff-pre-commit
+default_language_version:
+  python: python3.12
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.3
+    hooks:
+      # Run the linter only for sources directory
+      - id: ruff-check
+        args: [ --fix, --config, sources/pyproject.toml ]
+        files: ^sources/
+      # Run the formatter only for sources directory
+      - id: ruff-format
+        args: [ --config, sources/pyproject.toml ]
+        files: ^sources/
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.2.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+        stages: [commit-msg]

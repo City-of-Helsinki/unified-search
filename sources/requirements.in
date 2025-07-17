@@ -1,7 +1,7 @@
-certifi>=2023.7.22
+certifi
 Django
-opensearch-py
-requests
-pyhumps
 django-munigeo
+opensearch-py
+pyhumps
+requests
 sentry-sdk

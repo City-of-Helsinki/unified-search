@@ -3,8 +3,8 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
 from urllib.parse import urlencode
+from zoneinfo import ZoneInfo
 
-import pytz
 from django.utils.timezone import localdate, make_aware
 from humps import camelize
 from requests import RequestException
@@ -234,8 +234,7 @@ class HaukiOpeningHoursFetcher:
     def get_datetime_from_date_and_time(day, dt):
         return make_aware(
             datetime.combine(day, datetime.strptime(dt, "%H:%M:%S").time()),
-            pytz.timezone(DEFAULT_TIME_ZONE),
-            True,
+            timezone=ZoneInfo(DEFAULT_TIME_ZONE),
         )
 
     @staticmethod
