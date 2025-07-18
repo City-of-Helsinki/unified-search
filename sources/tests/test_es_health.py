@@ -1,9 +1,11 @@
-import logging
-import requests
 import json
+import logging
+import os
 
-from opensearchpy import OpenSearch, exceptions
-
+import pytest
+import requests
+from django.conf import settings
+from opensearchpy import exceptions, OpenSearch
 
 """ Running:
         pytest
@@ -12,6 +14,7 @@ from opensearchpy import OpenSearch, exceptions
         pytest --log-cli-level=debug
 """
 
+GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 
 logging.basicConfig(
     filename="test_es_health.log",
@@ -20,17 +23,19 @@ logging.basicConfig(
 )
 
 
+@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 def test_es_up():
     logging.debug("Checking OpenSearch connection")
-    r = requests.get("http://localhost:9200")
+    r = requests.get(settings.ES_URI)
     logging.debug(json.dumps(json.loads(r.content), indent=4))
     assert r.status_code == 200
 
 
+@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 def test_es_basic_operations():
     """Run basic operations for testing purposes."""
 
-    es = OpenSearch([{"host": "localhost", "port": 9200}])
+    es = OpenSearch([settings.ES_URI])
 
     try:
         logging.debug("Deleting existing test data")

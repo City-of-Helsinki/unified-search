@@ -90,13 +90,6 @@ Currently implemented importers and the indexes they create:
 
 ## Testing
 
-Following test script is available for basic health check<br>
-(Install Python 3.12 [virtual env](https://docs.astral.sh/uv/pip/environments/) with [uv](https://github.com/astral-sh/uv)
-using `uv venv --python 3.12`, `uv pip install -r test/requirements.txt` and activate it with
-`source .venv/bin/activate` or `.venv/Scripts/activate` first):
-
-    pytest test/test_es_health.py --log-cli-level=debug
-
 Sources tests, with `docker compose`:
 
     docker compose exec sources pytest

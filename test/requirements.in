@@ -1,5 +1,0 @@
-certifi>=2023.7.22
-elasticsearch
-opensearch-py
-pytest
-requests
