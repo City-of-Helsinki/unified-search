@@ -1,9 +1,9 @@
-import { ES_DEFAULT_PAGE_SIZE } from '../datasources/es';
+import { ES_DEFAULT_PAGE_SIZE } from '../datasources/es/index.js';
 import {
   type ConnectionArguments,
   type ConnectionCursorObject,
-} from '../types';
-import { readCursor } from '../utils';
+} from '../types.js';
+import { readCursor } from '../utils.js';
 
 interface Edge {
   cursor: string;

@@ -1,7 +1,7 @@
 import {
   type ELASTIC_SEARCH_INDICES,
   type SEARCH_RESULT_FIELDS,
-} from './constants';
+} from './constants.js';
 
 export type ElasticSearchIndex = (typeof ELASTIC_SEARCH_INDICES)[number];
 

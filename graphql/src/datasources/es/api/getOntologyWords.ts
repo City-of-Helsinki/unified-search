@@ -1,6 +1,6 @@
-import { type ElasticSearchAPI } from '..';
-import { ES_ONTOLOGY_WORD_INDEX } from '../constants';
-import type { OntologyWordParams } from '../types';
+import { type ElasticSearchAPI } from '../index.js';
+import { ES_ONTOLOGY_WORD_INDEX } from '../constants.js';
+import type { OntologyWordParams } from '../types.js';
 
 export default async function getOntologyWords(
   request: ElasticSearchAPI['post'],
@@ -15,11 +15,8 @@ export default async function getOntologyWords(
         },
       }
     : {};
-  return await request(
-    `${ES_ONTOLOGY_WORD_INDEX}/_search`,
-    JSON.stringify({ size: 10000, ...query }),
-    {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  return await request(`${ES_ONTOLOGY_WORD_INDEX}/_search`, {
+    body: JSON.stringify({ size: 10000, ...query }),
+    headers: { 'Content-Type': 'application/json' },
+  });
 }

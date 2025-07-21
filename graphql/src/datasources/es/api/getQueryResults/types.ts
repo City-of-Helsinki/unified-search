@@ -1,10 +1,10 @@
-import type { ElasticLanguage, TranslatableField } from '../../../../types';
+import type { ElasticLanguage, TranslatableField } from '../../../../types.js';
 import type {
   AccessibilityProfileType,
   ElasticSearchIndex,
   OrderByDistanceParams,
   OrderByNameParams,
-} from '../../types';
+} from '../../types.js';
 
 export type OrderByFields = {
   orderByDistance?: OrderByDistanceParams;

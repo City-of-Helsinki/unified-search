@@ -1,6 +1,6 @@
-import type { ElasticLanguage } from '../../../../../types';
-import { ES_EVENT_INDEX, ES_LOCATION_INDEX } from '../../../constants';
-import type { ElasticSearchIndex } from '../../../types';
+import type { ElasticLanguage } from '../../../../../types.js';
+import { ES_EVENT_INDEX, ES_LOCATION_INDEX } from '../../../constants.js';
+import type { ElasticSearchIndex } from '../../../types.js';
 
 // Ontology fields for different indexes
 export function getOntologyFields(

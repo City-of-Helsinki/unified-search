@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2019",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "es2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -10,6 +10,6 @@
     "outDir": "dist",
     "allowJs": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
+  "include": ["src/**/*", "vitest.config.ts"],
+  "exclude": ["**/dist", "**/coverage", "**/node_modules"]
 }

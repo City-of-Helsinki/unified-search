@@ -18,7 +18,7 @@ export const geoSchema = gql`
   CRS object properties.
   """
   union GeoJSONCRSProperties =
-      GeoJSONNamedCRSProperties
+    | GeoJSONNamedCRSProperties
     | GeoJSONLinkedCRSProperties
   """
   Enumeration of all GeoJSON CRS object types.

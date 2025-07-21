@@ -1,7 +1,9 @@
-import { ApolloServer, ValidationError } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@as-integrations/express5';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { buildSubgraphSchema } from '@apollo/subgraph';
-
-import responseCachePlugin from 'apollo-server-plugin-response-cache';
+import http from 'http';
 
 import cors from 'cors';
 import express from 'express';
@@ -12,28 +14,33 @@ import {
   elasticLanguageFromGraphqlLanguage,
   getEsOffsetPaginationQuery,
   isDefined,
-} from './utils';
-import pageInfoResolver from './resolvers/pageInfoResolver';
-import { type ConnectionArguments, type ConnectionCursorObject } from './types';
+} from './utils.js';
+import pageInfoResolver from './resolvers/pageInfoResolver.js';
+import {
+  type ConnectionArguments,
+  type ConnectionCursorObject,
+} from './types.js';
 import {
   type AccessibilityProfileType,
   type ElasticSearchIndex,
   type OrderByDistanceParams,
   type OrderByNameParams,
-} from './datasources/es/types';
+} from './datasources/es/types.js';
 
-import { elasticSearchSchema } from './schemas/es';
-import { palvelukarttaSchema } from './schemas/palvelukartta';
-import { linkedeventsSchema } from './schemas/linkedevents';
-import { locationSchema } from './schemas/location';
-import { sharedSchema } from './schemas/shared';
-import { eventSchema } from './schemas/event';
-import { actorSchema } from './schemas/actor';
-import { geoSchema } from './schemas/geojson';
-import { querySchema } from './schemas/query';
-import { ontologySchema } from './schemas/ontology';
+import { elasticSearchSchema } from './schemas/es.js';
+import { palvelukarttaSchema } from './schemas/palvelukartta.js';
+import { linkedeventsSchema } from './schemas/linkedevents.js';
+import { locationSchema } from './schemas/location.js';
+import { sharedSchema } from './schemas/shared.js';
+import { eventSchema } from './schemas/event.js';
+import { actorSchema } from './schemas/actor.js';
+import { geoSchema } from './schemas/geojson.js';
+import { querySchema } from './schemas/query.js';
+import { ontologySchema } from './schemas/ontology.js';
 
-import { ElasticSearchAPI } from './datasources/es';
+import { ElasticSearchAPI } from './datasources/es/index.js';
+import { GraphQLError } from 'graphql';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 
 const OK = 'OK';
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
@@ -99,14 +106,23 @@ function validateOrderByArguments(
     Object.values(orderByArgs).filter(isDefined).length > 1;
 
   if (isOrderByAmbiguous) {
-    throw new ValidationError(
-      `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`
+    throw new GraphQLError(
+      `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`,
+      {
+        extensions: {
+          code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
+        },
+      }
     );
   }
 
   for (const [orderByArgName, value] of Object.entries(orderByArgs)) {
     if (value === null) {
-      throw new ValidationError(`"${orderByArgName}" cannot be null.`);
+      throw new GraphQLError(`"${orderByArgName}" cannot be null.`, {
+        extensions: {
+          code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
+        },
+      });
     }
   }
 }
@@ -423,17 +439,6 @@ const sentryConfig = {
 };
 
 void (async () => {
-  const server = new ApolloServer({
-    schema: combinedSchema,
-    dataSources: () => {
-      return {
-        elasticSearchAPI: new ElasticSearchAPI(),
-      };
-    },
-    introspection: true,
-    plugins: [responseCachePlugin(), sentryConfig],
-  });
-
   let serverIsReady = false;
 
   const signalReady = () => {
@@ -449,8 +454,39 @@ void (async () => {
   };
 
   const app = express();
+  const httpServer = http.createServer(app);
 
-  app.use(cors());
+  const server = new ApolloServer({
+    schema: combinedSchema,
+    introspection: true,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      responseCachePlugin(),
+      sentryConfig,
+    ],
+  });
+  await server.start();
+
+  app.use(
+    '/search',
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async () => ({
+        dataSources: {
+          elasticSearchAPI: new ElasticSearchAPI(),
+        },
+      }),
+    })
+  );
+
+  const port = process.env.GRAPHQL_PROXY_PORT || 4000;
+
+  httpServer.listen({ port }, () => {
+    signalReady();
+    // eslint-disable-next-line no-console
+    console.log(`🚀 Server ready at http://localhost:${port}/search`);
+  });
 
   app.get('/healthz', (request, response) => {
     checkIsServerReady(response);
@@ -458,21 +494,6 @@ void (async () => {
 
   app.get('/readiness', (request, response) => {
     checkIsServerReady(response);
-  });
-
-  await server.start();
-
-  server.applyMiddleware({ app, path: '/search' });
-
-  const port = process.env.GRAPHQL_PROXY_PORT || 4000;
-
-  app.listen({ port }, () => {
-    signalReady();
-
-    // eslint-disable-next-line no-console
-    console.log(
-      `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
-    );
   });
 })();
 

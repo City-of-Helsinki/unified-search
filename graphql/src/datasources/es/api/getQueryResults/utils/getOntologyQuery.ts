@@ -1,8 +1,8 @@
-import { GraphQlToElasticLanguageMap } from '../../../../../constants';
-import { type ElasticLanguage } from '../../../../../types';
-import { ES_DEFAULT_INDEX } from '../../../constants';
-import type { GetQueryResultsProps } from '../types';
-import { getOntologyFields } from './getOntologyFields';
+import { GraphQlToElasticLanguageMap } from '../../../../../constants.js';
+import { type ElasticLanguage } from '../../../../../types.js';
+import { ES_DEFAULT_INDEX } from '../../../constants.js';
+import type { GetQueryResultsProps } from '../types.js';
+import { getOntologyFields } from './getOntologyFields.js';
 
 export const getOntologyMatchers = ({
   index = ES_DEFAULT_INDEX,

@@ -1,4 +1,4 @@
-import type { TermField, ArrayFilter } from './types';
+import type { TermField, ArrayFilter } from './types.js';
 
 export function buildArrayFilter(
   field: TermField,
