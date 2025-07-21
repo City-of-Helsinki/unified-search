@@ -1,13 +1,13 @@
-import type { ElasticLanguage } from '../../../../../types';
-import { isDefined } from '../../../../../utils';
+import type { ElasticLanguage } from '../../../../../types.js';
+import { isDefined } from '../../../../../utils.js';
 import {
   ES_EVENT_INDEX,
   ES_LOCATION_INDEX,
   EVENT_SEARCH_RESULT_FIELD,
   VENUE_SEARCH_RESULT_FIELD,
-} from '../../../constants';
-import type { ElasticSearchIndex, SearchResultField } from '../../../types';
-import type { OrderByFields, GetQueryResultsProps } from '../types';
+} from '../../../constants.js';
+import type { ElasticSearchIndex, SearchResultField } from '../../../types.js';
+import type { OrderByFields, GetQueryResultsProps } from '../types.js';
 
 const ElasticSearchIndexToSearchResultField: Record<
   Extract<ElasticSearchIndex, typeof ES_EVENT_INDEX | typeof ES_LOCATION_INDEX>,

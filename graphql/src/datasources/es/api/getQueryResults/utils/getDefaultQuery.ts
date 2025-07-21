@@ -1,9 +1,12 @@
-import { GraphQlToElasticLanguageMap } from '../../../../../constants';
-import type { ElasticLanguage, TranslatableField } from '../../../../../types';
-import { ES_DEFAULT_INDEX } from '../../../constants';
-import { searchFieldsBoostMapping } from '../constants';
-import type { GetQueryResultsProps, QueryFilterClauses } from '../types';
-import { getOntologyMatchers } from './getOntologyQuery';
+import { GraphQlToElasticLanguageMap } from '../../../../../constants.js';
+import type {
+  ElasticLanguage,
+  TranslatableField,
+} from '../../../../../types.js';
+import { ES_DEFAULT_INDEX } from '../../../constants.js';
+import { searchFieldsBoostMapping } from '../constants.js';
+import type { GetQueryResultsProps, QueryFilterClauses } from '../types.js';
+import { getOntologyMatchers } from './getOntologyQuery.js';
 
 type DefaultBoolQueryClausesType =
   | {

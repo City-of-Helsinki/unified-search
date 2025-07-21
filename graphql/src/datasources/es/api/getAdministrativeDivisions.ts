@@ -1,9 +1,9 @@
-import { type ElasticSearchAPI } from '..';
+import { type ElasticSearchAPI } from '../index.js';
 import {
   ES_ADMINISTRATIVE_DIVISION_INDEX,
   ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX,
-} from '../constants';
-import type { AdministrativeDivisionParams } from '../types';
+} from '../constants.js';
+import type { AdministrativeDivisionParams } from '../types.js';
 
 export default async function getAdministrativeDivisions(
   request: ElasticSearchAPI['get'],
@@ -12,11 +12,8 @@ export default async function getAdministrativeDivisions(
   const index = helsinkiCommonOnly
     ? ES_HELSINKI_COMMON_ADMINISTRATIVE_DIVISION_INDEX
     : ES_ADMINISTRATIVE_DIVISION_INDEX;
-  return await request(
-    `${index}/_search`,
-    { size: 10000 },
-    {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  return await request(`${index}/_search`, {
+    params: { size: '10000' },
+    headers: { 'Content-Type': 'application/json' },
+  });
 }

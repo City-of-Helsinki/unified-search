@@ -1,10 +1,10 @@
-import { type ElasticSearchAPI } from '..';
-import { ES_ONTOLOGY_TREE_INDEX } from '../constants';
+import { type ElasticSearchAPI } from '../index.js';
+import { ES_ONTOLOGY_TREE_INDEX } from '../constants.js';
 import type {
   OntologyTreeParams,
   OntologyTreeQuery,
   OntologyTreeQueryBool,
-} from '../types';
+} from '../types.js';
 
 export default async function getOntologyTree(
   request: ElasticSearchAPI['post'],
@@ -30,11 +30,8 @@ export default async function getOntologyTree(
     ...(bool && { query: { bool } }),
   };
 
-  return await request(
-    `${ES_ONTOLOGY_TREE_INDEX}/_search`,
-    JSON.stringify(query),
-    {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  return await request(`${ES_ONTOLOGY_TREE_INDEX}/_search`, {
+    body: JSON.stringify(query),
+    headers: { 'Content-Type': 'application/json' },
+  });
 }

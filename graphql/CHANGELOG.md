@@ -2,29 +2,26 @@
 
 ## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.1.0...graphql-v2.2.0) (2024-01-04)
 
-
 ### Features
 
-* **graphql:** Add Sentry environment argument to configuration ([8266034](https://github.com/City-of-Helsinki/unified-search/commit/8266034ed5cbe0868b71101417e2ea20c94d02ba))
+- **graphql:** Add Sentry environment argument to configuration ([8266034](https://github.com/City-of-Helsinki/unified-search/commit/8266034ed5cbe0868b71101417e2ea20c94d02ba))
 
 ## [2.1.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.0.0...graphql-v2.1.0) (2023-12-08)
 
-
 ### Features
 
-* **graphql:** Add reservation field and filter ([2a8f662](https://github.com/City-of-Helsinki/unified-search/commit/2a8f6620f4231adda0db293a9b44bbdc9925ab9d))
-* **graphql:** Exact matches should be higher in relevance ([d963f70](https://github.com/City-of-Helsinki/unified-search/commit/d963f70a0d351dade34b4e5c4cdebb72567b642c))
-* **graphql:** Include ontologies in default search query ([6d7a482](https://github.com/City-of-Helsinki/unified-search/commit/6d7a4824d812e9978df50779352bdd36286cf28e))
-* **search:** Use "query string" query with "bool_prefix"-type and escaping ([46c43f6](https://github.com/City-of-Helsinki/unified-search/commit/46c43f6334d1b5f54853dd6141ac912a94b21932))
-
+- **graphql:** Add reservation field and filter ([2a8f662](https://github.com/City-of-Helsinki/unified-search/commit/2a8f6620f4231adda0db293a9b44bbdc9925ab9d))
+- **graphql:** Exact matches should be higher in relevance ([d963f70](https://github.com/City-of-Helsinki/unified-search/commit/d963f70a0d351dade34b4e5c4cdebb72567b642c))
+- **graphql:** Include ontologies in default search query ([6d7a482](https://github.com/City-of-Helsinki/unified-search/commit/6d7a4824d812e9978df50779352bdd36286cf28e))
+- **search:** Use "query string" query with "bool_prefix"-type and escaping ([46c43f6](https://github.com/City-of-Helsinki/unified-search/commit/46c43f6334d1b5f54853dd6141ac912a94b21932))
 
 ### Bug Fixes
 
-* **graphql:** Bind ElasticSearchAPI to request utility props ([672b2cb](https://github.com/City-of-Helsinki/unified-search/commit/672b2cbbf48eb701f33b8ba8d18ac865ccacd17d))
-* **graphql:** Handle the special char for all results ([9943925](https://github.com/City-of-Helsinki/unified-search/commit/9943925fd1a83db1048cd4d800d5b65423c0ba8f))
-* **graphql:** Linter issues ([f6ebef8](https://github.com/City-of-Helsinki/unified-search/commit/f6ebef8292438244ffff1a72150bae30586cb889))
-* Transpiling did not include index.js in the dist-root ([983c60e](https://github.com/City-of-Helsinki/unified-search/commit/983c60e9ff945aad8ffc4f0a59183698244620b4))
-* Typescript error ([bb0ae90](https://github.com/City-of-Helsinki/unified-search/commit/bb0ae9008f065c3e60607e63c0a50239394537b0))
+- **graphql:** Bind ElasticSearchAPI to request utility props ([672b2cb](https://github.com/City-of-Helsinki/unified-search/commit/672b2cbbf48eb701f33b8ba8d18ac865ccacd17d))
+- **graphql:** Handle the special char for all results ([9943925](https://github.com/City-of-Helsinki/unified-search/commit/9943925fd1a83db1048cd4d800d5b65423c0ba8f))
+- **graphql:** Linter issues ([f6ebef8](https://github.com/City-of-Helsinki/unified-search/commit/f6ebef8292438244ffff1a72150bae30586cb889))
+- Transpiling did not include index.js in the dist-root ([983c60e](https://github.com/City-of-Helsinki/unified-search/commit/983c60e9ff945aad8ffc4f0a59183698244620b4))
+- Typescript error ([bb0ae90](https://github.com/City-of-Helsinki/unified-search/commit/bb0ae9008f065c3e60607e63c0a50239394537b0))
 
 ## [2.0.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v1.3.0...graphql-v2.0.0) (2023-10-25)
 

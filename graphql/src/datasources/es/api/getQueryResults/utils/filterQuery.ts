@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon';
-import { DEFAULT_TIME_ZONE } from '../../../constants';
+import { DEFAULT_TIME_ZONE } from '../../../constants.js';
 import type {
   ArrayFilter,
   MustHaveReservableResourceFilter,
   OpenAtFilter,
-} from '../../../types';
-import type { QueryResultFilterProps } from '../types';
-import { buildArrayFilter } from '../../../utils';
+} from '../../../types.js';
+import type { QueryResultFilterProps } from '../types.js';
+import { buildArrayFilter } from '../../../utils.js';
 
 const buildMustHaveReservableResourceFilter =
   (): MustHaveReservableResourceFilter => ({

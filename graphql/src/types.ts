@@ -1,4 +1,4 @@
-import { type GraphQlToElasticLanguageMap } from './constants';
+import { type GraphQlToElasticLanguageMap } from './constants.js';
 
 export type ConnectionCursor = string;
 

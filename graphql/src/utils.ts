@@ -1,13 +1,13 @@
 import {
   GraphQlToElasticLanguageMap,
   elasticSearchQueryStringSpecialCharsRegExpPattern,
-} from './constants';
+} from './constants.js';
 import {
   type ConnectionArguments,
   type ElasticSearchPagination,
   type ConnectionCursorObject,
   type ElasticLanguage,
-} from './types';
+} from './types.js';
 
 export function createCursor<T>(query: T): string {
   return Buffer.from(JSON.stringify(query)).toString('base64');

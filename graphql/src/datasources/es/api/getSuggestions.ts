@@ -1,7 +1,7 @@
-import { type ElasticSearchAPI } from '..';
-import { type ElasticLanguage } from '../../../types';
-import { ES_DEFAULT_INDEX } from '../constants';
-import type { ElasticSearchIndex } from '../types';
+import { type ElasticSearchAPI } from '../index.js';
+import { type ElasticLanguage } from '../../../types.js';
+import { ES_DEFAULT_INDEX } from '../constants.js';
+import type { ElasticSearchIndex } from '../types.js';
 
 export type getSuggestionProps = {
   prefix: string;
@@ -32,7 +32,7 @@ export default async function getSuggestions(
     },
   };
 
-  return await request(`${index}/_search`, undefined, {
+  return await request(`${index}/_search`, {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(query),
   });

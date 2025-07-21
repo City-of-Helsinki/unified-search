@@ -2,6 +2,7 @@ config
 **/node_modules
 .cache
 **/.cache
+**/coverage
 **/build
 **/dist
 **/.storybook

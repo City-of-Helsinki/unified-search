@@ -1,11 +1,11 @@
-import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types';
-import { ES_DEFAULT_INDEX, SEARCH_ALL_SPECIAL_CHAR } from '../../constants';
-import { type ElasticSearchAPI } from '../..';
-import type { GetQueryResultsProps } from './types';
-import { getDefaultBoolQuery, sortQuery } from './utils';
-import { filterQuery } from './utils/filterQuery';
-import { GraphQlToElasticLanguageMap } from '../../../../constants';
-import { getOntologyQuery } from './utils/getOntologyQuery';
+import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types.js';
+import { ES_DEFAULT_INDEX, SEARCH_ALL_SPECIAL_CHAR } from '../../constants.js';
+import { type ElasticSearchAPI } from '../../index.js';
+import type { GetQueryResultsProps } from './types.js';
+import { getDefaultBoolQuery, sortQuery } from './utils/index.js';
+import { filterQuery } from './utils/filterQuery.js';
+import { GraphQlToElasticLanguageMap } from '../../../../constants.js';
+import { getOntologyQuery } from './utils/getOntologyQuery.js';
 
 function createQuery({
   index = ES_DEFAULT_INDEX,
@@ -85,7 +85,7 @@ export default async function getQueryResults(
 ) {
   const query = queryBuilder({ index, ...queryProps });
 
-  return await request(`${index}/_search`, undefined, {
+  return await request(`${index}/_search`, {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(query),
   });
