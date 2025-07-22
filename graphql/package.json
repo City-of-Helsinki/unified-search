@@ -24,7 +24,7 @@
     "@apollo/subgraph": "^2.11.2",
     "@as-integrations/express5": "^1.1.2",
     "@sentry/node": "^6.19.7",
-    "@types/luxon": "^2.4.0",
+    "@types/luxon": "^3.6.2",
     "@types/node": "^18.19.120",
     "cors": "^2.8.5",
     "eslint": "^8.57.1",
@@ -33,7 +33,7 @@
     "express": "^5.1.0",
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
-    "luxon": "^2.5.2"
+    "luxon": "^3.7.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
