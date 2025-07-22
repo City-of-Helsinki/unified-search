@@ -427,7 +427,7 @@ const sentryConfig = {
               scope.addBreadcrumb({
                 category: 'query-path',
                 message: err.path.join(' > '),
-                level: Sentry.Severity.Debug,
+                level: 'debug',
               });
             }
             Sentry.captureException(err);
@@ -496,8 +496,3 @@ void (async () => {
     checkIsServerReady(response);
   });
 })();
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.SENTRY_ENVIRONMENT,
-});
