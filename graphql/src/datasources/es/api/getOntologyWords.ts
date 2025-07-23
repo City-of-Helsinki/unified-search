@@ -1,5 +1,5 @@
-import { type ElasticSearchAPI } from '../index.js';
 import { ES_ONTOLOGY_WORD_INDEX } from '../constants.js';
+import { type ElasticSearchAPI } from '../index.js';
 import type { OntologyWordParams } from '../types.js';
 
 export default async function getOntologyWords(

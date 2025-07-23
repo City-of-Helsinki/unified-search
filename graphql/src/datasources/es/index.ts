@@ -1,3 +1,5 @@
+import { RESTDataSource } from '@apollo/datasource-rest';
+
 import {
   getAdministrativeDivisions,
   getOntologyTree,
@@ -5,15 +7,13 @@ import {
   getQueryResults,
   getSuggestions,
 } from './api/index.js';
-import type { getQueryResultsProps, getSuggestionProps } from './api/index.js';
+import type { getQueryResultsProps, GetSuggestionProps } from './api/index.js';
 import { ELASTIC_SEARCH_URI, ES_DEFAULT_PAGE_SIZE } from './constants.js';
 import type {
   AdministrativeDivisionParams,
   OntologyTreeParams,
   OntologyWordParams,
 } from './types.js';
-
-import { RESTDataSource } from '@apollo/datasource-rest';
 
 class ElasticSearchAPI extends RESTDataSource {
   constructor() {
@@ -26,7 +26,7 @@ class ElasticSearchAPI extends RESTDataSource {
     return await getQueryResults(request, props);
   }
 
-  async getSuggestions(props: getSuggestionProps) {
+  async getSuggestions(props: GetSuggestionProps) {
     const request = this.post.bind(this);
     return await getSuggestions(request, props);
   }

@@ -1,5 +1,5 @@
-import { createCursor } from '../../utils';
-import { pageInfoResolver } from '../pageInfoResolver';
+import { createCursor } from '../../utils.ts';
+import { pageInfoResolver } from '../pageInfoResolver.ts';
 
 function makeEdge(cursor = {}) {
   return {

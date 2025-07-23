@@ -1,11 +1,11 @@
+import type { GetQueryResultsProps } from './types.js';
+import { GraphQlToElasticLanguageMap } from '../../../../constants.js';
 import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../types.js';
 import { ES_DEFAULT_INDEX, SEARCH_ALL_SPECIAL_CHAR } from '../../constants.js';
 import { type ElasticSearchAPI } from '../../index.js';
-import type { GetQueryResultsProps } from './types.js';
-import { getDefaultBoolQuery, sortQuery } from './utils/index.js';
 import { filterQuery } from './utils/filterQuery.js';
-import { GraphQlToElasticLanguageMap } from '../../../../constants.js';
 import { getOntologyQuery } from './utils/getOntologyQuery.js';
+import { getDefaultBoolQuery, sortQuery } from './utils/index.js';
 
 function createQuery({
   index = ES_DEFAULT_INDEX,
@@ -25,7 +25,8 @@ function createQuery({
 
   if (ontology) {
     // Resolve ontology
-    // NOTE: This query has not been in use anymore in the events-helsinki-monorepo. It was earlier used with auto suggest menu.
+    // NOTE: This query has not been in use anymore in the events-helsinki-monorepo.
+    //       It was earlier used with auto suggest menu.
     return getOntologyQuery({ index, languages, ontology });
   }
   return getDefaultBoolQuery({ index, languages, text });

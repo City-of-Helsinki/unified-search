@@ -5,10 +5,10 @@ import {
 } from '../types.js';
 import { readCursor } from '../utils.js';
 
-interface Edge {
+export type Edge = {
   cursor: string;
   node: Record<string, unknown>;
-}
+};
 
 export async function pageInfoResolver(
   edges: Edge[],

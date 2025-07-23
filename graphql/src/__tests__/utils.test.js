@@ -2,7 +2,7 @@ import {
   getEsOffsetPaginationQuery,
   createCursor,
   escapeQuery,
-} from '../utils';
+} from '../utils.ts';
 
 describe('utils', () => {
   describe('getEsOffsetPaginationQuery', () => {

@@ -1,5 +1,5 @@
-import { type ElasticSearchAPI } from '../index.js';
 import { ES_ONTOLOGY_TREE_INDEX } from '../constants.js';
+import { type ElasticSearchAPI } from '../index.js';
 import type {
   OntologyTreeParams,
   OntologyTreeQuery,
