@@ -9,6 +9,6 @@ export default defineConfig({
       reporter: ['lcov', 'html'],
       exclude: ['**/__snapshots__/**', '**/__tests__/**', '**/node_modules/**'],
     },
-    include: ['src/**/*.test.{js,ts,jsx,tsx}'],
+    include: ['src/**/*.test.{js,ts,cjs,mjs}'],
   },
 });

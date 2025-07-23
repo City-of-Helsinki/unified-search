@@ -12,6 +12,13 @@ export type OrderByFields = {
   orderByAccessibilityProfile?: AccessibilityProfileType;
 };
 
+export type BoolQuery = {
+  query: {
+    bool: Record<string, unknown>;
+  };
+  sort?: Record<string, unknown> | Array<Record<string, unknown>>;
+};
+
 export type GetQueryResultsProps = {
   text?: string;
   ontology?: string;

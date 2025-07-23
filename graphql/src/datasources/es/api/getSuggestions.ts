@@ -1,9 +1,9 @@
-import { type ElasticSearchAPI } from '../index.js';
 import { type ElasticLanguage } from '../../../types.js';
 import { ES_DEFAULT_INDEX } from '../constants.js';
+import { type ElasticSearchAPI } from '../index.js';
 import type { ElasticSearchIndex } from '../types.js';
 
-export type getSuggestionProps = {
+export type GetSuggestionProps = {
   prefix: string;
   languages: ElasticLanguage[];
   size: number;
@@ -12,7 +12,7 @@ export type getSuggestionProps = {
 
 export default async function getSuggestions(
   request: ElasticSearchAPI['post'],
-  { prefix, languages, size, index = ES_DEFAULT_INDEX }: getSuggestionProps
+  { prefix, languages, size, index = ES_DEFAULT_INDEX }: GetSuggestionProps
 ) {
   const query = {
     // Hide all source fields to decrease network load

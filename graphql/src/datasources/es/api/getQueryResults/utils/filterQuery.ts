@@ -1,12 +1,13 @@
 import { DateTime } from 'luxon';
+
 import { DEFAULT_TIME_ZONE } from '../../../constants.js';
 import type {
   ArrayFilter,
   MustHaveReservableResourceFilter,
   OpenAtFilter,
 } from '../../../types.js';
-import type { QueryResultFilterProps } from '../types.js';
 import { buildArrayFilter } from '../../../utils.js';
+import type { BoolQuery, QueryResultFilterProps } from '../types.js';
 
 const buildMustHaveReservableResourceFilter =
   (): MustHaveReservableResourceFilter => ({
@@ -86,7 +87,10 @@ export function getFilters({
   ];
 }
 
-export function filterQuery(query: any, filterProps: QueryResultFilterProps) {
+export function filterQuery(
+  query: BoolQuery,
+  filterProps: QueryResultFilterProps
+) {
   const filters = getFilters(filterProps);
   if (filters.length > 0) {
     query.query.bool.minimum_should_match = 1;

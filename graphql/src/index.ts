@@ -1,46 +1,50 @@
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@as-integrations/express5';
-import responseCachePlugin from '@apollo/server-plugin-response-cache';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { buildSubgraphSchema } from '@apollo/subgraph';
 import http from 'http';
 
-import cors from 'cors';
-import express from 'express';
+import type { GraphQLResolveInfoWithCacheControl } from '@apollo/cache-control-types';
+import { ApolloServer } from '@apollo/server';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
+import { buildSubgraphSchema } from '@apollo/subgraph';
+import { expressMiddleware } from '@as-integrations/express5';
 import * as Sentry from '@sentry/node';
+import cors from 'cors';
+import type { Response } from 'express';
+import express from 'express';
+import { GraphQLError } from 'graphql';
 
+import type { GetSuggestionProps } from './datasources/es/api/index.js';
+import { ElasticSearchAPI } from './datasources/es/index.js';
+import {
+  type AccessibilityProfileType,
+  type AdministrativeDivisionParams,
+  type ElasticSearchIndex,
+  type OntologyTreeParams,
+  type OntologyWordParams,
+  type OrderByDistanceParams,
+  type OrderByNameParams,
+} from './datasources/es/types.js';
+import pageInfoResolver, { Edge } from './resolvers/pageInfoResolver.js';
+import { actorSchema } from './schemas/actor.js';
+import { elasticSearchSchema } from './schemas/es.js';
+import { eventSchema } from './schemas/event.js';
+import { geoSchema } from './schemas/geojson.js';
+import { linkedeventsSchema } from './schemas/linkedevents.js';
+import { locationSchema } from './schemas/location.js';
+import { ontologySchema } from './schemas/ontology.js';
+import { palvelukarttaSchema } from './schemas/palvelukartta.js';
+import { querySchema } from './schemas/query.js';
+import { sharedSchema } from './schemas/shared.js';
+import {
+  type ConnectionArguments,
+  type ConnectionCursorObject,
+} from './types.js';
 import {
   createCursor,
   elasticLanguageFromGraphqlLanguage,
   getEsOffsetPaginationQuery,
   isDefined,
 } from './utils.js';
-import pageInfoResolver from './resolvers/pageInfoResolver.js';
-import {
-  type ConnectionArguments,
-  type ConnectionCursorObject,
-} from './types.js';
-import {
-  type AccessibilityProfileType,
-  type ElasticSearchIndex,
-  type OrderByDistanceParams,
-  type OrderByNameParams,
-} from './datasources/es/types.js';
-
-import { elasticSearchSchema } from './schemas/es.js';
-import { palvelukarttaSchema } from './schemas/palvelukartta.js';
-import { linkedeventsSchema } from './schemas/linkedevents.js';
-import { locationSchema } from './schemas/location.js';
-import { sharedSchema } from './schemas/shared.js';
-import { eventSchema } from './schemas/event.js';
-import { actorSchema } from './schemas/actor.js';
-import { geoSchema } from './schemas/geojson.js';
-import { querySchema } from './schemas/query.js';
-import { ontologySchema } from './schemas/ontology.js';
-
-import { ElasticSearchAPI } from './datasources/es/index.js';
-import { GraphQLError } from 'graphql';
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 
 const OK = 'OK';
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
@@ -63,25 +67,100 @@ type UnifiedSearchQuery = {
   orderByAccessibilityProfile?: AccessibilityProfileType;
 } & ConnectionArguments;
 
-function edgesFromEsResults(results: any, getCursor: any) {
-  return results.hits.hits.map(function (
-    e: { _score: any; _source: { venue: any; event: any } },
-    index: number
-  ) {
-    return {
-      cursor: getCursor(index + 1),
-      node: {
-        _score: e._score,
-        venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
-        event: { event: e._source.event },
-      },
-    };
-  });
-}
+// FIXME: Combine GraphQL and TypeScript types, e.g. by generating the latter from the former
+type Venue = {
+  accessibility?: {
+    shortcomings: Array<{ profile: AccessibilityProfileType }>;
+  };
+  description?: unknown;
+  images?: unknown;
+  location?: unknown;
+  meta?: unknown;
+  name?: unknown;
+  ontologyWords?: unknown;
+  openingHours?: unknown;
+  reservation?: unknown;
+  serviceOwner?: unknown;
+  targetGroups?: unknown;
+};
 
-function getHits(results: any) {
-  return results.hits.total.value;
-}
+type VenueProps = {
+  venue: Venue;
+};
+
+type Event = {
+  name?: unknown;
+  description?: unknown;
+  meta?: unknown;
+};
+
+type EventProps = {
+  event: Event;
+};
+
+type EsHitSource = {
+  name?: unknown;
+  venue?: Venue;
+  event?: Event;
+};
+
+type EsHit = {
+  _score: number;
+  _source: EsHitSource;
+  _id?: string;
+};
+
+type EsResults = {
+  hits: {
+    hits: EsHit[];
+    total: { value: number };
+    max_score?: number;
+  };
+  suggest?: {
+    suggestions: Array<{
+      options: Array<{ text: string }>;
+    }>;
+  };
+};
+
+type QueryContext = {
+  dataSources: {
+    elasticSearchAPI: ElasticSearchAPI;
+  };
+};
+
+type GetCursor = (index: number) => string;
+
+type GeoJSONPointInput = {
+  geometry?: {
+    coordinates?: {
+      longitude?: number;
+      latitude?: number;
+    };
+  };
+  longitude?: number;
+  latitude?: number;
+};
+
+type LongitudeLatitude = [longitude: number, latitude: number];
+
+type PageInfoProps = {
+  edges: Edge[];
+  hits: number;
+  connectionArguments: ConnectionArguments;
+};
+
+const edgesFromEsResults = (results: EsResults, getCursor: GetCursor) =>
+  results.hits.hits.map((e: EsHit, index: number) => ({
+    cursor: getCursor(index + 1),
+    node: {
+      _score: e._score,
+      venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
+      event: { event: e._source.event },
+    },
+  }));
+
+const getHits = (results: EsResults) => results.hits.total.value;
 
 function getTodayString() {
   const d = new Date();
@@ -130,7 +209,7 @@ function validateOrderByArguments(
 const resolvers = {
   Query: {
     unifiedSearch: async (
-      _source: any,
+      _source: unknown,
       {
         text,
         ontology,
@@ -150,8 +229,8 @@ const resolvers = {
         orderByName,
         orderByAccessibilityProfile,
       }: UnifiedSearchQuery,
-      { dataSources }: any,
-      info: any
+      { dataSources }: QueryContext,
+      info: GraphQLResolveInfoWithCacheControl
     ) => {
       const connectionArguments = { after, first };
       const { from, size } = getEsOffsetPaginationQuery(connectionArguments);
@@ -200,9 +279,9 @@ const resolvers = {
       return { es_results: [result], edges, hits, connectionArguments };
     },
     unifiedSearchCompletionSuggestions: async (
-      _source: any,
-      { prefix, languages, index, size }: any,
-      { dataSources }: any
+      _source: unknown,
+      { prefix, languages, index, size }: GetSuggestionProps,
+      { dataSources }: QueryContext
     ) => {
       const res = await dataSources.elasticSearchAPI.getSuggestions({
         prefix,
@@ -217,25 +296,39 @@ const resolvers = {
         })),
       };
     },
-    administrativeDivisions: async (_, args, { dataSources }: any) => {
-      const res =
+    administrativeDivisions: async (
+      _,
+      args: AdministrativeDivisionParams,
+      { dataSources }: QueryContext
+    ) => {
+      const res: EsResults =
         await dataSources.elasticSearchAPI.getAdministrativeDivisions(args);
-      return res.hits.hits.map((hit: any) => ({
+      return res.hits.hits.map((hit: EsHit) => ({
         id: hit._id,
         ...hit._source,
       }));
     },
-    ontologyTree: async (_, args, { dataSources }: any) => {
-      const res = await dataSources.elasticSearchAPI.getOntologyTree(args);
-      return res.hits.hits.map((hit: any) => ({
+    ontologyTree: async (
+      _,
+      args: OntologyTreeParams,
+      { dataSources }: QueryContext
+    ) => {
+      const res: EsResults =
+        await dataSources.elasticSearchAPI.getOntologyTree(args);
+      return res.hits.hits.map((hit: EsHit) => ({
         id: hit._id,
         ...hit._source,
       }));
     },
-    ontologyWords: async (_, args, { dataSources }: any) => {
-      const res = await dataSources.elasticSearchAPI.getOntologyWords(args);
+    ontologyWords: async (
+      _,
+      args: OntologyWordParams,
+      { dataSources }: QueryContext
+    ) => {
+      const res: EsResults =
+        await dataSources.elasticSearchAPI.getOntologyWords(args);
 
-      return res.hits.hits.map((hit: any) => ({
+      return res.hits.hits.map((hit: EsHit) => ({
         id: hit._id,
         ...hit._source,
         label: hit._source.name,
@@ -244,63 +337,61 @@ const resolvers = {
   },
 
   SearchResultConnection: {
-    count({ hits }: any) {
+    count({ hits }: PageInfoProps) {
       return hits;
     },
-    max_score({ es_results }: any) {
+    max_score({ es_results }: unknown) {
       return es_results[0].hits.max_score;
     },
-    async pageInfo({ edges, hits, connectionArguments }: any) {
+    async pageInfo({ edges, hits, connectionArguments }: PageInfoProps) {
       return await pageInfoResolver(edges, hits, connectionArguments);
     },
-    edges({ edges }: any) {
+    edges({ edges }: PageInfoProps) {
       return edges;
     },
-    es_results({ es_results }: any) {
+    es_results({ es_results }: unknown) {
       return es_results;
     },
   },
 
   UnifiedSearchVenue: {
-    name({ venue }: any, args: any, context: any, info: any) {
+    name({ venue }: VenueProps) {
       return venue.name;
     },
-    description({ venue }: any, args: any, context: any, info: any) {
+    description({ venue }: VenueProps) {
       return venue.description;
     },
-    location({ venue }: any, args: any, context: any, info: any) {
+    location({ venue }: VenueProps) {
       return venue.location;
     },
-    openingHours({ venue }: any, args: any, context: any, info: any) {
+    openingHours({ venue }: VenueProps) {
       return venue.openingHours;
     },
-    images({ venue }: any, args: any, context: any, info: any) {
+    images({ venue }: VenueProps) {
       return venue.images;
     },
-    ontologyWords({ venue }: any) {
+    ontologyWords({ venue }: VenueProps) {
       return venue.ontologyWords;
     },
-    serviceOwner({ venue }: any, args: any, context: any, info: any) {
+    serviceOwner({ venue }: VenueProps) {
       return venue.serviceOwner;
     },
-    reservation({ venue }: any, args: any, context: any, info: any) {
+    reservation({ venue }: VenueProps) {
       return venue.reservation;
     },
-    targetGroups({ venue }: any, args: any, context: any, info: any) {
+    targetGroups({ venue }: VenueProps) {
       return venue.targetGroups;
     },
-    accessibility({ venue }: any, args: any, context: any, info: any) {
+    accessibility({ venue }: VenueProps) {
       return venue.accessibility;
     },
     accessibilityShortcomingFor(
-      { venue }: any,
-      args: any,
-      context: any,
-      info: any
+      { venue }: VenueProps,
+      args: { profile?: AccessibilityProfileType }
     ) {
       if (args.profile) {
         const shortcoming = venue.accessibility.shortcomings.filter(
-          (shortcoming: any) => shortcoming.profile === args.profile
+          (shortcoming) => shortcoming.profile === args.profile
         );
         if (shortcoming && shortcoming.length > 0) {
           return shortcoming[0];
@@ -308,13 +399,13 @@ const resolvers = {
       }
       return undefined;
     },
-    meta({ venue }: any, args: any, context: any, info: any) {
+    meta({ venue }: VenueProps) {
       return venue.meta;
     },
   },
 
   OpeningHours: {
-    today({ data }: any) {
+    today({ data }: unknown) {
       const openingHoursToday = data.find(
         (openingHoursDay) => openingHoursDay.date === getTodayString()
       );
@@ -323,19 +414,19 @@ const resolvers = {
   },
 
   Event: {
-    name({ event }: any, args: any, context: any, info: any) {
+    name({ event }: EventProps) {
       return event.name;
     },
-    description({ event }: any, args: any, context: any, info: any) {
+    description({ event }: EventProps) {
       return event.description;
     },
-    meta({ event }: any, args: any, context: any, info: any) {
+    meta({ event }: EventProps) {
       return event.meta;
     },
   },
 
   RawJSON: {
-    data(parent: any, args: any, context: any, info: any) {
+    data(parent: unknown) {
       // Testing and debugging only
       return JSON.stringify(parent);
     },
@@ -347,22 +438,22 @@ const resolvers = {
   },
 
   LegalEntity: {
-    __resolveType(obj: any, context: any, info: any) {
+    __resolveType() {
       return null;
     },
   },
   GeoJSONCRSProperties: {
-    __resolveType(obj: any, context: any, info: any) {
+    __resolveType() {
       return null;
     },
   },
   GeoJSONGeometryInterface: {
-    __resolveType(obj: any, context: any, info: any) {
+    __resolveType() {
       return 'GeoJSONPoint';
     },
   },
   GeoJSONInterface: {
-    __resolveType(obj: any, context: any, info: any) {
+    __resolveType() {
       return null;
     },
   },
@@ -370,7 +461,7 @@ const resolvers = {
     type() {
       return 'Point';
     },
-    coordinates(obj: any) {
+    coordinates(obj: GeoJSONPointInput): LongitudeLatitude | null {
       const long = obj.geometry?.coordinates?.longitude ?? obj.longitude;
       const lat = obj.geometry?.coordinates?.latitude ?? obj.latitude;
 
@@ -381,7 +472,7 @@ const resolvers = {
     type() {
       return 'Point';
     },
-    geometry(parent: any) {
+    geometry(parent: unknown) {
       return parent;
     },
   },
@@ -405,7 +496,7 @@ const combinedSchema = buildSubgraphSchema({
 
 const sentryConfig = {
   // adapted from https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
-  async requestDidStart(_) {
+  async requestDidStart() {
     return {
       async didEncounterErrors(ctx) {
         // If we couldn't parse the operation, don't
@@ -439,13 +530,13 @@ const sentryConfig = {
 };
 
 void (async () => {
-  let serverIsReady = false;
+  let serverIsReady: boolean = false;
 
   const signalReady = () => {
     serverIsReady = true;
   };
 
-  const checkIsServerReady = (response) => {
+  const checkIsServerReady = (response: Response) => {
     if (serverIsReady) {
       response.send(OK);
     } else {
@@ -488,11 +579,11 @@ void (async () => {
     console.log(`🚀 Server ready at http://localhost:${port}/search`);
   });
 
-  app.get('/healthz', (request, response) => {
+  app.get('/healthz', (_, response) => {
     checkIsServerReady(response);
   });
 
-  app.get('/readiness', (request, response) => {
+  app.get('/readiness', (_, response) => {
     checkIsServerReady(response);
   });
 })();

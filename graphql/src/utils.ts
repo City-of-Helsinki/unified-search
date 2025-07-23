@@ -65,7 +65,7 @@ export function targetFieldLanguages(
   return languages.map((language) => `${field}${language}`);
 }
 
-export function isDefined(value: any) {
+export function isDefined<T>(value: T): value is Exclude<T, undefined> {
   return typeof value !== 'undefined';
 }
 
@@ -75,9 +75,11 @@ export function isDefined(value: any) {
  *
  * The reserved special characters are:
  * `+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /`.
- * "Failing to escape these special characters correctly could lead to a syntax error which prevents your query from running."
+ * "Failing to escape these special characters correctly could lead to a syntax error
+ * which prevents your query from running."
  *
- * Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
+ * Reference:
+ * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
  */
 export function escapeQuery(text: string) {
   return text.replace(
