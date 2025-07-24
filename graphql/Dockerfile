@@ -72,7 +72,7 @@ COPY --from=transpiler --chown=root:root /app/dist /app/dist
 ENV NODE_ENV=production
 RUN yarn && yarn cache clean --force
 
-EXPOSE 3000/tcp
+EXPOSE 4000/tcp
 
 # Bake package.json serve command into the image
 USER default
