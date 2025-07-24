@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.2.0...graphql-v2.3.0) (2025-07-24)
+
+
+### Features
+
+* **graphql:** Purge/upgrade packages, use ESM/es2022/nodenext/tsx ([609667f](https://github.com/City-of-Helsinki/unified-search/commit/609667fc255531f3be50873de408056300228795))
+* **graphql:** Switch from jest to vitest ([26cb20a](https://github.com/City-of-Helsinki/unified-search/commit/26cb20a0bafb5a09dfc242686574d03f3697ca22))
+* **graphql:** Upgrade all packages to latest minor version ([c858699](https://github.com/City-of-Helsinki/unified-search/commit/c8586994a6d3f3c73575922950b264c7954f5820))
+* **graphql:** Upgrade luxon to latest major ([494bb8e](https://github.com/City-of-Helsinki/unified-search/commit/494bb8e5b26dd02ec858911ecd6d6d44c9c1368c))
+* **graphql:** Upgrade sentry v6 → v9 ([e0183c4](https://github.com/City-of-Helsinki/unified-search/commit/e0183c4b771ae86d777ef1ef15bdf6127500ba26))
+* **graphql:** Upgrade to eslint v9 + add minimal types to src/index.ts ([10faef6](https://github.com/City-of-Helsinki/unified-search/commit/10faef642c33d7766be69fda5754e3c725c77c12))
+* **graphql:** Use ubi10 node.js v22 image in Dockerfile ([96c9f97](https://github.com/City-of-Helsinki/unified-search/commit/96c9f97fad4e493e937b485fdbbaeee9b315ad03))
+
+
+### Bug Fixes
+
+* **graphql:** EXPOSE port 4000 in Dockerfile ([63e6f58](https://github.com/City-of-Helsinki/unified-search/commit/63e6f58200c547e6358067f639db33346ad43c30))
+* Tests, update README & docker compose & .dockerignore ([8864887](https://github.com/City-of-Helsinki/unified-search/commit/886488734b7f5f1b9f7898970688e74d7c4dcab7))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.1.0...graphql-v2.2.0) (2024-01-04)
 
 ### Features
