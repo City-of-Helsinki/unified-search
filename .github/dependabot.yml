@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/sources/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "deps"
+    # Disable version updates and only allow security updates
+    open-pull-requests-limit: 0
+  - package-ecosystem: "npm"
+    directory: "/graphql/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "deps"
+    # Disable version updates and only allow security updates
+    open-pull-requests-limit: 0
