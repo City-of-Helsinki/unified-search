@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.5.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.4.0...sources-v1.5.0) (2025-07-24)
+
+
+### Features
+
+* Combine /test/ completely into sources app for maintainability ([aaac514](https://github.com/City-of-Helsinki/unified-search/commit/aaac5142188e8bf8bc1acc7899e95450bdf50f3d))
+* **sources:** Remove django admin login page as unneeded ([1931b32](https://github.com/City-of-Helsinki/unified-search/commit/1931b321eccc10a8ea38f9d14a6ae6b6c6ed5a56))
+* **sources:** Upgrade to Python 3.12 & all dependencies, use ruff ([9cb7f7d](https://github.com/City-of-Helsinki/unified-search/commit/9cb7f7dcecbb3c23fd7789cb720e9baf1ac4700d))
+* **sources:** Use ubi9 python 3.9 GDAL image in Dockerfile ([7bbba03](https://github.com/City-of-Helsinki/unified-search/commit/7bbba03dd1d12b5a237a7bc04f438de55fffd81c))
+
+
+### Bug Fixes
+
+* **sources:** Remove incorrect deprecation ([9b766e3](https://github.com/City-of-Helsinki/unified-search/commit/9b766e3bdb4483637abc48c8bf82606561cec1b4))
+* Tests, update README & docker compose & .dockerignore ([8864887](https://github.com/City-of-Helsinki/unified-search/commit/886488734b7f5f1b9f7898970688e74d7c4dcab7))
+
 ## [1.4.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.3.1...sources-v1.4.0) (2023-12-08)
 
 
