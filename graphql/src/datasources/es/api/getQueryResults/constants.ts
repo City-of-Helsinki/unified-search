@@ -1,5 +1,5 @@
 import type { ElasticLanguage, TranslatableField } from '../../../../types.js';
-import { ES_EVENT_INDEX, ES_LOCATION_INDEX } from '../../constants.js';
+import { ES_LOCATION_INDEX } from '../../constants.js';
 import type { ElasticSearchIndex } from '../../types.js';
 
 // Some fields should be boosted / weighted to get more relevant result set
@@ -12,7 +12,6 @@ export const searchFieldsBoostMapping: Record<
     return (
       {
         [ES_LOCATION_INDEX]: [`venue.description.${lang}`],
-        [ES_EVENT_INDEX]: [`event.name.${lang}`, `event.description.${lang}`],
       }[index] ?? []
     );
   },

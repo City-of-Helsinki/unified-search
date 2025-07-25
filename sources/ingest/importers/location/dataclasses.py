@@ -274,17 +274,9 @@ class Venue:
     serviceOwner: Optional[ServiceOwner] = None
     # List[TargetGroup] as List[str] to fix OpenSearch serialization:
     targetGroups: List[str] = field(default_factory=list)
-
-    # TODO
-    descriptionResources: str = None
-    partOf: "Venue" = None
     openingHours: OpeningHours = None
-    manager: str = None
     reservation: Optional[Reservation] = None
     accessibility: Optional[Accessibility] = None
-    arrivalInstructions: str = None
-    additionalInfo: str = None
-    facilities: str = None
     images: List[Image] = field(default_factory=list)
     ontologyWords: List[OntologyObject] = field(default_factory=list)
 
