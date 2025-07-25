@@ -12,11 +12,7 @@ export const locationSchema = gql`
     description: LanguageString
     serviceOwner: ServiceOwner
     targetGroups: [TargetGroup]
-    descriptionResources: DescriptionResources
-    partOf: UnifiedSearchVenue
     openingHours: OpeningHours
-    manager: LegalEntity
-    contactDetails: ContactInfo
     reservation: Reservation
     accessibility: Accessibility
     """
@@ -25,11 +21,13 @@ export const locationSchema = gql`
     accessibilityShortcomingFor(
       profile: AccessibilityProfile
     ): AccessibilityShortcoming
-    arrivalInstructions: String
-    additionalInfo: String
-    facilities: [VenueFacility!]
     images: [LocationImage]
     ontologyWords: [OntologyWord]
+  }
+  type Address {
+    postalCode: String
+    streetAddress: LanguageString
+    city: LanguageString
   }
   """
   Free-form location, not necessarily at a know venue.
@@ -39,7 +37,6 @@ export const locationSchema = gql`
     geoLocation: GeoJSONFeature @cacheControl(inheritMaxAge: true)
     address: Address
     explanation: String
-      @origin(service: "linked", type: "event", attr: "location_extra_info")
     administrativeDivisions: [AdministrativeDivision]
     venue: UnifiedSearchVenue
   }
@@ -127,14 +124,6 @@ export const locationSchema = gql`
   type Reservation {
     reservable: Boolean
     externalReservationUrl: LanguageString
-  }
-  """
-  TODO: combine beta.kultus Venue stuff with respa equipment type
-  """
-  type VenueFacility {
-    meta: NodeMeta
-    name: String!
-    categories: [KeywordString!]
   }
   type OpeningHours {
     url: String

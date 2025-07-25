@@ -1,9 +1,7 @@
 import type { ElasticLanguage } from '../../../../../types.js';
 import { isDefined } from '../../../../../utils.js';
 import {
-  ES_EVENT_INDEX,
   ES_LOCATION_INDEX,
-  EVENT_SEARCH_RESULT_FIELD,
   VENUE_SEARCH_RESULT_FIELD,
 } from '../../../constants.js';
 import type { ElasticSearchIndex, SearchResultField } from '../../../types.js';
@@ -14,10 +12,9 @@ import type {
 } from '../types.js';
 
 const ElasticSearchIndexToSearchResultField: Record<
-  Extract<ElasticSearchIndex, typeof ES_EVENT_INDEX | typeof ES_LOCATION_INDEX>,
+  Extract<ElasticSearchIndex, typeof ES_LOCATION_INDEX>,
   SearchResultField
 > = {
-  [ES_EVENT_INDEX]: EVENT_SEARCH_RESULT_FIELD,
   [ES_LOCATION_INDEX]: VENUE_SEARCH_RESULT_FIELD,
 };
 
@@ -27,7 +24,7 @@ export function sortQuery(
   language: ElasticLanguage,
   { orderByDistance, orderByName, orderByAccessibilityProfile }: OrderByFields
 ) {
-  if (es_index === ES_EVENT_INDEX || es_index === ES_LOCATION_INDEX) {
+  if (es_index === ES_LOCATION_INDEX) {
     const searchResultField = ElasticSearchIndexToSearchResultField[es_index];
 
     if (isDefined(orderByDistance)) {

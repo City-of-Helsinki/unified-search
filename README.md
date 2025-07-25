@@ -82,7 +82,6 @@ Delete data imported by given importer:
 
 Currently implemented importers and the indexes they create:
 
-- **event** (event)
 - **location** (location)
 - **ontology_tree** (ontology_tree)
 - **ontology_word** (ontology_word)
@@ -107,46 +106,6 @@ If not running with `docker compose`, start Apollo based GraphQL server at `unif
 ## GraphQL queries
 
 It is recommended to use GraphQL client such as Altair for sending queries.
-
-### Search all with specified ontology
-
-    query {
-      unifiedSearch(index: "event", text: "*", ontology: "vapaaehtoistoiminta", languages:FINNISH) {
-        edges {
-          cursor
-          node {
-            event {
-              name {
-                fi
-              }
-              description {
-                fi
-              }
-            }
-          }
-        }
-      }
-    }
-
-### Free text search - event index
-
-    query {
-      unifiedSearch(index: "event", text: "koira", languages:FINNISH) {
-        edges {
-          cursor
-          node {
-            event {
-              name {
-                fi
-              }
-              description {
-                fi
-              }
-            }
-          }
-        }
-      }
-    }
 
 ### Free text search - location index
 
@@ -200,7 +159,6 @@ It is recommended to use GraphQL client such as Altair for sending queries.
               }
             }
             _score
-            searchCategories
           }
         }
       }

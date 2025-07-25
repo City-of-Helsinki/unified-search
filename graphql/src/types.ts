@@ -28,11 +28,7 @@ export type ElasticLanguage =
 
 export const DEFAULT_ELASTIC_LANGUAGE: ElasticLanguage = 'fi';
 
-export type SearchableFields =
-  | 'venue.name'
-  | 'venue.description'
-  | 'event.name'
-  | 'event.description';
+export type SearchableFields = 'venue.name' | 'venue.description';
 
 export type TranslatableField<T extends string = SearchableFields> =
   `${T}.${ElasticLanguage}`;
