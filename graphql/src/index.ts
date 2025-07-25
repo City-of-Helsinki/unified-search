@@ -25,11 +25,8 @@ import {
   type OrderByNameParams,
 } from './datasources/es/types.js';
 import pageInfoResolver, { Edge } from './resolvers/pageInfoResolver.js';
-import { actorSchema } from './schemas/actor.js';
 import { elasticSearchSchema } from './schemas/es.js';
-import { eventSchema } from './schemas/event.js';
 import { geoSchema } from './schemas/geojson.js';
-import { linkedeventsSchema } from './schemas/linkedevents.js';
 import { locationSchema } from './schemas/location.js';
 import { ontologySchema } from './schemas/ontology.js';
 import { palvelukarttaSchema } from './schemas/palvelukartta.js';
@@ -88,20 +85,9 @@ type VenueProps = {
   venue: Venue;
 };
 
-type Event = {
-  name?: unknown;
-  description?: unknown;
-  meta?: unknown;
-};
-
-type EventProps = {
-  event: Event;
-};
-
 type EsHitSource = {
   name?: unknown;
   venue?: Venue;
-  event?: Event;
 };
 
 type EsHit = {
@@ -156,7 +142,6 @@ const edgesFromEsResults = (results: EsResults, getCursor: GetCursor) =>
     node: {
       _score: e._score,
       venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
-      event: { event: e._source.event },
     },
   }));
 
@@ -413,18 +398,6 @@ const resolvers = {
     },
   },
 
-  Event: {
-    name({ event }: EventProps) {
-      return event.name;
-    },
-    description({ event }: EventProps) {
-      return event.description;
-    },
-    meta({ event }: EventProps) {
-      return event.meta;
-    },
-  },
-
   RawJSON: {
     data(parent: unknown) {
       // Testing and debugging only
@@ -432,16 +405,6 @@ const resolvers = {
     },
   },
 
-  SearchResultNode: {
-    // TODO
-    searchCategories: () => ['POINT_OF_INTEREST'],
-  },
-
-  LegalEntity: {
-    __resolveType() {
-      return null;
-    },
-  },
   GeoJSONCRSProperties: {
     __resolveType() {
       return null;
@@ -483,11 +446,8 @@ const combinedSchema = buildSubgraphSchema({
     querySchema,
     elasticSearchSchema,
     palvelukarttaSchema,
-    linkedeventsSchema,
     locationSchema,
     sharedSchema, // FIXME: OVerlapping with events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql); Keyword and Location Image
-    eventSchema,
-    actorSchema,
     geoSchema,
     ontologySchema,
   ],

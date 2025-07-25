@@ -1,5 +1,5 @@
 import type { ElasticLanguage } from '../../../../../types.js';
-import { ES_EVENT_INDEX, ES_LOCATION_INDEX } from '../../../constants.js';
+import { ES_LOCATION_INDEX } from '../../../constants.js';
 import type { ElasticSearchIndex } from '../../../types.js';
 
 // Ontology fields for different indexes
@@ -14,8 +14,6 @@ export function getOntologyFields(
       `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
       `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
     ] as const;
-  } else if (index === ES_EVENT_INDEX) {
-    return [`ontology.${lang}`, 'ontology.alt'] as const;
   }
   return [];
 }

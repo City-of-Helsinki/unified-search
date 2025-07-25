@@ -6,22 +6,6 @@ export const querySchema = gql`
       import: ["@key", "@shareable"]
     )
 
-  directive @origin(
-    service: String
-    type: String
-    attr: String
-  ) repeatable on FIELD_DEFINITION | OBJECT
-
-  enum UnifiedSearchResultCategory {
-    POINT_OF_INTEREST
-    EVENT
-    RESERVABLE
-    ENROLLABLE
-    ARTWORK
-    ARTICLE
-    SERVICE
-  }
-
   enum UnifiedSearchLanguage {
     FINNISH
     SWEDISH
@@ -56,8 +40,6 @@ export const querySchema = gql`
     _score: Float
     id: ID!
     venue: UnifiedSearchVenue @cacheControl(inheritMaxAge: true)
-    event: Event
-    searchCategories: [UnifiedSearchResultCategory!]!
   }
 
   type Suggestion {
@@ -88,7 +70,6 @@ export const querySchema = gql`
     helsinki_common_administrative_division
     ontology_tree
     ontology_word
-    event
     location
   }
 

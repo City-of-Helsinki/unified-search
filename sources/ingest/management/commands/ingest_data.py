@@ -5,7 +5,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 from ingest.importers.administrative_division import AdministrativeDivisionImporter
-from ingest.importers.event import EventImporter
 from ingest.importers.location import LocationImporter
 from ingest.importers.ontology_tree import OntologyTreeImporter
 from ingest.importers.ontology_word import OntologyWordImporter
@@ -16,7 +15,6 @@ ImporterMap = Dict[
     str,
     Union[
         Type[AdministrativeDivisionImporter],
-        Type[EventImporter],
         Type[LocationImporter],
         Type[OntologyTreeImporter],
         Type[OntologyWordImporter],
@@ -30,7 +28,6 @@ class Command(BaseCommand):
     all_importers: ImporterMap = {
         "administrative_division": AdministrativeDivisionImporter,
         "location": LocationImporter,
-        "event": EventImporter,
         "ontology_tree": OntologyTreeImporter,
         "ontology_word": OntologyWordImporter,
     }
