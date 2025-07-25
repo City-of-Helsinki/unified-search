@@ -58,4 +58,4 @@ extends:
     # Application build arguments and config map values as key value pairs.
     # The values here will override the values defined in the kuva-unified-search-pipelines-pipelines repository
     #configMap:
-      #EVENT_URL: https://linkedevents.api.test.hel.ninja/v1/event/?start=today
+      #ES_URI: https://es.example.org/
