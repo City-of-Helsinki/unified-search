@@ -14,5 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-# No URL patterns, not even Django admin, as there's no need for it.
-urlpatterns = []
+from django.conf import settings
+from django.http import JsonResponse
+from django.urls import path
+from django.views.decorators.http import require_http_methods
+
+from custom_health_checks.views import HealthCheckJSONView
+from sources import __version__
+
+
+@require_http_methods(["GET", "HEAD"])
+def readiness(*args, **kwargs):
+    response_json = {
+        "status": "ok",
+        "release": settings.APP_RELEASE,
+        "packageVersion": __version__,
+        "buildTime": settings.APP_BUILD_TIME.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+    }
+    return JsonResponse(response_json, status=200)
+
+
+urlpatterns = [
+    path("healthz", HealthCheckJSONView.as_view(), name="healthz"),
+    path("readiness", readiness, name="readiness"),
+]
