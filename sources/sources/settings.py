@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+from datetime import datetime
 from pathlib import Path
 
 import sentry_sdk
@@ -49,6 +50,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "health_check",
+    "custom_health_checks",
     "munigeo",
     "ingest",
 ]
@@ -167,3 +170,7 @@ LOGGING = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Release/build information:
+APP_RELEASE = os.getenv("APP_RELEASE")
+APP_BUILD_TIME = datetime.fromtimestamp(os.path.getmtime(__file__))
