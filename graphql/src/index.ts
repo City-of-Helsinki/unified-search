@@ -9,7 +9,6 @@ import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@as-integrations/express5';
 import * as Sentry from '@sentry/node';
 import cors from 'cors';
-import type { Response } from 'express';
 import express from 'express';
 import { GraphQLError } from 'graphql';
 
@@ -24,6 +23,8 @@ import {
   type OrderByDistanceParams,
   type OrderByNameParams,
 } from './datasources/es/types.js';
+import healthz from './healthz.js';
+import readiness from './readiness.js';
 import pageInfoResolver, { Edge } from './resolvers/pageInfoResolver.js';
 import { elasticSearchSchema } from './schemas/es.js';
 import { geoSchema } from './schemas/geojson.js';
@@ -43,7 +44,6 @@ import {
   isDefined,
 } from './utils.js';
 
-const OK = 'OK';
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
 type UnifiedSearchQuery = {
@@ -496,14 +496,6 @@ void (async () => {
     serverIsReady = true;
   };
 
-  const checkIsServerReady = (response: Response) => {
-    if (serverIsReady) {
-      response.send(OK);
-    } else {
-      response.status(500).send(SERVER_IS_NOT_READY);
-    }
-  };
-
   const app = express();
   const httpServer = http.createServer(app);
 
@@ -540,10 +532,16 @@ void (async () => {
   });
 
   app.get('/healthz', (_, response) => {
-    checkIsServerReady(response);
+    if (!serverIsReady) {
+      response.status(500).send(SERVER_IS_NOT_READY);
+    }
+    return healthz(response);
   });
 
   app.get('/readiness', (_, response) => {
-    checkIsServerReady(response);
+    if (!serverIsReady) {
+      response.status(500).send(SERVER_IS_NOT_READY);
+    }
+    return readiness(response);
   });
 })();
