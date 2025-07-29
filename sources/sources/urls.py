@@ -29,6 +29,7 @@ def readiness(*args, **kwargs):
         "status": "ok",
         "release": settings.APP_RELEASE,
         "packageVersion": __version__,
+        "commitHash": settings.APP_COMMIT_HASH or "n/a",
         "buildTime": settings.APP_BUILD_TIME.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
     }
     return JsonResponse(response_json, status=200)
