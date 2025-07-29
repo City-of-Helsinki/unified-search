@@ -25,7 +25,9 @@ jedi==0.19.2
 matplotlib-inline==0.1.7
     # via ipython
 packaging==25.0
-    # via pytest
+    # via
+    #   -c requirements.txt
+    #   pytest
 parso==0.8.4
     # via jedi
 pexpect==4.9.0

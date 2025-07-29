@@ -23,12 +23,15 @@ charset-normalizer==3.4.2
 django==5.2.4
     # via
     #   -r requirements.in
+    #   django-csp
     #   django-health-check
     #   django-js-asset
     #   django-munigeo
     #   django-parler
     #   django-parler-rest
     #   djangorestframework
+django-csp==4.0
+    # via -r requirements.in
 django-health-check==3.20.0
     # via -r requirements.in
 django-js-asset==3.1.2
@@ -53,6 +56,8 @@ idna==3.10
     #   url-normalize
 opensearch-py==3.0.0
     # via -r requirements.in
+packaging==25.0
+    # via django-csp
 platformdirs==4.3.8
     # via requests-cache
 pyhumps==3.8.0

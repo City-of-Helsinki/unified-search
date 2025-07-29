@@ -17,6 +17,8 @@ from pathlib import Path
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from .csp_settings import CONTENT_SECURITY_POLICY  # noqa: F401
+
 sentry_sdk.init(
     dsn=os.getenv("SENTRY_DSN", ""),
     environment=os.getenv("SENTRY_ENVIRONMENT", ""),
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "csp",
     "health_check",
     "custom_health_checks",
     "munigeo",
@@ -59,6 +62,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "csp.middleware.CSPMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
