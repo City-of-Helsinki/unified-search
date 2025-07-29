@@ -1,5 +1,6 @@
 certifi
 Django
+django-csp
 django-health-check
 django-munigeo
 opensearch-py
