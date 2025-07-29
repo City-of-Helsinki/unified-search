@@ -173,4 +173,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Release/build information:
 APP_RELEASE = os.getenv("APP_RELEASE")
+APP_COMMIT_HASH = os.getenv("APP_COMMIT_HASH")
 APP_BUILD_TIME = datetime.fromtimestamp(os.path.getmtime(__file__))
