@@ -39,7 +39,6 @@ def test_csp_header_content(client):
     sorted_csp_parts = sorted(dir.strip() for dir in csp_header.split(";"))
     expected_sorted_csp_parts = sorted(
         [f"{directive} 'none'" for directive in expected_none_directives]
-        + ["upgrade-insecure-requests"]
     )
     # Compare sorted CSP directives because their order can vary
     assert sorted_csp_parts == expected_sorted_csp_parts
