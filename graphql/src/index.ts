@@ -3,6 +3,7 @@ import http from 'http';
 import type { GraphQLResolveInfoWithCacheControl } from '@apollo/cache-control-types';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { buildSubgraphSchema } from '@apollo/subgraph';
@@ -503,6 +504,7 @@ void (async () => {
     schema: combinedSchema,
     introspection: true,
     plugins: [
+      ApolloServerPluginLandingPageDisabled(), // No need for landing page
       ApolloServerPluginDrainHttpServer({ httpServer }),
       responseCachePlugin(),
       sentryConfig,
