@@ -49,29 +49,41 @@ import {
 
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
-// CSP (i.e. Content Security Policy) configuration.
-//
-// This is a very restrictive policy because this is a GraphQL server
-// and querying/mutating & introspecting the schema don't need much.
+/**
+ * CSP (i.e. Content Security Policy) configuration.
+ *
+ * This is a very restrictive policy because this is a GraphQL server
+ * and querying/mutating & introspecting the schema don't need much.
+ *
+ * Configuration documentation available under Content-Security-Policy in
+ * https://helmetjs.github.io/#reference
+ */
 const cspConfig = {
   contentSecurityPolicy: {
+    useDefaults: false, // No defaults, the wanted configuration is explicit
     directives: {
-      defaultSrc: [CSP.none],
-      scriptSrc: [CSP.none],
-      imgSrc: [CSP.none],
-      objectSrc: [CSP.none],
-      mediaSrc: [CSP.none],
-      frameSrc: [CSP.none],
-      fontSrc: [CSP.none],
-      connectSrc: [CSP.none],
-      styleSrc: [CSP.none],
       baseUri: [CSP.none],
       childSrc: [CSP.none],
-      frameAncestors: [CSP.none],
-      navigateTo: [CSP.none],
+      connectSrc: [CSP.none],
+      defaultSrc: [CSP.none],
+      fontSrc: [CSP.none],
       formAction: [CSP.none],
+      frameAncestors: [CSP.none],
+      frameSrc: [CSP.none],
+      imgSrc: [CSP.none],
       manifestSrc: [CSP.none],
+      mediaSrc: [CSP.none],
+      navigateTo: [CSP.none],
+      objectSrc: [CSP.none],
+      prefetchSrc: [CSP.none],
+      scriptSrc: [CSP.none],
+      scriptSrcAttr: [CSP.none],
+      scriptSrcElem: [CSP.none],
+      styleSrc: [CSP.none],
+      styleSrcAttr: [CSP.none],
+      styleSrcElem: [CSP.none],
       workerSrc: [CSP.none],
+      upgradeInsecureRequests: [], // Enable upgrade-insecure-requests
     },
   },
 } as const;
