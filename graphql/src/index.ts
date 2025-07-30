@@ -12,7 +12,9 @@ import * as Sentry from '@sentry/node';
 import cors from 'cors';
 import express from 'express';
 import { GraphQLError } from 'graphql';
+import helmet from 'helmet';
 
+import { CSP } from './constants.js';
 import type { GetSuggestionProps } from './datasources/es/api/index.js';
 import { ElasticSearchAPI } from './datasources/es/index.js';
 import {
@@ -46,6 +48,33 @@ import {
 } from './utils.js';
 
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
+
+// CSP (i.e. Content Security Policy) configuration.
+//
+// This is a very restrictive policy because this is a GraphQL server
+// and querying/mutating & introspecting the schema don't need much.
+const cspConfig = {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: [CSP.none],
+      scriptSrc: [CSP.none],
+      imgSrc: [CSP.none],
+      objectSrc: [CSP.none],
+      mediaSrc: [CSP.none],
+      frameSrc: [CSP.none],
+      fontSrc: [CSP.none],
+      connectSrc: [CSP.none],
+      styleSrc: [CSP.none],
+      baseUri: [CSP.none],
+      childSrc: [CSP.none],
+      frameAncestors: [CSP.none],
+      navigateTo: [CSP.none],
+      formAction: [CSP.none],
+      manifestSrc: [CSP.none],
+      workerSrc: [CSP.none],
+    },
+  },
+} as const;
 
 type UnifiedSearchQuery = {
   text?: string;
@@ -514,6 +543,7 @@ void (async () => {
 
   app.use(
     '/search',
+    helmet(cspConfig),
     cors(),
     express.json(),
     expressMiddleware(server, {
