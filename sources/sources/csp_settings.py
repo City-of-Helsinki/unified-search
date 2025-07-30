@@ -23,6 +23,5 @@ CONTENT_SECURITY_POLICY = {
         "form-action": [NONE],
         "manifest-src": [NONE],
         "worker-src": [NONE],
-        "upgrade-insecure-requests": True,
     }
 }
