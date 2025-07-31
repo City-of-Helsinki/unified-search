@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "csp",
     "health_check",
     "custom_health_checks",
@@ -62,6 +63,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "csp.middleware.CSPMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -179,3 +181,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 APP_RELEASE = os.getenv("APP_RELEASE")
 APP_COMMIT_HASH = os.getenv("APP_COMMIT_HASH")
 APP_BUILD_TIME = datetime.fromtimestamp(os.path.getmtime(__file__))
+
+# django-cors-headers settings:
+# https://github.com/adamchainz/django-cors-headers/tree/4.7.0?tab=readme-ov-file#configuration
+#
+# This is a very permissive CORS configuration,
+# which is suitable because only readiness/healthz endpoints are available,
+# see sources/sources/urls.py for available endpoints.
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for readiness/healthz endpoints
+CORS_ALLOW_CREDENTIALS = False  # Forbid cookies in cross-site requests
+CORS_ALLOW_METHODS = ["GET", "HEAD"]  # Only for readiness/healthz endpoints
