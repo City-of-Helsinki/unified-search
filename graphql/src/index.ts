@@ -9,10 +9,10 @@ import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@as-integrations/express5';
 import * as Sentry from '@sentry/node';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLError } from 'graphql';
-import helmet from 'helmet';
+import helmet, { HelmetOptions } from 'helmet';
 
 import { CSP } from './constants.js';
 import type { GetSuggestionProps } from './datasources/es/api/index.js';
@@ -50,12 +50,43 @@ import {
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
 /**
+ * CORS (Cross-Origin Resource Sharing) configuration for the GraphQL server.
+ *
+ * Configuration options documented at:
+ * https://github.com/expressjs/cors/tree/v2.8.5?tab=readme-ov-file#configuration-options
+ */
+const corsConfig = {
+  // Allow all origins because:
+  // 1. This is a public API
+  // 2. No authentication is used
+  // 3. No authorization is used
+  origin: '*',
+  // Don't allow credentials to be sent with requests
+  // because this a public API and no authentication is used.
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Credentials
+  credentials: false,
+  // Allow methods:
+  // - GET/HEAD for readiness and healthz endpoints
+  // - OPTIONS for preflight requests
+  // - POST for GraphQL queries and mutations
+  methods: ['GET', 'HEAD', 'OPTIONS', 'POST'],
+  // Allow CORS-safelisted request headers
+  // Accept, Accept-Language, Content-Language, Content-Type and Range
+  // that are always allowed and bypass the restrictions on Content-Type header
+  // to allow application/json content type.
+  //
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Headers
+  // https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header
+  allowedHeaders: ['Content-Type'],
+} as const satisfies CorsOptions;
+
+/**
  * CSP (i.e. Content Security Policy) configuration.
  *
  * This is a very restrictive policy because this is a GraphQL server
  * and querying/mutating & introspecting the schema don't need much.
  *
- * Configuration documentation available under Content-Security-Policy in
+ * Configuration options documented at:
  * https://helmetjs.github.io/#reference
  */
 const cspConfig = {
@@ -86,7 +117,7 @@ const cspConfig = {
       upgradeInsecureRequests: [], // Enable upgrade-insecure-requests
     },
   },
-} as const;
+} as const satisfies HelmetOptions;
 
 type UnifiedSearchQuery = {
   text?: string;
@@ -556,7 +587,7 @@ void (async () => {
   app.use(
     '/search',
     helmet(cspConfig),
-    cors(),
+    cors(corsConfig),
     express.json(),
     expressMiddleware(server, {
       context: async () => ({
