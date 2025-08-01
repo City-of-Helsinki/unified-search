@@ -12,8 +12,9 @@ def test_url_patterns():
     url_patterns = sorted(
         NamePattern(x.name, str(x.pattern)) for x in get_resolver().url_patterns
     )
-    # NOTE: If you add new URL patterns, recheck CORS and CSP settings
-    #       that they are still appropriate.
+    # NOTE: If you add new URL patterns,
+    #       please recheck that CORS & CSP settings are appropriate,
+    #       and update the openapi.yaml documentation.
     expected_url_patterns = [
         NamePattern("healthz", "healthz"),
         NamePattern("readiness", "readiness"),

@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: Unified Search Data Collector (i.e. Sources)
+  description: "Data collector from multiple sources to ElasticSearch.
+    Uses Django as temporary storage, the data importing Django
+    management commands are for use by cronjobs only.
+    Only health & readiness endpoints are open to public."
+  version: 2025-08-01-v1
+  license:
+    name: MIT
+    url: https://opensource.org/license/MIT
+
+servers:
+  - url: https://kuva-unified-search-sources.api.test.hel.ninja
+    description: Testing environment
+  - url: https://kuva-unified-search-sources.api.stage.hel.ninja
+    description: Staging environment
+  - url: https://kuva-unified-search-sources.api.hel.ninja
+    description: Production environment
+
+paths:
+  /readiness:
+    get:
+      summary: Check application readiness
+      description: "Returns the readiness status of the application
+        including version, commit hash, and build information"
+      operationId: getReadiness
+      tags:
+        - Health
+      responses:
+        200:
+          description: Application is ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+              example:
+                status: "ok"
+                release: "sources@1.4.0"
+                packageVersion: "1.4.0"
+                commitHash: "27db9eaf57b185676c9023be36d0c0ccabd84766"
+                buildTime: "2025-07-31T11:39:30.000Z"
+    head:
+      summary: Check application readiness (HEAD)
+      description: Returns the readiness status headers without response body
+      operationId: headReadiness
+      tags:
+        - Health
+      responses:
+        200:
+          description: Application is ready (headers only)
+
+  /healthz:
+    get:
+      summary: Check application health
+      description: Performs health check on the application
+      operationId: getHealthCheck
+      tags:
+        - Health
+      responses:
+        200:
+          description: Health check passed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                DatabaseHealthCheck: "working"
+        500:
+          description: One or more health checks failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+components:
+  schemas:
+    ReadinessResponse:
+      type: object
+      description: Application readiness status information
+      properties:
+        status:
+          type: string
+          example: "ok"
+          description: Overall status of the application
+        release:
+          type: string
+          example: "sources@1.4.0"
+          description: Application release version
+        packageVersion:
+          type: string
+          example: "1.4.0"
+          description: Package version
+        commitHash:
+          type: string
+          example: "27db9eaf57b185676c9023be36d0c0ccabd84766"
+          description: Git commit hash or "n/a" if not available
+        buildTime:
+          type: string
+          format: date-time
+          example: "2025-07-31T11:39:30.000Z"
+          description: ISO 8601 formatted build timestamp
+      required:
+        - status
+        - release
+        - packageVersion
+        - commitHash
+        - buildTime
+
+    HealthResponse:
+      type: object
+      description: Health check results in JSON format
+      additionalProperties:
+        type: string
+        description: Health check name and status
+      example:
+        DatabaseHealthCheck: "working"
+
+tags:
+  - name: Health
+    description: Health and readiness monitoring endpoints
