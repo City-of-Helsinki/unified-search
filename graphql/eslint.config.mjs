@@ -19,6 +19,7 @@ export default [
       '**/build/',
       '**/coverage/',
       '**/dist/',
+      '**/generated-graphql-docs/**',
       '**/node_modules/',
     ],
   },
