@@ -30,7 +30,7 @@ export const locationSchema = gql`
     city: LanguageString
   }
   """
-  Free-form location, not necessarily at a know venue.
+  Free-form location, not necessarily at a known venue.
   """
   type LocationDescription {
     url: LanguageString
@@ -38,7 +38,6 @@ export const locationSchema = gql`
     address: Address
     explanation: String
     administrativeDivisions: [AdministrativeDivision]
-    venue: UnifiedSearchVenue
   }
   enum TargetGroup {
     ASSOCIATIONS
