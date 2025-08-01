@@ -1,0 +1,33 @@
+# Based on the example configuration from SpectaQL:
+# https://github.com/anvilco/spectaql/blob/main/config-example.yml
+spectaql:
+  targetDir: generated-graphql-docs
+  displayAllServers: true
+
+servers:
+  - url: https://kuva-unified-search.api.test.hel.ninja/search
+    description: Testing environment
+  - url: https://kuva-unified-search.api.stage.hel.ninja/search
+    description: Staging environment
+  - url: https://kuva-unified-search.api.hel.fi/search
+    description: Production environment
+
+introspection:
+  # Use high depth to make unifiedSearch query's (i.e. the query whose name is
+  # unifiedSearch) deeply nested fields available in the documentation.
+  fieldExpansionDepth: 7
+  # Exclude unnecessary queries/types to make the documentation more to the point
+  metadataFile: ./spectaql/introspection-metadata.json
+
+info:
+  description: Unified Search GraphQL API
+  version: 2025-08-01-v1
+  title: Unified Search GraphQL API
+  license:
+    name: MIT
+    url: https://github.com/City-of-Helsinki/unified-search/blob/main/LICENSE
+  x-introItems:
+    - title: Description
+      file: ./spectaql/description-into-generated-docs.md
+    - title: Source code
+      description: https://github.com/City-of-Helsinki/unified-search

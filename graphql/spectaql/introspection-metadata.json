@@ -1,0 +1,138 @@
+{
+  "OBJECT": {
+    "Query": {
+      "fields": {
+        "_service": {
+          "documentation": {
+            "undocumented": true
+          }
+        },
+        "administrativeDivisions": {
+          "args": {
+            "helsinkiCommonOnly": {
+              "documentation": {
+                "example": true
+              }
+            }
+          }
+        },
+        "ontologyTree": {
+          "args": {
+            "rootId": {
+              "documentation": {
+                "example": null
+              }
+            },
+            "leavesOnly": {
+              "documentation": {
+                "example": false
+              }
+            }
+          }
+        },
+        "ontologyWords": {
+          "args": {
+            "ids": {
+              "documentation": {
+                "example": [
+                  401
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "AdministrativeDivision": {
+      "fields": {
+        "id": {
+          "documentation": {
+            "example": "ocd-division/country:fi/kunta:helsinki/kaupunginosa:kruununhaka"
+          }
+        },
+        "municipality": {
+          "documentation": {
+            "example": "Helsinki"
+          }
+        },
+        "name": {
+          "documentation": {
+            "example": {
+              "fi": "Kruununhaka",
+              "sv": "Kronohagen",
+              "en": null
+            }
+          }
+        },
+        "type": {
+          "documentation": {
+            "example": "neighborhood"
+          }
+        }
+      }
+    },
+    "OntologyTree": {
+      "fields": {
+        "id": {
+          "documentation": {
+            "example": "663"
+          }
+        },
+        "parentId": {
+          "documentation": {
+            "example": null
+          }
+        },
+        "name": {
+          "documentation": {
+            "example": {
+              "fi": "Yleisurheilukentät ja -paikat",
+              "sv": "Planer och platser för friidrott",
+              "en": "Athletics fields and venues"
+            }
+          }
+        },
+        "childIds": {
+          "documentation": {
+            "example": [
+              "664",
+              "665"
+            ]
+          }
+        },
+        "ancestorIds": {
+          "documentation": {
+            "example": [
+              "633",
+              "551",
+              "1403"
+            ]
+          }
+        },
+        "level": {
+          "documentation": {
+            "example": null
+          }
+        }
+      }
+    },
+    "OntologyWord": {
+      "fields": {
+        "id": {
+          "documentation": {
+            "example": "401"
+          }
+        },
+        "label": {
+          "documentation": {
+            "example": {
+              "fi": "liikuntapuistot",
+              "sv": "idrottsparker",
+              "en": "sports parks"
+            }
+          }
+        }
+      }
+    }
+  }
+}

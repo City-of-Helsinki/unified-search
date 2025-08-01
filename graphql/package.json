@@ -12,6 +12,10 @@
     "transpile": "tsc",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "serve": "node --import ./dist/src/sentry-init.mjs --trace-warnings --max-http-header-size=16000 dist/src/index.js",
+    "generate-local-dev-graphql-docs": "spectaql ./spectaql/config.yaml --introspection-url http://localhost:4000/search",
+    "generate-test-graphql-docs": "spectaql ./spectaql/config.yaml --introspection-url https://kuva-unified-search.api.test.hel.ninja/search",
+    "generate-stage-graphql-docs": "spectaql ./spectaql/config.yaml --introspection-url https://kuva-unified-search.api.stage.hel.ninja/search",
+    "generate-prod-graphql-docs": "spectaql ./spectaql/config.yaml --introspection-url https://kuva-unified-search.api.hel.fi/search",
     "test": "vitest",
     "test:ci": "vitest run --coverage",
     "lint": "eslint .",
@@ -56,6 +60,7 @@
     "@vitest/coverage-v8": "3.2.4",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
+    "spectaql": "^3.0.4",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }

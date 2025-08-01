@@ -195,10 +195,25 @@ export const querySchema = gql`
       size: Int = 5
     ): SearchSuggestionConnection
 
+    """
+    Get Helsinki/Finland administrative divisions i.e.
+    neighborhoods (=kaupunginosat), sub-districts (=osa-alueet),
+    municipalities (=kunnat) etc.
+
+    Based on imported data from [django-munigeo](https://github.com/City-of-Helsinki/django-munigeo):
+    - "geo_import finland --municipalities"
+    - "geo_import helsinki --divisions"
+
+    Used django-munigeo importers:
+    - [geo_import](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/management/commands/geo_import.py)
+      - [finland](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/importer/finland.py)
+      - [helsinki](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/importer/helsinki.py)
+    """
     administrativeDivisions(
       """
-      Return only Helsinki administrative divisions that make a sensible set to be
-      used as an option list in an UI for example.
+      If true, return only Helsinki municipality's neighborhoods and sub-districts
+      (=Helsingin kunnan kaupunginosat ja osa-alueet),
+      otherwise return also all the municipalities of Finland.
       """
       helsinkiCommonOnly: Boolean
     ): [AdministrativeDivision]
