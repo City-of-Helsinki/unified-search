@@ -5,6 +5,7 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@as-integrations/express5';
@@ -49,6 +50,19 @@ import {
 
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
+const ENABLE_APOLLO_SANDBOX = ['true', 'yes', '1'].includes(
+  (process.env.ENABLE_APOLLO_SANDBOX ?? '').toString().toLowerCase().trim()
+);
+
+function getLandingPagePlugin() {
+  if (ENABLE_APOLLO_SANDBOX) {
+    return ApolloServerPluginLandingPageLocalDefault({
+      embed: { runTelemetry: false },
+    });
+  }
+  return ApolloServerPluginLandingPageDisabled();
+}
+
 /**
  * CORS (Cross-Origin Resource Sharing) configuration for the GraphQL server.
  *
@@ -66,10 +80,9 @@ const corsConfig = {
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Credentials
   credentials: false,
   // Allow methods:
-  // - GET/HEAD for readiness and healthz endpoints
   // - OPTIONS for preflight requests
   // - POST for GraphQL queries and mutations
-  methods: ['GET', 'HEAD', 'OPTIONS', 'POST'],
+  methods: ['OPTIONS', 'POST'],
   // Allow CORS-safelisted request headers
   // Accept, Accept-Language, Content-Language, Content-Type and Range
   // that are always allowed and bypass the restrictions on Content-Type header
@@ -81,7 +94,8 @@ const corsConfig = {
 } as const satisfies CorsOptions;
 
 /**
- * CSP (i.e. Content Security Policy) configuration.
+ * CSP (i.e. Content Security Policy) configuration
+ * without Apollo Sandbox use.
  *
  * This is a very restrictive policy because this is a GraphQL server
  * and querying/mutating & introspecting the schema don't need much.
@@ -89,7 +103,7 @@ const corsConfig = {
  * Configuration options documented at:
  * https://helmetjs.github.io/#reference
  */
-const cspConfig = {
+const cspConfigWithoutApolloSandbox = {
   contentSecurityPolicy: {
     useDefaults: false, // No defaults, the wanted configuration is explicit
     directives: {
@@ -104,20 +118,58 @@ const cspConfig = {
       imgSrc: [CSP.none],
       manifestSrc: [CSP.none],
       mediaSrc: [CSP.none],
-      navigateTo: [CSP.none],
       objectSrc: [CSP.none],
-      prefetchSrc: [CSP.none],
       scriptSrc: [CSP.none],
-      scriptSrcAttr: [CSP.none],
-      scriptSrcElem: [CSP.none],
       styleSrc: [CSP.none],
-      styleSrcAttr: [CSP.none],
-      styleSrcElem: [CSP.none],
       workerSrc: [CSP.none],
       upgradeInsecureRequests: [], // Enable upgrade-insecure-requests
     },
   },
 } as const satisfies HelmetOptions;
+
+/**
+ * CSP (i.e. Content Security Policy) configuration
+ * with Apollo Sandbox use.
+ *
+ * WARNING: This should not be used in production environment!
+ *
+ * Configuration options documented at:
+ * https://helmetjs.github.io/#reference
+ */
+const cspConfigWithApolloSandbox = {
+  contentSecurityPolicy: {
+    useDefaults: false, // No defaults, the wanted configuration is explicit
+    directives: {
+      ...cspConfigWithoutApolloSandbox.contentSecurityPolicy.directives,
+      scriptSrc: [
+        CSP.self,
+        CSP.unsafeInline,
+        'https://embeddable-sandbox.cdn.apollographql.com',
+      ],
+      styleSrc: [CSP.self, CSP.unsafeInline, 'https://fonts.googleapis.com'],
+      imgSrc: [
+        CSP.self,
+        'https://apollo-server-landing-page.cdn.apollographql.com',
+      ],
+      fontSrc: [CSP.self, 'https://fonts.gstatic.com'],
+      frameSrc: [CSP.self, 'https://sandbox.embed.apollographql.com'],
+      connectSrc: [CSP.self],
+      manifestSrc: [
+        CSP.self,
+        'https://apollo-server-landing-page.cdn.apollographql.com',
+      ],
+    },
+  },
+} as const satisfies HelmetOptions;
+
+function getCspConfig():
+  | typeof cspConfigWithApolloSandbox
+  | typeof cspConfigWithoutApolloSandbox {
+  if (ENABLE_APOLLO_SANDBOX) {
+    return cspConfigWithApolloSandbox;
+  }
+  return cspConfigWithoutApolloSandbox;
+}
 
 type UnifiedSearchQuery = {
   text?: string;
@@ -576,7 +628,7 @@ void (async () => {
     schema: combinedSchema,
     introspection: true,
     plugins: [
-      ApolloServerPluginLandingPageDisabled(), // No need for landing page
+      getLandingPagePlugin(),
       ApolloServerPluginDrainHttpServer({ httpServer }),
       responseCachePlugin(),
       sentryConfig,
@@ -586,7 +638,7 @@ void (async () => {
 
   app.use(
     '/search',
-    helmet(cspConfig),
+    helmet(getCspConfig()),
     cors(corsConfig),
     express.json(),
     expressMiddleware(server, {
