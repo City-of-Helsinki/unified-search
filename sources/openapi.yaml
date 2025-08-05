@@ -8,7 +8,7 @@ info:
   version: 2025-08-01-v1
   license:
     name: MIT
-    url: https://opensource.org/license/MIT
+    url: https://github.com/City-of-Helsinki/unified-search/blob/main/LICENSE
 
 servers:
   - url: https://kuva-unified-search-sources.api.test.hel.ninja
