@@ -1,0 +1,3 @@
+cd graphql
+yarn doctoc . -u
+yarn lint-staged --relative

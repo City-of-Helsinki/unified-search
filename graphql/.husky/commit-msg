@@ -1,0 +1,2 @@
+cd graphql
+npx --no-install commitlint --config commitlint.config.cjs --edit "$1"

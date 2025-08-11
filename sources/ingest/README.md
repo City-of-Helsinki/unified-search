@@ -3,6 +3,11 @@
 The data importers used for importing data into the unified search's
 OpenSearch/Elasticsearch index are located under this directory.
 
+<!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
+<!--TOC-->
+
+<!--TOC-->
+
 ## Architecture
 
 Azure DevOps [cron jobs](https://dev.azure.com/City-of-Helsinki/kuva-unified-search/_git/kuva-unified-search-pipelines?path=%2Fpipeline-templates%2Fdeploy-pipeline-unified-search-sources.yml)
