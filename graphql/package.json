@@ -16,7 +16,8 @@
     "test:ci": "vitest run --coverage",
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "cd .. && husky graphql/.husky"
   },
   "author": "",
   "license": "MIT",
@@ -35,6 +36,7 @@
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
     "cors": "^2.8.5",
+    "doctoc": "^2.2.1",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -47,13 +49,17 @@
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
     "helmet": "^8.1.0",
+    "husky": "^9.1.7",
     "luxon": "^3.7.1",
     "vitest": "^3.2.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@vitest/coverage-v8": "3.2.4",
+    "lint-staged": "^16.1.5",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "tsx": "^4.20.3",

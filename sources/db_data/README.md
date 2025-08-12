@@ -1,5 +1,10 @@
 # Data collector's database file directory
 
+<!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
+<!--TOC-->
+
+<!--TOC-->
+
 ## What?
 This directory is used to store the `db.sqlite3` file,
 which is used by the [ingest_data](../ingest/management/commands/ingest_data.py)

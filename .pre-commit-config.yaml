@@ -35,3 +35,10 @@ repos:
     hooks:
       - id: gitlint
         stages: [commit-msg]
+  - repo: https://github.com/frnmst/md-toc
+    rev: 9.0.0
+    hooks:
+      - id: md-toc
+        # Skip first line to exclude topmost heading from Table of Contents
+        args: ['--in-place', '--newline-string=\n', '--skip-lines=1', 'github']
+        files: ^sources/

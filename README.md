@@ -2,6 +2,11 @@
 
 This is common unified search: multi domain search over multiple services.
 
+<!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
+<!--TOC-->
+
+<!--TOC-->
+
 Solution consists of following parts:
 
 [Data collector](https://github.com/City-of-Helsinki/unified-search/tree/main/sources)
