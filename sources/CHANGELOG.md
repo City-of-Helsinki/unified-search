@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.0.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.4.0...sources-v2.0.0) (2025-08-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **graphql:** remove event importer & clean up/purge GraphQL schema
+
+### Features
+
+* Add pre-commit hooks for eslint, prettier, vitest and md-toc ([6d73a6b](https://github.com/City-of-Helsinki/unified-search/commit/6d73a6b0c62826ad595e852332546b3046746dc5))
+* Combine /test/ completely into sources app for maintainability ([aaac514](https://github.com/City-of-Helsinki/unified-search/commit/aaac5142188e8bf8bc1acc7899e95450bdf50f3d))
+* **graphql:** Document administrativeDivisions query more ([0287f1b](https://github.com/City-of-Helsinki/unified-search/commit/0287f1bc6d9a296f8f7d99215d5623d47e913bc7))
+* **graphql:** Remove event importer & clean up/purge GraphQL schema ([fea7da9](https://github.com/City-of-Helsinki/unified-search/commit/fea7da923144aee2f12e55c1e510ad646904a0bd))
+* **sources:** Add commitHash to readiness endpoint's output ([0cbd6b0](https://github.com/City-of-Helsinki/unified-search/commit/0cbd6b06e64ec01e19ab1761881c3d8d324c6b14))
+* **sources:** Add CSP & tests for it ([d6274ce](https://github.com/City-of-Helsinki/unified-search/commit/d6274ce50e3b8669ba8af4169feb4ed15915fd5e))
+* **sources:** Add openapi.yaml documentation of available endpoints ([dfb8fe7](https://github.com/City-of-Helsinki/unified-search/commit/dfb8fe77d17519bc65dc96af9e8863e3bb9317c5))
+* **sources:** Add permissive CORS, b/c only readiness/healthz endpoints ([15429e6](https://github.com/City-of-Helsinki/unified-search/commit/15429e6f5f4180106c9023be36d0c0ccab984766))
+* **sources:** Add readiness/healthz endpoints ([1ad6906](https://github.com/City-of-Helsinki/unified-search/commit/1ad690667811a15f39a212c0b9842a0140ee8950))
+* **sources:** Remove asgi.py as unnecessary ([7e21be0](https://github.com/City-of-Helsinki/unified-search/commit/7e21be0f72c4e40f31c970152563dacc9429d425))
+* **sources:** Remove django admin login page as unneeded ([1931b32](https://github.com/City-of-Helsinki/unified-search/commit/1931b321eccc10a8ea38f9d14a6ae6b6c6ed5a56))
+* **sources:** Upgrade to Python 3.12 & all dependencies, use ruff ([9cb7f7d](https://github.com/City-of-Helsinki/unified-search/commit/9cb7f7dcecbb3c23fd7789cb720e9baf1ac4700d))
+* **sources:** Use more directives in CSP, use upgrade-insecure-requests ([f08de7e](https://github.com/City-of-Helsinki/unified-search/commit/f08de7ed269894cd05da41005af9aa406eb36ef8))
+* **sources:** Use ubi9 python 3.9 GDAL image in Dockerfile ([7bbba03](https://github.com/City-of-Helsinki/unified-search/commit/7bbba03dd1d12b5a237a7bc04f438de55fffd81c))
+
+
+### Bug Fixes
+
+* **sources:** Remove incorrect deprecation ([9b766e3](https://github.com/City-of-Helsinki/unified-search/commit/9b766e3bdb4483637abc48c8bf82606561cec1b4))
+* **sources:** Remove upgrade-insecure-requests CSP directive as unneeded ([84e7c88](https://github.com/City-of-Helsinki/unified-search/commit/84e7c880c55f50dfe4dbfdac845813af22cd570c))
+* Tests, update README & docker compose & .dockerignore ([8864887](https://github.com/City-of-Helsinki/unified-search/commit/886488734b7f5f1b9f7898970688e74d7c4dcab7))
+
+
+### Documentation
+
+* Document data importers & their data import flow ([e004a99](https://github.com/City-of-Helsinki/unified-search/commit/e004a99b573c36565499bf2b775e740afa88c097))
+
 ## [1.4.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.3.1...sources-v1.4.0) (2023-12-08)
 
 
