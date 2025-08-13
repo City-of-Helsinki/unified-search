@@ -2,6 +2,33 @@
 
 This is common unified search: multi domain search over multiple services.
 
+**Table of Contents**
+<!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
+<!--TOC-->
+
+- [Environments](#environments)
+  - [Data collector](#data-collector)
+  - [OpenSearch / Elasticsearch](#opensearch--elasticsearch)
+  - [GraphQL API](#graphql-api)
+- [Development](#development)
+  - [Fetching data with data collector](#fetching-data-with-data-collector)
+  - [Testing](#testing)
+  - [GraphQL search API](#graphql-search-api)
+  - [GraphQL queries](#graphql-queries)
+    - [Free text search - location index](#free-text-search---location-index)
+    - [Pagination and scores](#pagination-and-scores)
+    - [Raw data for debugging purposes](#raw-data-for-debugging-purposes)
+    - [Suggestions for text completion](#suggestions-for-text-completion)
+    - [Date ranges](#date-ranges)
+  - [GraphQL search API - using curl](#graphql-search-api---using-curl)
+  - [Python dependencies](#python-dependencies)
+  - [Code linting & formatting](#code-linting--formatting)
+  - [Pre-commit hooks](#pre-commit-hooks)
+  - [Known issues](#known-issues)
+- [Issues board](#issues-board)
+
+<!--TOC-->
+
 Solution consists of following parts:
 
 [Data collector](https://github.com/City-of-Helsinki/unified-search/tree/main/sources)

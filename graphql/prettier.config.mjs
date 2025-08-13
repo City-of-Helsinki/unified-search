@@ -1,7 +1,10 @@
-// These settings override the prettier default values
-module.exports = {
+/**
+ * @see https://prettier.io/docs/configuration
+ * @type {import("prettier").Config}
+ */
+export default {
   bracketSpacing: true,
-  trailingComma: 'all',
+  trailingComma: 'es5',
   semi: true,
   singleQuote: true,
   printWidth: 80,

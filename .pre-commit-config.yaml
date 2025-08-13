@@ -13,6 +13,9 @@ default_language_version:
   python: python3.12
 
 repos:
+  #####################################################################
+  # Hooks for `sources` directory / Python project
+  #####################################################################
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.7  # <-- Should match sources/requirements-dev.txt's ruff version!
     hooks:
@@ -24,6 +27,38 @@ repos:
       - id: ruff-format
         args: [ --config, sources/pyproject.toml ]
         files: ^sources/
+  #####################################################################
+  # Hooks for `graphql` directory / Node.js project
+  #####################################################################
+  # NOTE: Must install dependencies first! Run "yarn --cwd graphql"
+  #
+  # The invocations are a bit hacky here because of no monorepo support
+  # in pre-commit. Removing the subdirectory prefix with a script is
+  # mentioned as workaround in a pre-commit issue, see:
+  # https://github.com/pre-commit/pre-commit/issues/1110#issuecomment-525937018
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        language: system
+        entry: bash -lc 'graphql/strip-graphql-dir-prefix-from-args.sh "$@" | xargs -0 -r yarn --cwd graphql run eslint --fix'
+        files: ^graphql/
+        types_or: [ javascript, ts ]
+      - id: prettier
+        name: Prettier
+        language: system
+        entry: bash -lc 'graphql/strip-graphql-dir-prefix-from-args.sh "$@" | xargs -0 -r yarn --cwd graphql run prettier --write'
+        files: ^graphql/
+        types_or: [ javascript, ts, markdown, json, yaml ]
+      - id: vitest-related
+        name: Vitest related
+        language: system
+        # https://vitest.dev/guide/cli.html#vitest-related
+        entry: bash -lc 'graphql/strip-graphql-dir-prefix-from-args.sh "$@" | xargs -0 -r yarn --cwd graphql run vitest related --run'
+        files: ^graphql/
+  #####################################################################
+  # Shared hooks (i.e. for all parts of the monorepo)
+  #####################################################################
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.2.0
     hooks:
@@ -35,3 +70,9 @@ repos:
     hooks:
       - id: gitlint
         stages: [commit-msg]
+  - repo: https://github.com/frnmst/md-toc
+    rev: 9.0.0
+    hooks:
+      - id: md-toc
+        # Skip first line to exclude topmost heading from Table of Contents
+        args: ['--in-place', '--newline-string=\n', '--skip-lines=1', 'github']
