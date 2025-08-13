@@ -1,4 +1,4 @@
-.yarn
-**/dist/**
 **/build/**
+**/dist/**
 **/tmp/**
+.yarn

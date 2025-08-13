@@ -3,6 +3,24 @@
 The data importers used for importing data into the unified search's
 OpenSearch/Elasticsearch index are located under this directory.
 
+**Table of Contents**
+<!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
+<!--TOC-->
+
+- [Architecture](#architecture)
+  - [Administrative division importer](#administrative-division-importer)
+    - [Imported administrative divisions](#imported-administrative-divisions)
+    - [Data sources](#data-sources)
+    - [Data import flow diagram](#data-import-flow-diagram)
+  - [Location importer](#location-importer)
+    - [Data import flow diagram](#data-import-flow-diagram-1)
+  - [Ontology tree importer](#ontology-tree-importer)
+    - [Data import flow diagram](#data-import-flow-diagram-2)
+  - [Ontology word importer](#ontology-word-importer)
+    - [Data import flow diagram](#data-import-flow-diagram-3)
+
+<!--TOC-->
+
 ## Architecture
 
 Azure DevOps [cron jobs](https://dev.azure.com/City-of-Helsinki/kuva-unified-search/_git/kuva-unified-search-pipelines?path=%2Fpipeline-templates%2Fdeploy-pipeline-unified-search-sources.yml)
