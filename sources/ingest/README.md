@@ -1,7 +1,7 @@
 # Data importers
 
 The data importers used for importing data into the unified search's
-OpenSearch/Elasticsearch index are located under this directory.
+Elasticsearch index are located under this directory.
 
 **Table of Contents**
 <!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
