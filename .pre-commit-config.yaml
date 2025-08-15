@@ -75,4 +75,4 @@ repos:
     hooks:
       - id: md-toc
         # Skip first line to exclude topmost heading from Table of Contents
-        args: ['--in-place', '--newline-string=\n', '--skip-lines=1', 'github']
+        args: ['--in-place', '--newline-string=\n', '--skip-lines=1', '--no-list-coherence', 'github']

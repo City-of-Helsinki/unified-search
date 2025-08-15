@@ -1,7 +1,7 @@
 # Data importers
 
 The data importers used for importing data into the unified search's
-OpenSearch/Elasticsearch index are located under this directory.
+Elasticsearch index are located under this directory.
 
 **Table of Contents**
 <!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
@@ -92,23 +92,24 @@ flowchart LR
     AdminDivCronJob["Admin Div"]
   end
   subgraph Sources["Backend mgmt cmd"]
-    IngestDataAdminDiv["ingest_data administrative_division"]
+    IngestDataAdminDiv["ingest_data<br>administrative_division"]
   end
   subgraph DjangoMunigeo["django-munigeo mgmt cmd"]
-    GeoImportFinland["geo_import finland --municipalities"]
-    GeoImportHelsinki["geo_import helsinki --divisions"]
+    GeoImportFinland["geo_import<br>finland --municipalities"]
+    GeoImportHelsinki["geo_import<br>helsinki --divisions"]
   end
   subgraph Makasiini["makasiini.hel.ninja (zip)"]
-    TietoaKuntajaostaZip["Administrative Divisions 2016"]
+    TietoaKuntajaostaZip["Administrative<br>Divisions 2016"]
   end
   subgraph HelsinkiWFS["kartta.hel.fi (WFS)"]
-    AdminDivWFSLayers["Administrative Divisions"]
+    AdminDivWFSLayers["Administrative<br>Divisions"]
   end
   subgraph HsyWFS["kartta.hsy.fi (WFS)"]
-    StatDistrictsWFSLayers["Statistical Districts"]
+    StatDistrictsWFSLayers["Statistical<br>Districts"]
   end
   subgraph Elasticsearch["Elasticsearch Index"]
     AdminDivIndex["administrative_division"]
+    HelAdminDivIndex["helsinki_common_administrative_division"]
   end
 
   AdminDivCronJob -- calls daily --> IngestDataAdminDiv
@@ -120,9 +121,14 @@ flowchart LR
   GeoImportHelsinki -- reads --> AdminDivWFSLayers
   GeoImportHelsinki -- reads --> StatDistrictsWFSLayers
 
-  AdminDivWFSLayers -- mapped to --> AdminDivIndex
-  StatDistrictsWFSLayers -- mapped to --> AdminDivIndex
-  TietoaKuntajaostaZip -- mapped to --> AdminDivIndex
+  PreIndexCombinationPoint(" ")
+
+  AdminDivWFSLayers -- mapped to --> PreIndexCombinationPoint
+  StatDistrictsWFSLayers -- mapped to --> PreIndexCombinationPoint
+  TietoaKuntajaostaZip -- mapped to --> PreIndexCombinationPoint
+
+  PreIndexCombinationPoint -- written to --> AdminDivIndex
+  PreIndexCombinationPoint -- filtered to --> HelAdminDivIndex
 ```
 
 ### Location importer
