@@ -7,17 +7,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: ./sources
-
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@main
+    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@ci_working_directory
     secrets: inherit
     with:
       python-version: 3.12
-      postgres-major-version: 13
+      working-directory: ./sources
       extra-commands: |
         echo 'GITHUB_ACTIONS=true' >> .env
         echo 'sudo apt-get install gdal-bin libsqlite3-mod-spatialite' >> .env

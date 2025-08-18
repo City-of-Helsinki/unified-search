@@ -7,13 +7,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: ./graphql
-
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main
+    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@ci_working_directory
     secrets: inherit
     with:
       node-version: 22
+      working-directory: ./graphql
