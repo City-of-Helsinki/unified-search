@@ -1,0 +1,23 @@
+name: CI-sources
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./sources
+
+jobs:
+  common:
+    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@main
+    secrets: inherit
+    with:
+      python-version: 3.12
+      postgres-major-version: 13
+      extra-commands: |
+        echo 'GITHUB_ACTIONS=true' >> .env
+        echo 'sudo apt-get install gdal-bin libsqlite3-mod-spatialite' >> .env
