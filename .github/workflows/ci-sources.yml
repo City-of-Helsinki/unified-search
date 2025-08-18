@@ -17,4 +17,4 @@ jobs:
       working-directory: ./sources
       extra-commands: |
         echo 'GITHUB_ACTIONS=true' >> .env
-        echo 'sudo apt-get install gdal-bin libsqlite3-mod-spatialite' >> .env
+        echo 'sudo apt-get install gdal-bin libsqlite3-mod-spatialite'
