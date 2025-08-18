@@ -8,6 +8,7 @@
     "node": ">=22.16.0"
   },
   "scripts": {
+    "build": "tsc",
     "start": "nodemon --ext ts src/index.ts --exec tsx",
     "transpile": "tsc",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
