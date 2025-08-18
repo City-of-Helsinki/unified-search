@@ -13,6 +13,7 @@ jobs:
     secrets: inherit
     with:
       python-version: 3.12
+      postgres-major-version: 13
       working-directory: ./sources
       extra-commands: |
         echo 'GITHUB_ACTIONS=true' >> .env
