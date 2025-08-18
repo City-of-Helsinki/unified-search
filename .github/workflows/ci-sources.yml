@@ -14,6 +14,7 @@ jobs:
     with:
       python-version: 3.12
       postgres-major-version: 13
+      elasticsearch-version: 8.15.0
       working-directory: ./sources
       extra-commands: |
         echo 'GITHUB_ACTIONS=true' >> .env
