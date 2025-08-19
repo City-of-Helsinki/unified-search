@@ -4,6 +4,7 @@ GraphQL search API on top of Elasticsearch to provide high level interface
 for end users of [Unified Search](https://github.com/City-of-Helsinki/unified-search).
 
 **Table of Contents**
+
 <!-- DON'T EDIT THE TOC SECTION, INSTEAD RE-RUN md-toc TO UPDATE IT -->
 <!--TOC-->
 
@@ -26,6 +27,7 @@ for end users of [Unified Search](https://github.com/City-of-Helsinki/unified-se
 ## Requirements
 
 Requirements defined & provided by [Dockerfile](./Dockerfile):
+
 - Node.js 22
 - Latest Yarn v1
 
@@ -180,6 +182,7 @@ Get documents created in the last 2 minutes:
     }
 
 For references, see:
+
 - https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math
 - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
 
