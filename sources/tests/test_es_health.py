@@ -1,8 +1,6 @@
 import json
 import logging
-import os
 
-import pytest
 import requests
 from django.conf import settings
 from opensearchpy import exceptions, OpenSearch
@@ -14,7 +12,6 @@ from opensearchpy import exceptions, OpenSearch
         pytest --log-cli-level=debug
 """
 
-GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 
 logging.basicConfig(
     filename="test_es_health.log",
@@ -23,7 +20,6 @@ logging.basicConfig(
 )
 
 
-@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 def test_es_up():
     logging.debug("Checking OpenSearch connection")
     r = requests.get(settings.ES_URI)
@@ -31,7 +27,6 @@ def test_es_up():
     assert r.status_code == 200
 
 
-@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 def test_es_basic_operations():
     """Run basic operations for testing purposes."""
 

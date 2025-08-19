@@ -17,6 +17,5 @@ jobs:
       elasticsearch-version: 8.15.0
       working-directory: ./sources
       extra-commands: |
-        echo 'GITHUB_ACTIONS=false' >> .env
         echo 'ES_URI=http://localhost:9200' >> .env
         sudo apt-get install gdal-bin libsqlite3-mod-spatialite
