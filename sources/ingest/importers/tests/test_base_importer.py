@@ -1,11 +1,8 @@
-import os
 from dataclasses import dataclass
 
 import pytest
 
 from ingest.importers.base import Importer
-
-GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 
 
 @dataclass
@@ -34,7 +31,6 @@ def assert_snapshot_match_es_data_and_aliases(snapshot, es):
     snapshot.assert_match(aliases)
 
 
-@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 def test_importer_end_results(snapshot, es):
     importer = SomeImporter()
 
@@ -43,7 +39,6 @@ def test_importer_end_results(snapshot, es):
         assert_snapshot_match_es_data_and_aliases(snapshot, es)
 
 
-@pytest.mark.skipif(GITHUB_ACTIONS, reason="Cannot be run in GHA.")
 @pytest.mark.parametrize(
     "has_old_data", (False, True), ids=("does not have old data", "has old data")
 )
