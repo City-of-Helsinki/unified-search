@@ -69,6 +69,8 @@ pyhumps==3.8.0
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via opensearch-py
+python-dotenv==1.1.1
+    # via -r requirements.in
 pyyaml==6.0.2
     # via django-munigeo
 requests==2.32.4
