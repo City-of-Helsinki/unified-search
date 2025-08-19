@@ -6,5 +6,6 @@ django-health-check
 django-munigeo
 opensearch-py
 pyhumps
+python-dotenv
 requests
 sentry-sdk
