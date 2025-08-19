@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import {
   GraphQlToElasticLanguageMap,
   elasticSearchQueryStringSpecialCharsRegExpPattern,
@@ -86,4 +88,27 @@ export function escapeQuery(text: string) {
     elasticSearchQueryStringSpecialCharsRegExpPattern,
     '\\$1'
   );
+}
+
+/**
+ * Finds the closest `.env` file in the current directory or its parents
+ * (max. up 3 levels).
+ *
+ * @return {string | null} Path to closest `.env` file or null if not found.
+ */
+export function findClosestEnvFile() {
+  // Try local directory first, then the parent, then parent's parent and so on.
+  const ENV_FILE_PATHS = [
+    './.env',
+    '../.env',
+    '../../.env',
+    '../../../.env',
+  ] as const;
+
+  for (const envFilePath of ENV_FILE_PATHS) {
+    if (fs.existsSync(envFilePath)) {
+      return envFilePath;
+    }
+  }
+  return null;
 }
