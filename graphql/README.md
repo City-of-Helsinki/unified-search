@@ -14,10 +14,14 @@ for end users of [Unified Search](https://github.com/City-of-Helsinki/unified-se
   - [Without Docker](#without-docker)
 - [Environments](#environments)
 - [GraphQL queries](#graphql-queries)
+  - [Administrative divisions query](#administrative-divisions-query)
   - [Free text search - location index](#free-text-search---location-index)
   - [Pagination and scores](#pagination-and-scores)
   - [Raw data for debugging purposes](#raw-data-for-debugging-purposes)
   - [Suggestions for text completion](#suggestions-for-text-completion)
+  - [Ontology tree query](#ontology-tree-query)
+  - [Ontology words query](#ontology-words-query)
+- [Elasticsearch queries](#elasticsearch-queries)
   - [Date ranges](#date-ranges)
 - [Code linting & formatting](#code-linting--formatting)
 - [Pre-commit hooks](#pre-commit-hooks)
@@ -60,109 +64,193 @@ Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/
 
 It is recommended to use a GraphQL client for sending queries.
 
+### Administrative divisions query
+
+NOTE: `ingest_data administrative_division` must have been run for this to work.
+
+Show all Helsinki's administrative divisions:
+
+```graphql
+query {
+  administrativeDivisions(helsinkiCommonOnly: true) {
+    id
+    type
+    municipality
+    name {
+      fi
+      sv
+      en
+    }
+  }
+}
+```
+
 ### Free text search - location index
 
-    query {
-      unifiedSearch(index: "location", text: "koira", languages:FINNISH) {
-        edges {
-          cursor
-          node {
-            venue {
-              name {
-                fi
-              }
-              description {
-                fi
-              }
-            }
+NOTE: `ingest_data location` must have been run for this to work.
+
+```graphql
+query {
+  unifiedSearch(index: location, text: "koira", languages: FINNISH) {
+    edges {
+      cursor
+      node {
+        venue {
+          name {
+            fi
+          }
+          description {
+            fi
           }
         }
       }
     }
+  }
+}
+```
 
 ### Pagination and scores
 
-    query {
-      unifiedSearch(text: "koira", index: "location") {
-        count
-        max_score
-        pageInfo {
-          startCursor
-          endCursor
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          cursor
-          node {
-            venue {
-              name {
-                fi
-                sv
-                en
-              }
-              openingHours {
-                url
-                is_open_now_url
-              }
-              location {
-                url {
-                  fi
-                }
-              }
+NOTE: `ingest_data location` must have been run for this to work.
+
+```graphql
+query {
+  unifiedSearch(text: "koira", index: location) {
+    count
+    max_score
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      cursor
+      node {
+        venue {
+          name {
+            fi
+            sv
+            en
+          }
+          openingHours {
+            url
+            is_open_now_url
+          }
+          location {
+            url {
+              fi
             }
-            _score
           }
         }
+        _score
       }
     }
+  }
+}
+```
 
 ### Raw data for debugging purposes
 
-    query {
-      unifiedSearch(text: "koira", index: "location", first: 3) {
-        count
-        max_score
-        edges {
-          node {
-            venue {
-              name {
-                fi
-                sv
-                en
-              }
-            }
-            _score
+NOTE: `ingest_data location` must have been run for this to work.
+
+```graphql
+query {
+  unifiedSearch(text: "koira", index: location, first: 3) {
+    count
+    max_score
+    edges {
+      node {
+        venue {
+          name {
+            fi
+            sv
+            en
           }
         }
-        es_results {
-          took
-          hits {
-            max_score
-            total {
-              value
-            }
-            hits {
-              _index
-              _source {
-                data
-              }
-            }
+        _score
+      }
+    }
+    es_results {
+      took
+      hits {
+        max_score
+        total {
+          value
+        }
+        hits {
+          _index
+          _source {
+            data
           }
         }
       }
     }
+  }
+}
+```
 
 ### Suggestions for text completion
 
-    query {
-      unifiedSearchCompletionSuggestions(prefix:"ki", languages:FINNISH, index:"location")
-      {
-        suggestions {
-          label
-        }
-      }
+NOTE: `ingest_data location` must have been run for this to work.
+
+```graphql
+query {
+  unifiedSearchCompletionSuggestions(
+    prefix: "ki"
+    languages: FINNISH
+    index: location
+  ) {
+    suggestions {
+      label
     }
+  }
+}
+```
+
+### Ontology tree query
+
+NOTE: `ingest_data ontology_tree` must have been run for this to work.
+
+Show ontology tree for root ID 505 i.e. "Renting recreational spaces":
+
+```graphql
+query {
+  ontologyTree(rootId: 505) {
+    id
+    name {
+      fi
+      sv
+      en
+    }
+    childIds
+    ancestorIds
+  }
+}
+```
+
+### Ontology words query
+
+NOTE: `ingest_data ontology_word` must have been run for this to work.
+
+Show all ontology words:
+
+```graphql
+query {
+  ontologyWords {
+    id
+    label {
+      fi
+      sv
+      en
+    }
+  }
+}
+```
+
+## Elasticsearch queries
+
+You can run these queries [locally in OpenSearch Dashboards Dev Tools](http://localhost:5601/app/dev_tools#/console).
 
 ### Date ranges
 
@@ -170,21 +258,23 @@ Date can be used in queries assuming mapping type is correct (`date` in ES, `dat
 
 Get documents created in the last 2 minutes:
 
-    GET /location/_search
-    {
-      "query": {
-        "range": {
-          "venue.meta.createdAt": {
-            "gte": "now-2m/m"
-          }
-        }
+```elasticsearch
+GET /location/_search
+{
+  "query": {
+    "range": {
+      "venue.meta.createdAt": {
+        "gte": "now-2m/m"
       }
     }
+  }
+}
+```
 
-For references, see:
+Related Elasticsearch documentation:
 
-- https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math
-- https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
+- [Elasticsearch Date Math](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#date-math)
+- [Using the range query with date fields](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates)
 
 ## Code linting & formatting
 
