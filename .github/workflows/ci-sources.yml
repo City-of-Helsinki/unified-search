@@ -17,6 +17,9 @@ jobs:
       working-directory: ./sources
       extra-commands: |
         # Start local OpenSearch for testing. It will be destroyed after the tests are done.
+        # You can only log in to the Opensearch container from a runnable environment. 
+        # The container is only for tests in this repository and only exists for the duration of the tests. 
+        # For this reason, protecting the Opensearch admin password is not justified.
         docker run -d \
           --name opensearch \
           -p 9200:9200 \
