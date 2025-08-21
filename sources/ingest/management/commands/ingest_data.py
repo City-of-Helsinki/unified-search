@@ -35,11 +35,6 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Named (optional) arguments
         parser.add_argument(
-            "--delete",
-            action="store_true",
-            help="Delete stored data",
-        )
-        parser.add_argument(
             "--ignore-fallback-languages",  # Turn off use_fallback_languages
             dest="use_fallback_languages",
             action="store_false",  # Means use_fallback_languages=False because of dest
@@ -63,10 +58,6 @@ class Command(BaseCommand):
 
         importer_map = self.get_importer_map(kwargs["importer"])
 
-        if kwargs["delete"]:
-            self.handle_delete(importer_map)
-            return
-
         self.handle_import(
             importer_map,
             use_fallback_languages=kwargs.get("use_fallback_languages", True),
@@ -88,15 +79,6 @@ class Command(BaseCommand):
                     f"allowed: {list(self.all_importers.keys())}."
                 )
         return importer_map
-
-    def handle_delete(self, importer_map: ImporterMap) -> None:
-        for importer_name, importer_class in importer_map.items():
-            logger.info(f"Deleting data {importer_name}")
-            try:
-                importer_class().delete_all_data()
-            except Exception as e:  # noqa
-                logger.exception(e)
-                raise e
 
     def handle_import(
         self, importer_map: ImporterMap, use_fallback_languages: bool

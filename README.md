@@ -130,23 +130,15 @@ GraphQL tests under `graphql` folder (Install dependencies with `yarn` first):
 ### Running data importers
 
 For more info, see [Data Importers README](./sources/ingest/README.md),
-but here are some examples of importing data into unified search.
+but here are a few examples of importing data into unified search.
 
-Import all data:
+Import administrative division data:
 
-    docker compose exec sources python manage.py ingest_data
+    docker compose exec sources python manage.py ingest_data administrative_division
 
-Import location data only:
+Import location data:
 
     docker compose exec sources python manage.py ingest_data location
-
-Delete all imported data:
-
-    docker compose exec sources python manage.py ingest_data --delete
-
-Delete imported location data only:
-
-    docker compose exec sources python manage.py ingest_data location --delete
 
 ### Setting up pre-commit hooks
 
