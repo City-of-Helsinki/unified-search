@@ -16,6 +16,7 @@ jobs:
       postgres-major-version: 13
       working-directory: ./sources
       extra-commands: |
+        # Start local OpenSearch for testing. It will be destroyed after the tests are done.
         docker run -d \
           --name opensearch \
           -p 9200:9200 \
