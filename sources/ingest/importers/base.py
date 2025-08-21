@@ -97,19 +97,6 @@ class Importer(ABC, Generic[IndexableData]):
         logger.debug(f"Applying custom mapping to index {index_name}")
         self.es.indices.put_mapping(index=index_name, body=mapping)
 
-    def delete_all_data(self) -> None:
-        for alias in self.index_base_names:
-            for index_name in (f"{alias}_1", f"{alias}_2"):
-                logger.debug(f"Deleting index {index_name}")
-                try:
-                    response = self.es.indices.delete(index=index_name, ignore=404)
-                    logger.debug(response)
-                except NotFoundError as e:
-                    if e.error == "index_not_found_exception":
-                        logger.debug(f"Index {index_name} does not exist")
-                    else:
-                        raise e
-
     def _initialize(self) -> None:
         for active_alias in self.index_base_names:
             logger.debug(f"Initializing {active_alias}")
