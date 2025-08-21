@@ -5,7 +5,6 @@ from datetime import datetime
 from typing import Any, Callable, List, Optional
 
 from ingest.importers.base import Importer
-from ingest.importers.decorators import with_conditional
 from ingest.importers.location.api import LocationImporterAPI
 from ingest.importers.location.dataclasses import (
     Accessibility,
@@ -46,6 +45,7 @@ from ingest.importers.utils import (
     OpeningHours,
 )
 from ingest.importers.utils.administrative_division import AdministrativeDivisionFetcher
+from ingest.importers.utils.retry import retry_twice_5s_intervals
 
 BATCH_SIZE = 100
 
@@ -113,63 +113,76 @@ class LocationImporter(Importer[Root]):
 
         api = LocationImporterAPI()
 
-        self.tpr_units = with_conditional(
-            self.enable_data_fetching, lambda: api.fetch_tpr_units(), []
+        self.tpr_units = (
+            retry_twice_5s_intervals(api.fetch_tpr_units)
+            if self.enable_data_fetching
+            else []
         )
 
-        self.unit_id_to_accessibility_shortcomings_mapping = with_conditional(
-            self.enable_data_fetching,
-            lambda: get_unit_id_to_accessibility_shortcomings_mapping(),
-            {},
+        self.unit_id_to_accessibility_shortcomings_mapping = (
+            retry_twice_5s_intervals(get_unit_id_to_accessibility_shortcomings_mapping)
+            if self.enable_data_fetching
+            else {}
         )
 
-        self.unit_id_to_accessibility_sentences_mapping = with_conditional(
-            self.enable_data_fetching,
-            lambda: get_unit_id_to_accessibility_sentences_mapping(
-                self.use_fallback_languages
-            ),
-            {},
+        self.unit_id_to_accessibility_sentences_mapping = (
+            retry_twice_5s_intervals(
+                get_unit_id_to_accessibility_sentences_mapping,
+                self.use_fallback_languages,
+            )
+            if self.enable_data_fetching
+            else {}
         )
 
-        self.unit_id_to_accessibility_viewpoint_shortages_mapping = with_conditional(
-            self.enable_data_fetching,
-            lambda: get_unit_id_to_accessibility_viewpoint_shortages_mapping(
-                self.use_fallback_languages
-            ),
-            {},
+        self.unit_id_to_accessibility_viewpoint_shortages_mapping = (
+            retry_twice_5s_intervals(
+                get_unit_id_to_accessibility_viewpoint_shortages_mapping,
+                self.use_fallback_languages,
+            )
+            if self.enable_data_fetching
+            else {}
         )
 
-        self.unit_id_to_target_groups_mapping = with_conditional(
-            self.enable_data_fetching,
-            lambda: get_unit_id_to_target_groups_mapping(),
-            {},
+        self.unit_id_to_target_groups_mapping = (
+            retry_twice_5s_intervals(get_unit_id_to_target_groups_mapping)
+            if self.enable_data_fetching
+            else {}
         )
 
-        self.accessibility_viewpoint_id_to_name_mapping = with_conditional(
-            self.enable_data_fetching,
-            lambda: get_accessibility_viewpoint_id_to_name_mapping(
-                self.use_fallback_languages
-            ),
-            {},
+        self.accessibility_viewpoint_id_to_name_mapping = (
+            retry_twice_5s_intervals(
+                get_accessibility_viewpoint_id_to_name_mapping,
+                self.use_fallback_languages,
+            )
+            if self.enable_data_fetching
+            else {}
         )
 
-        self.unit_id_to_connections_mapping = with_conditional(
-            self.enable_data_fetching,
-            lambda: get_unit_id_to_connections_mapping(self.use_fallback_languages),
-            {},
+        self.unit_id_to_connections_mapping = (
+            retry_twice_5s_intervals(
+                get_unit_id_to_connections_mapping, self.use_fallback_languages
+            )
+            if self.enable_data_fetching
+            else {}
         )
 
         self.opening_hours_fetcher = (
-            HaukiOpeningHoursFetcher(t["id"] for t in self.tpr_units)
+            retry_twice_5s_intervals(
+                HaukiOpeningHoursFetcher, [t["id"] for t in self.tpr_units]
+            )
             if self.enable_data_fetching and len(self.tpr_units)
             else None
         )
 
         self.administrative_division_fetcher = (
-            AdministrativeDivisionFetcher() if self.enable_data_fetching else None
+            retry_twice_5s_intervals(AdministrativeDivisionFetcher)
+            if self.enable_data_fetching
+            else None
         )
 
-        self.ontology = Ontology() if self.enable_data_fetching else None
+        self.ontology = (
+            retry_twice_5s_intervals(Ontology) if self.enable_data_fetching else None
+        )
         logger.info("LocationImporter base data initialized")
 
     def _create_location(self, l: LanguageStringConverter, e: Callable[[Any], Any]):
