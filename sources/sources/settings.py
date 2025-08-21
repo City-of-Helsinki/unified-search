@@ -15,9 +15,19 @@ from datetime import datetime
 from pathlib import Path
 
 import sentry_sdk
+from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .csp_settings import CONTENT_SECURITY_POLICY  # noqa: F401
+
+# Load environment variables from .env in current directory or higher.
+#
+# From https://github.com/theskumar/python-dotenv?tab=readme-ov-file#getting-started
+#
+# "By default, load_dotenv doesn't override existing environment variables
+# and looks for a .env file in same directory as python script or searches
+# for it incrementally higher up."
+load_dotenv()
 
 sentry_sdk.init(
     dsn=os.getenv("SENTRY_DSN", ""),

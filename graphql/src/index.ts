@@ -11,6 +11,7 @@ import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@as-integrations/express5';
 import * as Sentry from '@sentry/node';
 import cors, { CorsOptions } from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 import { GraphQLError } from 'graphql';
 import helmet, { HelmetOptions } from 'helmet';
@@ -44,9 +45,19 @@ import {
 import {
   createCursor,
   elasticLanguageFromGraphqlLanguage,
+  findClosestEnvFile,
   getEsOffsetPaginationQuery,
   isDefined,
 } from './utils.js';
+
+const ENV_FILE_PATH = findClosestEnvFile();
+
+if (ENV_FILE_PATH) {
+  dotenv.config({ path: ENV_FILE_PATH });
+} else {
+  // eslint-disable-next-line no-console
+  console.log('No .env file found, using environment variables directly.');
+}
 
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
 
