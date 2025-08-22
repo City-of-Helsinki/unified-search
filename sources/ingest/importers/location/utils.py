@@ -1,5 +1,4 @@
 import base64
-import functools
 from collections import defaultdict
 from typing import Dict, List, Optional, Set
 
@@ -88,15 +87,11 @@ def get_ontologytree_as_ontologies(ontologytree, use_fallback_languages: bool):
 
 
 def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
-    ontologies_grouped_by_language = functools.reduce(
-        lambda acc, ontology: {
-            "fi": acc.get("fi") + [ontology.label.fi],
-            "sv": acc.get("sv") + [ontology.label.sv],
-            "en": acc.get("en") + [ontology.label.en],
-        },
-        ontologies,
-        {"fi": [], "sv": [], "en": []},
-    )
+    ontologies_grouped_by_language = {"fi": [], "sv": [], "en": []}
+    for ontology in ontologies:
+        ontologies_grouped_by_language["fi"].append(ontology.label.fi)
+        ontologies_grouped_by_language["sv"].append(ontology.label.sv)
+        ontologies_grouped_by_language["en"].append(ontology.label.en)
 
     # Suggestions are stored in shorthand syntax. If you want to add more
     # specific context or weight, you have to store suggestions on a per
@@ -120,13 +115,10 @@ def get_suggestions_from_ontologies(ontologies: List[OntologyObject]):
     #     },
     # ]
     suggest = []
-    for [language, suggestions_in_language] in ontologies_grouped_by_language.items():
-        suggestions_without_empty = list(
-            filter(lambda suggestion: type(suggestion) is str, suggestions_in_language)
-        )
-
+    for language, suggestions in ontologies_grouped_by_language.items():
+        non_empty_suggestions = [x for x in suggestions if type(x) is str]
         suggest.append(
-            {"input": suggestions_without_empty, "contexts": {"language": language}}
+            {"input": non_empty_suggestions, "contexts": {"language": language}}
         )
 
     return suggest
