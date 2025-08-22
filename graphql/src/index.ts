@@ -583,7 +583,7 @@ const combinedSchema = buildSubgraphSchema({
     elasticSearchSchema,
     palvelukarttaSchema,
     locationSchema,
-    sharedSchema, // FIXME: OVerlapping with events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql); Keyword and Location Image
+    sharedSchema, // FIXME: Overlapping with events-proxy (https://tapahtumat-proxy.test.kuva.hel.ninja/proxy/graphql); Location Image
     geoSchema,
     ontologySchema,
   ],
