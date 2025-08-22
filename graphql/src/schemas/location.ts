@@ -47,6 +47,7 @@ export const locationSchema = gql`
     ENTERPRISES
     IMMIGRANTS
     INDIVIDUALS
+    LONG_TERM_PATIENTS
     YOUTH
   }
   enum ProviderType {
