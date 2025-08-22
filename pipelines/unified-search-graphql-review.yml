@@ -26,8 +26,10 @@ pr:
     - '*release-please*'
     - '*.md'
     - '.github/'
+    - 'sources/'
     - 'pipelines/unified-search-graphql-release.yml'
     - 'pipelines/unified-search-graphql-dev.yml'
+    - 'pipelines/unified-search-sources*'
     - '*compose*'
 
 # By default, use self-hosted agents

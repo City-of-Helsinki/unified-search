@@ -12,6 +12,7 @@ trigger:
     - '.github/'
     - 'pipelines/unified-search-graphql-release.yml'
     - 'pipelines/unified-search-graphql-review.yml'
+    - 'pipelines/unified-search-sources*'
     - '*compose*'
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
