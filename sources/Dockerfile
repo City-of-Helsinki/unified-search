@@ -7,11 +7,17 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 RUN mkdir /entrypoint
 
-COPY --chown=root:root requirements.txt /app/requirements.txt
+COPY --chown=root:root --chmod=755 requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY --chown=root:root . /app/
+# chmod=755 = rwxr-xr-x i.e. owner can read, write and execute, group and others can read and execute.
+#
+# Related to SonarCloud security hotspot docker:S6470 i.e.
+# "Recursively copying context directories is security-sensitive" i.e.
+# https://rules.sonarsource.com/docker/RSPEC-6470/
+# see .dockerignore for info on what is not copied here:
+COPY --chown=root:root --chmod=755 . /app/
 
 # Make sure db.sqlite3 under /app/db_data is writable by the application.
 # Needed by e.g. `python manage.py ingest_data administrative_division`.
@@ -25,7 +31,7 @@ RUN mkdir -p /app/data \
     && chown -R root:root /app/data \
     && chmod -R g+w /app/data
 
-COPY --chown=root:root docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
+COPY --chown=root:root --chmod=755 docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 
 # ==============================
@@ -41,7 +47,7 @@ FROM appbase AS development
 
 ENV DEV_SERVER=1
 
-COPY --chown=root:root requirements-dev.txt /app/requirements-dev.txt
+COPY --chown=root:root --chmod=755 requirements-dev.txt /app/requirements-dev.txt
 RUN pip install --no-cache-dir -r /app/requirements-dev.txt \
     && pip install --no-cache-dir pip-tools \
     && dnf clean all
@@ -59,9 +65,9 @@ EXPOSE 5001/tcp
 FROM appbase AS production
 # ==============================
 
-COPY --from=staticbuilder --chown=root:root /app/static /app/static
+COPY --from=staticbuilder --chown=root:root --chmod=755 /app/static /app/static
 
-COPY --chown=root:root requirements-prod.txt /app/requirements-prod.txt
+COPY --chown=root:root --chmod=755 requirements-prod.txt /app/requirements-prod.txt
 
 RUN pip install --no-cache-dir -r /app/requirements-prod.txt \
     && dnf clean all

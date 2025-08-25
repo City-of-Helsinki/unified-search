@@ -1,0 +1,258 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getDefaultBoolQuery > test output using given parameters {"index":"location","languages":["fi","sv"],"text":"kamppi"} 1`] = `
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match_bool_prefix": {
+            "venue.description.fi": {
+              "boost": "1",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.name.fi": {
+              "boost": "3",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.description.fi": {
+              "boost": 2,
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.name.fi": {
+              "boost": 6,
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "multi_match": {
+            "fields": [
+              "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
+              "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
+              "links.raw_data.ontologytree_ids_enriched.name_fi",
+              "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi",
+            ],
+            "query": "kamppi",
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.description.sv": {
+              "boost": "1",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.name.sv": {
+              "boost": "3",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.description.sv": {
+              "boost": 2,
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.name.sv": {
+              "boost": 6,
+              "query": "kamppi",
+            },
+          },
+        },
+        {
+          "multi_match": {
+            "fields": [
+              "links.raw_data.ontologyword_ids_enriched.extra_searchwords_sv",
+              "links.raw_data.ontologyword_ids_enriched.ontologyword_sv",
+              "links.raw_data.ontologytree_ids_enriched.name_sv",
+              "links.raw_data.ontologytree_ids_enriched.extra_searchwords_sv",
+            ],
+            "query": "kamppi",
+          },
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`getDefaultBoolQuery > test output using given parameters {"text":"testing"} 1`] = `
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match_bool_prefix": {
+            "venue.description.fi": {
+              "boost": "1",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.name.fi": {
+              "boost": "3",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.description.fi": {
+              "boost": 2,
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.name.fi": {
+              "boost": 6,
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "multi_match": {
+            "fields": [
+              "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
+              "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
+              "links.raw_data.ontologytree_ids_enriched.name_fi",
+              "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi",
+            ],
+            "query": "testing",
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.description.sv": {
+              "boost": "1",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.name.sv": {
+              "boost": "3",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.description.sv": {
+              "boost": 2,
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.name.sv": {
+              "boost": 6,
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "multi_match": {
+            "fields": [
+              "links.raw_data.ontologyword_ids_enriched.extra_searchwords_sv",
+              "links.raw_data.ontologyword_ids_enriched.ontologyword_sv",
+              "links.raw_data.ontologytree_ids_enriched.name_sv",
+              "links.raw_data.ontologytree_ids_enriched.extra_searchwords_sv",
+            ],
+            "query": "testing",
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.description.en": {
+              "boost": "1",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_bool_prefix": {
+            "venue.name.en": {
+              "boost": "3",
+              "fuzziness": "AUTO",
+              "operator": "or",
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.description.en": {
+              "boost": 2,
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "match_phrase": {
+            "venue.name.en": {
+              "boost": 6,
+              "query": "testing",
+            },
+          },
+        },
+        {
+          "multi_match": {
+            "fields": [
+              "links.raw_data.ontologyword_ids_enriched.extra_searchwords_en",
+              "links.raw_data.ontologyword_ids_enriched.ontologyword_en",
+              "links.raw_data.ontologytree_ids_enriched.name_en",
+              "links.raw_data.ontologytree_ids_enriched.extra_searchwords_en",
+            ],
+            "query": "testing",
+          },
+        },
+      ],
+    },
+  },
+}
+`;

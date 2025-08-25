@@ -1,8 +1,64 @@
+# Using "**/" prefix to make ignores work in root and in subdirectories at any level.
+#
+# From https://docs.docker.com/build/concepts/context/#dockerignore-files
+# "Docker also supports a special wildcard string ** that matches any
+# number of directories (including zero). For example, **/*.go excludes
+# all files that end with .go found anywhere in the build context."
+#
+# NOTE:
+# You can add an exception for a specific file by prefixing the line with an !
+# if you need to include a file that would otherwise be ignored.
+
+# Environment variable files
+**/*.env
+**/*.env.example
+**/.env
+**/.env.*
+
+# Certificate/keystore/key files
+**/*.ca-bundle
+**/*.cer
+**/*.cert
+**/*.crt
+**/*.jks
+**/*.key
+**/*.keystore
+**/*.p7b
+**/*.p7c
+**/*.p7s
+**/*.p12
+**/*.pem
+**/*.pfx
+**/*.ppk
+**/*.pvk
+
+# Build files
+**/build
+**/dist
+**/target
+
+# Miscellaneous
+**/*.lock
+**/*.log
 **/*.pyc
+**/*.temp
+**/*.tmp
+**/.DS_Store
+**/.git
+**/.gitignore
+**/.idea
 **/.pytest_cache
+**/.ruff_cache
+**/.ssh
 **/.venv
+**/.vscode
 **/__pycache__
+**/compose.*
 **/data/
 **/db.sqlite3
 **/db_data/
+**/docker-compose.*
+**/node_modules
+**/temp
+**/tmp
 **/venv
