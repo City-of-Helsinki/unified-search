@@ -40,7 +40,6 @@ resources:
     # Azure DevOps repository
     - repository: kuva-unified-search-pipelines
       type: git
-      ref: refs/heads/ansible_automation_update
       # Azure DevOps project/repository
       name: kuva-unified-search/kuva-unified-search-pipelines
 
