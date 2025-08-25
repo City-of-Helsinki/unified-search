@@ -1,0 +1,145 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`filterQuery > test query mutation with all filters 1`] = `
+[
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "venue.location.administrativeDivisions.id.keyword": "adminDivId1",
+          },
+        },
+        {
+          "term": {
+            "venue.location.administrativeDivisions.id.keyword": "adminDivId2",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "links.raw_data.ontologytree_ids_enriched.id": "treeId1",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "links.raw_data.ontologytree_ids_enriched.id": "treeId2",
+          },
+        },
+        {
+          "term": {
+            "links.raw_data.ontologytree_ids_enriched.id": "treeId3",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "links.raw_data.ontologyword_ids_enriched.id": "wordId1",
+          },
+        },
+        {
+          "term": {
+            "links.raw_data.ontologyword_ids_enriched.id": "wordId2",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "links.raw_data.ontologyword_ids_enriched.id": "wordId3",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "venue.serviceOwner.providerType.keyword": "ASSOCIATION",
+          },
+        },
+        {
+          "term": {
+            "venue.serviceOwner.providerType.keyword": "SELF_PRODUCED",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "venue.serviceOwner.type.keyword": "MUNICIPAL_SERVICE",
+          },
+        },
+        {
+          "term": {
+            "venue.serviceOwner.type.keyword": "PRIVATE_SERVICE",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "venue.targetGroups.keyword": "CHILDREN_AND_FAMILIES",
+          },
+        },
+        {
+          "term": {
+            "venue.targetGroups.keyword": "YOUTH",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "venue.reservation.reservable": true,
+          },
+        },
+        {
+          "exists": {
+            "field": "venue.reservation.externalReservationUrl",
+          },
+        },
+      ],
+    },
+  },
+  {
+    "term": {
+      "venue.openingHours.openRanges": "2025-06-25T09:34:45.123+03:00",
+    },
+  },
+]
+`;
