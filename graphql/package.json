@@ -8,12 +8,14 @@
     "node": ">=22.16.0"
   },
   "scripts": {
+    "build": "tsc",
     "start": "nodemon --ext ts src/index.ts --exec tsx",
     "transpile": "tsc",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "serve": "node --import ./dist/src/sentry-init.mjs --trace-warnings --max-http-header-size=16000 dist/src/index.js",
     "test": "vitest",
     "test:ci": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write ."
