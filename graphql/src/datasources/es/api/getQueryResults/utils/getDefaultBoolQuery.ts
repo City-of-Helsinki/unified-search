@@ -4,7 +4,7 @@ import type {
   TranslatableField,
 } from '../../../../../types.js';
 import { ES_DEFAULT_INDEX } from '../../../constants.js';
-import { searchFieldsBoostMapping } from '../constants.js';
+import { SEARCH_WEIGHT, searchFieldsBoostMapping } from '../constants.js';
 import type { GetQueryResultsProps, QueryFilterClauses } from '../types.js';
 import { getOntologyMatchers } from './getOntologyQuery.js';
 
@@ -95,7 +95,7 @@ const searchWithPhrase = ({
             ...queries,
             [queryField]: {
               query: text,
-              boost: parseInt(boost) * 2,
+              boost: parseInt(boost) * SEARCH_WEIGHT.high,
             },
           }),
           {}
