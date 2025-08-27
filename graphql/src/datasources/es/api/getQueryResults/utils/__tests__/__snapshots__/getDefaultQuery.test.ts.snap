@@ -8,7 +8,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"index":"loca
         {
           "match_bool_prefix": {
             "venue.description.fi": {
-              "boost": "1",
+              "boost": 1,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "kamppi",
@@ -18,7 +18,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"index":"loca
         {
           "match_bool_prefix": {
             "venue.name.fi": {
-              "boost": "3",
+              "boost": 3,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "kamppi",
@@ -55,7 +55,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"index":"loca
         {
           "match_bool_prefix": {
             "venue.description.sv": {
-              "boost": "1",
+              "boost": 1,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "kamppi",
@@ -65,7 +65,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"index":"loca
         {
           "match_bool_prefix": {
             "venue.name.sv": {
-              "boost": "3",
+              "boost": 3,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "kamppi",
@@ -113,7 +113,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"text":"testi
         {
           "match_bool_prefix": {
             "venue.description.fi": {
-              "boost": "1",
+              "boost": 1,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "testing",
@@ -123,7 +123,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"text":"testi
         {
           "match_bool_prefix": {
             "venue.name.fi": {
-              "boost": "3",
+              "boost": 3,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "testing",
@@ -160,7 +160,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"text":"testi
         {
           "match_bool_prefix": {
             "venue.description.sv": {
-              "boost": "1",
+              "boost": 1,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "testing",
@@ -170,7 +170,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"text":"testi
         {
           "match_bool_prefix": {
             "venue.name.sv": {
-              "boost": "3",
+              "boost": 3,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "testing",
@@ -207,7 +207,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"text":"testi
         {
           "match_bool_prefix": {
             "venue.description.en": {
-              "boost": "1",
+              "boost": 1,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "testing",
@@ -217,7 +217,7 @@ exports[`getDefaultBoolQuery > test output using given parameters {"text":"testi
         {
           "match_bool_prefix": {
             "venue.name.en": {
-              "boost": "3",
+              "boost": 3,
               "fuzziness": "AUTO",
               "operator": "or",
               "query": "testing",

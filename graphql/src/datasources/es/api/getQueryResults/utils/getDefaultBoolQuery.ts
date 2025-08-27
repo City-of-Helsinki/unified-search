@@ -4,7 +4,10 @@ import type {
   TranslatableField,
 } from '../../../../../types.js';
 import { ES_DEFAULT_INDEX } from '../../../constants.js';
-import { SEARCH_WEIGHT, searchFieldsBoostMapping } from '../constants.js';
+import {
+  MATCH_PHRASE_BOOST_MULTIPLIER,
+  searchFieldsBoostMapping,
+} from '../constants.js';
 import type { GetQueryResultsProps, QueryFilterClauses } from '../types.js';
 import { getOntologyMatchers } from './getOntologyQuery.js';
 
@@ -46,7 +49,8 @@ const searchWithBoolPrefix = ({
               query: text,
               operator: 'or',
               fuzziness: 'AUTO',
-              boost,
+              // Need to convert boost back to float as records' keys are always strings:
+              boost: parseFloat(boost),
             },
           }),
           {}
@@ -95,7 +99,7 @@ const searchWithPhrase = ({
             ...queries,
             [queryField]: {
               query: text,
-              boost: parseInt(boost) * SEARCH_WEIGHT.high,
+              boost: parseFloat(boost) * MATCH_PHRASE_BOOST_MULTIPLIER,
             },
           }),
           {}
@@ -115,7 +119,7 @@ const searchWithPhrase = ({
  *         "query": "*",
  *         "operator": "or",
  *         "fuzziness": "AUTO",
- *         "boost": "1"
+ *         "boost": 1
  *       }
  *     }
  *   },
@@ -125,7 +129,7 @@ const searchWithPhrase = ({
  *         "query": "*",
  *         "operator": "or",
  *         "fuzziness": "AUTO",
- *         "boost": "3"
+ *         "boost": 3
  *       }
  *     }
  *   },
