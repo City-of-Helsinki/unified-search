@@ -1,34 +1,13 @@
 import { ES_ONTOLOGY_TREE_INDEX } from '../constants.js';
 import { type ElasticSearchAPI } from '../index.js';
-import type {
-  OntologyTreeParams,
-  OntologyTreeQuery,
-  OntologyTreeQueryBool,
-} from '../types.js';
+import type { OntologyTreeParams } from '../types.js';
+import { makeOntologyTreeQuery } from './getQueryResults/utils/makeOntologyTreeQuery.js';
 
 export default async function getOntologyTree(
   request: ElasticSearchAPI['post'],
-  { rootId, leavesOnly }: OntologyTreeParams
+  ontologyTreeParams: OntologyTreeParams
 ) {
-  const bool: OntologyTreeQueryBool = {
-    ...(rootId && {
-      filter: {
-        bool: {
-          should: [
-            { term: { ancestorIds: rootId } },
-            { term: { _id: rootId } },
-          ],
-        },
-      },
-    }),
-    ...(leavesOnly && {
-      must_not: { exists: { field: 'childIds' } },
-    }),
-  };
-  const query: OntologyTreeQuery = {
-    size: 10000,
-    ...(bool && { query: { bool } }),
-  };
+  const query = makeOntologyTreeQuery(ontologyTreeParams);
 
   return await request(`${ES_ONTOLOGY_TREE_INDEX}/_search`, {
     body: JSON.stringify(query),

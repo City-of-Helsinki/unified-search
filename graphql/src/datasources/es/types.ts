@@ -1,7 +1,8 @@
-import {
-  type ELASTIC_SEARCH_INDICES,
-  type SEARCH_RESULT_FIELDS,
+import type {
+  ELASTIC_SEARCH_INDICES,
+  SEARCH_RESULT_FIELDS,
 } from './constants.js';
+import type { EmptyObject } from '../../types.js';
 
 export type ElasticSearchIndex = (typeof ELASTIC_SEARCH_INDICES)[number];
 
@@ -15,6 +16,16 @@ export type OntologyTreeParams = {
 export type OntologyWordParams = {
   ids?: string[];
 };
+
+export type OntologyWordsQuery =
+  | {
+      query: {
+        terms: {
+          _id: string[];
+        };
+      };
+    }
+  | EmptyObject;
 
 export type OntologyTreeQuery = {
   size: number;
