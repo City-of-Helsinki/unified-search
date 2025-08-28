@@ -1,3 +1,6 @@
+// eslint-disable-next-line
+import './sentry-init.mjs'; // MUST be FIRST IMPORT! See file for details.
+
 import http from 'http';
 
 import type { GraphQLResolveInfoWithCacheControl } from '@apollo/cache-control-types';
@@ -8,7 +11,6 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@as-integrations/express5';
-import * as Sentry from '@sentry/node';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -55,6 +57,7 @@ import {
   getEsOffsetPaginationQuery,
   getHits,
   getTodayString,
+  sentryConfig,
   validateOrderByArguments,
 } from './utils.js';
 
@@ -400,41 +403,6 @@ const combinedSchema = buildSubgraphSchema({
   ],
   resolvers,
 });
-
-const sentryConfig = {
-  // adapted from https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
-  async requestDidStart() {
-    return {
-      async didEncounterErrors(ctx) {
-        // If we couldn't parse the operation, don't
-        // do anything here
-        if (!ctx.operation) {
-          return;
-        }
-        for (const err of ctx.errors) {
-          // Add scoped report details and send to Sentry
-          Sentry.withScope((scope) => {
-            // Annotate whether failing operation was query/mutation/subscription
-            scope.setTag('kind', ctx.operation.operation);
-            // Log query and variables as extras
-            // (make sure to strip out sensitive data!)
-            scope.setExtra('query', ctx.request.query);
-            scope.setExtra('variables', ctx.request.variables);
-            if (err.path) {
-              // We can also add the path as breadcrumb
-              scope.addBreadcrumb({
-                category: 'query-path',
-                message: err.path.join(' > '),
-                level: 'debug',
-              });
-            }
-            Sentry.captureException(err);
-          });
-        }
-      },
-    };
-  },
-};
 
 void (async () => {
   let serverIsReady: boolean = false;

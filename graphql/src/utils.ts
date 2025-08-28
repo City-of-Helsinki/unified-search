@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { ApolloServerErrorCode } from '@apollo/server/errors';
+import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 
 import {
@@ -197,3 +198,43 @@ export function validateOrderByArguments(
     }
   }
 }
+
+/**
+ * Sentry configuration for Apollo Server
+ *
+ * Based on https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
+ */
+export const sentryConfig = {
+  // adapted from https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
+  async requestDidStart() {
+    return {
+      async didEncounterErrors(ctx) {
+        // If we couldn't parse the operation, don't
+        // do anything here
+        if (!ctx.operation) {
+          return;
+        }
+        for (const err of ctx.errors) {
+          // Add scoped report details and send to Sentry
+          Sentry.withScope((scope) => {
+            // Annotate whether failing operation was query/mutation/subscription
+            scope.setTag('kind', ctx.operation.operation);
+            // Log query and variables as extras
+            // (make sure to strip out sensitive data!)
+            scope.setExtra('query', ctx.request.query);
+            scope.setExtra('variables', ctx.request.variables);
+            if (err.path) {
+              // We can also add the path as breadcrumb
+              scope.addBreadcrumb({
+                category: 'query-path',
+                message: err.path.join(' > '),
+                level: 'debug',
+              });
+            }
+            Sentry.captureException(err);
+          });
+        }
+      },
+    };
+  },
+} as const;
