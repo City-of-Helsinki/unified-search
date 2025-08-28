@@ -12,9 +12,13 @@ import * as Sentry from '@sentry/node';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import helmet, { HelmetOptions } from 'helmet';
+import helmet from 'helmet';
 
-import { corsConfig, CSP } from './constants.js';
+import {
+  corsConfig,
+  cspConfigWithApolloSandbox,
+  cspConfigWithoutApolloSandbox,
+} from './constants.js';
 import { ElasticSearchAPI } from './datasources/es/index.js';
 import type {
   AccessibilityProfileType,
@@ -77,75 +81,6 @@ function getLandingPagePlugin() {
   }
   return ApolloServerPluginLandingPageDisabled();
 }
-
-/**
- * CSP (i.e. Content Security Policy) configuration
- * without Apollo Sandbox use.
- *
- * This is a very restrictive policy because this is a GraphQL server
- * and querying/mutating & introspecting the schema don't need much.
- *
- * Configuration options documented at:
- * https://helmetjs.github.io/#reference
- */
-const cspConfigWithoutApolloSandbox = {
-  contentSecurityPolicy: {
-    useDefaults: false, // No defaults, the wanted configuration is explicit
-    directives: {
-      baseUri: [CSP.none],
-      childSrc: [CSP.none],
-      connectSrc: [CSP.none],
-      defaultSrc: [CSP.none],
-      fontSrc: [CSP.none],
-      formAction: [CSP.none],
-      frameAncestors: [CSP.none],
-      frameSrc: [CSP.none],
-      imgSrc: [CSP.none],
-      manifestSrc: [CSP.none],
-      mediaSrc: [CSP.none],
-      objectSrc: [CSP.none],
-      scriptSrc: [CSP.none],
-      styleSrc: [CSP.none],
-      workerSrc: [CSP.none],
-      upgradeInsecureRequests: [], // Enable upgrade-insecure-requests
-    },
-  },
-} as const satisfies HelmetOptions;
-
-/**
- * CSP (i.e. Content Security Policy) configuration
- * with Apollo Sandbox use.
- *
- * WARNING: This should not be used in production environment!
- *
- * Configuration options documented at:
- * https://helmetjs.github.io/#reference
- */
-const cspConfigWithApolloSandbox = {
-  contentSecurityPolicy: {
-    useDefaults: false, // No defaults, the wanted configuration is explicit
-    directives: {
-      ...cspConfigWithoutApolloSandbox.contentSecurityPolicy.directives,
-      scriptSrc: [
-        CSP.self,
-        CSP.unsafeInline,
-        'https://embeddable-sandbox.cdn.apollographql.com',
-      ],
-      styleSrc: [CSP.self, CSP.unsafeInline, 'https://fonts.googleapis.com'],
-      imgSrc: [
-        CSP.self,
-        'https://apollo-server-landing-page.cdn.apollographql.com',
-      ],
-      fontSrc: [CSP.self, 'https://fonts.gstatic.com'],
-      frameSrc: [CSP.self, 'https://sandbox.embed.apollographql.com'],
-      connectSrc: [CSP.self],
-      manifestSrc: [
-        CSP.self,
-        'https://apollo-server-landing-page.cdn.apollographql.com',
-      ],
-    },
-  },
-} as const satisfies HelmetOptions;
 
 function getCspConfig():
   | typeof cspConfigWithApolloSandbox
