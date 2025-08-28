@@ -7,12 +7,13 @@ import {
   getQueryResults,
   getSuggestions,
 } from './api/index.js';
-import type { getQueryResultsProps, GetSuggestionProps } from './api/index.js';
+import type { getQueryResultsProps } from './api/index.js';
 import { ELASTIC_SEARCH_URI, ES_DEFAULT_PAGE_SIZE } from './constants.js';
 import type {
   AdministrativeDivisionParams,
   OntologyTreeParams,
   OntologyWordParams,
+  SuggestionsParams,
 } from './types.js';
 
 class ElasticSearchAPI extends RESTDataSource {
@@ -26,7 +27,7 @@ class ElasticSearchAPI extends RESTDataSource {
     return await getQueryResults(request, props);
   }
 
-  async getSuggestions(props: GetSuggestionProps) {
+  async getSuggestions(props: SuggestionsParams) {
     const request = this.post.bind(this);
     return await getSuggestions(request, props);
   }

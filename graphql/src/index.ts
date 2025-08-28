@@ -17,16 +17,16 @@ import { GraphQLError } from 'graphql';
 import helmet, { HelmetOptions } from 'helmet';
 
 import { CSP } from './constants.js';
-import type { GetSuggestionProps } from './datasources/es/api/index.js';
 import { ElasticSearchAPI } from './datasources/es/index.js';
-import {
-  type AccessibilityProfileType,
-  type AdministrativeDivisionParams,
-  type ElasticSearchIndex,
-  type OntologyTreeParams,
-  type OntologyWordParams,
-  type OrderByDistanceParams,
-  type OrderByNameParams,
+import type {
+  AccessibilityProfileType,
+  AdministrativeDivisionParams,
+  ElasticSearchIndex,
+  OntologyTreeParams,
+  OntologyWordParams,
+  OrderByDistanceParams,
+  OrderByNameParams,
+  SuggestionsParams,
 } from './datasources/es/types.js';
 import healthz from './healthz.js';
 import readiness from './readiness.js';
@@ -401,7 +401,7 @@ const resolvers = {
     },
     unifiedSearchCompletionSuggestions: async (
       _source: unknown,
-      { prefix, languages, index, size }: GetSuggestionProps,
+      { prefix, languages, index, size }: SuggestionsParams,
       { dataSources }: QueryContext
     ) => {
       const res = await dataSources.elasticSearchAPI.getSuggestions({

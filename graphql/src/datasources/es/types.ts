@@ -2,7 +2,7 @@ import type {
   ELASTIC_SEARCH_INDICES,
   SEARCH_RESULT_FIELDS,
 } from './constants.js';
-import type { EmptyObject } from '../../types.js';
+import type { ElasticLanguage, EmptyObject } from '../../types.js';
 
 export type ElasticSearchIndex = (typeof ELASTIC_SEARCH_INDICES)[number];
 
@@ -60,6 +60,13 @@ export type OntologyTreeQueryBool = {
 
 export type AdministrativeDivisionParams = {
   helsinkiCommonOnly?: boolean;
+};
+
+export type SuggestionsParams = {
+  prefix: string;
+  languages: ElasticLanguage[];
+  size: number;
+  index: ElasticSearchIndex;
 };
 
 export type OrderingDirection = 'ASCENDING' | 'DESCENDING';
