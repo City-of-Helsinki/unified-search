@@ -2,7 +2,6 @@ import http from 'http';
 
 import type { GraphQLResolveInfoWithCacheControl } from '@apollo/cache-control-types';
 import { ApolloServer } from '@apollo/server';
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
@@ -13,7 +12,6 @@ import * as Sentry from '@sentry/node';
 import cors, { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import { GraphQLError } from 'graphql';
 import helmet, { HelmetOptions } from 'helmet';
 
 import { CSP } from './constants.js';
@@ -38,16 +36,22 @@ import { ontologySchema } from './schemas/ontology.js';
 import { palvelukarttaSchema } from './schemas/palvelukartta.js';
 import { querySchema } from './schemas/query.js';
 import { sharedSchema } from './schemas/shared.js';
-import {
-  type ConnectionArguments,
-  type ConnectionCursorObject,
+import type {
+  ConnectionArguments,
+  ConnectionCursorObject,
+  EsHit,
+  EsResults,
+  Venue,
 } from './types.js';
 import {
   createCursor,
+  edgesFromEsResults,
   elasticLanguageFromGraphqlLanguage,
   findClosestEnvFile,
   getEsOffsetPaginationQuery,
-  isDefined,
+  getHits,
+  getTodayString,
+  validateOrderByArguments,
 } from './utils.js';
 
 const ENV_FILE_PATH = findClosestEnvFile();
@@ -200,49 +204,8 @@ type UnifiedSearchQuery = {
   orderByAccessibilityProfile?: AccessibilityProfileType;
 } & ConnectionArguments;
 
-// FIXME: Combine GraphQL and TypeScript types, e.g. by generating the latter from the former
-type Venue = {
-  accessibility?: {
-    shortcomings: Array<{ profile: AccessibilityProfileType }>;
-  };
-  description?: unknown;
-  images?: unknown;
-  location?: unknown;
-  meta?: unknown;
-  name?: unknown;
-  ontologyWords?: unknown;
-  openingHours?: unknown;
-  reservation?: unknown;
-  serviceOwner?: unknown;
-  targetGroups?: unknown;
-};
-
 type VenueProps = {
   venue: Venue;
-};
-
-type EsHitSource = {
-  name?: unknown;
-  venue?: Venue;
-};
-
-type EsHit = {
-  _score: number;
-  _source: EsHitSource;
-  _id?: string;
-};
-
-type EsResults = {
-  hits: {
-    hits: EsHit[];
-    total: { value: number };
-    max_score?: number;
-  };
-  suggest?: {
-    suggestions: Array<{
-      options: Array<{ text: string }>;
-    }>;
-  };
 };
 
 type QueryContext = {
@@ -250,8 +213,6 @@ type QueryContext = {
     elasticSearchAPI: ElasticSearchAPI;
   };
 };
-
-type GetCursor = (index: number) => string;
 
 type GeoJSONPointInput = {
   geometry?: {
@@ -271,61 +232,6 @@ type PageInfoProps = {
   hits: number;
   connectionArguments: ConnectionArguments;
 };
-
-const edgesFromEsResults = (results: EsResults, getCursor: GetCursor) =>
-  results.hits.hits.map((e: EsHit, index: number) => ({
-    cursor: getCursor(index + 1),
-    node: {
-      _score: e._score,
-      venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
-    },
-  }));
-
-const getHits = (results: EsResults) => results.hits.total.value;
-
-function getTodayString() {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return [year, month, day].join('-');
-}
-
-function validateOrderByArguments(
-  orderByDistance?: OrderByDistanceParams,
-  orderByName?: OrderByNameParams,
-  orderByAccessibilityProfile?: AccessibilityProfileType
-) {
-  const orderByArgs = {
-    orderByDistance,
-    orderByName,
-    orderByAccessibilityProfile,
-  };
-
-  const isOrderByAmbiguous =
-    Object.values(orderByArgs).filter(isDefined).length > 1;
-
-  if (isOrderByAmbiguous) {
-    throw new GraphQLError(
-      `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`,
-      {
-        extensions: {
-          code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
-        },
-      }
-    );
-  }
-
-  for (const [orderByArgName, value] of Object.entries(orderByArgs)) {
-    if (value === null) {
-      throw new GraphQLError(`"${orderByArgName}" cannot be null.`, {
-        extensions: {
-          code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
-        },
-      });
-    }
-  }
-}
 
 const resolvers = {
   Query: {
