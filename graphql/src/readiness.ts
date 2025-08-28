@@ -10,17 +10,21 @@ const THIS_FILE_MODIFICATION_TIME = new Date(
   statSync(fileURLToPath(import.meta.url)).mtime
 ).toISOString();
 
-export default function readiness(response: Response) {
+export function makeReadinessResultObject() {
   const release = process.env.APP_RELEASE ?? '';
   const packageVersion = packageJson.version;
   const commitHash = process.env.APP_COMMIT_HASH ?? '';
   const buildTime = process.env.APP_BUILD_TIME ?? THIS_FILE_MODIFICATION_TIME;
 
-  response.status(200).json({
+  return {
     status: 'ok',
     release,
     packageVersion,
     commitHash,
     buildTime,
-  });
+  };
+}
+
+export default function readiness(response: Response) {
+  response.status(200).json(makeReadinessResultObject());
 }
