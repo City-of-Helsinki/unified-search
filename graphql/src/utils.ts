@@ -1,15 +1,26 @@
 import fs from 'fs';
 import path from 'path';
 
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { GraphQLError } from 'graphql';
+
 import {
   GraphQlToElasticLanguageMap,
   elasticSearchQueryStringSpecialCharsRegExpPattern,
 } from './constants.js';
-import {
-  type ConnectionArguments,
-  type ElasticSearchPagination,
-  type ConnectionCursorObject,
-  type ElasticLanguage,
+import type {
+  AccessibilityProfileType,
+  OrderByDistanceParams,
+  OrderByNameParams,
+} from './datasources/es/types.js';
+import type {
+  ConnectionArguments,
+  ElasticSearchPagination,
+  ConnectionCursorObject,
+  ElasticLanguage,
+  EsResults,
+  GetCursor,
+  EsHit,
 } from './types.js';
 
 export function createCursor<T>(query: T): string {
@@ -130,4 +141,59 @@ export function findClosestEnvFileDir() {
     return path.dirname(envFilePath);
   }
   return null;
+}
+
+export const edgesFromEsResults = (results: EsResults, getCursor: GetCursor) =>
+  results.hits.hits.map((e: EsHit, index: number) => ({
+    cursor: getCursor(index + 1),
+    node: {
+      _score: e._score,
+      venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
+    },
+  }));
+
+export const getHits = (results: EsResults) => results.hits.total.value;
+
+export function getTodayString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return [year, month, day].join('-');
+}
+
+export function validateOrderByArguments(
+  orderByDistance?: OrderByDistanceParams,
+  orderByName?: OrderByNameParams,
+  orderByAccessibilityProfile?: AccessibilityProfileType
+) {
+  const orderByArgs = {
+    orderByDistance,
+    orderByName,
+    orderByAccessibilityProfile,
+  };
+
+  const isOrderByAmbiguous =
+    Object.values(orderByArgs).filter(isDefined).length > 1;
+
+  if (isOrderByAmbiguous) {
+    throw new GraphQLError(
+      `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`,
+      {
+        extensions: {
+          code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
+        },
+      }
+    );
+  }
+
+  for (const [orderByArgName, value] of Object.entries(orderByArgs)) {
+    if (value === null) {
+      throw new GraphQLError(`"${orderByArgName}" cannot be null.`, {
+        extensions: {
+          code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
+        },
+      });
+    }
+  }
 }
