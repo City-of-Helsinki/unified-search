@@ -1,5 +1,8 @@
 import { type GraphQlToElasticLanguageMap } from './constants.js';
 
+// A type representing an object with no properties
+export type EmptyObject = Record<never, never>;
+
 export type ConnectionCursor = string;
 
 export type ConnectionCursorObject = {
