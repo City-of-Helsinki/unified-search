@@ -1,4 +1,5 @@
 import type { CorsOptions } from 'cors';
+import type { HelmetOptions } from 'helmet';
 
 export const GraphQlToElasticLanguageMap = {
   FINNISH: 'fi',
@@ -56,3 +57,72 @@ export const CSP = {
   unsafeHashes: "'unsafe-hashes'",
   unsafeInline: "'unsafe-inline'",
 } as const;
+
+/**
+ * CSP (i.e. Content Security Policy) configuration
+ * without Apollo Sandbox use.
+ *
+ * This is a very restrictive policy because this is a GraphQL server
+ * and querying/mutating & introspecting the schema don't need much.
+ *
+ * Configuration options documented at:
+ * https://helmetjs.github.io/#reference
+ */
+export const cspConfigWithoutApolloSandbox = {
+  contentSecurityPolicy: {
+    useDefaults: false, // No defaults, the wanted configuration is explicit
+    directives: {
+      baseUri: [CSP.none],
+      childSrc: [CSP.none],
+      connectSrc: [CSP.none],
+      defaultSrc: [CSP.none],
+      fontSrc: [CSP.none],
+      formAction: [CSP.none],
+      frameAncestors: [CSP.none],
+      frameSrc: [CSP.none],
+      imgSrc: [CSP.none],
+      manifestSrc: [CSP.none],
+      mediaSrc: [CSP.none],
+      objectSrc: [CSP.none],
+      scriptSrc: [CSP.none],
+      styleSrc: [CSP.none],
+      workerSrc: [CSP.none],
+      upgradeInsecureRequests: [], // Enable upgrade-insecure-requests
+    },
+  },
+} as const satisfies HelmetOptions;
+
+/**
+ * CSP (i.e. Content Security Policy) configuration
+ * with Apollo Sandbox use.
+ *
+ * WARNING: This should not be used in production environment!
+ *
+ * Configuration options documented at:
+ * https://helmetjs.github.io/#reference
+ */
+export const cspConfigWithApolloSandbox = {
+  contentSecurityPolicy: {
+    useDefaults: false, // No defaults, the wanted configuration is explicit
+    directives: {
+      ...cspConfigWithoutApolloSandbox.contentSecurityPolicy.directives,
+      scriptSrc: [
+        CSP.self,
+        CSP.unsafeInline,
+        'https://embeddable-sandbox.cdn.apollographql.com',
+      ],
+      styleSrc: [CSP.self, CSP.unsafeInline, 'https://fonts.googleapis.com'],
+      imgSrc: [
+        CSP.self,
+        'https://apollo-server-landing-page.cdn.apollographql.com',
+      ],
+      fontSrc: [CSP.self, 'https://fonts.gstatic.com'],
+      frameSrc: [CSP.self, 'https://sandbox.embed.apollographql.com'],
+      connectSrc: [CSP.self],
+      manifestSrc: [
+        CSP.self,
+        'https://apollo-server-landing-page.cdn.apollographql.com',
+      ],
+    },
+  },
+} as const satisfies HelmetOptions;
