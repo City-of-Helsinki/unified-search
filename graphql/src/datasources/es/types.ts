@@ -2,6 +2,7 @@ import type {
   ELASTIC_SEARCH_INDICES,
   SEARCH_RESULT_FIELDS,
 } from './constants.js';
+import type { ElasticSearchAPI } from './index.js';
 import type { ElasticLanguage, EmptyObject } from '../../types.js';
 
 export type ElasticSearchIndex = (typeof ELASTIC_SEARCH_INDICES)[number];
@@ -129,5 +130,11 @@ export type MustHaveReservableResourceFilter = {
         };
       },
     ];
+  };
+};
+
+export type QueryContext = {
+  dataSources: {
+    elasticSearchAPI: ElasticSearchAPI;
   };
 };

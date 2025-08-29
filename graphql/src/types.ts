@@ -58,6 +58,10 @@ export type Venue = {
   targetGroups?: unknown;
 };
 
+export type VenueProps = {
+  venue: Venue;
+};
+
 // FIXME: Combine TypeScript types and GraphQL types
 export type EsHitSource = {
   name?: unknown;
@@ -86,3 +90,27 @@ export type EsResults = {
 };
 
 export type GetCursor = (index: number) => string;
+
+export type Edge = {
+  cursor: string;
+  node: Record<string, unknown>;
+};
+
+export type LongitudeLatitude = [longitude: number, latitude: number];
+
+export type PageInfoProps = {
+  edges: Edge[];
+  hits: number;
+  connectionArguments: ConnectionArguments;
+};
+
+export type GeoJSONPointInput = {
+  geometry?: {
+    coordinates?: {
+      longitude?: number;
+      latitude?: number;
+    };
+  };
+  longitude?: number;
+  latitude?: number;
+};
