@@ -1,14 +1,10 @@
 import { ES_DEFAULT_PAGE_SIZE } from '../datasources/es/index.js';
-import {
-  type ConnectionArguments,
-  type ConnectionCursorObject,
+import type {
+  ConnectionArguments,
+  ConnectionCursorObject,
+  Edge,
 } from '../types.js';
 import { readCursor } from '../utils.js';
-
-export type Edge = {
-  cursor: string;
-  node: Record<string, unknown>;
-};
 
 export async function pageInfoResolver(
   edges: Edge[],
@@ -38,5 +34,3 @@ export async function pageInfoResolver(
     endCursor: lastEdge?.cursor,
   };
 }
-
-export default pageInfoResolver;
