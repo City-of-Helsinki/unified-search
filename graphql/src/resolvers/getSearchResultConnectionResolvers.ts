@@ -1,7 +1,7 @@
 import type { PageInfoProps } from '../types.js';
 import { pageInfoResolver } from './pageInfoResolver.js';
 
-export function SearchResultConnectionResolver() {
+export function getSearchResultConnectionResolvers() {
   return {
     count({ hits }: PageInfoProps) {
       return hits;

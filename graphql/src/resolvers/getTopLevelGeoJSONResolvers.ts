@@ -1,7 +1,9 @@
 import type { GeoJSONPointInput, LongitudeLatitude } from '../types.js';
 
-// NOTE: This is a collection of GeoJSON* resolvers, not a single resolver!
-export function GeoJSONResolvers() {
+/**
+ * Get the resolvers for top-level (i.e. not under anything else) GeoJSON nodes.
+ */
+export function getTopLevelGeoJSONResolvers() {
   return {
     GeoJSONCRSProperties: {
       __resolveType() {
