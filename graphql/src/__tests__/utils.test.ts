@@ -1,13 +1,16 @@
+import { describe, it, expect } from 'vitest';
+
 import {
   getEsOffsetPaginationQuery,
   createCursor,
   escapeQuery,
-} from '../utils.ts';
+} from '../utils.js';
 
 describe('utils', () => {
   describe('getEsOffsetPaginationQuery', () => {
     it('should error when first is not a positive number', () => {
       expect(() =>
+        // @ts-expect-error testing invalid input, so types should fail
         getEsOffsetPaginationQuery({ first: 'first' })
       ).toThrowError();
       expect(() => getEsOffsetPaginationQuery({ first: -1 })).toThrowError();
