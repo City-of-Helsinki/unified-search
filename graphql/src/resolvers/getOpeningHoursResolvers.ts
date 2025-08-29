@@ -1,6 +1,6 @@
 import { getTodayString } from '../utils.js';
 
-export function OpeningHoursResolver() {
+export function getOpeningHoursResolvers() {
   return {
     today({ data }: unknown) {
       const openingHoursToday = data.find(

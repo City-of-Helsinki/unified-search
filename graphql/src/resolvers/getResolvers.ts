@@ -1,31 +1,20 @@
-import { GeoJSONResolvers } from './GeoJSONResolvers.js';
-import { OpeningHoursResolver } from './OpeningHoursResolver.js';
-import { administrativeDivisionsResolver } from './query/administrativeDivisionsResolver.js';
-import { ontologyTreeResolver } from './query/ontologyTreeResolver.js';
-import { ontologyWordsResolver } from './query/ontologyWordsResolver.js';
-import { unifiedSearchCompletionSuggestionsResolver } from './query/unifiedSearchCompletionSuggestionsResolver.js';
-import { unifiedSearchResolver } from './query/unifiedSearchResolver.js';
+import { getOpeningHoursResolvers } from './getOpeningHoursResolvers.js';
+import { getSearchResultConnectionResolvers } from './getSearchResultConnectionResolvers.js';
+import { getTopLevelGeoJSONResolvers } from './getTopLevelGeoJSONResolvers.js';
+import { getUnifiedSearchVenueResolvers } from './getUnifiedSearchVenueResolvers.js';
+import { getQueryResolvers } from './query/getQueryResolvers.js';
 import { RawJSONResolver } from './RawJSONResolver.js';
-import { SearchResultConnectionResolver } from './SearchResultConnectionResolver.js';
-import { UnifiedSearchVenueResolver } from './UnifiedSearchVenueResolver.js';
 
 /**
  * Get all resolvers for the GraphQL server.
  */
 export function getResolvers() {
   return {
-    Query: {
-      unifiedSearch: unifiedSearchResolver,
-      unifiedSearchCompletionSuggestions:
-        unifiedSearchCompletionSuggestionsResolver,
-      administrativeDivisions: administrativeDivisionsResolver,
-      ontologyTree: ontologyTreeResolver,
-      ontologyWords: ontologyWordsResolver,
-    },
-    SearchResultConnection: SearchResultConnectionResolver(),
-    UnifiedSearchVenue: UnifiedSearchVenueResolver(),
-    OpeningHours: OpeningHoursResolver(),
+    Query: { ...getQueryResolvers() },
+    SearchResultConnection: { ...getSearchResultConnectionResolvers() },
+    UnifiedSearchVenue: { ...getUnifiedSearchVenueResolvers() },
+    OpeningHours: { ...getOpeningHoursResolvers() },
     RawJSON: RawJSONResolver(),
-    ...GeoJSONResolvers(),
+    ...getTopLevelGeoJSONResolvers(),
   };
 }

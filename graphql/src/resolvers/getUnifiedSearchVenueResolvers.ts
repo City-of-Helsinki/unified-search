@@ -1,7 +1,7 @@
 import type { AccessibilityProfileType } from '../datasources/es/types.js';
 import type { VenueProps } from '../types.js';
 
-export function UnifiedSearchVenueResolver() {
+export function getUnifiedSearchVenueResolvers() {
   return {
     name({ venue }: VenueProps) {
       return venue.name;
