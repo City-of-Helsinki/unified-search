@@ -179,7 +179,7 @@ export function validateOrderByArguments(
 
   if (isOrderByAmbiguous) {
     throw new GraphQLError(
-      `Cannot use several of ${Object.keys(orderByArgs).join(', ')}`,
+      'Cannot use more than one orderBy parameter simultaneously',
       {
         extensions: {
           code: ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
