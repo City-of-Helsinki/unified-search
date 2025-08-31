@@ -1,7 +1,5 @@
-import type {
-  QueryContext,
-  SuggestionsParams,
-} from '../../datasources/es/types.js';
+import type { QueryContext } from '../../datasources/es/index.js';
+import type { SuggestionsParams } from '../../datasources/es/types.js';
 import { elasticLanguageFromGraphqlLanguage } from '../../utils.js';
 
 export async function unifiedSearchCompletionSuggestionsResolver(

@@ -8,7 +8,7 @@ import {
   getSuggestions,
 } from './api/index.js';
 import type { getQueryResultsProps } from './api/index.js';
-import { ELASTIC_SEARCH_URI, ES_DEFAULT_PAGE_SIZE } from './constants.js';
+import { ELASTIC_SEARCH_URI } from './constants.js';
 import type {
   AdministrativeDivisionParams,
   OntologyTreeParams,
@@ -16,7 +16,7 @@ import type {
   SuggestionsParams,
 } from './types.js';
 
-class ElasticSearchAPI extends RESTDataSource {
+export class ElasticSearchAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = ELASTIC_SEARCH_URI;
@@ -48,4 +48,8 @@ class ElasticSearchAPI extends RESTDataSource {
   }
 }
 
-export { ElasticSearchAPI, ES_DEFAULT_PAGE_SIZE };
+export type QueryContext = {
+  dataSources: {
+    elasticSearchAPI: ElasticSearchAPI;
+  };
+};

@@ -1,7 +1,5 @@
-import type {
-  AdministrativeDivisionParams,
-  QueryContext,
-} from '../../datasources/es/types.js';
+import type { QueryContext } from '../../datasources/es/index.js';
+import type { AdministrativeDivisionParams } from '../../datasources/es/types.js';
 import type { EsHit, EsResults } from '../../types.js';
 
 export async function administrativeDivisionsResolver(

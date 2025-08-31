@@ -1,7 +1,5 @@
-import type {
-  OntologyTreeParams,
-  QueryContext,
-} from '../../datasources/es/types.js';
+import type { QueryContext } from '../../datasources/es/index.js';
+import type { OntologyTreeParams } from '../../datasources/es/types.js';
 import type { EsHit, EsResults } from '../../types.js';
 
 export async function ontologyTreeResolver(

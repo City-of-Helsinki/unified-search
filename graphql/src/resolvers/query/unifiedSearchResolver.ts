@@ -1,11 +1,11 @@
 import { GraphQLResolveInfoWithCacheControl } from '@apollo/cache-control-types';
 
+import type { QueryContext } from '../../datasources/es/index.js';
 import type {
   AccessibilityProfileType,
   ElasticSearchIndex,
   OrderByDistanceParams,
   OrderByNameParams,
-  QueryContext,
 } from '../../datasources/es/types.js';
 import type {
   ConnectionArguments,

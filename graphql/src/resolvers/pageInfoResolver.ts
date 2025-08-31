@@ -1,4 +1,4 @@
-import { ES_DEFAULT_PAGE_SIZE } from '../datasources/es/index.js';
+import { ES_DEFAULT_PAGE_SIZE } from '../datasources/es/constants.js';
 import type {
   ConnectionArguments,
   ConnectionCursorObject,
