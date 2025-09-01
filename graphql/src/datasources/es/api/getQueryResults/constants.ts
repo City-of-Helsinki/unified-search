@@ -28,6 +28,9 @@ export const SEARCH_WEIGHT = {
   veryHigh: 3,
 } as const;
 
+export type SearchWeight = (typeof SEARCH_WEIGHT)[keyof typeof SEARCH_WEIGHT];
+export type StringSearchWeight = `${SearchWeight}`;
+
 /**
  * Boost multiplier for `match_phrase` queries.
  *
@@ -43,15 +46,17 @@ export const SEARCH_WEIGHT = {
 export const MATCH_PHRASE_BOOST_MULTIPLIER = SEARCH_WEIGHT.high;
 
 // Some fields should be boosted / weighted to get more relevant result set
-export const searchFieldsBoostMapping: Record<
-  string,
-  (lang: ElasticLanguage, index: ElasticSearchIndex) => TranslatableField[]
+export const searchFieldsBoostMapping: Partial<
+  Record<
+    StringSearchWeight, // Javascript converts numbers to strings, so let's use strings
+    (lang: ElasticLanguage, index: ElasticSearchIndex) => TranslatableField[]
+  >
 > = {
   // Normally weighted search fields for different indexes
   [SEARCH_WEIGHT.normal]: (
     lang: ElasticLanguage,
     index: ElasticSearchIndex
-  ) => {
+  ): TranslatableField[] => {
     return (
       {
         [ES_LOCATION_INDEX]: [`venue.description.${lang}`],
@@ -61,7 +66,7 @@ export const searchFieldsBoostMapping: Record<
   [SEARCH_WEIGHT.veryHigh]: (
     lang: ElasticLanguage,
     index: ElasticSearchIndex
-  ) => {
+  ): TranslatableField[] => {
     return (
       {
         [ES_LOCATION_INDEX]: [`venue.name.${lang}`],
