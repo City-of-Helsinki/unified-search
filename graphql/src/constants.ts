@@ -96,8 +96,6 @@ export const cspConfigWithoutApolloSandbox = {
  * CSP (i.e. Content Security Policy) configuration
  * with Apollo Sandbox use.
  *
- * WARNING: This should not be used in production environment!
- *
  * Configuration options documented at:
  * https://helmetjs.github.io/#reference
  */
