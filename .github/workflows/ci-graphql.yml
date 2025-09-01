@@ -14,3 +14,4 @@ jobs:
     with:
       node-version: 22
       working-directory: ./graphql
+      typecheck: true
