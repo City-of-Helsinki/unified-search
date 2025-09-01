@@ -13,7 +13,8 @@ for end users of [Unified Search](https://github.com/City-of-Helsinki/unified-se
   - [With Docker & Docker compose](#with-docker--docker-compose)
   - [Without Docker](#without-docker)
 - [Environments](#environments)
-- [GraphQL queries](#graphql-queries)
+- [Weighting of search results](#weighting-of-search-results)
+- [Example GraphQL queries](#example-graphql-queries)
   - [Administrative divisions query](#administrative-divisions-query)
   - [Free text search - location index](#free-text-search---location-index)
   - [Pagination and scores](#pagination-and-scores)
@@ -61,9 +62,38 @@ Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/
 - Staging: https://kuva-unified-search.api.stage.hel.ninja/search
 - Production: https://kuva-unified-search.api.hel.fi/search
 
-## GraphQL queries
+## Weighting of search results
+
+To give more importance to certain fields in search results,
+GraphQL search API's search results are weighted.
+
+Here are the location/venue search's used weights:
+
+| Field       | Single word match | Phrase match (2x single match) |
+| ----------- | ----------------- | ------------------------------ |
+| name        | 3x                | 6x                             |
+| description | 1x                | 2x                             |
+
+So this makes it so that phrase matches (e.g. "art museum") in `name` field
+are weighted highest (6x), followed by single word matches (e.g. "art" or "museum")
+in `name` (3x), followed by phrase matches in `description` (2x), and finally the
+single word matches in `description` (1x).
+
+Given the above, location/venue search prioritizes the search matches in this order:
+
+1. `name` field phrase match
+2. `name` field single word match
+3. `description` field phrase match
+4. `description` field single word match
+
+The weights are defined in [constants files](./src/datasources/es/api/getQueryResults/constants.ts).
+
+## Example GraphQL queries
 
 It is recommended to use a GraphQL client for sending queries.
+
+You can also use the Apollo Sandbox GraphQL client, if you have it enabled with
+`ENABLE_APOLLO_SANDBOX=true` in your `.env` file, locally at http://localhost:4000/search
 
 ### Administrative divisions query
 
