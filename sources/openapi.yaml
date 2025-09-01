@@ -11,6 +11,8 @@ info:
     url: https://github.com/City-of-Helsinki/unified-search/blob/main/LICENSE
 
 servers:
+  - url: https://kuva-unified-search-sources.api.dev.hel.ninja
+    description: Development environment
   - url: https://kuva-unified-search-sources.api.test.hel.ninja
     description: Testing environment
   - url: https://kuva-unified-search-sources.api.stage.hel.ninja

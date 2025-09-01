@@ -51,6 +51,7 @@ Where is the Data Collector running?
 Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/kuva-unified-search) Azure DevOps project:
 
 - Review per PR (e.g. PR #321): https://kuva-unified-search-sources-pr321.api.dev.hel.ninja/
+- Development: https://kuva-unified-search-sources.api.dev.hel.ninja/
 - Testing: https://kuva-unified-search-sources.api.test.hel.ninja/
 - Staging: https://kuva-unified-search-sources.api.stage.hel.ninja/
 - Production: https://kuva-unified-search-sources.api.hel.ninja/

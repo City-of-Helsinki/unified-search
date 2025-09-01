@@ -56,6 +56,7 @@ Where is the GraphQL API running?
 Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/kuva-unified-search) Azure DevOps project:
 
 - Review per PR (e.g. PR #321): https://kuva-unified-search-pr321.api.dev.hel.ninja/search
+- Development: https://kuva-unified-search.api.dev.hel.ninja/search
 - Testing: https://kuva-unified-search.api.test.hel.ninja/search
 - Staging: https://kuva-unified-search.api.stage.hel.ninja/search
 - Production: https://kuva-unified-search.api.hel.fi/search
