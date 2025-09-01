@@ -10,7 +10,6 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon --ext ts src/index.ts --exec tsx",
-    "transpile": "tsc",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "serve": "node --import ./dist/src/sentry-init.mjs --trace-warnings --max-http-header-size=16000 dist/src/index.js",
     "test": "vitest",

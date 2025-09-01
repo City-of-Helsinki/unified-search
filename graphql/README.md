@@ -47,7 +47,7 @@ its use is described in the [repository root README](../README.md).
 1. Install [requirements](#requirements)
    - Node.js using e.g. [nvm](https://github.com/nvm-sh/nvm) / [nvm-windows](https://github.com/coreybutler/nvm-windows)
    - Yarn v1 using e.g. [Yarn installation guide](https://classic.yarnpkg.com/lang/en/docs/install/)
-2. Run `yarn start` for development, or `yarn transpile` & `yarn serve` for production build.
+2. Run `yarn start` for development, or `yarn build` & `yarn serve` for production build.
 
 ## Environments
 

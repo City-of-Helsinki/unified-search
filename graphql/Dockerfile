@@ -55,18 +55,17 @@ USER default
 CMD ["yarn", "start"]
 
 # =============================
-FROM development_base AS transpiler
+FROM development_base AS builder
 # =============================
 
-# Transpile Typescript into Javascript
-RUN yarn transpile
+RUN yarn build
 
 # =============================
 FROM appbase AS production
 # =============================
 
-# Copy the transpiled source files to this image
-COPY --from=transpiler --chown=root:root /app/dist /app/dist
+# Copy the built source files to this image
+COPY --from=builder --chown=root:root /app/dist /app/dist
 
 # Set node environment to production to install only main dependencies
 ENV NODE_ENV=production
