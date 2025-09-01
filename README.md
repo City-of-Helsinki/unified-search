@@ -149,6 +149,8 @@ You can use [`pre-commit`](https://pre-commit.com/) to lint and format your code
 2. Set up git hooks from `.pre-commit-config.yaml` by running these commands from project root:
    - `pre-commit install` to enable pre-commit code formatting & linting
    - `pre-commit install --hook-type commit-msg` to enable pre-commit commit message linting
+3. To be able to successfully run the pre-commit hooks for the `graphql` app, you need to install its dependencies:
+   - `yarn --cwd graphql` (Installs dependencies in the `graphql` folder)
 
 After that, linting and formatting hooks will run against all changed files before committing.
 
