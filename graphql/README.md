@@ -13,6 +13,7 @@ for end users of [Unified Search](https://github.com/City-of-Helsinki/unified-se
   - [With Docker & Docker compose](#with-docker--docker-compose)
   - [Without Docker](#without-docker)
 - [Environments](#environments)
+- [GraphQL search API documentation](#graphql-search-api-documentation)
 - [Weighting of search results](#weighting-of-search-results)
 - [Example GraphQL queries](#example-graphql-queries)
   - [Administrative divisions query](#administrative-divisions-query)
@@ -61,6 +62,13 @@ Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/
 - Testing: https://kuva-unified-search.api.test.hel.ninja/search
 - Staging: https://kuva-unified-search.api.stage.hel.ninja/search
 - Production: https://kuva-unified-search.api.hel.fi/search
+
+## GraphQL search API documentation
+
+The GraphQL search API's documentation is available at `/search` endpoint
+(as long as Apollo Sandbox has been enabled with `ENABLE_APOLLO_SANDBOX=true`):
+- Locally: http://localhost:4000/search
+- In deployed environments, see [Environments](#environments)
 
 ## Weighting of search results
 
