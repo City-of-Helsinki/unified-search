@@ -13,6 +13,7 @@ and storing it to Elasticsearch.
   - [Without Docker](#without-docker)
 - [Environments](#environments)
 - [Data importers](#data-importers)
+- [Endpoints](#endpoints)
 - [Keeping Python requirements up to date](#keeping-python-requirements-up-to-date)
 - [Code linting & formatting](#code-linting--formatting)
 - [Pre-commit hooks](#pre-commit-hooks)
@@ -61,6 +62,11 @@ Based on info from [kuva-unified-search](https://dev.azure.com/City-of-Helsinki/
 Data collector uses multiple different data importers to fetch data.
 
 The data importers are documented in [Data Importers README](./ingest/README.md).
+
+## Endpoints
+
+Data Collector doesn't have many endpoints, just the ones needed for
+readiness and health checks. They are documented in [openapi.yaml](./openapi.yaml).
 
 ## Keeping Python requirements up to date
 
