@@ -6,17 +6,17 @@
 #
 asttokens==3.0.0
     # via stack-data
-coverage[toml]==7.10.1
+coverage[toml]==7.10.6
     # via pytest-cov
 decorator==5.2.1
     # via ipython
-executing==2.2.0
+executing==2.2.1
     # via stack-data
 fastdiff==0.3.0
     # via snapshottest
 iniconfig==2.1.0
     # via pytest
-ipython==9.4.0
+ipython==9.5.0
     # via -r requirements-dev.in
 ipython-pygments-lexers==1.1.1
     # via ipython
@@ -28,7 +28,7 @@ packaging==25.0
     # via
     #   -c requirements.txt
     #   pytest
-parso==0.8.4
+parso==0.8.5
     # via jedi
 pexpect==4.9.0
     # via ipython
@@ -36,7 +36,7 @@ pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-prompt-toolkit==3.0.51
+prompt-toolkit==3.0.52
     # via ipython
 ptyprocess==0.7.0
     # via pexpect
@@ -59,7 +59,7 @@ pytest-django==4.11.1
     # via -r requirements-dev.in
 pytest-mock==3.14.1
     # via -r requirements-dev.in
-ruff==0.12.7
+ruff==0.12.11
     # via -r requirements-dev.in
 snapshottest==1.0.0a1
     # via -r requirements-dev.in
