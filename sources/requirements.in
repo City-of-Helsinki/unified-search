@@ -4,7 +4,7 @@ django-cors-headers
 django-csp
 django-health-check
 django-munigeo
-opensearch-py
+elasticsearch
 pyhumps
 python-dotenv
 requests

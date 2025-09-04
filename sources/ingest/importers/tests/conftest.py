@@ -1,6 +1,6 @@
 import pytest
 from django.conf import settings
-from opensearchpy import OpenSearch
+from elasticsearch import Elasticsearch
 
 from ingest.importers.tests.mocks import (
     MOCK_OPENING_HOURS_RESPONSE,
@@ -98,7 +98,7 @@ def mocked_service_registry_description_viewpoint_response(mocker):
 
 @pytest.fixture
 def es():
-    es = OpenSearch([settings.ES_URI])
+    es = Elasticsearch([settings.ES_URI])
     yield es
     es.indices.delete(index="test_*")
 
