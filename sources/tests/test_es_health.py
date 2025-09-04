@@ -3,7 +3,7 @@ import logging
 
 import requests
 from django.conf import settings
-from opensearchpy import exceptions, OpenSearch
+from elasticsearch import Elasticsearch, exceptions
 
 """ Running:
         pytest
@@ -21,7 +21,7 @@ logging.basicConfig(
 
 
 def test_es_up():
-    logging.debug("Checking OpenSearch connection")
+    logging.debug("Checking Elasticsearch connection")
     r = requests.get(settings.ES_URI)
     logging.debug(json.dumps(json.loads(r.content), indent=4))
     assert r.status_code == 200
@@ -30,7 +30,7 @@ def test_es_up():
 def test_es_basic_operations():
     """Run basic operations for testing purposes."""
 
-    es = OpenSearch([settings.ES_URI])
+    es = Elasticsearch([settings.ES_URI])
 
     try:
         logging.debug("Deleting existing test data")

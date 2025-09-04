@@ -289,7 +289,7 @@ query {
 
 ## Elasticsearch queries
 
-You can run these queries [locally in OpenSearch Dashboards Dev Tools](http://localhost:5601/app/dev_tools#/console).
+You can run these queries [locally in Elasticsearch Dev Tools](http://localhost:5601/app/dev_tools#/console).
 
 ### Date ranges
 

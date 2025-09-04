@@ -27,14 +27,7 @@ Unified search consists of the following applications:
 ### Elasticsearch
 
 - Search engine for indexing the data
-- All environments use [Elasticsearch](https://www.elastic.co/elasticsearch) except:
-  - Local development and all tests run in any environment use [OpenSearch](https://opensearch.org/)
-
-Why OpenSearch is used at all?
-- OpenSearch was chosen earlier for local development only because of Elasticsearch's licensing.
-  As Elasticsearch has changed their licensing later, it could be possible to switch to it in all environments.
-  If this is possible, it would also be preferrable because of unification of the used search engine i.e.
-  testing and using the same engine in all environments.
+- All environments use [Elasticsearch](https://www.elastic.co/elasticsearch)
 
 ### Data collector
 
@@ -107,9 +100,9 @@ Services can now be locally accessed at:
 | Service                                   | Local URL                                    |
 |-------------------------------------------|----------------------------------------------|
 | [GraphQL search API](./graphql/README.md) | http://localhost:4000/search                 |
-| OpenSearch Dashboards                     | http://localhost:5601                        |
-| OpenSearch Dashboards Dev Tools           | http://localhost:5601/app/dev_tools#/console |
-| OpenSearch                                | http://localhost:9200                        |
+| Elastic Stack home                        | http://localhost:5601                        |
+| Elasticsearch Dev Tools                   | http://localhost:5601/app/dev_tools#/console |
+| Elasticsearch                             | http://localhost:9200                        |
 | [Data collector](./sources/README.md)     | http://localhost:5001/readiness              |
 
 ### Running without Docker

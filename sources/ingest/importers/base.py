@@ -4,8 +4,8 @@ from dataclasses import asdict, is_dataclass
 from typing import Generic, List, Optional, Tuple, TypeVar
 
 from django.conf import settings
-from opensearchpy import NotFoundError, OpenSearch
-from opensearchpy.helpers import bulk
+from elasticsearch import Elasticsearch, NotFoundError
+from elasticsearch.helpers import bulk
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class Importer(ABC, Generic[IndexableData]):
             raise NotImplementedError(
                 f"Importer {self.__class__.__name__} is missing index_base_names."
             )
-        self.es = OpenSearch([settings.ES_URI], timeout=60)
+        self.es = Elasticsearch([settings.ES_URI]).options(request_timeout=60)
         self.use_fallback_languages = use_fallback_languages
 
     @abstractmethod
@@ -155,7 +155,7 @@ class Importer(ABC, Generic[IndexableData]):
     def _delete_index(self, index) -> None:
         logger.debug(f"Deleting index {index}")
         try:
-            response = self.es.indices.delete(index=index, ignore=404)
+            response = self.es.options(ignore_status=404).indices.delete(index=index)
             logger.debug(response)
         except NotFoundError as e:
             if e.error == "index_not_found_exception":
@@ -166,7 +166,9 @@ class Importer(ABC, Generic[IndexableData]):
     def _delete_alias(self, alias: str) -> None:
         logger.debug(f"Deleting alias {alias}")
         try:
-            self.es.indices.delete_alias(index="*", name=alias, ignore=404)
+            self.es.options(ignore_status=404).indices.delete_alias(
+                index="*", name=alias
+            )
         except NotFoundError:
             pass
 

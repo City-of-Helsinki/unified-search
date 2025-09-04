@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ServiceOwner:
-    providerType: str  # ProviderType as string to fix OpenSearch serialization
-    type: str  # ServiceOwnerType as string to fix OpenSearch serialization
+    providerType: str  # ProviderType as str to fix Elasticsearch serialization
+    type: str  # ServiceOwnerType as str to fix Elasticsearch serialization
     name: LanguageString
 
 
@@ -46,9 +46,9 @@ class AccessibilitySentence:
 
 @dataclass(eq=True, order=True)
 class AccessibilityViewpoint:
-    id: str  # AccessibilityViewpointID as string to fix OpenSearch serialization
+    id: str  # AccessibilityViewpointID as str to fix Elasticsearch serialization
     name: LanguageString
-    value: str  # AccessibilityViewpointValue as string to fix OpenSearch serialization
+    value: str  # AccessibilityViewpointValue as str to fix Elasticsearch serialization
     shortages: Optional[List[LanguageString]] = None
 
 
@@ -121,7 +121,7 @@ class AccessibilityShortcoming:
     e.g. hearing_aid has 3 shortcomings
     """
 
-    profile: str  # AccessibilityProfile as string to fix OpenSearch serialization
+    profile: str  # AccessibilityProfile as str to fix Elasticsearch serialization
     count: Optional[int]  # None means unknown
 
 
@@ -272,7 +272,7 @@ class Venue:
     location: Location = None
     description: LanguageString = None
     serviceOwner: Optional[ServiceOwner] = None
-    # List[TargetGroup] as List[str] to fix OpenSearch serialization:
+    # List[TargetGroup] as List[str] to fix Elasticsearch serialization:
     targetGroups: List[str] = field(default_factory=list)
     openingHours: OpeningHours = None
     reservation: Optional[Reservation] = None
