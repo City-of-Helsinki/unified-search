@@ -13,23 +13,22 @@ jobs:
     secrets: inherit
     with:
       python-version: 3.12
+      # PostgreSQL is NOT USED in sources app at all, but ci-django-api.yml requires this to be set:
       postgres-major-version: 13
       working-directory: ./sources
       extra-commands: |
-        # Start local OpenSearch for testing. It will be destroyed after the tests are done.
-        # You can only log in to the Opensearch container from a runnable environment. 
+        # Start local Elasticsearch for testing. It will be destroyed after the tests are done.
+        # You can only log in to the Elasticsearch container from a runnable environment.
         # The container is only for tests in this repository and only exists for the duration of the tests. 
-        # For this reason, protecting the Opensearch admin password is not justified.
         docker run -d \
-          --name opensearch \
+          --name elasticsearch \
           -p 9200:9200 \
-          -p 9600:9600 \
           -e "discovery.type=single-node" \
-          -e "plugins.security.disabled=true" \
-          -e OPENSEARCH_INITIAL_ADMIN_PASSWORD='Very_Strong_Password_123456' \
-          opensearchproject/opensearch:1.3.1
+          -e "action.destructive_requires_name=false" \
+          -e "xpack.security.enabled=false" \
+          docker.elastic.co/elasticsearch/elasticsearch:9.1.3
         
         echo 'ES_URI=http://localhost:9200' >> .env
         sudo apt-get install gdal-bin libsqlite3-mod-spatialite
         
-        docker logs opensearch
+        docker logs elasticsearch

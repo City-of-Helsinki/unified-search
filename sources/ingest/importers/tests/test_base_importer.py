@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+import elastic_transport
 import pytest
 
 from ingest.importers.base import Importer
@@ -24,11 +25,15 @@ class SomeImporter(Importer[SomeData]):
 def assert_snapshot_match_es_data_and_aliases(snapshot, es):
     es.indices.refresh(index="test")
 
-    hits = es.search(index="test")["hits"]
+    search_result = es.search(index="test")
+    assert isinstance(search_result, elastic_transport.ObjectApiResponse)
+    assert "hits" in search_result.body
+    hits = search_result.body["hits"]
     snapshot.assert_match(hits)
 
     aliases = es.indices.get_alias(index="test_*")
-    snapshot.assert_match(aliases)
+    assert isinstance(aliases, elastic_transport.ObjectApiResponse)
+    snapshot.assert_match(aliases.body)
 
 
 def test_importer_end_results(snapshot, es):
