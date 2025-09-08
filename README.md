@@ -14,7 +14,7 @@ This is common unified search: multi domain search over multiple services.
 - [Known users of unified search](#known-users-of-unified-search)
   - [kultus.hel.fi](#kultushelfi)
   - [liikunta.hel.fi](#liikuntahelfi)
-  - [liikunta.content.api.hel.fi](#liikuntacontentapihelfi)
+  - [liikunta2.content.api.hel.fi](#liikunta2contentapihelfi)
 - [Development](#development)
   - [Running with Docker & Docker compose](#running-with-docker--docker-compose)
   - [Running without Docker](#running-without-docker)
@@ -76,7 +76,7 @@ flowchart BT
   subgraph Frontends["Frontend Applications"]
     Kultus["kultus.hel.fi"]
     Liikunta["liikunta.hel.fi"]
-    LiikuntaHeadlessCMS["liikunta.content.api.hel.fi"]
+    LiikuntaHeadlessCMS["liikunta2.content.api.hel.fi"]
   end
   Elasticsearch
   GraphQL["GraphQL search API"]
@@ -92,11 +92,11 @@ flowchart BT
 
 ## Known users of unified search
 
-| User's URL                           | Type         | Used GraphQL queries                      | Purpose                                                                                |
-|--------------------------------------|--------------|-------------------------------------------|----------------------------------------------------------------------------------------|
-| https://kultus.hel.fi/               | Frontend     | `administrativeDivisions` query           | **Select areas** for search on [search page](https://kultus.hel.fi/search)             |
-| https://liikunta.hel.fi/             | Frontend     | `unifiedSearch` query with location index | **Search for venues** (i.e. locations/units) and show them in list or on map           |
-| https://liikunta.content.api.hel.fi/ | Headless CMS | `unifiedSearch` query with location index | **Select venues** (i.e. locations/units) to be shown as CMS content on liikunta.hel.fi |
+| User's URL                            | Type         | Used GraphQL queries                      | Purpose                                                                                |
+|---------------------------------------|--------------|-------------------------------------------|----------------------------------------------------------------------------------------|
+| https://kultus.hel.fi/                | Frontend     | `administrativeDivisions` query           | **Select areas** for search on [search page](https://kultus.hel.fi/search)             |
+| https://liikunta.hel.fi/              | Frontend     | `unifiedSearch` query with location index | **Search for venues** (i.e. locations/units) and show them in list or on map           |
+| https://liikunta2.content.api.hel.fi/ | Headless CMS | `unifiedSearch` query with location index | **Select venues** (i.e. locations/units) to be shown as CMS content on liikunta.hel.fi |
 
 ### kultus.hel.fi
 
@@ -113,13 +113,19 @@ flowchart BT
   - [useUnifiedSearchListQuery](https://github.com/City-of-Helsinki/events-helsinki-monorepo/blob/sports-helsinki-v1.29.0/apps/sports-helsinki/src/domain/unifiedSearch/useUnifiedSearchListQuery.ts)
   - [useUnifiedSearchMapQuery](https://github.com/City-of-Helsinki/events-helsinki-monorepo/blob/sports-helsinki-v1.29.0/apps/sports-helsinki/src/domain/unifiedSearch/useUnifiedSearchMapQuery.ts)
 
-### liikunta.content.api.hel.fi
+### liikunta2.content.api.hel.fi
 
 - Based on using Liikunta Headless CMS admin UI (in [staging](https://liikunta.app-staging.hkih.hion.dev/wp-login.php)), not on source code
 - Uses in page handling:
   - `Sivut > Lisää sivu > Moduuli > Lisää rivi` (i.e. "Pages > Add page > Module > Add row"):
     - `Sports Locations`
     - `Sports Locations carousel`
+
+NOTE:
+- For some historical reason—it may have been related to a CMS data migration—
+  there are two different Liikunta Headless CMS production instances:
+  - https://liikunta.content.api.hel.fi (old, online, possibly used for some old CMS links)
+  - https://liikunta2.content.api.hel.fi (new, and used)
 
 ## Development
 
