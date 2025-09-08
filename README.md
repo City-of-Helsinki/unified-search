@@ -11,6 +11,10 @@ This is common unified search: multi domain search over multiple services.
   - [Data collector](#data-collector)
   - [GraphQL search API](#graphql-search-api)
 - [Architecture](#architecture)
+- [Known users of unified search](#known-users-of-unified-search)
+  - [kultus.hel.fi](#kultushelfi)
+  - [liikunta.hel.fi](#liikuntahelfi)
+  - [liikunta.content.api.hel.fi](#liikuntacontentapihelfi)
 - [Development](#development)
   - [Running with Docker & Docker compose](#running-with-docker--docker-compose)
   - [Running without Docker](#running-without-docker)
@@ -72,6 +76,7 @@ flowchart BT
   subgraph Frontends["Frontend Applications"]
     Kultus["kultus.hel.fi"]
     Liikunta["liikunta.hel.fi"]
+    LiikuntaHeadlessCMS["liikunta.content.api.hel.fi"]
   end
   Elasticsearch
   GraphQL["GraphQL search API"]
@@ -84,6 +89,37 @@ flowchart BT
   style Group1 stroke-width:0
   style Group2 stroke-width:0
 ```
+
+## Known users of unified search
+
+| User's URL                           | Type         | Used GraphQL queries                      | Purpose                                                                                |
+|--------------------------------------|--------------|-------------------------------------------|----------------------------------------------------------------------------------------|
+| https://kultus.hel.fi/               | Frontend     | `administrativeDivisions` query           | **Select areas** for search on [search page](https://kultus.hel.fi/search)             |
+| https://liikunta.hel.fi/             | Frontend     | `unifiedSearch` query with location index | **Search for venues** (i.e. locations/units) and show them in list or on map           |
+| https://liikunta.content.api.hel.fi/ | Headless CMS | `unifiedSearch` query with location index | **Select venues** (i.e. locations/units) to be shown as CMS content on liikunta.hel.fi |
+
+### kultus.hel.fi
+
+- Based on [palvelutarjotin-ui v2.14.0](https://github.com/City-of-Helsinki/palvelutarjotin-ui/releases/tag/palvelutarjotin-ui-v2.14.0) released on 2025-05-21
+- Used in [DivisionSelectorField](https://github.com/City-of-Helsinki/palvelutarjotin-ui/blob/palvelutarjotin-ui-v2.14.0/src/domain/events/eventSearchForm/EventSearchForm.tsx#L236-L245) →
+[DivisionSelector](https://github.com/City-of-Helsinki/palvelutarjotin-ui/blob/palvelutarjotin-ui-v2.14.0/src/domain/neighborhood/divisionSelector/DivisionSelector.tsx#L10-L27) →
+[useDivisionOptions](https://github.com/City-of-Helsinki/palvelutarjotin-ui/blob/palvelutarjotin-ui-v2.14.0/src/hooks/useDivisionOptions.tsx#L23-L39) →
+[AdministrativeDivisionsDocument](https://github.com/City-of-Helsinki/palvelutarjotin-ui/blob/palvelutarjotin-ui-v2.14.0/src/generated/graphql-unified-search.tsx#L950-L961)
+
+### liikunta.hel.fi
+
+- Based on [sports-helsinki v1.29.0](https://github.com/City-of-Helsinki/events-helsinki-monorepo/releases/tag/sports-helsinki-v1.29.0) released on 2025-08-14
+- Used unified search hooks:
+  - [useUnifiedSearchListQuery](https://github.com/City-of-Helsinki/events-helsinki-monorepo/blob/sports-helsinki-v1.29.0/apps/sports-helsinki/src/domain/unifiedSearch/useUnifiedSearchListQuery.ts)
+  - [useUnifiedSearchMapQuery](https://github.com/City-of-Helsinki/events-helsinki-monorepo/blob/sports-helsinki-v1.29.0/apps/sports-helsinki/src/domain/unifiedSearch/useUnifiedSearchMapQuery.ts)
+
+### liikunta.content.api.hel.fi
+
+- Based on using Liikunta Headless CMS admin UI (in [staging](https://liikunta.app-staging.hkih.hion.dev/wp-login.php)), not on source code
+- Uses in page handling:
+  - `Sivut > Lisää sivu > Moduuli > Lisää rivi` (i.e. "Pages > Add page > Module > Add row"):
+    - `Sports Locations`
+    - `Sports Locations carousel`
 
 ## Development
 
