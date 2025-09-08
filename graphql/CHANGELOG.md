@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.0.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.2.0...graphql-v3.0.0) (2025-09-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **graphql:** remove needless recursion from LocationDescription type
+* **graphql:** remove event importer & clean up/purge GraphQL schema
+
+### Features
+
+* Add pre-commit hooks for eslint, prettier, vitest and md-toc ([6d73a6b](https://github.com/City-of-Helsinki/unified-search/commit/6d73a6b0c62826ad595e852332546b3046746dc5))
+* **graphql:** Add Apollo Sandbox landing page support ([5a62358](https://github.com/City-of-Helsinki/unified-search/commit/5a6235846a680b893025c56dca49cde29cb5fbb4))
+* **graphql:** Add more comprehensive readiness & healthz endpoints ([9e88616](https://github.com/City-of-Helsinki/unified-search/commit/9e88616f85ddccf3256e144aaaeec0f779836f33))
+* **graphql:** Add restrictive CSP using helmet ([db4b62e](https://github.com/City-of-Helsinki/unified-search/commit/db4b62eaceb2bdc4bdc882d1ccdc5b09eb96be41))
+* **graphql:** Allow apollo sandbox in production ([ade9058](https://github.com/City-of-Helsinki/unified-search/commit/ade9058416741a32d2d2c04b08899d6d11df7c93))
+* **graphql:** Configure permissive CORS for the open public GraphQL API ([31e3a0f](https://github.com/City-of-Helsinki/unified-search/commit/31e3a0fa4cda18ab008078e15e5ac6ad49ec6e90))
+* **graphql:** Disable apollo server landing page as unnecessary ([76048ab](https://github.com/City-of-Helsinki/unified-search/commit/76048abafc17adf0e9e6fb5898ae0a7e1a3dc89b))
+* **graphql:** Document administrativeDivisions query more ([0287f1b](https://github.com/City-of-Helsinki/unified-search/commit/0287f1bc6d9a296f8f7d99215d5623d47e913bc7))
+* **graphql:** Make CSP config explicit & use more CSP directives ([04433a3](https://github.com/City-of-Helsinki/unified-search/commit/04433a363428b8fb03714697bfb83913df750f7e))
+* **graphql:** Purge/upgrade packages, use ESM/es2022/nodenext/tsx ([609667f](https://github.com/City-of-Helsinki/unified-search/commit/609667fc255531f3be50873de408056300228795))
+* **graphql:** Remove event importer & clean up/purge GraphQL schema ([fea7da9](https://github.com/City-of-Helsinki/unified-search/commit/fea7da923144aee2f12e55c1e510ad646904a0bd))
+* **graphql:** Switch from jest to vitest ([26cb20a](https://github.com/City-of-Helsinki/unified-search/commit/26cb20a0bafb5a09dfc242686574d03f3697ca22))
+* **graphql:** Upgrade all packages to latest minor version ([c858699](https://github.com/City-of-Helsinki/unified-search/commit/c8586994a6d3f3c73575922950b264c7954f5820))
+* **graphql:** Upgrade luxon to latest major ([494bb8e](https://github.com/City-of-Helsinki/unified-search/commit/494bb8e5b26dd02ec858911ecd6d6d44c9c1368c))
+* **graphql:** Upgrade sentry v6 → v9 ([e0183c4](https://github.com/City-of-Helsinki/unified-search/commit/e0183c4b771ae86d777ef1ef15bdf6127500ba26))
+* **graphql:** Upgrade to eslint v9 + add minimal types to src/index.ts ([10faef6](https://github.com/City-of-Helsinki/unified-search/commit/10faef642c33d7766be69fda5754e3c725c77c12))
+* **graphql:** Use better workaround for readiness build time ([9858f57](https://github.com/City-of-Helsinki/unified-search/commit/9858f57f72bd8a08e4d12bab3a0890f275c1549f))
+* **graphql:** Use ubi10 node.js v22 image in Dockerfile ([96c9f97](https://github.com/City-of-Helsinki/unified-search/commit/96c9f97fad4e493e937b485fdbbaeee9b315ad03))
+* **sources:** Remove unused Keyword class as unnecessary ([14d88b0](https://github.com/City-of-Helsinki/unified-search/commit/14d88b00c1791cde0e9d4b25013b496c30af2ee6))
+* Switch from OpenSearch → ElasticSearch & Kibana v9.1.3 ([b082271](https://github.com/City-of-Helsinki/unified-search/commit/b082271106ec987b6b80e985d1fd7411e4c73bd7))
+
+
+### Bug Fixes
+
+* **build:** Change vocabulary & scripts from using transpile → build ([930c923](https://github.com/City-of-Helsinki/unified-search/commit/930c923fb58d6721386bec5c808dc2c38906fd26))
+* **graphql:** Add LONG_TERM_PATIENTS to TargetGroup ([290dd95](https://github.com/City-of-Helsinki/unified-search/commit/290dd95d45a14ec474aca2d6ba2b8904848f37ff))
+* **graphql:** EXPOSE port 4000 in Dockerfile ([63e6f58](https://github.com/City-of-Helsinki/unified-search/commit/63e6f58200c547e6358067f639db33346ad43c30))
+* **graphql:** Fix cyclic import related to QueryContext type ([15aecd5](https://github.com/City-of-Helsinki/unified-search/commit/15aecd53cb8e0c86743ecc37927654fee58ccf32))
+* **graphql:** Load env vars from .env file ([27199e8](https://github.com/City-of-Helsinki/unified-search/commit/27199e8fb31e3c30ab2e374ccaa9f21ea362147b))
+* **graphql:** Remove needless recursion from LocationDescription type ([1afe01a](https://github.com/City-of-Helsinki/unified-search/commit/1afe01a4a3de476c0b284431f838c4008a858cf6))
+* Tests, update README & docker compose & .dockerignore ([8864887](https://github.com/City-of-Helsinki/unified-search/commit/886488734b7f5f1b9f7898970688e74d7c4dcab7))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.1.0...graphql-v2.2.0) (2024-01-04)
 
 ### Features
