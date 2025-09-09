@@ -115,11 +115,38 @@ flowchart BT
 
 ### liikunta2.content.api.hel.fi
 
-- Based on using Liikunta Headless CMS admin UI (in [staging](https://liikunta.app-staging.hkih.hion.dev/wp-login.php)), not on source code
-- Uses in page handling:
+- Based on [hkih-sportslocations v1.0.1](https://github.com/devgeniem/hkih-sportslocations/releases/tag/1.0.1) tagged on 2025-03-06
+- Used in [SportsLocationsPlugin](https://github.com/devgeniem/hkih-sportslocations/blob/refs/tags/1.0.1/src/SportsLocationsPlugin.php#L305) →
+  [LocationSearch](https://github.com/devgeniem/hkih-sportslocations/blob/refs/tags/1.0.1/src/LocationSearch.php#L71-L75)
+- Can be seen in Liikunta Headless CMS admin UI in e.g. [staging](https://liikunta.app-staging.hkih.hion.dev/wp-login.php) at:
   - `Sivut > Lisää sivu > Moduuli > Lisää rivi` (i.e. "Pages > Add page > Module > Add row"):
     - `Sports Locations`
     - `Sports Locations carousel`
+
+[Used GraphQL query](https://github.com/devgeniem/hkih-sportslocations/blob/refs/tags/1.0.1/src/LocationSearch.php#L72-L74):
+```graphql
+{
+  unifiedSearch(
+    index: location
+    ontologyTreeIdOrSets: [551]
+    text: "%s"
+    first: 50
+  ) {
+    edges {
+      node {
+        venue {
+          meta { id }
+          name { fi sv en }
+        }
+      }
+    }
+  }
+}
+```
+where:
+- [551](https://www.hel.fi/palvelukarttaws/rest/v4/ontologytree/551) is the ontology tree ID for
+"Sports and physical exercise" (i.e. only show sports venues)
+- `%s` is replaced with the search term
 
 NOTE:
 - For some historical reason—it may have been related to a CMS data migration—
