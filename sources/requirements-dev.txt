@@ -47,19 +47,19 @@ pygments==2.19.2
     #   ipython
     #   ipython-pygments-lexers
     #   pytest
-pytest==8.4.1
+pytest==8.4.2
     # via
     #   -r requirements-dev.in
     #   pytest-cov
     #   pytest-django
     #   pytest-mock
-pytest-cov==6.2.1
+pytest-cov==7.0.0
     # via -r requirements-dev.in
 pytest-django==4.11.1
     # via -r requirements-dev.in
-pytest-mock==3.14.1
+pytest-mock==3.15.0
     # via -r requirements-dev.in
-ruff==0.12.11
+ruff==0.13.0
     # via -r requirements-dev.in
 snapshottest==1.0.0a1
     # via -r requirements-dev.in
