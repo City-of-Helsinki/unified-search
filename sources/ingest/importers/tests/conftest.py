@@ -1,7 +1,7 @@
 import pytest
 from django.conf import settings
-from elasticsearch import Elasticsearch
 
+from common.elasticsearch_compatibility import get_compatible_elasticsearch_package
 from ingest.importers.tests.mocks import (
     MOCK_OPENING_HOURS_RESPONSE,
     MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE,
@@ -98,7 +98,8 @@ def mocked_service_registry_description_viewpoint_response(mocker):
 
 @pytest.fixture
 def es():
-    es = Elasticsearch([settings.ES_URI])
+    es_package = get_compatible_elasticsearch_package()
+    es = es_package.Elasticsearch([settings.ES_URI])
     yield es
     es.indices.delete(index="test_*")
 
