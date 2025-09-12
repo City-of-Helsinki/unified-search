@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.0.0...sources-v2.1.0) (2025-09-12)
+
+
+### Features
+
+* **sources:** Add dynamic runtime compatibility for Elasticsearch 8 & 9 ([23bceba](https://github.com/City-of-Helsinki/unified-search/commit/23bceba80fae180b5ac610131556e0d0ba7ce37c))
+
 ## [2.0.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v1.4.0...sources-v2.0.0) (2025-09-08)
 
 
