@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.0.0...graphql-v3.0.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* **graphql:** Make GraphQL release, add info to README ([5006df6](https://github.com/City-of-Helsinki/unified-search/commit/5006df68f0728f25d8360b43cb7014aab559fb11))
+
 ## [3.0.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v2.2.0...graphql-v3.0.0) (2025-09-08)
 
 
