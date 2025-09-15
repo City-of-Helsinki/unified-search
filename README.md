@@ -118,6 +118,11 @@ flowchart BT
 - Based on [hkih-sportslocations v1.0.1](https://github.com/devgeniem/hkih-sportslocations/releases/tag/1.0.1) tagged on 2025-03-06
 - Used in [SportsLocationsPlugin](https://github.com/devgeniem/hkih-sportslocations/blob/refs/tags/1.0.1/src/SportsLocationsPlugin.php#L305) →
   [LocationSearch](https://github.com/devgeniem/hkih-sportslocations/blob/refs/tags/1.0.1/src/LocationSearch.php#L71-L75)
+- Environments:
+  - [Liikunta Headless CMS staging](https://liikunta.app-staging.hkih.hion.dev/) uses
+    [Unified Search staging](https://kuva-unified-search.api.stage.hel.ninja/search)
+  - [Liikunta Headless CMS production](https://liikunta2.content.api.hel.fi/) uses
+    [Unified Search production](https://kuva-unified-search.api.hel.fi/search)
 - Can be seen in Liikunta Headless CMS admin UI in e.g. [staging](https://liikunta.app-staging.hkih.hion.dev/wp-login.php) at:
   - `Sivut > Lisää sivu > Moduuli > Lisää rivi` (i.e. "Pages > Add page > Module > Add row"):
     - `Sports Locations`
@@ -149,10 +154,16 @@ where:
 - `%s` is replaced with the search term
 
 NOTE:
-- For some historical reason—it may have been related to a CMS data migration—
-  there are two different Liikunta Headless CMS production instances:
-  - https://liikunta.content.api.hel.fi (old, online, possibly used for some old CMS links)
-  - https://liikunta2.content.api.hel.fi (new, and used)
+- Because of historical development of Liikunta application's headless CMS there are
+  two different Liikunta Headless CMS production instances:
+  - https://liikunta.content.api.hel.fi
+    - Older instance, new content is not normally added here
+    - Some image links still point to this instance, so it is used in production too
+  - https://liikunta2.content.api.hel.fi
+    - Newer, new content is normally added here
+    - Contains most of the content, but not all, some images are in the older instance
+- The instances could be combined into one by combining their datas, and updating all the
+  links to point to it
 
 ## Development
 

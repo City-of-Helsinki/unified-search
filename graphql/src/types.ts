@@ -89,12 +89,12 @@ export type EsResults = {
   };
 };
 
-export type GetCursor = (index: number) => string;
-
 export type Edge = {
   cursor: string;
   node: Record<string, unknown>;
 };
+
+export type GetCursor = (index: number) => string;
 
 export type LongitudeLatitude = [longitude: number, latitude: number];
 
