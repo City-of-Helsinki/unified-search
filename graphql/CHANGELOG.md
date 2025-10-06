@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.0.1...graphql-v3.1.0) (2025-10-06)
+
+
+### Features
+
+* **graphql:** Update all dependencies to latest, except @types/node→22 ([1541b77](https://github.com/City-of-Helsinki/unified-search/commit/1541b774cbf32508fa195e4f41c8d82e06d10b33))
+
 ## [3.0.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.0.0...graphql-v3.0.1) (2025-09-15)
 
 

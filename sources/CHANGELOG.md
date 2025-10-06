@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.1.0...sources-v2.2.0) (2025-10-06)
+
+
+### Features
+
+* **sources:** Update dependencies to latest ([7cbd773](https://github.com/City-of-Helsinki/unified-search/commit/7cbd7735dbf5d559d7d1700e1df7a3f5ca29c674))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.0.0...sources-v2.1.0) (2025-09-12)
 
 
