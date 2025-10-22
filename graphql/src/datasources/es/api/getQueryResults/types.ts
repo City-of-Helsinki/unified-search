@@ -58,3 +58,15 @@ export type QueryFilterClauses = {
     fuzziness?: string;
   }>;
 };
+
+export type TranslatableFieldClauses = {
+  [key in TranslatableField]?: QueryFilterClauses;
+};
+
+export type MatchBoolPrefixClause = {
+  match_bool_prefix: TranslatableFieldClauses;
+};
+
+export type MatchPhraseClause = {
+  match_phrase: TranslatableFieldClauses;
+};
