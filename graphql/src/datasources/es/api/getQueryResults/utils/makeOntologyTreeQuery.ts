@@ -1,30 +1,42 @@
-import type {
+import {
+  OntologyTreeLeavesOnlyFilter,
   OntologyTreeParams,
   OntologyTreeQuery,
-  OntologyTreeQueryBool,
+  OntologyTreeRootIdFilter,
 } from '../../../types.js';
 
-export function makeOntologyTreeQuery({
+const makeRootIdFilter = (
+  rootId: OntologyTreeParams['rootId']
+): OntologyTreeRootIdFilter => ({
+  filter: {
+    bool: {
+      should: [
+        // Either is a descendant of the rootId or is the rootId itself:
+        { term: { ancestorIds: rootId } },
+        { term: { _id: rootId } },
+      ],
+    },
+  },
+});
+
+const makeLeavesOnlyFilter = (): OntologyTreeLeavesOnlyFilter => ({
+  // Leaves have no children:
+  must_not: {
+    exists: {
+      field: 'childIds',
+    },
+  },
+});
+
+export const makeOntologyTreeQuery = ({
   rootId,
   leavesOnly,
-}: OntologyTreeParams): OntologyTreeQuery {
-  const bool: OntologyTreeQueryBool = {
-    ...(rootId && {
-      filter: {
-        bool: {
-          should: [
-            { term: { ancestorIds: rootId } },
-            { term: { _id: rootId } },
-          ],
-        },
-      },
-    }),
-    ...(leavesOnly && {
-      must_not: { exists: { field: 'childIds' } },
-    }),
-  };
-  return {
-    size: 10000,
-    ...(bool && { query: { bool } }),
-  };
-}
+}: OntologyTreeParams): OntologyTreeQuery => ({
+  size: 10000,
+  query: {
+    bool: {
+      ...(rootId && makeRootIdFilter(rootId)),
+      ...(leavesOnly && makeLeavesOnlyFilter()),
+    },
+  },
+});
