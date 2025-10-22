@@ -1,61 +1,40 @@
 import { GraphQlToElasticLanguageMap } from '../../../../../constants.js';
-import type {
-  ElasticLanguage,
-  TranslatableField,
-} from '../../../../../types.js';
+import type { ElasticLanguage } from '../../../../../types.js';
 import { ES_DEFAULT_INDEX } from '../../../constants.js';
 import {
   MATCH_PHRASE_BOOST_MULTIPLIER,
   searchFieldsBoostMapping,
 } from '../constants.js';
-import type { GetQueryResultsProps, QueryFilterClauses } from '../types.js';
+import type {
+  GetQueryResultsProps,
+  MatchBoolPrefixClause,
+  MatchPhraseClause,
+} from '../types.js';
 import { getOntologyMatchers } from './getOntologyQuery.js';
 
-type DefaultBoolQueryClausesType =
-  | {
-      match_bool_prefix: {
-        [key in TranslatableField]?: QueryFilterClauses;
-      };
-    }
-  | {
-      match_phrase: {
-        [key in TranslatableField]?: QueryFilterClauses;
-      };
-    };
-
-type DefaultBoolQueryClausesAccumulatorType = {
-  [key in ElasticLanguage]?: DefaultBoolQueryClausesType;
+export type SearchProps = Pick<GetQueryResultsProps, 'index' | 'text'> & {
+  language: ElasticLanguage;
 };
 
 /**
  * Search from names and titles, etc, using `match_bool_prefix`.
  */
-const searchWithBoolPrefix = ({
-  language,
-  index,
-  text,
-}: Pick<GetQueryResultsProps, 'index' | 'text'> & {
-  language: ElasticLanguage;
-}) => {
+const searchWithBoolPrefix = (props: SearchProps): MatchBoolPrefixClause[] => {
+  const { language, index, text } = props;
   return Object.entries(searchFieldsBoostMapping).map(
     ([boost, searchFields]) => ({
-      match_bool_prefix: {
-        ...searchFields(language, index).reduce<{
-          [key in TranslatableField]?: QueryFilterClauses;
-        }>(
-          (queries, queryField) => ({
-            ...queries,
-            [queryField]: {
-              query: text,
-              operator: 'or',
-              fuzziness: 'AUTO',
-              // Need to convert boost back to float as records' keys are always strings:
-              boost: parseFloat(boost),
-            },
-          }),
-          {}
-        ),
-      },
+      match_bool_prefix: Object.fromEntries(
+        searchFields(language, index).map((queryField) => [
+          queryField,
+          {
+            query: text,
+            operator: 'or',
+            fuzziness: 'AUTO',
+            // Need to convert boost back to float as records' keys are always strings:
+            boost: Number.parseFloat(boost),
+          },
+        ])
+      ),
     })
   );
 };
@@ -63,118 +42,46 @@ const searchWithBoolPrefix = ({
 /**
  * Search from the ontology fields using `multi_match`.
  */
-const searchWithOntology = ({
-  language,
-  index,
-  text,
-}: Pick<GetQueryResultsProps, 'index' | 'text'> & {
-  language: ElasticLanguage;
-}) => {
-  return getOntologyMatchers({
-    languages: [language],
-    index,
-    query: text,
-  })[language];
-};
+const searchWithOntology = ({ language, index, text }: SearchProps) =>
+  getOntologyMatchers({ languages: [language], index, query: text })[language];
 
 /**
  * Search from names and titles, etc, using `match_phrase`.
  * When searching with a phrase and boosting the score result for them,
  * the exact results will be higher in the relevance.
  */
-const searchWithPhrase = ({
-  language,
-  index,
-  text,
-}: Pick<GetQueryResultsProps, 'index' | 'text'> & {
-  language: ElasticLanguage;
-}) => {
+const searchWithPhrase = (props: SearchProps): MatchPhraseClause[] => {
+  const { language, index, text } = props;
   return Object.entries(searchFieldsBoostMapping).map(
     ([boost, searchFields]) => ({
-      match_phrase: {
-        ...searchFields(language, index).reduce<{
-          [key in TranslatableField]?: QueryFilterClauses;
-        }>(
-          (queries, queryField) => ({
-            ...queries,
-            [queryField]: {
-              query: text,
-              boost: parseFloat(boost) * MATCH_PHRASE_BOOST_MULTIPLIER,
-            },
-          }),
-          {}
-        ),
-      },
+      match_phrase: Object.fromEntries(
+        searchFields(language, index).map((queryField) => [
+          queryField,
+          {
+            query: text,
+            boost: Number.parseFloat(boost) * MATCH_PHRASE_BOOST_MULTIPLIER,
+          },
+        ])
+      ),
     })
   );
 };
 
 /**
- * @returns An ElasticSearch query object. Example:
- * ```
- * { "query": {"bool": { "should": [
- *   {
- *     "match_bool_prefix": {
- *       "venue.description.fi": {
- *         "query": "*",
- *         "operator": "or",
- *         "fuzziness": "AUTO",
- *         "boost": 1
- *       }
- *     }
- *   },
- *   {
- *     "match_bool_prefix": {
- *       "venue.name.fi": {
- *         "query": "*",
- *         "operator": "or",
- *         "fuzziness": "AUTO",
- *         "boost": 3
- *       }
- *     }
- *   },
- *   {
- *     "match_phrase": {
- *       "venue.description.fi": { "query": "*", "boost": 2 }
- *     }
- *   },
- *   {
- *     "match_phrase": {
- *       "venue.name.fi": { "query": "*", "boost": 6 }
- *     }
- *   },
- *   {
- *     "multi_match": {
- *       "query": "*",
- *       "fields": [
- *         "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
- *         "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
- *         "links.raw_data.ontologytree_ids_enriched.name_fi",
- *         "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi"
- *       ]
- *     }
- *   }
- * ]}}}
- * ```
- * */
+ * Get default boolean query for searching text across multiple fields and languages.
+ * See related tests for example outputs.
+ */
 export function getDefaultBoolQuery({
   index = ES_DEFAULT_INDEX,
   languages = Object.values(GraphQlToElasticLanguageMap),
   text,
 }: Pick<GetQueryResultsProps, 'index' | 'languages' | 'text'>) {
-  const should = Object.values(
-    languages.reduce(
-      (acc: DefaultBoolQueryClausesAccumulatorType, language) => ({
-        ...acc,
-        [language]: [
-          ...searchWithBoolPrefix({ index, language, text }),
-          ...searchWithPhrase({ index, language, text }),
-          searchWithOntology({ index, language, text }),
-        ],
-      }),
-      {}
-    )
-  ).flat();
+  const should = languages.flatMap((language) => [
+    ...searchWithBoolPrefix({ index, language, text }),
+    ...searchWithPhrase({ index, language, text }),
+    searchWithOntology({ index, language, text }),
+  ]);
+
   return {
     query: {
       bool: {
