@@ -45,32 +45,20 @@ export type StringSearchWeight = `${SearchWeight}`;
  */
 export const MATCH_PHRASE_BOOST_MULTIPLIER = SEARCH_WEIGHT.high;
 
+export type SearchFieldMappingFunction = (
+  lang: ElasticLanguage,
+  index: ElasticSearchIndex
+) => TranslatableField[];
+
+export type SearchFieldsBoostMapping = Partial<
+  // Javascript converts number object keys to strings, so let's use string keys
+  Record<StringSearchWeight, SearchFieldMappingFunction>
+>;
+
 // Some fields should be boosted / weighted to get more relevant result set
-export const searchFieldsBoostMapping: Partial<
-  Record<
-    StringSearchWeight, // Javascript converts numbers to strings, so let's use strings
-    (lang: ElasticLanguage, index: ElasticSearchIndex) => TranslatableField[]
-  >
-> = {
-  // Normally weighted search fields for different indexes
-  [SEARCH_WEIGHT.normal]: (
-    lang: ElasticLanguage,
-    index: ElasticSearchIndex
-  ): TranslatableField[] => {
-    return (
-      {
-        [ES_LOCATION_INDEX]: [`venue.description.${lang}`],
-      }[index] ?? []
-    );
-  },
-  [SEARCH_WEIGHT.veryHigh]: (
-    lang: ElasticLanguage,
-    index: ElasticSearchIndex
-  ): TranslatableField[] => {
-    return (
-      {
-        [ES_LOCATION_INDEX]: [`venue.name.${lang}`],
-      }[index] ?? []
-    );
-  },
+export const searchFieldsBoostMapping: SearchFieldsBoostMapping = {
+  [SEARCH_WEIGHT.normal]: (lang, index) =>
+    index === ES_LOCATION_INDEX ? [`venue.description.${lang}`] : [],
+  [SEARCH_WEIGHT.veryHigh]: (lang, index) =>
+    index === ES_LOCATION_INDEX ? [`venue.name.${lang}`] : [],
 };
