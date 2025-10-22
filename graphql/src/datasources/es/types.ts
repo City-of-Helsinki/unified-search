@@ -34,7 +34,7 @@ export type OntologyTreeQuery = {
   };
 };
 
-export type OntologyTreeQueryBool = {
+export type OntologyTreeRootIdFilter = {
   filter?: {
     bool: {
       should: [
@@ -51,12 +51,18 @@ export type OntologyTreeQueryBool = {
       ];
     };
   };
+};
+
+export type OntologyTreeLeavesOnlyFilter = {
   must_not?: {
     exists: {
       field: 'childIds';
     };
   };
 };
+
+export type OntologyTreeQueryBool = OntologyTreeRootIdFilter &
+  OntologyTreeLeavesOnlyFilter;
 
 export type AdministrativeDivisionParams = {
   helsinkiCommonOnly?: boolean;
