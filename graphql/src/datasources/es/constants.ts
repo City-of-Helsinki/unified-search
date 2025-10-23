@@ -18,7 +18,6 @@ export const ELASTIC_SEARCH_INDICES = [
 export const VENUE_SEARCH_RESULT_FIELD = 'venue' as const;
 export const SEARCH_RESULT_FIELDS = [VENUE_SEARCH_RESULT_FIELD] as const;
 
-export const ELASTIC_SEARCH_URI: string = process.env.ES_URI;
 export const DEFAULT_TIME_ZONE = 'Europe/Helsinki' as const;
 // The default page size when the first argument is not given.
 // This is the default page size set by ElasticSearch
