@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.1.0...graphql-v3.1.1) (2025-10-24)
+
+
+### Bug Fixes
+
+* **graphql:** Use basic auth in authorization header with Elasticsearch ([defda07](https://github.com/City-of-Helsinki/unified-search/commit/defda070c93393255702dbe930f31796805ed8b4))
+
 ## [3.1.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.0.1...graphql-v3.1.0) (2025-10-06)
 
 
