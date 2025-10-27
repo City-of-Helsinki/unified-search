@@ -1,0 +1,185 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getOntologyMatchers > test output using given parameters {"index":"location","languages":["fi","sv"],"query":"yso:999"} 1`] = `
+{
+  "fi": {
+    "multi_match": {
+      "fields": [
+        "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
+        "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
+        "links.raw_data.ontologytree_ids_enriched.name_fi",
+        "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi",
+      ],
+      "query": "yso:999",
+    },
+  },
+  "sv": {
+    "multi_match": {
+      "fields": [
+        "links.raw_data.ontologyword_ids_enriched.extra_searchwords_sv",
+        "links.raw_data.ontologyword_ids_enriched.ontologyword_sv",
+        "links.raw_data.ontologytree_ids_enriched.name_sv",
+        "links.raw_data.ontologytree_ids_enriched.extra_searchwords_sv",
+      ],
+      "query": "yso:999",
+    },
+  },
+}
+`;
+
+exports[`getOntologyMatchers > test output using given parameters {"query":"test-query","languages":[]} 1`] = `{}`;
+
+exports[`getOntologyMatchers > test output using given parameters {"query":"yso:1234"} 1`] = `
+{
+  "en": {
+    "multi_match": {
+      "fields": [
+        "links.raw_data.ontologyword_ids_enriched.extra_searchwords_en",
+        "links.raw_data.ontologyword_ids_enriched.ontologyword_en",
+        "links.raw_data.ontologytree_ids_enriched.name_en",
+        "links.raw_data.ontologytree_ids_enriched.extra_searchwords_en",
+      ],
+      "query": "yso:1234",
+    },
+  },
+  "fi": {
+    "multi_match": {
+      "fields": [
+        "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
+        "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
+        "links.raw_data.ontologytree_ids_enriched.name_fi",
+        "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi",
+      ],
+      "query": "yso:1234",
+    },
+  },
+  "sv": {
+    "multi_match": {
+      "fields": [
+        "links.raw_data.ontologyword_ids_enriched.extra_searchwords_sv",
+        "links.raw_data.ontologyword_ids_enriched.ontologyword_sv",
+        "links.raw_data.ontologytree_ids_enriched.name_sv",
+        "links.raw_data.ontologytree_ids_enriched.extra_searchwords_sv",
+      ],
+      "query": "yso:1234",
+    },
+  },
+}
+`;
+
+exports[`getOntologyQuery > test output using given parameters {"index":"location","languages":["fi","sv"],"ontology":"vesijumppa"} 1`] = `
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "must": [
+              {
+                "multi_match": {
+                  "fields": [
+                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
+                    "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
+                    "links.raw_data.ontologytree_ids_enriched.name_fi",
+                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi",
+                  ],
+                  "query": "vesijumppa",
+                },
+              },
+            ],
+          },
+        },
+        {
+          "bool": {
+            "must": [
+              {
+                "multi_match": {
+                  "fields": [
+                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_sv",
+                    "links.raw_data.ontologyword_ids_enriched.ontologyword_sv",
+                    "links.raw_data.ontologytree_ids_enriched.name_sv",
+                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_sv",
+                  ],
+                  "query": "vesijumppa",
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`getOntologyQuery > test output using given parameters {"languages":[]} 1`] = `
+{
+  "query": {
+    "bool": {
+      "should": [],
+    },
+  },
+}
+`;
+
+exports[`getOntologyQuery > test output using given parameters {"ontology":"test-ontology123"} 1`] = `
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "must": [
+              {
+                "multi_match": {
+                  "fields": [
+                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_fi",
+                    "links.raw_data.ontologyword_ids_enriched.ontologyword_fi",
+                    "links.raw_data.ontologytree_ids_enriched.name_fi",
+                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_fi",
+                  ],
+                  "query": "test-ontology123",
+                },
+              },
+            ],
+          },
+        },
+        {
+          "bool": {
+            "must": [
+              {
+                "multi_match": {
+                  "fields": [
+                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_sv",
+                    "links.raw_data.ontologyword_ids_enriched.ontologyword_sv",
+                    "links.raw_data.ontologytree_ids_enriched.name_sv",
+                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_sv",
+                  ],
+                  "query": "test-ontology123",
+                },
+              },
+            ],
+          },
+        },
+        {
+          "bool": {
+            "must": [
+              {
+                "multi_match": {
+                  "fields": [
+                    "links.raw_data.ontologyword_ids_enriched.extra_searchwords_en",
+                    "links.raw_data.ontologyword_ids_enriched.ontologyword_en",
+                    "links.raw_data.ontologytree_ids_enriched.name_en",
+                    "links.raw_data.ontologytree_ids_enriched.extra_searchwords_en",
+                  ],
+                  "query": "test-ontology123",
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+}
+`;
