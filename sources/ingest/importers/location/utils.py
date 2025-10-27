@@ -45,6 +45,12 @@ def get_ontologywords_as_ontologies(ontologywords, use_fallback_languages: bool)
             or "extra_searchwords_sv" in ontologyword
             or "extra_searchwords_en" in ontologyword
         ):
+            # FIXME: Broken handling of extra_searchwords_*, they're comma separated,
+            #        not a single word. Localizations don't match in order or length,
+            #        e.g. https://www.hel.fi/palvelukarttaws/rest/v4/ontologyword/317/
+            #        - "extra_searchwords_fi": "koira-aitaukset, koira-aitaus, koir...
+            #        - "extra_searchwords_sv": "hundar, hundinhägnader, hundparker,...
+            #        - "extra_searchwords_en": "dog parks, dogs"
             ontologies.append(
                 OntologyObject(
                     # A unique id is not available in the source data. To make the id
@@ -74,6 +80,12 @@ def get_ontologytree_as_ontologies(ontologytree, use_fallback_languages: bool):
             or "extra_searchwords_sv" in ontologybranch
             or "extra_searchwords_en" in ontologybranch
         ):
+            # FIXME: Broken handling of extra_searchwords_*, they're comma separated,
+            #        not a single word. Localizations don't match in order or length,
+            #        e.g. https://www.hel.fi/palvelukarttaws/rest/v4/ontologyword/317/
+            #        - "extra_searchwords_fi": "koira-aitaukset, koira-aitaus, koir...
+            #        - "extra_searchwords_sv": "hundar, hundinhägnader, hundparker,...
+            #        - "extra_searchwords_en": "dog parks, dogs"
             ontologies.append(
                 OntologyObject(
                     # A unique id is not available in the source data. To make the id
