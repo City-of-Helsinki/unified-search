@@ -21,6 +21,10 @@ export type SearchProps = Pick<GetQueryResultsProps, 'index' | 'text'> & {
  */
 const searchWithBoolPrefix = (props: SearchProps): MatchBoolPrefixClause[] => {
   const { language, index, text } = props;
+
+  // NOTE: Although Elasticsearch documentation for `match_bool_prefix` does not
+  // mention support for `boost` parameter, trying this query in Elasticsearch console
+  // confirmed that boost parameter has an effect on the score.
   return Object.entries(searchFieldsBoostMapping).map(
     ([boost, searchFields]) => ({
       match_bool_prefix: Object.fromEntries(
