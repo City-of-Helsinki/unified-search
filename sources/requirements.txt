@@ -8,11 +8,11 @@ asgiref==3.10.0
     # via
     #   django
     #   django-cors-headers
-attrs==25.3.0
+attrs==25.4.0
     # via
     #   cattrs
     #   requests-cache
-cattrs==25.2.0
+cattrs==25.3.0
     # via requests-cache
 certifi==2025.10.5
     # via
@@ -20,7 +20,7 @@ certifi==2025.10.5
     #   elastic-transport
     #   requests
     #   sentry-sdk
-charset-normalizer==3.4.3
+charset-normalizer==3.4.4
     # via requests
 django==5.2.7
     # via
@@ -57,17 +57,17 @@ elastic-transport==8.17.1
     # via
     #   elasticsearch8
     #   elasticsearch9
-elasticsearch8==8.19.1
+elasticsearch8==8.19.2
     # via -r requirements.in
 elasticsearch9==9.0.4
     # via -r requirements.in
-idna==3.10
+idna==3.11
     # via
     #   requests
     #   url-normalize
 packaging==25.0
     # via django-csp
-platformdirs==4.4.0
+platformdirs==4.5.0
     # via requests-cache
 pyhumps==3.8.0
     # via -r requirements.in
@@ -75,7 +75,7 @@ python-dateutil==2.9.0.post0
     # via
     #   elasticsearch8
     #   elasticsearch9
-python-dotenv==1.1.1
+python-dotenv==1.2.1
     # via -r requirements.in
 pyyaml==6.0.3
     # via django-munigeo
@@ -86,7 +86,7 @@ requests==2.32.5
     #   requests-cache
 requests-cache==1.2.1
     # via django-munigeo
-sentry-sdk==2.39.0
+sentry-sdk==2.43.0
     # via -r requirements.in
 six==1.17.0
     # via
