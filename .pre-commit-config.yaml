@@ -17,7 +17,7 @@ repos:
   # Hooks for `sources` directory / Python project
   #####################################################################
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.3  # <-- Should match sources/requirements-dev.txt's ruff version!
+    rev: v0.14.3  # <-- Should match sources/requirements-dev.txt's ruff version!
     hooks:
       # Run the linter only for sources directory
       - id: ruff-check
