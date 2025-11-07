@@ -116,7 +116,10 @@ export const cspConfigWithApolloSandbox = {
       ],
       fontSrc: [CSP.self, 'https://fonts.gstatic.com'],
       frameSrc: [CSP.self, 'https://sandbox.embed.apollographql.com'],
-      connectSrc: [CSP.self],
+      connectSrc: [
+        CSP.self,
+        'https://embeddable-sandbox.cdn.apollographql.com',
+      ],
       manifestSrc: [
         CSP.self,
         'https://apollo-server-landing-page.cdn.apollographql.com',
