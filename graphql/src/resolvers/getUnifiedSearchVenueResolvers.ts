@@ -50,5 +50,8 @@ export function getUnifiedSearchVenueResolvers() {
     meta({ venue }: VenueProps) {
       return venue.meta;
     },
+    isCultureAndLeisureDivisionVenue({ venue }: VenueProps) {
+      return venue.isCultureAndLeisureDivisionVenue ?? false;
+    },
   };
 }

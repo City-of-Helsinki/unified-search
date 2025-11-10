@@ -108,12 +108,14 @@ describe('queryBuilder', () => {
               },
             },
             size: params.size,
-            sort: {
-              [`venue.name.${lang}.keyword`]: {
-                missing: '_last',
-                order: expectedOrder,
+            sort: [
+              {
+                [`venue.name.${lang}.keyword`]: {
+                  missing: '_last',
+                  order: expectedOrder,
+                },
               },
-            },
+            ],
           });
         }
       }

@@ -171,6 +171,13 @@ export const querySchema = gql`
       Mutually exclusive with other orderBy* parameters.
       """
       orderByAccessibilityProfile: AccessibilityProfile
+
+      """
+      Optional, show Culture and Leisure Division's venues first?
+      If false or not given, does nothing.
+      If true, shows Culture and Leisure Division's venues first, then others'.
+      """
+      showCultureAndLeisureDivisionFirst: Boolean
     ): SearchResultConnection
 
     unifiedSearchCompletionSuggestions(

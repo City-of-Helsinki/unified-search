@@ -23,6 +23,7 @@ export const locationSchema = gql`
     ): AccessibilityShortcoming
     images: [LocationImage]
     ontologyWords: [OntologyWord]
+    isCultureAndLeisureDivisionVenue: Boolean
   }
   type Address {
     postalCode: String

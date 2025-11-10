@@ -23,6 +23,7 @@ export function queryBuilder({
   orderByAccessibilityProfile,
   orderByDistance,
   orderByName,
+  showCultureAndLeisureDivisionFirst,
 }: GetQueryResultsProps) {
   const query = createQuery({ index, languages, text, ontology });
 
@@ -43,6 +44,7 @@ export function queryBuilder({
     orderByAccessibilityProfile,
     orderByDistance,
     orderByName,
+    showCultureAndLeisureDivisionFirst,
   });
 
   // Resolve pagination

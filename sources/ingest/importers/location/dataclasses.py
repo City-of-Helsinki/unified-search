@@ -279,6 +279,8 @@ class Venue:
     accessibility: Optional[Accessibility] = None
     images: List[Image] = field(default_factory=list)
     ontologyWords: List[OntologyObject] = field(default_factory=list)
+    # Is the venue part of the "Culture and Leisure Division" department hierarchy?
+    isCultureAndLeisureDivisionVenue: bool = False
 
 
 @dataclass

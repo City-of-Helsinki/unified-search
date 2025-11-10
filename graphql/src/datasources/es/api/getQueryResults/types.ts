@@ -10,13 +10,14 @@ export type OrderByFields = {
   orderByDistance?: OrderByDistanceParams;
   orderByName?: OrderByNameParams;
   orderByAccessibilityProfile?: AccessibilityProfileType;
+  showCultureAndLeisureDivisionFirst?: boolean;
 };
 
 export type BoolQuery = {
   query: {
     bool: Record<string, unknown>;
   };
-  sort?: Record<string, unknown> | Array<Record<string, unknown>>;
+  sort?: Array<Record<string, unknown>>;
 };
 
 export type GetQueryResultsProps = {
