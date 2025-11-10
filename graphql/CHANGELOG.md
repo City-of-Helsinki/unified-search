@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.2](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.1.1...graphql-v3.1.2) (2025-11-10)
+
+
+### Bug Fixes
+
+* **dependabot:** Update all packages to latest except @types/node to v22 ([b369066](https://github.com/City-of-Helsinki/unified-search/commit/b369066472f97adb5b10b544dcf26b36daac4c2d))
+* **deps:** Upgrade all dependencies to latest except @types/node to v22 ([6ee590e](https://github.com/City-of-Helsinki/unified-search/commit/6ee590e29832ee70f8367bcc361e19f26e14b7c6))
+* **graphql:** Allow apollo embeddable sandbox CDN URL in CSP connectSrc ([4ca9594](https://github.com/City-of-Helsinki/unified-search/commit/4ca95945359f09dce4a0d5417c850956c6ecbf24))
+
 ## [3.1.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.1.0...graphql-v3.1.1) (2025-10-24)
 
 

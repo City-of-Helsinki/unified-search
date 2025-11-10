@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.2.0...sources-v2.2.1) (2025-11-10)
+
+
+### Bug Fixes
+
+* **dependabot:** Update all packages to latest except @types/node to v22 ([b369066](https://github.com/City-of-Helsinki/unified-search/commit/b369066472f97adb5b10b544dcf26b36daac4c2d))
+* **deps:** Upgrade all dependencies to latest except @types/node to v22 ([6ee590e](https://github.com/City-of-Helsinki/unified-search/commit/6ee590e29832ee70f8367bcc361e19f26e14b7c6))
+
+
+### Documentation
+
+* **graphql:** Document how search works ([7466cc0](https://github.com/City-of-Helsinki/unified-search/commit/7466cc01116888f8683ef6c010c6da12430d97b6))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.1.0...sources-v2.2.0) (2025-10-06)
 
 
