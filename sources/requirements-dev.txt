@@ -6,7 +6,7 @@
 #
 asttokens==3.0.0
     # via stack-data
-coverage[toml]==7.11.0
+coverage[toml]==7.11.3
     # via pytest-cov
 decorator==5.2.1
     # via ipython
@@ -16,7 +16,7 @@ fastdiff==0.3.0
     # via snapshottest
 iniconfig==2.3.0
     # via pytest
-ipython==9.6.0
+ipython==9.7.0
     # via -r requirements-dev.in
 ipython-pygments-lexers==1.1.1
     # via ipython
@@ -47,7 +47,7 @@ pygments==2.19.2
     #   ipython
     #   ipython-pygments-lexers
     #   pytest
-pytest==8.4.2
+pytest==9.0.0
     # via
     #   -r requirements-dev.in
     #   pytest-cov
@@ -59,7 +59,7 @@ pytest-django==4.11.1
     # via -r requirements-dev.in
 pytest-mock==3.15.1
     # via -r requirements-dev.in
-ruff==0.14.3
+ruff==0.14.4
     # via -r requirements-dev.in
 snapshottest==1.0.0a1
     # via -r requirements-dev.in
