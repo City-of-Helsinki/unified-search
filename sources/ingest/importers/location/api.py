@@ -5,10 +5,21 @@ from ingest.importers.utils.traffic import request_json
 
 DEFAULT_TIMEOUT = 20
 
+# Department ID of "Kulttuurin ja vapaa-ajan toimiala" (a.k.a. KuVa) i.e.
+# "Culture and Leisure Division" in Helsinki. See
+# https://www.hel.fi/palvelukarttaws/rest/v4/department/55ed20a5-6a3a-447c-958c-2b537b9e6ee2
+CULTURE_AND_LEISURE_DIVISION_DEPARTMENT_ID = "55ed20a5-6a3a-447c-958c-2b537b9e6ee2"
+
 
 class LocationImporterAPI:
     tpr_units_endpoint = (
         "https://www.hel.fi/palvelukarttaws/rest/v4/unit/?newfeatures=yes"
+    )
+    # Using department ID for suborganization ID, works although sounds incompatible:
+    # https://www.hel.fi/palvelukarttaws/restpages/ver4.html#_filter_units
+    culture_and_leisure_division_tpr_units_endpoint = (
+        "https://www.hel.fi/palvelukarttaws/rest/v4/unit/?suborganization="
+        + CULTURE_AND_LEISURE_DIVISION_DEPARTMENT_ID
     )
     accessibility_shortcoming_counts_endpoint = "https://api.hel.fi/servicemap/v2/unit/?format=json&only=accessibility_shortcoming_count&page_size=1000"  # noqa
     accessibility_viewpoint_endpoint = (
@@ -26,6 +37,15 @@ class LocationImporterAPI:
     @classmethod
     def fetch_tpr_units(cls, timeout_seconds=DEFAULT_TIMEOUT) -> TPRUnitResponse:
         return request_json(cls.tpr_units_endpoint, timeout_seconds=timeout_seconds)
+
+    @classmethod
+    def fetch_culture_and_leisure_division_tpr_units(
+        cls, timeout_seconds=DEFAULT_TIMEOUT
+    ) -> TPRUnitResponse:
+        return request_json(
+            cls.culture_and_leisure_division_tpr_units_endpoint,
+            timeout_seconds=timeout_seconds,
+        )
 
     @classmethod
     def fetch_accessibility_shortcoming(cls, url: str, timeout_seconds=DEFAULT_TIMEOUT):

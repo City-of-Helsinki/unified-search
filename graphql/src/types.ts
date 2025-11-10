@@ -56,6 +56,7 @@ export type Venue = {
   reservation?: unknown;
   serviceOwner?: unknown;
   targetGroups?: unknown;
+  isCultureAndLeisureDivisionVenue?: boolean;
 };
 
 export type VenueProps = {

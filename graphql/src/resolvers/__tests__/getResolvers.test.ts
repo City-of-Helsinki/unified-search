@@ -62,6 +62,7 @@ describe('getResolvers', () => {
         reservation: expect.any(Function),
         serviceOwner: expect.any(Function),
         targetGroups: expect.any(Function),
+        isCultureAndLeisureDivisionVenue: expect.any(Function),
       },
     });
   });

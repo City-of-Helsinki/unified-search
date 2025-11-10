@@ -22,13 +22,31 @@ export function sortQuery(
   query: BoolQuery,
   es_index: GetQueryResultsProps['index'],
   language: ElasticLanguage,
-  { orderByDistance, orderByName, orderByAccessibilityProfile }: OrderByFields
+  {
+    orderByDistance,
+    orderByName,
+    orderByAccessibilityProfile,
+    showCultureAndLeisureDivisionFirst,
+  }: OrderByFields
 ) {
   if (es_index === ES_LOCATION_INDEX) {
     const searchResultField = ElasticSearchIndexToSearchResultField[es_index];
+    query.sort = [];
+
+    // Optionally sort first by Culture and Leisure Division
+    if (showCultureAndLeisureDivisionFirst) {
+      const orderByCultureAndLeisureDivisionClause = {
+        'venue.isCultureAndLeisureDivisionVenue': {
+          order: 'desc',
+          missing: '_last',
+        },
+      } as const;
+
+      query.sort.push(orderByCultureAndLeisureDivisionClause);
+    }
 
     if (isDefined(orderByDistance)) {
-      query.sort = {
+      const orderByDistanceClause = {
         _geo_distance: {
           location: {
             lat: orderByDistance.latitude,
@@ -37,44 +55,52 @@ export function sortQuery(
           order: orderByDistance.order === 'DESCENDING' ? 'desc' : 'asc',
           ignore_unmapped: true,
         },
-      };
+      } as const;
+
+      query.sort.push(orderByDistanceClause);
     } else if (isDefined(orderByName)) {
-      query.sort = {
+      const orderByNameClause = {
         [`${searchResultField}.name.${language}.keyword`]: {
           order: orderByName.order === 'DESCENDING' ? 'desc' : 'asc',
           missing: '_last',
         },
-      };
+      } as const;
+
+      query.sort.push(orderByNameClause);
     } else if (
       isDefined(orderByAccessibilityProfile) &&
       searchResultField === VENUE_SEARCH_RESULT_FIELD
     ) {
-      query.sort = [
-        // Primary sort field (chosen accessibility profile's shortcoming count)
-        {
-          'venue.accessibility.shortcomings.count': {
-            order: 'asc',
-            nested: {
-              path: 'venue.accessibility.shortcomings',
-              filter: {
-                term: {
-                  'venue.accessibility.shortcomings.profile':
-                    orderByAccessibilityProfile,
-                },
+      const orderByProfileShortcomingCountClause = {
+        'venue.accessibility.shortcomings.count': {
+          order: 'asc',
+          nested: {
+            path: 'venue.accessibility.shortcomings',
+            filter: {
+              term: {
+                'venue.accessibility.shortcomings.profile':
+                  orderByAccessibilityProfile,
               },
-              max_children: 1,
             },
-            missing: '_last',
+            max_children: 1,
           },
+          missing: '_last',
         },
+      } as const;
+
+      const orderByNameClause = {
+        [`${searchResultField}.name.${language}.keyword`]: {
+          order: 'asc',
+          missing: '_last',
+        },
+      } as const;
+
+      query.sort.push(
+        // Primary sort field (chosen accessibility profile's shortcoming count)
+        orderByProfileShortcomingCountClause,
         // Secondary sort field (venue's name)
-        {
-          [`${searchResultField}.name.${language}.keyword`]: {
-            order: 'asc',
-            missing: '_last',
-          },
-        },
-      ];
+        orderByNameClause
+      );
     }
   }
 }

@@ -385,11 +385,15 @@ Partial output of the example query (Click to expand)
 
 #### Optional sorting parameters
 
-| Sorting parameter           | Description                                                                                  |
-| --------------------------- | -------------------------------------------------------------------------------------------- |
-| orderByDistance             | Sort results by distance from given coordinates (nearest first)                              |
-| orderByName                 | Sort results by name in the first language in `languages` parameter (alphabetical order)     |
-| orderByAccessibilityProfile | Sort results by given accessibility profile's shortcoming count (i.e. 0, 1, ..., N, unknown) |
+| Sorting parameter                  | Description                                                                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| orderByDistance                    | Sort results by distance from given coordinates (nearest first)                                                                                               |
+| orderByName                        | Sort results by name in the first language in `languages` parameter (alphabetical order)                                                                      |
+| orderByAccessibilityProfile        | Sort results by given accessibility profile's shortcoming count (i.e. 0, 1, ..., N, unknown)                                                                  |
+| showCultureAndLeisureDivisionFirst | Show venues in [Culture and Leisure Division](https://www.hel.fi/palvelukarttaws/rest/v4/department/55ed20a5-6a3a-447c-958c-2b537b9e6ee2) first, then others. |
+
+The `orderByDistance`, `orderByName` and `orderByAccessibilityProfile` parameters
+are mutually exclusive, but can be optionally combined with `showCultureAndLeisureDivisionFirst`.
 
 #### Optional pagination parameters
 

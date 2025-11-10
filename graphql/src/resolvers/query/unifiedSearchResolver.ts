@@ -36,6 +36,7 @@ type UnifiedSearchQuery = {
   orderByDistance?: OrderByDistanceParams;
   orderByName?: OrderByNameParams;
   orderByAccessibilityProfile?: AccessibilityProfileType;
+  showCultureAndLeisureDivisionFirst?: boolean;
 } & ConnectionArguments;
 
 export async function unifiedSearchResolver(
@@ -58,6 +59,7 @@ export async function unifiedSearchResolver(
     orderByDistance,
     orderByName,
     orderByAccessibilityProfile,
+    showCultureAndLeisureDivisionFirst,
   }: UnifiedSearchQuery,
   { dataSources }: QueryContext,
   info: GraphQLResolveInfoWithCacheControl
@@ -89,6 +91,7 @@ export async function unifiedSearchResolver(
     orderByDistance,
     orderByName,
     orderByAccessibilityProfile,
+    showCultureAndLeisureDivisionFirst,
   });
 
   const getCursor = (offset: number) =>

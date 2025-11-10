@@ -49,14 +49,117 @@ describe('sortQuery', () => {
               someFieldName: 'someFieldValue',
             },
           },
-          sort: {
-            [`venue.name.${language}.keyword`]: {
-              missing: '_last',
-              order: expectedOrder,
+          sort: [
+            {
+              [`venue.name.${language}.keyword`]: {
+                missing: '_last',
+                order: expectedOrder,
+              },
             },
-          },
+          ],
         });
       }
+    }
+  );
+
+  it('test location index showCultureAndLeisureDivisionFirst true only', () => {
+    const origQuery = {
+      query: { bool: { someFieldName: 'someFieldValue' } },
+    } as const;
+    const orderByFields = {
+      showCultureAndLeisureDivisionFirst: true,
+    } as const;
+
+    for (const language of ['fi', 'sv', 'en'] as const) {
+      const query = structuredClone(origQuery);
+      sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
+
+      // Expect to mutate the input parameter `query`
+      expect(query).not.toStrictEqual(origQuery);
+
+      expect(query).toStrictEqual({
+        query: {
+          bool: {
+            someFieldName: 'someFieldValue',
+          },
+        },
+        sort: [
+          {
+            'venue.isCultureAndLeisureDivisionVenue': {
+              order: 'desc',
+              missing: '_last',
+            },
+          },
+        ],
+      });
+    }
+  });
+
+  it('test location index showCultureAndLeisureDivisionFirst false/undefined only', () => {
+    const origQuery = {
+      query: { bool: { someFieldName: 'someFieldValue' } },
+    } as const;
+    for (const showCultureAndLeisureDivisionFirst of [false, undefined]) {
+      const orderByFields = { showCultureAndLeisureDivisionFirst } as const;
+
+      for (const language of ['fi', 'sv', 'en'] as const) {
+        const query = structuredClone(origQuery);
+        sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
+
+        // Expect to mutate the input parameter `query`
+        expect(query).not.toStrictEqual(origQuery);
+
+        expect(query).toStrictEqual({
+          query: {
+            bool: {
+              someFieldName: 'someFieldValue',
+            },
+          },
+          sort: [],
+        });
+      }
+    }
+  });
+
+  it(
+    'test location index orderByName with ASCENDING order, ' +
+      'showCultureAndLeisureDivisionFirst true and Swedish language',
+    () => {
+      const origQuery = {
+        query: { bool: { someFieldName: 'someFieldValue' } },
+      } as const;
+      const orderByFields = {
+        orderByName: { order: 'ASCENDING' },
+        showCultureAndLeisureDivisionFirst: true,
+      } as const;
+
+      const query = structuredClone(origQuery);
+      sortQuery(query, ES_LOCATION_INDEX, 'sv', orderByFields);
+
+      // Expect to mutate the input parameter `query`
+      expect(query).not.toStrictEqual(origQuery);
+
+      expect(query).toStrictEqual({
+        query: {
+          bool: {
+            someFieldName: 'someFieldValue',
+          },
+        },
+        sort: [
+          {
+            'venue.isCultureAndLeisureDivisionVenue': {
+              order: 'desc',
+              missing: '_last',
+            },
+          },
+          {
+            'venue.name.sv.keyword': {
+              missing: '_last',
+              order: 'asc',
+            },
+          },
+        ],
+      });
     }
   );
 
@@ -117,6 +220,65 @@ describe('sortQuery', () => {
     }
   );
 
+  it(
+    'test location index with orderByAccessibilityProfile stroller ' +
+      'and showCultureAndLeisureDivisionFirst true',
+    () => {
+      const origQuery = {
+        query: { bool: { someFieldName: 'someFieldValue' } },
+      } as const;
+      const orderByFields = {
+        orderByAccessibilityProfile: 'stroller',
+        showCultureAndLeisureDivisionFirst: true,
+      } as const;
+
+      for (const language of ['fi', 'sv', 'en'] as const) {
+        const query = structuredClone(origQuery);
+        sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
+
+        // Expect to mutate the input parameter `query`
+        expect(query).not.toStrictEqual(origQuery);
+
+        expect(query).toStrictEqual({
+          query: {
+            bool: {
+              someFieldName: 'someFieldValue',
+            },
+          },
+          sort: [
+            {
+              'venue.isCultureAndLeisureDivisionVenue': {
+                order: 'desc',
+                missing: '_last',
+              },
+            },
+            {
+              'venue.accessibility.shortcomings.count': {
+                missing: '_last',
+                nested: {
+                  filter: {
+                    term: {
+                      'venue.accessibility.shortcomings.profile': 'stroller',
+                    },
+                  },
+                  max_children: 1,
+                  path: 'venue.accessibility.shortcomings',
+                },
+                order: 'asc',
+              },
+            },
+            {
+              [`venue.name.${language}.keyword`]: {
+                missing: '_last',
+                order: 'asc',
+              },
+            },
+          ],
+        });
+      }
+    }
+  );
+
   it.each([
     [-123.45, 42.75, 'ASCENDING'],
     [32.5, -10.1, 'DESCENDING'],
@@ -144,16 +306,66 @@ describe('sortQuery', () => {
               someFieldName: 'someFieldValue',
             },
           },
-          sort: {
-            _geo_distance: {
-              ignore_unmapped: true,
-              location: {
-                lat: latitude,
-                lon: longitude,
+          sort: [
+            {
+              _geo_distance: {
+                ignore_unmapped: true,
+                location: {
+                  lat: latitude,
+                  lon: longitude,
+                },
+                order: expectedOrder,
               },
-              order: expectedOrder,
+            },
+          ],
+        });
+      }
+    }
+  );
+
+  it(
+    'test location index orderByDistance with latitude 42, longitude -99, ' +
+      'DESCENDING order and showCultureAndLeisureDivisionFirst true',
+    () => {
+      const origQuery = {
+        query: { bool: { someFieldName: 'someFieldValue' } },
+      } as const;
+      const orderByFields = {
+        orderByDistance: { latitude: 42, longitude: -99, order: 'DESCENDING' },
+        showCultureAndLeisureDivisionFirst: true,
+      } as const;
+
+      for (const language of ['fi', 'sv', 'en'] as const) {
+        const query = structuredClone(origQuery);
+        sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
+
+        // Expect to mutate the input parameter `query`
+        expect(query).not.toStrictEqual(origQuery);
+
+        expect(query).toStrictEqual({
+          query: {
+            bool: {
+              someFieldName: 'someFieldValue',
             },
           },
+          sort: [
+            {
+              'venue.isCultureAndLeisureDivisionVenue': {
+                order: 'desc',
+                missing: '_last',
+              },
+            },
+            {
+              _geo_distance: {
+                ignore_unmapped: true,
+                location: {
+                  lat: 42,
+                  lon: -99,
+                },
+                order: 'desc',
+              },
+            },
+          ],
         });
       }
     }

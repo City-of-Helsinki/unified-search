@@ -119,6 +119,15 @@ class LocationImporter(Importer[Root]):
             else []
         )
 
+        _culture_and_leisure_division_tpr_units = (
+            retry_twice_5s_intervals(api.fetch_culture_and_leisure_division_tpr_units)
+            if self.enable_data_fetching
+            else []
+        )
+        self.culture_and_leisure_division_tpr_unit_ids: set[str] = {
+            str(unit["id"]) for unit in _culture_and_leisure_division_tpr_units
+        }
+
         self.unit_id_to_accessibility_shortcomings_mapping = (
             retry_twice_5s_intervals(get_unit_id_to_accessibility_shortcomings_mapping)
             if self.enable_data_fetching
@@ -280,6 +289,9 @@ class LocationImporter(Importer[Root]):
             ),
             images=images,
             ontologyWords=ontology_words,
+            isCultureAndLeisureDivisionVenue=(
+                _id in self.culture_and_leisure_division_tpr_unit_ids
+            ),
         )
 
         # Add accessibility viewpoints' shortages to the venue
