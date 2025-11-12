@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.2.0...graphql-v3.2.1) (2025-11-12)
+
+
+### Bug Fixes
+
+* **docs:** Fix incorrect dropdown name in graphql's README ([b3c48c0](https://github.com/City-of-Helsinki/unified-search/commit/b3c48c0c433e3554c91ce02266bee4fae640d80a))
+* **graphql:** Fix sort by relevance, use asc name as secondary sort ([d6d145b](https://github.com/City-of-Helsinki/unified-search/commit/d6d145bed94226b165c8a99a05d1f50a0164ba49))
+
 ## [3.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.1.2...graphql-v3.2.0) (2025-11-12)
 
 
