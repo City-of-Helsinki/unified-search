@@ -101,9 +101,26 @@ export function sortQuery(
         // Secondary sort field (venue's name)
         orderByNameClause
       );
-    }
+    } else {
+      const orderByDescScoreClause = {
+        _score: {
+          order: 'desc',
+        },
+      };
+      const orderByAscNameClause = {
+        [`${searchResultField}.name.${language}.keyword`]: {
+          order: 'asc',
+          missing: '_last',
+        },
+      } as const;
 
-    // Always sort venues last by relevance score
-    query.sort.push({ _score: { order: 'desc' } });
+      // If none of the orderBy* parameters are used, sort by descending score
+      // and ascending name to ensure consistent ordering of results.
+      //
+      // This prioritizes relevance first (by score), and then alphabetically
+      // by name, if multiple results have the same score. This latter case
+      // happens e.g. when searching without a search text.
+      query.sort.push(orderByDescScoreClause, orderByAscNameClause);
+    }
   }
 }

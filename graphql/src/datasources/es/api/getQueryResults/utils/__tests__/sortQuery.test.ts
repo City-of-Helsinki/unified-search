@@ -57,11 +57,6 @@ describe('sortQuery', () => {
                 order: expectedOrder,
               },
             },
-            {
-              _score: {
-                order: 'desc',
-              },
-            },
           ],
         });
       }
@@ -101,6 +96,12 @@ describe('sortQuery', () => {
               order: 'desc',
             },
           },
+          {
+            [`venue.name.${language}.keyword`]: {
+              missing: '_last',
+              order: 'asc',
+            },
+          },
         ],
       });
     }
@@ -130,6 +131,12 @@ describe('sortQuery', () => {
             {
               _score: {
                 order: 'desc',
+              },
+            },
+            {
+              [`venue.name.${language}.keyword`]: {
+                missing: '_last',
+                order: 'asc',
               },
             },
           ],
@@ -173,11 +180,6 @@ describe('sortQuery', () => {
             'venue.name.sv.keyword': {
               missing: '_last',
               order: 'asc',
-            },
-          },
-          {
-            _score: {
-              order: 'desc',
             },
           },
         ],
@@ -234,11 +236,6 @@ describe('sortQuery', () => {
               [`venue.name.${language}.keyword`]: {
                 missing: '_last',
                 order: 'asc',
-              },
-            },
-            {
-              _score: {
-                order: 'desc',
               },
             },
           ],
@@ -300,11 +297,6 @@ describe('sortQuery', () => {
                 order: 'asc',
               },
             },
-            {
-              _score: {
-                order: 'desc',
-              },
-            },
           ],
         });
       }
@@ -347,11 +339,6 @@ describe('sortQuery', () => {
                   lon: longitude,
                 },
                 order: expectedOrder,
-              },
-            },
-            {
-              _score: {
-                order: 'desc',
               },
             },
           ],
@@ -399,11 +386,6 @@ describe('sortQuery', () => {
                   lat: 42,
                   lon: -99,
                 },
-                order: 'desc',
-              },
-            },
-            {
-              _score: {
                 order: 'desc',
               },
             },
