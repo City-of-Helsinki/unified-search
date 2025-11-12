@@ -92,7 +92,7 @@ The GraphQL search API's documentation & client is available at `/search` endpoi
 | `false` or not provided  | `administrative_division`                 | Administrative divisions in Finland  |
 | `true`                   | `helsinki_common_administrative_division` | Administrative divisions in Helsinki |
 
-The Helsinki divisions are used in practice for dropdown populating (e.g. in https://kultus.hel.fi/ "Places" dropdown),
+The Helsinki divisions are used in practice for dropdown populating (e.g. in https://kultus.hel.fi/ "Areas" dropdown),
 and the Finland listing is not used at all.
 
 **Example query**:
