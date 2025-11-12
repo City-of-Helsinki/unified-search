@@ -116,6 +116,11 @@ describe('queryBuilder', () => {
                   order: expectedOrder,
                 },
               },
+              {
+                _score: {
+                  order: 'desc',
+                },
+              },
             ],
           });
         }
