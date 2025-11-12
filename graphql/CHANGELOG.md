@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.1.2...graphql-v3.2.0) (2025-11-12)
+
+
+### Features
+
+* Add sorting by Culture and Leisure Division to unifiedSearch query ([bdd5be6](https://github.com/City-of-Helsinki/unified-search/commit/bdd5be6835f8b2142fbe4d973fa0a30060b8ccb3))
+
+
+### Bug Fixes
+
+* **graphql:** Fix score ordering with showCultureAndLeisureDivisionFirst ([eea1c35](https://github.com/City-of-Helsinki/unified-search/commit/eea1c35f4145537ff95218c704beeed75ac6297e))
+
 ## [3.1.2](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.1.1...graphql-v3.1.2) (2025-11-10)
 
 

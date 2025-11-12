@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.2.1...sources-v2.3.0) (2025-11-12)
+
+
+### Features
+
+* Add sorting by Culture and Leisure Division to unifiedSearch query ([bdd5be6](https://github.com/City-of-Helsinki/unified-search/commit/bdd5be6835f8b2142fbe4d973fa0a30060b8ccb3))
+
 ## [2.2.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.2.0...sources-v2.2.1) (2025-11-10)
 
 
