@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { LANGUAGES, SORT_ORDERS } from '../../../../../../constants.js';
 import {
   MATCH_PHRASE_BOOST_MULTIPLIER,
   SEARCH_WEIGHT,
@@ -14,10 +15,10 @@ describe('queryBuilder', () => {
    * Also tests how search weights/boosts are combined to form the final
    * search weight values.
    */
-  it.each(['fi', 'sv', 'en'] as const)(
+  it.each(LANGUAGES)(
     'test single language simple case with varying parameters',
     (lang) => {
-      for (const order of ['ASCENDING', 'DESCENDING'] as const) {
+      for (const order of SORT_ORDERS) {
         for (const text of ['testing', 'Longer text 1234'] as const) {
           const params = {
             index: 'location' as const,

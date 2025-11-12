@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { LANGUAGES } from '../../../../../../constants.js';
 import {
   ELASTIC_SEARCH_INDICES,
   SEARCH_ALL_SPECIAL_CHAR,
@@ -22,7 +23,7 @@ describe('createQuery', () => {
 
   it('test result corresponds to getDefaultBoolQuery', () => {
     for (const index of ELASTIC_SEARCH_INDICES) {
-      for (const readonlyLanguages of [['fi'], ['fi', 'sv', 'en']] as const) {
+      for (const readonlyLanguages of [['fi'], LANGUAGES] as const) {
         for (const text of ['testing', 'Kamppi 00100'] as const) {
           const languages = [...readonlyLanguages];
           const query = createQuery({ index, languages, text });

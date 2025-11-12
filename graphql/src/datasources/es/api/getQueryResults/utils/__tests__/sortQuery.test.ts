@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { LANGUAGES, SORT_ORDERS } from '../../../../../../constants.js';
 import {
   ELASTIC_SEARCH_INDICES,
   ES_LOCATION_INDEX,
@@ -14,10 +15,10 @@ describe('sortQuery', () => {
       query: { bool: { someFieldName: 'someFieldValue' } },
     } as const;
 
-    for (const order of ['ASCENDING', 'DESCENDING'] as const) {
+    for (const order of SORT_ORDERS) {
       const orderByFields = { orderByName: { order } } as const;
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, esIndex, language, orderByFields);
 
@@ -27,7 +28,7 @@ describe('sortQuery', () => {
     }
   });
 
-  it.each(['ASCENDING', 'DESCENDING'] as const)(
+  it.each(SORT_ORDERS)(
     'test location index orderByName with %s order',
     (order) => {
       const origQuery = {
@@ -36,7 +37,7 @@ describe('sortQuery', () => {
       const orderByFields = { orderByName: { order } } as const;
       const expectedOrder = order === 'ASCENDING' ? 'asc' : 'desc';
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
@@ -70,7 +71,7 @@ describe('sortQuery', () => {
       showCultureAndLeisureDivisionFirst: true,
     } as const;
 
-    for (const language of ['fi', 'sv', 'en'] as const) {
+    for (const language of LANGUAGES) {
       const query = structuredClone(origQuery);
       sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
@@ -102,7 +103,7 @@ describe('sortQuery', () => {
     for (const showCultureAndLeisureDivisionFirst of [false, undefined]) {
       const orderByFields = { showCultureAndLeisureDivisionFirst } as const;
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
@@ -178,7 +179,7 @@ describe('sortQuery', () => {
       } as const;
       const orderByFields = { orderByAccessibilityProfile } as const;
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
@@ -232,7 +233,7 @@ describe('sortQuery', () => {
         showCultureAndLeisureDivisionFirst: true,
       } as const;
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
@@ -293,7 +294,7 @@ describe('sortQuery', () => {
       } as const;
       const expectedOrder = order === 'ASCENDING' ? 'asc' : 'desc';
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
@@ -335,7 +336,7 @@ describe('sortQuery', () => {
         showCultureAndLeisureDivisionFirst: true,
       } as const;
 
-      for (const language of ['fi', 'sv', 'en'] as const) {
+      for (const language of LANGUAGES) {
         const query = structuredClone(origQuery);
         sortQuery(query, ES_LOCATION_INDEX, language, orderByFields);
 
