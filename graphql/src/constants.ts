@@ -1,11 +1,18 @@
 import type { CorsOptions } from 'cors';
 import type { HelmetOptions } from 'helmet';
 
+export const FINNISH = 'fi';
+export const SWEDISH = 'sv';
+export const ENGLISH = 'en';
+
 export const GraphQlToElasticLanguageMap = {
-  FINNISH: 'fi',
-  SWEDISH: 'sv',
-  ENGLISH: 'en',
+  FINNISH,
+  SWEDISH,
+  ENGLISH,
 } as const;
+
+export const LANGUAGES = [FINNISH, SWEDISH, ENGLISH] as const;
+export const SORT_ORDERS = ['ASCENDING', 'DESCENDING'] as const;
 
 /**
  * The reserved special characters in Elastic Search are:

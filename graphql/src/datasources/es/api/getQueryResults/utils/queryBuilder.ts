@@ -1,7 +1,7 @@
 import { createQuery } from './createQuery.js';
 import { filterQuery } from './filterQuery.js';
 import { sortQuery } from './sortQuery.js';
-import { DEFAULT_ELASTIC_LANGUAGE } from '../../../../../types.js';
+import { FINNISH } from '../../../../../constants.js';
 import { ES_DEFAULT_INDEX } from '../../../constants.js';
 import type { GetQueryResultsProps } from '../types.js';
 
@@ -38,7 +38,7 @@ export function queryBuilder({
     openAt,
   });
 
-  const language = languages?.[0] ?? DEFAULT_ELASTIC_LANGUAGE;
+  const language = languages?.[0] ?? FINNISH;
 
   sortQuery(query, index, language, {
     orderByAccessibilityProfile,
