@@ -57,6 +57,11 @@ describe('sortQuery', () => {
                 order: expectedOrder,
               },
             },
+            {
+              _score: {
+                order: 'desc',
+              },
+            },
           ],
         });
       }
@@ -91,6 +96,11 @@ describe('sortQuery', () => {
               missing: '_last',
             },
           },
+          {
+            _score: {
+              order: 'desc',
+            },
+          },
         ],
       });
     }
@@ -116,7 +126,13 @@ describe('sortQuery', () => {
               someFieldName: 'someFieldValue',
             },
           },
-          sort: [],
+          sort: [
+            {
+              _score: {
+                order: 'desc',
+              },
+            },
+          ],
         });
       }
     }
@@ -157,6 +173,11 @@ describe('sortQuery', () => {
             'venue.name.sv.keyword': {
               missing: '_last',
               order: 'asc',
+            },
+          },
+          {
+            _score: {
+              order: 'desc',
             },
           },
         ],
@@ -213,6 +234,11 @@ describe('sortQuery', () => {
               [`venue.name.${language}.keyword`]: {
                 missing: '_last',
                 order: 'asc',
+              },
+            },
+            {
+              _score: {
+                order: 'desc',
               },
             },
           ],
@@ -274,6 +300,11 @@ describe('sortQuery', () => {
                 order: 'asc',
               },
             },
+            {
+              _score: {
+                order: 'desc',
+              },
+            },
           ],
         });
       }
@@ -316,6 +347,11 @@ describe('sortQuery', () => {
                   lon: longitude,
                 },
                 order: expectedOrder,
+              },
+            },
+            {
+              _score: {
+                order: 'desc',
               },
             },
           ],
@@ -363,6 +399,11 @@ describe('sortQuery', () => {
                   lat: 42,
                   lon: -99,
                 },
+                order: 'desc',
+              },
+            },
+            {
+              _score: {
                 order: 'desc',
               },
             },

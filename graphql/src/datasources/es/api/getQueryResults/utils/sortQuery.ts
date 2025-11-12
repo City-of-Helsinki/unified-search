@@ -102,5 +102,8 @@ export function sortQuery(
         orderByNameClause
       );
     }
+
+    // Always sort venues last by relevance score
+    query.sort.push({ _score: { order: 'desc' } });
   }
 }
