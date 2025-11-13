@@ -1,22 +1,11 @@
 import type { ElasticLanguage } from '../../../../../types.js';
 import { isDefined } from '../../../../../utils.js';
-import {
-  ES_LOCATION_INDEX,
-  VENUE_SEARCH_RESULT_FIELD,
-} from '../../../constants.js';
-import type { ElasticSearchIndex, SearchResultField } from '../../../types.js';
+import { ES_LOCATION_INDEX } from '../../../constants.js';
 import type {
   OrderByFields,
   GetQueryResultsProps,
   BoolQuery,
 } from '../types.js';
-
-const ElasticSearchIndexToSearchResultField: Record<
-  Extract<ElasticSearchIndex, typeof ES_LOCATION_INDEX>,
-  SearchResultField
-> = {
-  [ES_LOCATION_INDEX]: VENUE_SEARCH_RESULT_FIELD,
-};
 
 export function sortQuery(
   query: BoolQuery,
@@ -30,7 +19,6 @@ export function sortQuery(
   }: OrderByFields
 ) {
   if (es_index === ES_LOCATION_INDEX) {
-    const searchResultField = ElasticSearchIndexToSearchResultField[es_index];
     query.sort = [];
 
     // Optionally sort first by Culture and Leisure Division
@@ -60,17 +48,14 @@ export function sortQuery(
       query.sort.push(orderByDistanceClause);
     } else if (isDefined(orderByName)) {
       const orderByNameClause = {
-        [`${searchResultField}.name.${language}.keyword`]: {
+        [`venue.name.${language}.keyword`]: {
           order: orderByName.order === 'DESCENDING' ? 'desc' : 'asc',
           missing: '_last',
         },
       } as const;
 
       query.sort.push(orderByNameClause);
-    } else if (
-      isDefined(orderByAccessibilityProfile) &&
-      searchResultField === VENUE_SEARCH_RESULT_FIELD
-    ) {
+    } else if (isDefined(orderByAccessibilityProfile)) {
       const orderByProfileShortcomingCountClause = {
         'venue.accessibility.shortcomings.count': {
           order: 'asc',
@@ -89,7 +74,7 @@ export function sortQuery(
       } as const;
 
       const orderByNameClause = {
-        [`${searchResultField}.name.${language}.keyword`]: {
+        [`venue.name.${language}.keyword`]: {
           order: 'asc',
           missing: '_last',
         },
@@ -108,7 +93,7 @@ export function sortQuery(
         },
       };
       const orderByAscNameClause = {
-        [`${searchResultField}.name.${language}.keyword`]: {
+        [`venue.name.${language}.keyword`]: {
           order: 'asc',
           missing: '_last',
         },
