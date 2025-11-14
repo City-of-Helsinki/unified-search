@@ -97,9 +97,8 @@ describe('sortQuery', () => {
             },
           },
           {
-            [`venue.name.${language}.keyword`]: {
-              missing: '_last',
-              order: 'asc',
+            'venue.meta.id.keyword': {
+              order: 'desc',
             },
           },
         ],
@@ -134,9 +133,8 @@ describe('sortQuery', () => {
               },
             },
             {
-              [`venue.name.${language}.keyword`]: {
-                missing: '_last',
-                order: 'asc',
+              'venue.meta.id.keyword': {
+                order: 'desc',
               },
             },
           ],
