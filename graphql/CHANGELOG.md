@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.2.1...graphql-v3.2.2) (2025-11-14)
+
+
+### Bug Fixes
+
+* **graphql:** Use ID as tiebreaker when sorting by relevance ([80bcde9](https://github.com/City-of-Helsinki/unified-search/commit/80bcde9ca5cd7a2ddd54d578dece9318ed56aecb))
+
 ## [3.2.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.2.0...graphql-v3.2.1) (2025-11-12)
 
 
