@@ -87,25 +87,21 @@ export function sortQuery(
         orderByNameClause
       );
     } else {
-      const orderByDescScoreClause = {
-        _score: {
-          order: 'desc',
-        },
-      };
-      const orderByAscNameClause = {
-        [`venue.name.${language}.keyword`]: {
-          order: 'asc',
-          missing: '_last',
-        },
-      } as const;
-
-      // If none of the orderBy* parameters are used, sort by descending score
-      // and ascending name to ensure consistent ordering of results.
+      // Default sorting by relevance (i.e. by descending score).
+      // Break ties by descending ID to ensure consistent ordering of results.
       //
-      // This prioritizes relevance first (by score), and then alphabetically
-      // by name, if multiple results have the same score. This latter case
-      // happens e.g. when searching without a search text.
-      query.sort.push(orderByDescScoreClause, orderByAscNameClause);
+      // NOTE: When there is no search text, all scores are equal, and sorting
+      // secondarily by name would turn "sort by relevance" into "sort by name",
+      // which was not wanted by the product owner. Thus, using something
+      // seemingly random but stable like ID as tiebreaker.
+      //
+      // Better would be to implement a meaningful secondary sort, e.g.
+      // by popularity, using e.g. LinkedEvents event count per venue, but
+      // that has not been implemented at the moment.
+      query.sort.push(
+        { _score: { order: 'desc' } }, // Primary sort by descending score
+        { 'venue.meta.id.keyword': { order: 'desc' } } // Secondary sort by descending ID
+      );
     }
   }
 }
