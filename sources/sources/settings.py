@@ -84,6 +84,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "sources.urls"
 
+WSGI_APPLICATION = "sources.wsgi.application"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -99,9 +101,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = "sources.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

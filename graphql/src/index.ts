@@ -27,10 +27,10 @@ import { getResolvers } from './resolvers/getResolvers.js';
 import { getSchemas } from './schemas/getSchemas.js';
 import { findClosestEnvFile, sentryConfig } from './utils.js';
 
-const ENV_FILE_PATH = findClosestEnvFile();
+const ENV_FILE_PATH_2 = findClosestEnvFile();
 
-if (ENV_FILE_PATH) {
-  dotenv.config({ path: ENV_FILE_PATH });
+if (ENV_FILE_PATH_2) {
+  dotenv.config({ path: ENV_FILE_PATH_2 });
 } else {
   // eslint-disable-next-line no-console
   console.log('No .env file found, using environment variables directly.');
