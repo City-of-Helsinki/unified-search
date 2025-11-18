@@ -29,6 +29,22 @@ MOCKED_SERVICE_MAP_CONNECTIONS_RESPONSE = [
     for connection in unit["connections"]
 ]
 
+MOCKED_EVENT_COUNTS_PER_TPR_UNIT_RESPONSE: dict[str, int] = {
+    "41102": 123,  # Swimhall
+    "42284": 0,  # Indoor arena
+}
+
+# Minimal mocked response for Linked Events place endpoint,
+# real data has more fields, but this is sufficient for testing.
+MOCKED_LINKED_EVENTS_PLACES_RESPONSE = {
+    "meta": {"count": 2, "next": None, "previous": None},
+    "data": [
+        {"id": "tprek:6964", "n_events": 286},
+        {"id": "tprek:7076", "n_events": 284},
+        {"id": "espoo:123", "n_events": 50},
+    ],
+}
+
 MOCKED_SERVICE_MAP_ACCESSIBILITY_SENTENCE_VIEWPOINT_RESPONSE = [
     {
         "unit_id": 6365,

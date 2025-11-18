@@ -33,6 +33,9 @@ class LocationImporterAPI:
     )
     services_endpoint = "https://www.hel.fi/palvelukarttaws/rest/vpalvelurekisteri/description/?alldata=yes"
     connections_endpoint = "https://www.hel.fi/palvelukarttaws/rest/v4/connection/"
+    linked_events_place_endpoint = (
+        "https://api.hel.fi/linkedevents/v1/place/?format=json&page_size=100"
+    )
 
     @classmethod
     def fetch_tpr_units(cls, timeout_seconds=DEFAULT_TIMEOUT) -> TPRUnitResponse:
@@ -98,3 +101,43 @@ class LocationImporterAPI:
     @classmethod
     def fetch_connections(cls, timeout_seconds=DEFAULT_TIMEOUT):
         return request_json(cls.connections_endpoint, timeout_seconds=timeout_seconds)
+
+    @staticmethod
+    def get_tpr_unit_id_to_event_count_mapping(places: List[dict]) -> dict[str, int]:
+        """
+        Get a mapping of TPR unit ID to total event count from a list of Linked Events
+        place endpoint data.
+
+        :param places: A list of place data dictionaries from Linked Events
+                       place endpoint.
+        :return: A dictionary with TPR unit ID ("id") as string without "tprek:"
+                 prefix, and its total event count ("event_count").
+        """
+        result = {}
+        for place in places:
+            place_id = place["id"]
+            if place_id.startswith("tprek:"):
+                tpr_unit_id = place_id.split(":")[-1]
+                event_count = place["n_events"]
+                result[tpr_unit_id] = event_count
+        return result
+
+    @classmethod
+    def fetch_event_counts_per_tpr_unit(
+        cls, timeout_seconds=DEFAULT_TIMEOUT
+    ) -> dict[str, int]:
+        """
+        Get all event counts per TPR unit ID from Linked Events location API.
+
+        :return: A dictionary with TPR unit ID ("id") as string without "tprek:"
+                 prefix, and its total event count ("event_count").
+        """
+        tpr_unit_id_to_event_count = {}
+        url = cls.linked_events_place_endpoint
+        while url:
+            places = request_json(url, timeout_seconds=timeout_seconds)
+            tpr_unit_id_to_event_count.update(
+                cls.get_tpr_unit_id_to_event_count_mapping(places.get("data", []))
+            )
+            url = places["meta"]["next"]
+        return tpr_unit_id_to_event_count

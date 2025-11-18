@@ -97,6 +97,11 @@ describe('sortQuery', () => {
             },
           },
           {
+            'venue.eventCount': {
+              order: 'desc',
+            },
+          },
+          {
             'venue.meta.id.keyword': {
               order: 'desc',
             },
@@ -129,6 +134,11 @@ describe('sortQuery', () => {
           sort: [
             {
               _score: {
+                order: 'desc',
+              },
+            },
+            {
+              'venue.eventCount': {
                 order: 'desc',
               },
             },

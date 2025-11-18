@@ -67,6 +67,7 @@ custom_mappings = {
             "properties": {
                 "name": {"properties": define_language_properties()},
                 "description": {"properties": define_language_properties()},
+                "eventCount": {"type": "long"},  # Signed 64-bit integer
                 "openingHours": {
                     "properties": {
                         "openRanges": {
@@ -192,6 +193,13 @@ class LocationImporter(Importer[Root]):
         self.ontology = (
             retry_twice_5s_intervals(Ontology) if self.enable_data_fetching else None
         )
+
+        self.tpr_unit_id_to_event_count: dict[str, int] = (
+            retry_twice_5s_intervals(api.fetch_event_counts_per_tpr_unit)
+            if self.enable_data_fetching
+            else {}
+        )
+
         logger.info("LocationImporter base data initialized")
 
     def _create_location(self, l: LanguageStringConverter, e: Callable[[Any], Any]):
@@ -292,6 +300,7 @@ class LocationImporter(Importer[Root]):
             isCultureAndLeisureDivisionVenue=(
                 _id in self.culture_and_leisure_division_tpr_unit_ids
             ),
+            eventCount=self.tpr_unit_id_to_event_count.get(_id, 0),
         )
 
         # Add accessibility viewpoints' shortages to the venue

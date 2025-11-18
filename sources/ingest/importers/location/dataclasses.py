@@ -281,6 +281,7 @@ class Venue:
     ontologyWords: List[OntologyObject] = field(default_factory=list)
     # Is the venue part of the "Culture and Leisure Division" department hierarchy?
     isCultureAndLeisureDivisionVenue: bool = False
+    eventCount: int = 0
 
 
 @dataclass
