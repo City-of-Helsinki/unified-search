@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.3.0...sources-v2.4.0) (2025-11-18)
+
+
+### Features
+
+* Sort venues by descending event count after score ([779c3bd](https://github.com/City-of-Helsinki/unified-search/commit/779c3bde331a8cbf5077d084a939bd646907227f))
+
+
+### Bug Fixes
+
+* **docker:** Freeze to using a working build of python-312-gdal image ([8c014d6](https://github.com/City-of-Helsinki/unified-search/commit/8c014d6c6597b29019995c9416c8aa8bd0f90d07))
+
 ## [2.3.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.2.1...sources-v2.3.0) (2025-11-12)
 
 

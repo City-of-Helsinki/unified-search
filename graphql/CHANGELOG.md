@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.2.2...graphql-v3.3.0) (2025-11-18)
+
+
+### Features
+
+* Sort venues by descending event count after score ([779c3bd](https://github.com/City-of-Helsinki/unified-search/commit/779c3bde331a8cbf5077d084a939bd646907227f))
+
+
+### Bug Fixes
+
+* **dependabot:** Update all packages to latest except @types/node to v22 ([06bf3e1](https://github.com/City-of-Helsinki/unified-search/commit/06bf3e1ae1cb5c39c14baf220bca6d060262d709))
+
 ## [3.2.2](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.2.1...graphql-v3.2.2) (2025-11-14)
 
 
