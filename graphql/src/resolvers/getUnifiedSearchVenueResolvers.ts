@@ -53,5 +53,8 @@ export function getUnifiedSearchVenueResolvers() {
     isCultureAndLeisureDivisionVenue({ venue }: VenueProps) {
       return venue.isCultureAndLeisureDivisionVenue ?? false;
     },
+    eventCount({ venue }: VenueProps) {
+      return venue.eventCount ?? 0;
+    },
   };
 }

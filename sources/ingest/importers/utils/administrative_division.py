@@ -6,6 +6,7 @@ from django.core.management import call_command
 from django.db import transaction
 from munigeo.models import AdministrativeDivision as AdministrativeDivisionModel
 
+from .retry import retry_twice_5s_intervals
 from .shared import LanguageString
 
 DIVISION_TYPES = ("neighborhood", "district", "sub_district", "muni")
@@ -30,8 +31,10 @@ def geo_import_helsinki_divisions():
 class AdministrativeDivisionFetcher:
     def __init__(self):
         with transaction.atomic():
-            geo_import_finnish_municipalities()
-            geo_import_helsinki_divisions()
+            # NOTE: Not sure whether retry really works here, it depends on
+            #       whether the command raises an exception that propagates here!
+            retry_twice_5s_intervals(geo_import_finnish_municipalities)
+            retry_twice_5s_intervals(geo_import_helsinki_divisions)
 
         self.administrative_divisions_qs = AdministrativeDivisionModel.objects.filter(
             type__type__in=DIVISION_TYPES

@@ -55,6 +55,7 @@ export type Venue = {
   serviceOwner?: unknown;
   targetGroups?: unknown;
   isCultureAndLeisureDivisionVenue?: boolean;
+  eventCount?: number;
 };
 
 export type VenueProps = {

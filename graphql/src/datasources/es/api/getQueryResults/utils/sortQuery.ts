@@ -88,19 +88,12 @@ export function sortQuery(
       );
     } else {
       // Default sorting by relevance (i.e. by descending score).
-      // Break ties by descending ID to ensure consistent ordering of results.
-      //
-      // NOTE: When there is no search text, all scores are equal, and sorting
-      // secondarily by name would turn "sort by relevance" into "sort by name",
-      // which was not wanted by the product owner. Thus, using something
-      // seemingly random but stable like ID as tiebreaker.
-      //
-      // Better would be to implement a meaningful secondary sort, e.g.
-      // by popularity, using e.g. LinkedEvents event count per venue, but
-      // that has not been implemented at the moment.
+      // Break ties first by descending event count and
+      // last by descending ID to ensure consistent ordering of results.
       query.sort.push(
         { _score: { order: 'desc' } }, // Primary sort by descending score
-        { 'venue.meta.id.keyword': { order: 'desc' } } // Secondary sort by descending ID
+        { 'venue.eventCount': { order: 'desc' } }, // Secondary sort by descending event count
+        { 'venue.meta.id.keyword': { order: 'desc' } } // Tertiary sort by descending ID
       );
     }
   }
