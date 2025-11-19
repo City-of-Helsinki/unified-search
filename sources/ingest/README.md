@@ -133,7 +133,7 @@ flowchart LR
 
 ### Location importer
 
-Terms `unit`, `location` and `venue` are used interchangeably, and they mean the same thing.
+Terms `location`, `place`, `unit` and `venue` are used interchangeably, and they mean the same thing.
 
 [LocationImporter](./importers/location/importers.py) imports data from the following sources:
 1. [REST API for City of Helsinki Service Map](https://www.hel.fi/palvelukarttaws/restpages/ver4_en.html) (Closed source application by CGI)
@@ -150,6 +150,8 @@ Terms `unit`, `location` and `venue` are used interchangeably, and they mean the
    - These are used to add administrative division information to the location data
 5. [Helsinki Opening hours API / Hauki](https://github.com/City-of-Helsinki/hauki) (Open source)
    - Opening hours for venues from [opening_hours](https://hauki.api.hel.fi/v1/opening_hours/) endpoint
+6. [Linked Events API](https://github.com/City-of-Helsinki/linkedevents) (Open source)
+   - Total event count for each venue from [place endpoint](https://api.hel.fi/linkedevents/v1/place/) (with pagination)
 
 #### Data import flow diagram
 
@@ -193,6 +195,9 @@ flowchart LR
   subgraph Hauki["hauki.api.hel.fi"]
     OpeningHoursEndpoint["Venue opening hours"]
   end
+  subgraph LinkedEvents["api.hel.fi/linkedevents"]
+    PlaceEndpoint["Places' total event counts"]
+  end
   subgraph Elasticsearch["Elasticsearch Index"]
     LocationIndex["location"]
   end
@@ -219,6 +224,7 @@ flowchart LR
   IngestDataLocation -- reads --> DescriptionEndpoint
   IngestDataLocation -- reads --> AccessibilityShortcomingCountEndpoint
   IngestDataLocation -- reads --> OpeningHoursEndpoint
+  IngestDataLocation -- reads --> PlaceEndpoint
 
   OntologyTreeEndpoint -- mapped to --> LocationIndex
   OntologyWordEndpoint -- mapped to --> LocationIndex
@@ -229,6 +235,7 @@ flowchart LR
   UnitEndpoint -- mapped to --> LocationIndex
   DescriptionEndpoint -- mapped to --> LocationIndex
   OpeningHoursEndpoint -- mapped to --> LocationIndex
+  PlaceEndpoint -- mapped to --> LocationIndex
   AccessibilityShortcomingCountEndpoint -- mapped to --> LocationIndex
   TietoaKuntajaostaZip -- mapped to --> LocationIndex
 ```

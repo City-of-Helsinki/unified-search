@@ -59,15 +59,16 @@ flowchart BT
     CronJobs["Cron Jobs"]
   end
   subgraph Sources["Data Sources"]
-    subgraph Group1[" "]
+    subgraph DjangoMunigeoGroup[" "]
       Makasiini["makasiini.hel.ninja"]
       HelsinkiWFS["kartta.hel.fi"]
       HsyWFS["kartta.hsy.fi"]
     end
-    subgraph Group2[" "]
+    subgraph OtherAPIsGroup[" "]
       PalvelukarttaWS["hel.fi/palvelukarttaws"]
       ServiceMap["api.hel.fi/servicemap"]
       Hauki["hauki.api.hel.fi"]
+      LinkedEvents["api.hel.fi/linkedevents"]
     end
   end
   subgraph DataCollector["Data Collector"]
@@ -86,8 +87,8 @@ flowchart BT
   GraphQL -- queries --> Elasticsearch
   Frontends -- query --> GraphQL
 
-  style Group1 stroke-width:0
-  style Group2 stroke-width:0
+  style DjangoMunigeoGroup stroke-width:0
+  style OtherAPIsGroup stroke-width:0
 ```
 
 ## Known users of unified search

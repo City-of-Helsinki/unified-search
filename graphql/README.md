@@ -395,6 +395,17 @@ Partial output of the example query (Click to expand)
 The `orderByDistance`, `orderByName` and `orderByAccessibilityProfile` parameters
 are mutually exclusive, but can be optionally combined with `showCultureAndLeisureDivisionFirst`.
 
+If none of the `orderBy*` sorting parameters are used, the sorting is:
+
+1. By descending `isCultureAndLeisureDivisionVenue` (i.e. venues in Culture and Leisure Division first, then others)
+   only if `showCultureAndLeisureDivisionFirst` parameter is `true`, otherwise as is
+2. By descending relevance score (i.e. best matches first)
+3. By descending total event count (i.e. venues with most events first)
+   - This is useful when `text` parameter is empty or `*`, as then all results have same score
+4. By descending ID (i.e. simply to make the sorting deterministic)
+
+The sorting is defined in [sortQuery function](./src/datasources/es/api/getQueryResults/utils/sortQuery.ts).
+
 #### Optional pagination parameters
 
 | Pagination parameter | Description                        |

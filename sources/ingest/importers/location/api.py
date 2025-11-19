@@ -127,7 +127,7 @@ class LocationImporterAPI:
         cls, timeout_seconds=DEFAULT_TIMEOUT
     ) -> dict[str, int]:
         """
-        Get all event counts per TPR unit ID from Linked Events location API.
+        Get all event counts per TPR unit ID from Linked Events place endpoint.
 
         :return: A dictionary with TPR unit ID ("id") as string without "tprek:"
                  prefix, and its total event count ("event_count").
