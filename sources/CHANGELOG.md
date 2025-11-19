@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.4.0...sources-v2.4.1) (2025-11-19)
+
+
+### Documentation
+
+* Update documentation after adding Linked Events place endpoint use ([6b2623b](https://github.com/City-of-Helsinki/unified-search/commit/6b2623b53fcd7946643435708d8531d37fdf0642))
+
 ## [2.4.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.3.0...sources-v2.4.0) (2025-11-18)
 
 
