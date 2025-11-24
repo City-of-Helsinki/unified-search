@@ -161,6 +161,8 @@ LOGGING = {
     "handlers": {
         "console": {
             "level": "DEBUG" if DEBUG else "INFO",
+            # StreamHandler outputs to stderr by default, see
+            # https://docs.python.org/3/library/logging.handlers.html#logging.StreamHandler
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
