@@ -33,7 +33,7 @@ if (ENV_FILE_PATH) {
   dotenv.config({ path: ENV_FILE_PATH });
 } else {
   // eslint-disable-next-line no-console
-  console.log('No .env file found, using environment variables directly.');
+  console.info('No .env file found, using environment variables directly.');
 }
 
 const SERVER_IS_NOT_READY = 'SERVER_IS_NOT_READY';
@@ -102,7 +102,7 @@ void (async () => {
   httpServer.listen({ port }, () => {
     signalReady();
     // eslint-disable-next-line no-console
-    console.log(`🚀 Server ready at http://localhost:${port}/search`);
+    console.info(`🚀 Server ready at http://localhost:${port}/search`);
   });
 
   app.get('/healthz', (_, response) => {
