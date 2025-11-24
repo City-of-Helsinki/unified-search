@@ -16,10 +16,16 @@ services:
       APPLY_MIGRATIONS: 1
     restart: unless-stopped
     volumes:
+      # Map host directory with source code to container to make hot reloading
+      # development possible (Writable by host, readable by container):
       - ./sources:/app
-      # Exclude directories to avoid host/container incompatibility & permission issues:
-      - /app/db_data
-      - /app/.pytest_cache
+      # Map directories that need to be written to inside container
+      # to named volumes to avoid permission issues with host OS.
+      # Use :z option to allow sharing these between multiple containers in SELinux,
+      # https://docs.docker.com/engine/storage/bind-mounts/#configure-the-selinux-label
+      - unified-search-sources-app-data:/app/data:z
+      - unified-search-sources-app-db-data:/app/db_data:z
+      - unified-search-sources-app-pytest-cache:/app/.pytest_cache:z
 
   search-api:
     env_file: .env
@@ -73,6 +79,12 @@ services:
 
 volumes:
   elasticsearch-data1:
+    driver: local
+  unified-search-sources-app-data:
+    driver: local
+  unified-search-sources-app-db-data:
+    driver: local
+  unified-search-sources-app-pytest-cache:
     driver: local
 
 networks:

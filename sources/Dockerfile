@@ -24,13 +24,13 @@ COPY --chown=root:root --chmod=755 . /app/
 # Make sure db.sqlite3 under /app/db_data is writable by the application.
 # Needed by e.g. `python manage.py ingest_data administrative_division`.
 RUN mkdir -p /app/db_data \
-    && chown -R root:root /app/db_data \
+    && chown -R default:root /app/db_data \
     && chmod -R g+w /app/db_data
 
 # Make sure files under /app/data/ are writable by the application.
 # Needed by e.g. `python manage.py ingest_data administrative_division`.
 RUN mkdir -p /app/data \
-    && chown -R root:root /app/data \
+    && chown -R default:root /app/data \
     && chmod -R g+w /app/data
 
 COPY --chown=root:root --chmod=755 docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
@@ -56,7 +56,7 @@ RUN pip install --no-cache-dir -r /app/requirements-dev.txt \
 
 # Allow .pytest_cache writing so running pytest in container won't warn about cache writing failure:
 RUN mkdir -p /app/.pytest_cache \
-    && chown -R root:root /app/.pytest_cache \
+    && chown -R default:root /app/.pytest_cache \
     && chmod -R g+w /app/.pytest_cache
 
 USER default
