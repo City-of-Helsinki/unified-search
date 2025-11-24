@@ -1,8 +1,14 @@
+import logging
+
+from django.utils import timezone
+
 from .base import Importer
 from .utils.administrative_division import (
     AdministrativeDivision,
     AdministrativeDivisionFetcher,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class AdministrativeDivisionImporter(Importer[AdministrativeDivision]):
@@ -24,8 +30,15 @@ class AdministrativeDivisionImporter(Importer[AdministrativeDivision]):
     )
 
     def run(self):
+        logger.info(
+            f"Started importing administrative divisions at {timezone.now():%X}"
+        )
         all_administrative_divisions = AdministrativeDivisionFetcher().get_all()
         self.add_data_bulk(all_administrative_divisions, self.ALL_DIVISIONS_INDEX)
+        logger.info(
+            f"Added {len(all_administrative_divisions)} administrative divisions to "
+            + f"Elasticsearch index {self.ALL_DIVISIONS_INDEX}"
+        )
 
         helsinki_common_administrative_divisions = []
         encountered_helsinki_areas = set()
@@ -48,4 +61,11 @@ class AdministrativeDivisionImporter(Importer[AdministrativeDivision]):
         self.add_data_bulk(
             helsinki_common_administrative_divisions,
             self.HELSINKI_COMMON_DIVISIONS_INDEX,
+        )
+        logger.info(
+            f"Added {len(helsinki_common_administrative_divisions)} administrative "
+            + f"divisions to Elasticsearch index {self.HELSINKI_COMMON_DIVISIONS_INDEX}"
+        )
+        logger.info(
+            f"Finished importing administrative divisions at {timezone.now():%X}"
         )

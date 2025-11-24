@@ -105,100 +105,95 @@ class LocationImporter(Importer[Root]):
         self._init_base_data()
 
     def _init_base_data(self):
-        if not self.enable_data_fetching:
-            logger.info(
-                "LocationImporter instance's `enable_data_fetching` is set to `False`."
-                "Because of this the instance will be initialized without base data."
-                "To fetch some base data, set `enable_data_fetching` to `True`."
-            )
-
         api = LocationImporterAPI()
 
-        self.tpr_units = (
-            retry_twice_5s_intervals(api.fetch_tpr_units)
-            if self.enable_data_fetching
-            else []
-        )
+        if not self.enable_data_fetching:
+            logger.info(
+                "LocationImporter instance's `enable_data_fetching` is set to `False`. "
+                "Because of this the instance will be initialized without base data. "
+                "To fetch some base data, set `enable_data_fetching` to `True`."
+            )
+            # Initialize member variables to default values
+            self.tpr_units = []
+            self.culture_and_leisure_division_tpr_unit_ids = set()
+            self.unit_id_to_accessibility_shortcomings_mapping = {}
+            self.unit_id_to_accessibility_sentences_mapping = {}
+            self.unit_id_to_accessibility_viewpoint_shortages_mapping = {}
+            self.unit_id_to_target_groups_mapping = {}
+            self.accessibility_viewpoint_id_to_name_mapping = {}
+            self.unit_id_to_connections_mapping = {}
+            self.opening_hours_fetcher = None
+            self.administrative_division_fetcher = None
+            self.ontology = None
+            self.tpr_unit_id_to_event_count = {}
+        else:
+            logger.info("Fetching TPR units...")
+            self.tpr_units = retry_twice_5s_intervals(api.fetch_tpr_units)
 
-        _culture_and_leisure_division_tpr_units = (
-            retry_twice_5s_intervals(api.fetch_culture_and_leisure_division_tpr_units)
-            if self.enable_data_fetching
-            else []
-        )
-        self.culture_and_leisure_division_tpr_unit_ids: set[str] = {
-            str(unit["id"]) for unit in _culture_and_leisure_division_tpr_units
-        }
+            logger.info("Fetching Culture and Leisure Division's TPR units...")
+            _culture_and_leisure_division_tpr_units = retry_twice_5s_intervals(
+                api.fetch_culture_and_leisure_division_tpr_units
+            )
+            self.culture_and_leisure_division_tpr_unit_ids: set[str] = {
+                str(unit["id"]) for unit in _culture_and_leisure_division_tpr_units
+            }
 
-        self.unit_id_to_accessibility_shortcomings_mapping = (
-            retry_twice_5s_intervals(get_unit_id_to_accessibility_shortcomings_mapping)
-            if self.enable_data_fetching
-            else {}
-        )
+            logger.info("Fetching accessibility shortcoming counts...")
+            self.unit_id_to_accessibility_shortcomings_mapping = (
+                retry_twice_5s_intervals(
+                    get_unit_id_to_accessibility_shortcomings_mapping
+                )
+            )
 
-        self.unit_id_to_accessibility_sentences_mapping = (
-            retry_twice_5s_intervals(
+            logger.info("Fetching accessibility sentences...")
+            self.unit_id_to_accessibility_sentences_mapping = retry_twice_5s_intervals(
                 get_unit_id_to_accessibility_sentences_mapping,
                 self.use_fallback_languages,
             )
-            if self.enable_data_fetching
-            else {}
-        )
 
-        self.unit_id_to_accessibility_viewpoint_shortages_mapping = (
-            retry_twice_5s_intervals(
-                get_unit_id_to_accessibility_viewpoint_shortages_mapping,
-                self.use_fallback_languages,
+            logger.info("Fetching accessibility shortages...")
+            self.unit_id_to_accessibility_viewpoint_shortages_mapping = (
+                retry_twice_5s_intervals(
+                    get_unit_id_to_accessibility_viewpoint_shortages_mapping,
+                    self.use_fallback_languages,
+                )
             )
-            if self.enable_data_fetching
-            else {}
-        )
 
-        self.unit_id_to_target_groups_mapping = (
-            retry_twice_5s_intervals(get_unit_id_to_target_groups_mapping)
-            if self.enable_data_fetching
-            else {}
-        )
+            logger.info("Fetching target groups using services...")
+            self.unit_id_to_target_groups_mapping = retry_twice_5s_intervals(
+                get_unit_id_to_target_groups_mapping
+            )
 
-        self.accessibility_viewpoint_id_to_name_mapping = (
-            retry_twice_5s_intervals(
+            logger.info("Fetching accessibility viewpoints...")
+            self.accessibility_viewpoint_id_to_name_mapping = retry_twice_5s_intervals(
                 get_accessibility_viewpoint_id_to_name_mapping,
                 self.use_fallback_languages,
             )
-            if self.enable_data_fetching
-            else {}
-        )
 
-        self.unit_id_to_connections_mapping = (
-            retry_twice_5s_intervals(
+            logger.info("Fetching connections for TPR units...")
+            self.unit_id_to_connections_mapping = retry_twice_5s_intervals(
                 get_unit_id_to_connections_mapping, self.use_fallback_languages
             )
-            if self.enable_data_fetching
-            else {}
-        )
 
-        self.opening_hours_fetcher = (
-            retry_twice_5s_intervals(
-                HaukiOpeningHoursFetcher, [t["id"] for t in self.tpr_units]
+            logger.info("Initializing opening hours fetcher (Not fetching anything)...")
+            self.opening_hours_fetcher = (
+                HaukiOpeningHoursFetcher([t["id"] for t in self.tpr_units])
+                if self.tpr_units
+                else None
             )
-            if self.enable_data_fetching and len(self.tpr_units)
-            else None
-        )
 
-        self.administrative_division_fetcher = (
-            retry_twice_5s_intervals(AdministrativeDivisionFetcher)
-            if self.enable_data_fetching
-            else None
-        )
+            logger.info("Fetching administrative divisions...")
+            self.administrative_division_fetcher = retry_twice_5s_intervals(
+                AdministrativeDivisionFetcher
+            )
 
-        self.ontology = (
-            retry_twice_5s_intervals(Ontology) if self.enable_data_fetching else None
-        )
+            logger.info("Fetching ontology words and trees...")
+            self.ontology = retry_twice_5s_intervals(Ontology)
 
-        self.tpr_unit_id_to_event_count: dict[str, int] = (
-            retry_twice_5s_intervals(api.fetch_event_counts_per_tpr_unit)
-            if self.enable_data_fetching
-            else {}
-        )
+            logger.info("Fetching event counts for TPR units...")
+            self.tpr_unit_id_to_event_count: dict[str, int] = retry_twice_5s_intervals(
+                api.fetch_event_counts_per_tpr_unit
+            )
 
         logger.info("LocationImporter base data initialized")
 
@@ -418,17 +413,16 @@ class LocationImporter(Importer[Root]):
 
         if self.enable_data_fetching:
             for tpr_unit in self.tpr_units:
-                logger.debug(f"Fetching data for an id '{tpr_unit['id']}'.")
+                logger.debug(f"Fetching data for TPR unit ID: {tpr_unit['id']}")
                 root = self._create_root_from_tpr_unit(tpr_unit)
                 data_buffer.append(root)
                 if len(data_buffer) >= BATCH_SIZE:
                     self.add_data_bulk(data_buffer)
                     data_buffer = []
-                logger.debug(f"Fetched data count: {count}")
                 count = count + 1
 
             if data_buffer:
                 self.add_data_bulk(data_buffer)
 
-            logger.info(f"Fetched {count} items in total")
+            logger.info(f"Fetched data for {count} TPR units in total")
         return count

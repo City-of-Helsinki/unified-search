@@ -1,3 +1,4 @@
+import logging
 from copy import copy
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
@@ -20,6 +21,8 @@ DEFAULT_TIME_ZONE = "Europe/Helsinki"
 
 HAUKI_RESOURCE_URL = HAUKI_BASE_URL + "resource/tprek:{venue_id}/"
 HAUKI_OPENING_HOURS_URL = HAUKI_BASE_URL + "opening_hours/"
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -155,6 +158,7 @@ class HaukiOpeningHoursFetcher:
             "resource": ",".join(prefixed_ids),
         }
         url = f"{HAUKI_OPENING_HOURS_URL}?{urlencode(params)}"
+        logger.info("Fetching opening hours from Hauki...")
         response = request_json(url)
 
         result_map = {}
@@ -163,6 +167,7 @@ class HaukiOpeningHoursFetcher:
             if origin_id:
                 result_map[origin_id] = result["opening_hours"]
 
+        logger.info(f"Fetched {len(result_map)} units' opening hours from Hauki.")
         return {i: result_map.get(i, []) for i in ids}
 
     def get_open_ranges(self, data: RawHours) -> List[OpeningHoursTimesRange]:
