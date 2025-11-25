@@ -4,8 +4,9 @@ from dataclasses import asdict, is_dataclass
 from typing import Generic, List, Optional, Tuple, TypeVar
 
 from django.conf import settings
-
-from common.elasticsearch_compatibility import get_compatible_elasticsearch_package
+from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import NotFoundError
+from elasticsearch.helpers import bulk as elasticsearch_bulk
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +47,7 @@ class Importer(ABC, Generic[IndexableData]):
             raise NotImplementedError(
                 f"Importer {self.__class__.__name__} is missing index_base_names."
             )
-        es_package = get_compatible_elasticsearch_package()
-        self.es = es_package.Elasticsearch([settings.ES_URI]).options(
-            request_timeout=60
-        )
-        self.es_bulk = es_package.helpers.bulk
-        self.NotFoundError = es_package.exceptions.NotFoundError
+        self.es = Elasticsearch([settings.ES_URI]).options(request_timeout=60)
         self.use_fallback_languages = use_fallback_languages
 
     @abstractmethod
@@ -93,7 +89,7 @@ class Importer(ABC, Generic[IndexableData]):
             for d in data
         ]
         try:
-            self.es_bulk(self.es, body)
+            elasticsearch_bulk(self.es, body)
         except ConnectionError as e:
             logger.error(e)
 
@@ -162,7 +158,7 @@ class Importer(ABC, Generic[IndexableData]):
         try:
             response = self.es.options(ignore_status=404).indices.delete(index=index)
             logger.debug(response)
-        except self.NotFoundError as e:
+        except NotFoundError as e:
             if e.error == "index_not_found_exception":
                 logger.debug(f"Index {index} does not exist")
             else:
@@ -174,13 +170,13 @@ class Importer(ABC, Generic[IndexableData]):
             self.es.options(ignore_status=404).indices.delete_alias(
                 index="*", name=alias
             )
-        except self.NotFoundError:
+        except NotFoundError:
             pass
 
     def _get_index_from_es(self, alias: str) -> Optional[str]:
         try:
             return next(iter(self.es.indices.get_alias(name=alias)))
-        except (self.NotFoundError, StopIteration):
+        except (NotFoundError, StopIteration):
             return None
 
     @staticmethod

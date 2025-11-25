@@ -4,9 +4,9 @@
 #
 #    pip-compile requirements-dev.in
 #
-asttokens==3.0.0
+asttokens==3.0.1
     # via stack-data
-coverage[toml]==7.11.3
+coverage[toml]==7.12.0
     # via pytest-cov
 decorator==5.2.1
     # via ipython
@@ -47,7 +47,7 @@ pygments==2.19.2
     #   ipython
     #   ipython-pygments-lexers
     #   pytest
-pytest==9.0.0
+pytest==9.0.1
     # via
     #   -r requirements-dev.in
     #   pytest-cov
@@ -59,7 +59,7 @@ pytest-django==4.11.1
     # via -r requirements-dev.in
 pytest-mock==3.15.1
     # via -r requirements-dev.in
-ruff==0.14.4
+ruff==0.14.6
     # via -r requirements-dev.in
 snapshottest==1.0.0a1
     # via -r requirements-dev.in
