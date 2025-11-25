@@ -3,8 +3,8 @@ import logging
 
 import requests
 from django.conf import settings
-
-from common.elasticsearch_compatibility import get_compatible_elasticsearch_package
+from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import NotFoundError
 
 """ Running:
         pytest
@@ -31,13 +31,12 @@ def test_es_up():
 def test_es_basic_operations():
     """Run basic operations for testing purposes."""
 
-    es_package = get_compatible_elasticsearch_package()
-    es = es_package.Elasticsearch([settings.ES_URI])
+    es = Elasticsearch([settings.ES_URI])
 
     try:
         logging.debug("Deleting existing test data")
         es.delete(index="unit-test-index", id=1)
-    except es_package.exceptions.NotFoundError:
+    except NotFoundError:
         pass
 
     logging.debug("Adding test data")

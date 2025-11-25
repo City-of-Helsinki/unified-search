@@ -4,8 +4,7 @@ django-cors-headers
 django-csp
 django-health-check
 django-munigeo
-elasticsearch8  # Only for backward compatibility
-elasticsearch9
+elasticsearch
 pyhumps
 python-dotenv
 requests

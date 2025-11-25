@@ -4,7 +4,9 @@
 #
 #    pip-compile requirements.in
 #
-asgiref==3.10.0
+anyio==4.11.0
+    # via elasticsearch
+asgiref==3.11.0
     # via
     #   django
     #   django-cors-headers
@@ -14,7 +16,7 @@ attrs==25.4.0
     #   requests-cache
 cattrs==25.3.0
     # via requests-cache
-certifi==2025.10.5
+certifi==2025.11.12
     # via
     #   -r requirements.in
     #   elastic-transport
@@ -53,16 +55,13 @@ django-parler-rest==2.2
     # via django-munigeo
 djangorestframework==3.16.1
     # via django-parler-rest
-elastic-transport==8.17.1
-    # via
-    #   elasticsearch8
-    #   elasticsearch9
-elasticsearch8==8.19.2
-    # via -r requirements.in
-elasticsearch9==9.0.4
+elastic-transport==9.2.0
+    # via elasticsearch
+elasticsearch==9.2.0
     # via -r requirements.in
 idna==3.11
     # via
+    #   anyio
     #   requests
     #   url-normalize
 packaging==25.0
@@ -72,9 +71,7 @@ platformdirs==4.5.0
 pyhumps==3.8.0
     # via -r requirements.in
 python-dateutil==2.9.0.post0
-    # via
-    #   elasticsearch8
-    #   elasticsearch9
+    # via elasticsearch
 python-dotenv==1.2.1
     # via -r requirements.in
 pyyaml==6.0.3
@@ -86,19 +83,24 @@ requests==2.32.5
     #   requests-cache
 requests-cache==1.2.1
     # via django-munigeo
-sentry-sdk==2.43.0
+sentry-sdk==2.46.0
     # via -r requirements.in
 six==1.17.0
     # via
     #   django-munigeo
     #   python-dateutil
+sniffio==1.3.1
+    # via
+    #   anyio
+    #   elastic-transport
+    #   elasticsearch
 sqlparse==0.5.3
     # via django
 typing-extensions==4.15.0
     # via
+    #   anyio
     #   cattrs
-    #   elasticsearch8
-    #   elasticsearch9
+    #   elasticsearch
 url-normalize==2.2.1
     # via requests-cache
 urllib3==2.5.0
