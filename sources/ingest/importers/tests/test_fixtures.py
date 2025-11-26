@@ -1,6 +1,7 @@
 import pytest
 import requests
-from django.conf import settings
+
+from common.elasticsearch import get_elasticsearch_client
 
 EXPECTED_BLOCKED_URLS = [
     "https://127.0.0.1:1234/a/test/path/",
@@ -19,8 +20,8 @@ def test_allow_only_real_elasticsearch_requests_success():
     """
     Test that real Elasticsearch requests are allowed and are successful.
     """
-    response = requests.get(settings.ES_URI)
-    assert response.status_code == 200
+    es = get_elasticsearch_client()
+    assert es.ping() is True
 
 
 @pytest.mark.parametrize("method_name", ["get", "post"])

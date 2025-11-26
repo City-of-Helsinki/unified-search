@@ -1,10 +1,8 @@
-import json
 import logging
 
-import requests
-from django.conf import settings
-from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
+
+from common.elasticsearch import get_elasticsearch_client
 
 """ Running:
         pytest
@@ -22,16 +20,19 @@ logging.basicConfig(
 
 
 def test_es_up():
+    """
+    Test that Elasticsearch is up and reachable.
+    """
+
     logging.debug("Checking Elasticsearch connection")
-    r = requests.get(settings.ES_URI)
-    logging.debug(json.dumps(json.loads(r.content), indent=4))
-    assert r.status_code == 200
+    es = get_elasticsearch_client()
+    assert es.ping() is True
 
 
 def test_es_basic_operations():
     """Run basic operations for testing purposes."""
 
-    es = Elasticsearch([settings.ES_URI])
+    es = get_elasticsearch_client()
 
     try:
         logging.debug("Deleting existing test data")

@@ -3,10 +3,10 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, is_dataclass
 from typing import Generic, List, Optional, Tuple, TypeVar
 
-from django.conf import settings
-from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch.helpers import bulk as elasticsearch_bulk
+
+from common.elasticsearch import get_elasticsearch_client
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class Importer(ABC, Generic[IndexableData]):
             raise NotImplementedError(
                 f"Importer {self.__class__.__name__} is missing index_base_names."
             )
-        self.es = Elasticsearch([settings.ES_URI]).options(request_timeout=60)
+        self.es = get_elasticsearch_client().options(request_timeout=60)
         self.use_fallback_languages = use_fallback_languages
 
     @abstractmethod

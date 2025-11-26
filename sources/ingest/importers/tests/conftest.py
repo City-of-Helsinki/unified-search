@@ -1,8 +1,8 @@
 import pytest
 import requests
 from django.conf import settings
-from elasticsearch import Elasticsearch
 
+from common.elasticsearch import get_elasticsearch_client
 from ingest.importers.tests.mocks import (
     MOCK_OPENING_HOURS_RESPONSE,
     MOCKED_EVENT_COUNTS_PER_TPR_UNIT_RESPONSE,
@@ -116,7 +116,7 @@ def mocked_event_counts_per_tpr_unit_response(mocker):
 
 @pytest.fixture
 def es():
-    es = Elasticsearch([settings.ES_URI])
+    es = get_elasticsearch_client()
     yield es
     es.indices.delete(index="test_*")
 
