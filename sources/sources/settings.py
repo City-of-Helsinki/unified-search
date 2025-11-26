@@ -46,7 +46,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-ES_URI = os.getenv("ES_URI")
+# ES_URI environment variable can be a comma-separated list of URIs, or a single URI:
+ES_URI = [uri.strip() for uri in os.getenv("ES_URI", "").split(",")]
+ES_USERNAME = os.getenv("ES_USERNAME", "")
+ES_PASSWORD = os.getenv("ES_PASSWORD", "")
 
 DEBUG = os.getenv("DEBUG", "false").lower() in ("yes", "true", "t", "1")
 
