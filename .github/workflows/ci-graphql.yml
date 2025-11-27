@@ -9,7 +9,7 @@ on:
 
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@ci_working_directory
+    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main
     secrets: inherit
     with:
       node-version: 22
