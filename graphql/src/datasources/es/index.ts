@@ -20,15 +20,25 @@ export class ElasticSearchAPI extends RESTDataSource {
 
   constructor() {
     super();
-    const { baseURL, authHeader } = this.parseElasticSearchURI(
-      process.env.ES_URI
-    );
-    this.baseURL = baseURL;
-    this.authHeader = authHeader;
-  }
 
-  public get acceptedElasticsearchProtocols() {
-    return ['http:', 'https:'];
+    // Set base URL
+    const url = new URL(process.env.ES_URI);
+    if (url.username || url.password) {
+      throw new Error(
+        'Elasticsearch URI must not contain credentials; ' +
+          'use ES_USERNAME and ES_PASSWORD environment variables instead!'
+      );
+    }
+    this.baseURL = url.toString();
+
+    // Set Basic Auth, if at least username is provided
+    const username = process.env.ES_USERNAME ?? '';
+    const password = process.env.ES_PASSWORD ?? '';
+
+    if (username) {
+      const credentials = `${username}:${password}`;
+      this.authHeader = `Basic ${Buffer.from(credentials).toString('base64')}`;
+    }
   }
 
   /**
@@ -64,36 +74,6 @@ export class ElasticSearchAPI extends RESTDataSource {
   async getOntologyWords(props: OntologyWordParams) {
     const request = this.post.bind(this);
     return await getOntologyWords(request, props);
-  }
-
-  public parseElasticSearchURI(uri: string): {
-    baseURL: string;
-    authHeader: string | null;
-  } {
-    if (!URL.canParse(uri)) {
-      throw new Error('Failed to parse Elasticsearch URI');
-    }
-    const url = new URL(uri);
-    const { username, password, protocol } = url;
-
-    if (!this.acceptedElasticsearchProtocols.includes(protocol)) {
-      throw new Error(`Unacceptable protocol ${protocol} in Elasticsearch URI`);
-    }
-
-    // Remove credentials from URL
-    url.username = '';
-    url.password = '';
-    const baseURL = url.toString();
-
-    if (!username) {
-      return { baseURL, authHeader: null };
-    }
-
-    // Create Basic Auth header
-    const credentials = `${decodeURIComponent(username)}:${decodeURIComponent(password)}`;
-    const authHeader = `Basic ${Buffer.from(credentials).toString('base64')}`;
-
-    return { baseURL, authHeader };
   }
 }
 
