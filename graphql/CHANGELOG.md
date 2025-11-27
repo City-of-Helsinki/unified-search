@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.3.0...graphql-v3.4.0) (2025-11-27)
+
+
+### Features
+
+* **graphql:** Switch from ES_URI credentials to ES_USERNAME+ES_PASSWORD ([4549606](https://github.com/City-of-Helsinki/unified-search/commit/4549606357f33a729fd00afdadef984c7d8b34ff))
+
+
+### Bug Fixes
+
+* **graphql:** Dependabot issues 145–146 by upgrading all to latest minor ([0f6c688](https://github.com/City-of-Helsinki/unified-search/commit/0f6c688bd0b029469bd36c615abe2692af134e30))
+* **graphql:** Use console.info instead of console.log for output ([32d6824](https://github.com/City-of-Helsinki/unified-search/commit/32d682446c932dc50c9786c1ccc9457db97c5341))
+
 ## [3.3.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.2.2...graphql-v3.3.0) (2025-11-18)
 
 

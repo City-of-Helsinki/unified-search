@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.5.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.4.1...sources-v2.5.0) (2025-11-27)
+
+
+### Features
+
+* Add/clarify logging in data importers ([3fcb67a](https://github.com/City-of-Helsinki/unified-search/commit/3fcb67ae1778a2e5544f25c18db6798a8a98808f))
+* **sources:** Support ES_USERNAME, ES_PASSWORD and multi-node ES_URI ([1f0b612](https://github.com/City-of-Helsinki/unified-search/commit/1f0b6121acdb0e0018fb91a2c82f13c97ce2d2ae))
+
+
+### Bug Fixes
+
+* **docker:** Try to make volumes work with Windows/macOS/SELinux etc ([b8c7376](https://github.com/City-of-Helsinki/unified-search/commit/b8c73760accc8b120b9f39b16057c37726343d9f))
+
 ## [2.4.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.4.0...sources-v2.4.1) (2025-11-19)
 
 
