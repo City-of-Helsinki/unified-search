@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { estypes } from '@elastic/elasticsearch';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 
@@ -19,9 +20,9 @@ import type {
   ElasticSearchPagination,
   ConnectionCursorObject,
   ElasticLanguage,
-  EsResults,
   GetCursor,
-  EsHit,
+  EsHitSource,
+  EsResults,
 } from './types.js';
 
 export function createCursor<T>(query: T): string {
@@ -145,15 +146,13 @@ export function findClosestEnvFileDir() {
 }
 
 export const edgesFromEsResults = (results: EsResults, getCursor: GetCursor) =>
-  results.hits.hits.map((e: EsHit, index: number) => ({
+  results.hits.hits.map((e: estypes.SearchHit<EsHitSource>, index: number) => ({
     cursor: getCursor(index + 1),
     node: {
       _score: e._score,
       venue: { venue: e._source.venue }, // pass parent to child resolver. How to do this better?
     },
   }));
-
-export const getHits = (results: EsResults) => results.hits.total.value;
 
 export function getTodayString() {
   const d = new Date();

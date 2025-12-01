@@ -16,7 +16,6 @@ import {
   edgesFromEsResults,
   elasticLanguageFromGraphqlLanguage,
   getEsOffsetPaginationQuery,
-  getHits,
   validateOrderByArguments,
 } from '../../utils.js';
 
@@ -101,7 +100,10 @@ export async function unifiedSearchResolver(
 
   // Find shared data
   const edges = edgesFromEsResults(result, getCursor);
-  const hits = getHits(result);
+  const hits =
+    typeof result.hits.total === 'number'
+      ? result.hits.total
+      : result.hits.total.value;
 
   if (result.hits.hits.length >= 1000) {
     info.cacheControl.setCacheHint({
