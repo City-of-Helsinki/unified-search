@@ -203,9 +203,13 @@ describe('utils', () => {
 
   describe('edgesFromEsResults', () => {
     const exampleEsResults = {
+      took: 123,
+      timed_out: false,
+      _shards: { total: 1, successful: 1, skipped: 0, failed: 0 },
       hits: {
         hits: [
           {
+            _index: 'test-index',
             _score: 1.5,
             _source: {
               name: 'Example 1',
@@ -214,6 +218,7 @@ describe('utils', () => {
             _id: '1',
           },
           {
+            _index: 'test-index',
             _score: 1.0,
             _source: {
               name: 'Example 2',
@@ -222,7 +227,7 @@ describe('utils', () => {
             _id: '2',
           },
         ],
-        total: { value: 2 },
+        total: { value: 2, relation: 'eq' },
         max_score: 1.5,
       },
     } as const satisfies EsResults;

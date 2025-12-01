@@ -2,22 +2,55 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ElasticSearchAPI } from '../index.js';
 
-const validEsUris = [
-  'http://elasticsearch-node1:9200/',
-  'http://example.com:1212/',
-  'http://test.example.org/',
-  'https://a.b.c.com:9200/test/a/3/?a1=b&p2=3%40#section',
-  'https://elasticsearch.example.com:9200/some/path',
-  'https://example.com/',
-  'https://example.com:1234/',
-  'https://localhost:9200/',
-  'https://localhost:9200/elasticsearch/',
+const validEsUri = 'http://elasticsearch-node1:9200/';
+
+const validEsUriMappings = [
+  {
+    esUri: validEsUri,
+    expectedResult: [validEsUri],
+  },
+  {
+    esUri: 'https://example.com:1212/',
+    expectedResult: ['https://example.com:1212/'],
+  },
+  {
+    esUri: 'http://elastic-test-uri:9200',
+    expectedResult: ['http://elastic-test-uri:9200/'],
+  },
+  {
+    esUri: 'https://localhost:9200/',
+    expectedResult: ['https://localhost:9200/'],
+  },
+  {
+    // Handles multiple URIs separated by commas
+    esUri:
+      'http://elasticsearch-node1:9200/,https://example.com:1212/,http://elastic-test-uri:9200',
+    expectedResult: [
+      'http://elasticsearch-node1:9200/',
+      'https://example.com:1212/',
+      'http://elastic-test-uri:9200/',
+    ],
+  },
+  {
+    // Handles whitespaces around URIs and omits default ports (80 for HTTP and 443 for HTTPS)
+    esUri:
+      ' http://elasticsearch-node1:80/ ,\thttps://example.com:443,\nhttp://elastic-test-uri:9200\r\n',
+    expectedResult: [
+      'http://elasticsearch-node1/',
+      'https://example.com/',
+      'http://elastic-test-uri:9200/',
+    ],
+  },
 ] as const;
 
 const invalidEsUris = [
   '',
   '/path/to/elasticsearch',
   'not-a-valid-url',
+  // Path, query and fragment parts are not allowed:
+  'https://a.b.c.com:9200/test/a/3/?a1=b&p2=3%40#section',
+  'https://elasticsearch.example.com:9200/some/path',
+  'https://localhost:9200/elasticsearch/',
 ] as const;
 
 const esUrisWithCredentials = [
@@ -25,6 +58,10 @@ const esUrisWithCredentials = [
   'https://:password@localhost:9200/',
   'https://user:password@localhost:9200/',
   'https://user@localhost:9200/',
+  // Handles multiple URIs
+  'http://elasticsearch-node1:9200/,https://user@localhost:9200/',
+  // Handles whitespaces around URIs
+  ' http://test-node1:80/ ,\thttps://a.com:443,\nhttp://user:pass@test-uri:9200\r\n',
 ] as const;
 
 const noAuthHeaderExpected = [
@@ -52,17 +89,27 @@ describe('ElasticSearchAPI', () => {
   });
 
   describe('constructor', () => {
-    it.each(validEsUris)('should set baseURL with ES_URI %s', (esUri) => {
-      process.env.ES_URI = esUri;
-      const api = new ElasticSearchAPI();
-      expect(api.baseURL).toStrictEqual(esUri);
-    });
+    it.each(validEsUriMappings)(
+      "should set Elasticsearch client's connection URLs correctly with ES_URI $esUri",
+      ({ esUri, expectedResult }) => {
+        process.env.ES_URI = esUri;
+        const api = new ElasticSearchAPI();
+        expect(api.esClient.connectionPool.connections).toHaveLength(
+          expectedResult.length
+        );
+        for (const [index, expectedUrl] of expectedResult.entries()) {
+          expect(
+            api.esClient.connectionPool.connections[index].url.toString()
+          ).toStrictEqual(expectedUrl);
+        }
+      }
+    );
 
     it.each(invalidEsUris)(
       'should throw error with invalid ES_URI %s',
       (esUri) => {
         process.env.ES_URI = esUri;
-        expect(() => new ElasticSearchAPI()).toThrowError('Invalid URL');
+        expect(() => new ElasticSearchAPI()).toThrowError(/invalid URL/i);
       }
     );
 
@@ -77,29 +124,20 @@ describe('ElasticSearchAPI', () => {
     );
   });
 
-  describe('willSendRequest', () => {
+  describe('Elasticsearch client auth', () => {
     it.each(authHeaderExpected)(
       'should add correct authorization header to requests with ' +
         'ES_USERNAME $username and ES_PASSWORD $password',
       ({ username, password }) => {
-        process.env.ES_URI = validEsUris[0];
+        process.env.ES_URI = validEsUri;
         process.env.ES_USERNAME = username;
         process.env.ES_PASSWORD = password;
         const api = new ElasticSearchAPI();
-        const mockRequest = { headers: {}, params: new URLSearchParams() };
 
-        api.willSendRequest('test/path', mockRequest);
-
-        const authHeader = mockRequest.headers['authorization'];
-        const credentials = `${username}:${password ?? ''}`;
-        const expectedPrefix = 'Basic ' as const;
-
-        expect(authHeader.slice(0, expectedPrefix.length)).toStrictEqual(
-          expectedPrefix
-        );
-        expect(atob(authHeader.slice(expectedPrefix.length))).toStrictEqual(
-          credentials
-        );
+        expect(api.esClient.connectionPool.auth).toStrictEqual({
+          username,
+          password: password ?? '',
+        });
       }
     );
 
@@ -107,15 +145,12 @@ describe('ElasticSearchAPI', () => {
       'should not add authorization header to requests with ' +
         'ES_USERNAME $username and ES_PASSWORD $password',
       ({ username, password }) => {
-        process.env.ES_URI = validEsUris[0];
+        process.env.ES_URI = validEsUri;
         process.env.ES_USERNAME = username;
         process.env.ES_PASSWORD = password;
         const api = new ElasticSearchAPI();
-        const mockRequest = { headers: {}, params: new URLSearchParams() };
 
-        api.willSendRequest('test/path', mockRequest);
-
-        expect(mockRequest.headers['authorization']).toBeUndefined();
+        expect(api.esClient.connectionPool.auth).toBeUndefined();
       }
     );
   });

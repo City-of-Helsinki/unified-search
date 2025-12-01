@@ -13,7 +13,7 @@ export function getOntologyFields(
       `links.raw_data.ontologyword_ids_enriched.ontologyword_${lang}`,
       `links.raw_data.ontologytree_ids_enriched.name_${lang}`,
       `links.raw_data.ontologytree_ids_enriched.extra_searchwords_${lang}`,
-    ] as const;
+    ];
   }
   return [];
 }

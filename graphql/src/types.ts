@@ -1,3 +1,5 @@
+import type { estypes } from '@elastic/elasticsearch';
+
 import type { GraphQlToElasticLanguageMap } from './constants.js';
 
 // A type representing an object with no properties
@@ -7,13 +9,6 @@ export type ConnectionCursor = string;
 
 export type ConnectionCursorObject = {
   offset: number;
-};
-
-export type PageInfo = {
-  startCursor: ConnectionCursor | null;
-  endCursor: ConnectionCursor | null;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
 };
 
 export type ConnectionArguments = {
@@ -68,26 +63,11 @@ export type EsHitSource = {
   venue?: Venue;
 };
 
-// FIXME: Generate this from GraphQL type SingleHit
-export type EsHit = {
-  _score: number;
-  _source: EsHitSource;
-  _id?: string;
-};
-
 // FIXME: Combine TypeScript types and GraphQL types
-export type EsResults = {
-  hits: {
-    hits: EsHit[];
-    total: { value: number };
-    max_score?: number;
-  };
-  suggest?: {
-    suggestions: Array<{
-      options: Array<{ text: string }>;
-    }>;
-  };
-};
+export type EsResults = estypes.SearchResponse<
+  EsHitSource,
+  Record<string, estypes.AggregationsAggregate>
+>;
 
 export type Edge = {
   cursor: string;

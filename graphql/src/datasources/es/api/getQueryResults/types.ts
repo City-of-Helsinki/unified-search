@@ -1,3 +1,5 @@
+import type { estypes } from '@elastic/elasticsearch';
+
 import type { ElasticLanguage, TranslatableField } from '../../../../types.js';
 import type {
   AccessibilityProfileType,
@@ -49,25 +51,14 @@ export type QueryResultFilterProps = Pick<
   | 'openAt'
 >;
 
-export type QueryFilterClauses = {
-  [key in TranslatableField]?: {
-    query: string;
-  } & Partial<{
-    boost?: number | string;
-    type?: string;
-    operator?: string;
-    fuzziness?: string;
-  }>;
-};
-
-export type TranslatableFieldClauses = {
-  [key in TranslatableField]?: QueryFilterClauses;
-};
-
 export type MatchBoolPrefixClause = {
-  match_bool_prefix: TranslatableFieldClauses;
+  match_bool_prefix: {
+    [key in TranslatableField]?: estypes.QueryDslMatchBoolPrefixQuery;
+  };
 };
 
 export type MatchPhraseClause = {
-  match_phrase: TranslatableFieldClauses;
+  match_phrase: {
+    [key in TranslatableField]?: estypes.QueryDslMatchPhraseQuery;
+  };
 };

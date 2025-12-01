@@ -1,3 +1,5 @@
+import type { estypes } from '@elastic/elasticsearch';
+
 import { GraphQlToElasticLanguageMap } from '../../../../../constants.js';
 import type { ElasticLanguage } from '../../../../../types.js';
 import { ES_DEFAULT_INDEX } from '../../../constants.js';
@@ -32,11 +34,11 @@ const searchWithBoolPrefix = (props: SearchProps): MatchBoolPrefixClause[] => {
           queryField,
           {
             query: text,
-            operator: 'or',
-            fuzziness: 'AUTO',
+            operator: 'or' as const,
+            fuzziness: 'AUTO' as const,
             // Need to convert boost back to float as records' keys are always strings:
             boost: Number.parseFloat(boost),
-          },
+          } satisfies estypes.QueryDslMatchBoolPrefixQuery,
         ])
       ),
     })
@@ -64,7 +66,7 @@ const searchWithPhrase = (props: SearchProps): MatchPhraseClause[] => {
           {
             query: text,
             boost: Number.parseFloat(boost) * MATCH_PHRASE_BOOST_MULTIPLIER,
-          },
+          } satisfies estypes.QueryDslMatchPhraseQuery,
         ])
       ),
     })
