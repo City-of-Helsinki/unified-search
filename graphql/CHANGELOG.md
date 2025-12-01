@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.4.0...graphql-v3.5.0) (2025-12-01)
+
+
+### Features
+
+* **graphql:** Use Elasticsearch client & support multi-node ES_URI ([e00a0f3](https://github.com/City-of-Helsinki/unified-search/commit/e00a0f336b0cd13f18157daf3c7c39719253013c))
+
 ## [3.4.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.3.0...graphql-v3.4.0) (2025-11-27)
 
 
