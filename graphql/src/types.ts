@@ -37,7 +37,7 @@ export type TranslatableField<T extends string = SearchableFields> =
 // more strictly typed.
 export type Venue = {
   accessibility?: {
-    shortcomings: Array<{ profile: string }>;
+    shortcomings: Array<{ profile: string; count?: number }>;
   };
   description?: unknown;
   images?: unknown;
