@@ -4,7 +4,6 @@
 FROM helsinki.azurecr.io/ubi9/python-312-gdal AS appbase
 # ==============================
 
-
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
