@@ -1,9 +1,6 @@
 # ==============================
-# FIXME(US-204): Use build-278157 (2025-11-10) as build-279912 (2025-11-17) fails
-#                See https://helsinkisolutionoffice.atlassian.net/browse/US-204
 FROM helsinki.azurecr.io/ubi9/python-312-gdal AS appbase
 # ==============================
-
 
 ENV PYTHONUNBUFFERED 1
 
