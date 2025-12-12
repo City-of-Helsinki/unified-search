@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.3](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.2...sources-v2.5.3) (2025-12-12)
+
+
+### Bug Fixes
+
+* Use latest gdal image ([#236](https://github.com/City-of-Helsinki/unified-search/issues/236)) ([8d60a33](https://github.com/City-of-Helsinki/unified-search/commit/8d60a33da3669d56a59b7ec042954c2a8424225c))
+
 ## [2.5.2](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.1...sources-v2.5.2) (2025-12-08)
 
 
