@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.3](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.2...sources-v2.5.3) (2026-01-23)
+
+
+### Bug Fixes
+
+* Use latest gdal image ([#236](https://github.com/City-of-Helsinki/unified-search/issues/236)) ([8d60a33](https://github.com/City-of-Helsinki/unified-search/commit/8d60a33da3669d56a59b7ec042954c2a8424225c))
+
+
+### Dependencies
+
+* Bump urllib3 from 2.6.0 to 2.6.3 in /sources ([b4bc5cf](https://github.com/City-of-Helsinki/unified-search/commit/b4bc5cfd6ca919ce560f6f4fdfbe4df085bffa47))
+
 ## [2.5.2](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.1...sources-v2.5.2) (2025-12-08)
 
 
