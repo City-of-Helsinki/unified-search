@@ -15,7 +15,7 @@ jobs:
       python-version: 3.12
       # PostgreSQL is NOT USED in sources app at all, but ci-django-api.yml requires this to be set:
       postgres-major-version: 13
-      working-directory: ./sources
+      working-directory: ./sources/
       extra-commands: |
         # Start local Elasticsearch for testing. It will be destroyed after the tests are done.
         # You can only log in to the Elasticsearch container from a runnable environment.
