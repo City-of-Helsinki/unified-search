@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.5](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.4...sources-v2.5.5) (2026-02-18)
+
+
+### Dependencies
+
+* Bump sqlparse from 0.5.3 to 0.5.4 in /sources ([1e01c0d](https://github.com/City-of-Helsinki/unified-search/commit/1e01c0da4ac0d8ed66ac2ac10bff3d4b88513c6f))
+
 ## [2.5.4](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.3...sources-v2.5.4) (2026-02-04)
 
 
