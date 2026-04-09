@@ -53,12 +53,12 @@
     "helmet": "^8.1.0",
     "luxon": "^3.7.2",
     "vite": "^8.0.8",
-    "vitest": "^4.0.14"
+    "vitest": "^4.1.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
-    "@vitest/coverage-v8": "4.0.14",
+    "@vitest/coverage-v8": "4.1.4",
     "nodemon": "^3.1.11",
     "prettier": "^3.7.3",
     "tsx": "^4.21.0",
