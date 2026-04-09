@@ -21,10 +21,10 @@
   resolved "https://registry.yarnpkg.com/@apollo/cache-control-types/-/cache-control-types-1.0.3.tgz#5da62cf64c3b4419dabfef4536b57a40c8ff0b47"
   integrity sha512-F17/vCp7QVwom9eG7ToauIKdAxpSoadsJnqIfyryLFSkLSOEqu+eC5Z3N8OXcUVStuOMcNHlyraRsA6rRICu4g==
 
-"@apollo/federation-internals@2.12.1":
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/@apollo/federation-internals/-/federation-internals-2.12.1.tgz#ee06236313383a3fccbeee496c15bbd6b6e0e9ab"
-  integrity sha512-4y0tcYvg8aph3qKYUC9eHtKR+JPJjpCo7Tp9rYDq/14JfQ3mSoJMgOXY3qOXxE/K7yg1qV+E0L9NX8m1fjkDZg==
+"@apollo/federation-internals@2.13.3":
+  version "2.13.3"
+  resolved "https://registry.yarnpkg.com/@apollo/federation-internals/-/federation-internals-2.13.3.tgz#5de4babdfc7f83c6dfb95ca5c45ee871cee4d0a0"
+  integrity sha512-4zHgqznZza5Qx2CZy1qlrh83BB/3Yd8BqD/dmhGzLCvHJQ1LBTyZbWN7xwKs5z5FbxdSPkL5TvPoLm5Rek8/4g==
   dependencies:
     "@types/uuid" "^9.0.0"
     chalk "^4.1.0"
@@ -94,13 +94,13 @@
     uuid "^11.1.0"
     whatwg-mimetype "^4.0.0"
 
-"@apollo/subgraph@^2.12.1":
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/@apollo/subgraph/-/subgraph-2.12.1.tgz#92ec43e2612abb121f45057a1ef13cabaf45280d"
-  integrity sha512-bORCjssQzZHBOxgDMnVUD+Bl30khttg6p8f1Na/VGc8AhvvQ19Z65MCMzjDdug+sU96eJhVuf2QwSNDnrFHrxw==
+"@apollo/subgraph@^2.13.3":
+  version "2.13.3"
+  resolved "https://registry.yarnpkg.com/@apollo/subgraph/-/subgraph-2.13.3.tgz#50d834c375c1548f67a79f4ddb448cd2c3d9b16e"
+  integrity sha512-nmdACpdTe+kgmNF0Yow3MoDkE0SMfvK6tTsEs3h3M9GLYCgBWZWBoDWQfNdr7kWRW6aan2SylU0K0ktF643h3g==
   dependencies:
     "@apollo/cache-control-types" "^1.0.2"
-    "@apollo/federation-internals" "2.12.1"
+    "@apollo/federation-internals" "2.13.3"
 
 "@apollo/usage-reporting-protobuf@^4.1.0", "@apollo/usage-reporting-protobuf@^4.1.1":
   version "4.1.1"
