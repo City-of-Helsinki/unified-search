@@ -64,7 +64,19 @@ repos:
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
-        args: []
+        args:
+          - build
+          - chore
+          - ci
+          - deps
+          - docs
+          - feat
+          - fix
+          - perf
+          - refactor
+          - revert
+          - style
+          - test
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.19.1
     hooks:
