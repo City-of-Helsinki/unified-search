@@ -7,6 +7,7 @@
   "engines": {
     "node": ">=22.16.0"
   },
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "build": "tsc",
     "start": "nodemon --ext ts src/index.ts --exec tsx",
