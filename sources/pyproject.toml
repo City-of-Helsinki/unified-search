@@ -1,7 +1,7 @@
 [project]
 name = "unified-search-sources"
 requires-python = ">=3.12, <3.13"
-version = "2.5.5"
+version = "2.5.6"
 
 [tool.ruff]
 extend-exclude = ["migrations", "snapshots"]

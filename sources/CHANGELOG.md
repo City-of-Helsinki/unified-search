@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.5.6](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.5...sources-v2.5.6) (2026-04-09)
+
+
+### Dependencies
+
+* Bump django from 5.2.12 to 5.2.13 in /sources ([cf80929](https://github.com/City-of-Helsinki/unified-search/commit/cf80929d9340b36aad2fb48d41bd29f7a1034f84))
+* Bump pygments from 2.19.2 to 2.20.0 in /sources ([dc4a540](https://github.com/City-of-Helsinki/unified-search/commit/dc4a5405c87d09e83fcb269dd7e844b121a7093e))
+* Bump requests from 2.32.5 to 2.33.0 in /sources ([0709559](https://github.com/City-of-Helsinki/unified-search/commit/0709559ec8c75041f06971dcf89e05e1d9e4f496))
+
 ## [2.5.5](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.4...sources-v2.5.5) (2026-03-05)
 
 
