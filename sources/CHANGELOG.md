@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.7](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.6...sources-v2.5.7) (2026-04-22)
+
+
+### Dependencies
+
+* Bump pytest from 9.0.1 to 9.0.3 in /sources ([8e0a5b4](https://github.com/City-of-Helsinki/unified-search/commit/8e0a5b414d26398d30d4b170414e6df0946da8d7))
+* Bump python-dotenv from 1.2.1 to 1.2.2 in /sources ([b2d46fe](https://github.com/City-of-Helsinki/unified-search/commit/b2d46fecbf7c8e6192151075f4701b7c77f862ba))
+
 ## [2.5.6](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.5...sources-v2.5.6) (2026-04-09)
 
 
