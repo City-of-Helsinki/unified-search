@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.8](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.7...sources-v2.5.8) (2026-05-11)
+
+
+### Dependencies
+
+* Bump django from 5.2.13 to 5.2.14 in /sources ([09f6014](https://github.com/City-of-Helsinki/unified-search/commit/09f601445ea197e3af3ea6e1313fc2b21c77a680))
+
 ## [2.5.7](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.6...sources-v2.5.7) (2026-04-22)
 
 
