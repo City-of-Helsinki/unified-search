@@ -59,7 +59,7 @@ elastic-transport==9.2.0
     # via elasticsearch
 elasticsearch==9.2.0
     # via -r requirements.in
-idna==3.11
+idna==3.15
     # via
     #   anyio
     #   requests
