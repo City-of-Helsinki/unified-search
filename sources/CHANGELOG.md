@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.10](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.9...sources-v2.5.10) (2026-05-20)
+
+
+### Dependencies
+
+* Bump idna from 3.11 to 3.15 in /sources ([72178c3](https://github.com/City-of-Helsinki/unified-search/commit/72178c306d53eb9527389a7df694be33c40f330b))
+
 ## [2.5.9](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.8...sources-v2.5.9) (2026-05-19)
 
 
