@@ -67,11 +67,6 @@ FROM appbase AS production
 
 COPY --from=staticbuilder --chown=root:root --chmod=755 /app/static /app/static
 
-COPY --chown=root:root --chmod=755 requirements-prod.txt /app/requirements-prod.txt
-
-RUN pip install --no-cache-dir -r /app/requirements-prod.txt \
-    && dnf clean all
-
 USER default
 
 EXPOSE 5001/tcp

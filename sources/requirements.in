@@ -9,3 +9,4 @@ pyhumps
 python-dotenv
 requests
 sentry-sdk
+uwsgi<3

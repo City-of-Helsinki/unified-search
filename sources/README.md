@@ -83,19 +83,16 @@ and go into it with `docker exec -it unified-search-sources-1 bash` first.
 
    - `pip-compile requirements.in`
    - `pip-compile requirements-dev.in`
-   - `pip-compile requirements-prod.in`
 
 4. If you want to update dependencies to their newest versions, run:
 
    - `pip-compile --upgrade requirements.in`
    - `pip-compile --upgrade requirements-dev.in`
-   - `pip-compile --upgrade requirements-prod.in`
 
 5. To install Python requirements run:
 
    - `pip install -r requirements.txt`
    - `pip install -r requirements-dev.txt`
-   - `pip install -r requirements-prod.txt`
    - Or if you're using Docker and the previous commands fail:
      - Spin down the container with `docker compose down`
      - Rebuild the container with `docker compose up --build` to take the package changes into account
