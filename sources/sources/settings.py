@@ -15,6 +15,7 @@ from datetime import datetime
 from pathlib import Path
 
 import sentry_sdk
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -214,3 +215,8 @@ APP_BUILD_TIME = datetime.fromtimestamp(os.path.getmtime(__file__))
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for readiness/healthz endpoints
 CORS_ALLOW_CREDENTIALS = False  # Forbid cookies in cross-site requests
 CORS_ALLOW_METHODS = ["GET", "HEAD"]  # Only for readiness/healthz endpoints
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "baggage",
+    "sentry-trace",
+)

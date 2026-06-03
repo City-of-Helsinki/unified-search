@@ -34,7 +34,6 @@ def test_cors_options_method_headers(client):
 @pytest.mark.parametrize(
     "setting_name",
     [
-        "CORS_ALLOW_HEADERS",
         "CORS_ALLOW_PRIVATE_NETWORK",
         "CORS_ALLOWED_ORIGIN_REGEXES",
         "CORS_ALLOWED_ORIGINS",
