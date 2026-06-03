@@ -2,6 +2,7 @@ certifi
 Django
 django-cors-headers
 django-csp
+django-environ
 django-health-check
 django-logger-extra
 django-munigeo
