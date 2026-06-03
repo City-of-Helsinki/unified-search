@@ -10,7 +10,7 @@
 # Ruff pre-commit hook documentation:
 # - https://github.com/astral-sh/ruff-pre-commit
 default_language_version:
-  python: python3.12
+  python: python3
 
 repos:
   #####################################################################
