@@ -15,7 +15,7 @@ if [[ "$INITIALIZE_DATA" = "1" ]]; then
 fi
 
 # Start server
-if [[ ! -z "$@" ]]; then
+if [[ -n "$*" ]]; then
     "$@"
 elif [[ "$DEV_SERVER" = "1" ]]; then
     python ./manage.py runserver 0.0.0.0:5001
