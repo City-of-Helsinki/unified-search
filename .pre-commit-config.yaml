@@ -88,3 +88,7 @@ repos:
       - id: md-toc
         # Skip first line to exclude topmost heading from Table of Contents
         args: ['--in-place', '--newline-string=\n', '--skip-lines=1', '--no-list-coherence', 'github']
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+      - id: shellcheck
