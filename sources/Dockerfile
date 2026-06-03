@@ -2,6 +2,9 @@
 FROM helsinki.azurecr.io/ubi9/python-312-gdal AS appbase
 # ==============================
 
+# Branch or tag used to pull python-uwsgi-common.
+ARG UWSGI_COMMON_REF=main
+
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
@@ -17,6 +20,17 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # "Recursively copying context directories is security-sensitive" i.e.
 # https://rules.sonarsource.com/docker/RSPEC-6470/
 # see .dockerignore for info on what is not copied here:
+
+# Build and copy specific python-uwsgi-common files.
+ADD https://github.com/City-of-Helsinki/python-uwsgi-common/archive/${UWSGI_COMMON_REF}.tar.gz /usr/src/
+RUN mkdir -p /usr/src/python-uwsgi-common && \
+    tar --strip-components=1 -xzf /usr/src/${UWSGI_COMMON_REF}.tar.gz -C /usr/src/python-uwsgi-common && \
+    mkdir /etc/uwsgi && \
+    cp /usr/src/python-uwsgi-common/uwsgi-base.ini /etc/uwsgi/ && \
+    uwsgi --build-plugin /usr/src/python-uwsgi-common && \
+    rm -rf /usr/src/${UWSGI_COMMON_REF}.tar.gz && \
+    rm -rf /usr/src/python-uwsgi-common
+
 COPY --chown=root:root --chmod=755 . /app/
 
 # Make sure db.sqlite3 under /app/db_data is writable by the application.
