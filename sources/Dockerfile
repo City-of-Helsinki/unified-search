@@ -87,4 +87,4 @@ COPY --from=staticbuilder --chown=root:root --chmod=755 /app/static /app/static
 
 USER default
 
-EXPOSE 5001/tcp
+EXPOSE 8080/tcp
