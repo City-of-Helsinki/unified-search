@@ -83,7 +83,7 @@ requests==2.33.0
     #   requests-cache
 requests-cache==1.2.1
     # via django-munigeo
-sentry-sdk==2.46.0
+sentry-sdk==2.61.1
     # via -r requirements.in
 six==1.17.0
     # via
