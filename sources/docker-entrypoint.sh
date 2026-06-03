@@ -20,5 +20,6 @@ if [[ -n "$*" ]]; then
 elif [[ "$DEV_SERVER" = "1" ]]; then
     python ./manage.py runserver 0.0.0.0:5001
 else
+    export UWSGI_PROCESSES=${UWSGI_PROCESSES:-4}
     uwsgi --ini .prod/uwsgi.ini
 fi
