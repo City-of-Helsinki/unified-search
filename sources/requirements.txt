@@ -109,3 +109,5 @@ urllib3==2.7.0
     #   requests
     #   requests-cache
     #   sentry-sdk
+uwsgi==2.0.31
+    # via -r requirements.in
