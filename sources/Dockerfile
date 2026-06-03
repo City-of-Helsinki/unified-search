@@ -12,7 +12,11 @@ RUN mkdir /entrypoint
 
 COPY --chown=root:root --chmod=755 requirements.txt /app/requirements.txt
 
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN dnf update -y  \
+    && pip install --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir -r requirements.txt \
+    && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
+    && dnf clean all
 
 # chmod=755 = rwxr-xr-x i.e. owner can read, write and execute, group and others can read and execute.
 #
@@ -63,8 +67,8 @@ ENV DEV_SERVER=1
 
 COPY --chown=root:root --chmod=755 requirements-dev.txt /app/requirements-dev.txt
 RUN pip install --no-cache-dir -r /app/requirements-dev.txt \
-    && pip install --no-cache-dir pip-tools \
-    && dnf clean all
+    && pip install --no-cache-dir pip-tools
+
 
 # Allow .pytest_cache writing so running pytest in container won't warn about cache writing failure:
 RUN mkdir -p /app/.pytest_cache \
