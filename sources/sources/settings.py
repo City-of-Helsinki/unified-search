@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "logger_extra",
     "corsheaders",
     "csp",
     "health_check",
@@ -76,6 +77,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "logger_extra.middleware.XRequestIdMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "csp.middleware.CSPMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -158,16 +160,22 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 
 LOGGING = {
     "version": 1,
+    "filters": {
+        "context": {
+            "()": "logger_extra.filter.LoggerContextFilter",
+        }
+    },
     "formatters": {
-        "simple": {"format": "%(levelname)s %(message)s"},
+        "json": {
+            "()": "logger_extra.formatter.JSONFormatter",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG" if DEBUG else "INFO",
-            # StreamHandler outputs to stderr by default, see
-            # https://docs.python.org/3/library/logging.handlers.html#logging.StreamHandler
             "class": "logging.StreamHandler",
-            "formatter": "simple",
+            "formatter": "json",
+            "filters": ["context"],
         },
     },
     "loggers": {

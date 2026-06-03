@@ -3,6 +3,7 @@ Django
 django-cors-headers
 django-csp
 django-health-check
+django-logger-extra
 django-munigeo
 elasticsearch
 pyhumps

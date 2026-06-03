@@ -31,6 +31,7 @@ django==5.2.14
     #   django-csp
     #   django-health-check
     #   django-js-asset
+    #   django-logger-extra
     #   django-munigeo
     #   django-parler
     #   django-parler-rest
@@ -43,6 +44,8 @@ django-health-check==3.20.0
     # via -r requirements.in
 django-js-asset==3.1.2
     # via django-mptt
+django-logger-extra==1.1.2
+    # via -r requirements.in
 django-mptt==0.18.0
     # via django-munigeo
 django-munigeo==0.3.12
