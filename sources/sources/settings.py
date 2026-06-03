@@ -14,10 +14,12 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+import environ
 import sentry_sdk
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.types import SamplingContext
 
 from .csp_settings import CONTENT_SECURITY_POLICY  # noqa: F401
 
@@ -30,11 +32,41 @@ from .csp_settings import CONTENT_SECURITY_POLICY  # noqa: F401
 # for it incrementally higher up."
 load_dotenv()
 
-sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN", ""),
-    environment=os.getenv("SENTRY_ENVIRONMENT", ""),
-    integrations=[DjangoIntegration()],
+env = environ.Env(
+    SENTRY_DSN=(str, ""),
+    SENTRY_ENVIRONMENT=(str, "local"),
+    SENTRY_PROFILE_SESSION_SAMPLE_RATE=(float, None),
+    SENTRY_RELEASE=(str, None),
+    SENTRY_TRACES_SAMPLE_RATE=(float, None),
+    SENTRY_TRACES_IGNORE_PATHS=(list, ["/healthz", "/readiness"]),
 )
+
+SENTRY_TRACES_SAMPLE_RATE = env("SENTRY_TRACES_SAMPLE_RATE")
+SENTRY_TRACES_IGNORE_PATHS = env("SENTRY_TRACES_IGNORE_PATHS")
+
+
+def sentry_traces_sampler(sampling_context: SamplingContext) -> float:
+    # Respect parent sampling decision if one exists. Recommended by Sentry.
+    if (parent_sampled := sampling_context.get("parent_sampled")) is not None:
+        return float(parent_sampled)
+    # Exclude health check endpoints from tracing
+    path = sampling_context.get("wsgi_environ", {}).get("PATH_INFO", "")
+    if path in SENTRY_TRACES_IGNORE_PATHS:
+        return 0
+    # Use configured sample rate for all other requests
+    return SENTRY_TRACES_SAMPLE_RATE or 0
+
+
+if env("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=env("SENTRY_DSN"),
+        environment=env("SENTRY_ENVIRONMENT"),
+        release=env("SENTRY_RELEASE"),
+        integrations=[DjangoIntegration()],
+        traces_sampler=sentry_traces_sampler,
+        profile_session_sample_rate=env("SENTRY_PROFILE_SESSION_SAMPLE_RATE"),
+        profile_lifecycle="trace",
+    )
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
