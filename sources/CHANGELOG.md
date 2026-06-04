@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.6.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.10...sources-v2.6.0) (2026-06-04)
+
+
+### Features
+
+* Add sentry cloud configuration ([a23b20f](https://github.com/City-of-Helsinki/unified-search/commit/a23b20fe43c830f7427084ce0a00c71fa16adedb))
+* Add sentry related headers to CORS_ALLOW_HEADERS ([feb5bb8](https://github.com/City-of-Helsinki/unified-search/commit/feb5bb804c0d2e681522e8c9a3ddaaf47b8f3919))
+* Change logging format to JSON ([79eb726](https://github.com/City-of-Helsinki/unified-search/commit/79eb72629397d10e08a18ea59cb1b94039f610a4))
+* Update uwsgi configuration ([452211a](https://github.com/City-of-Helsinki/unified-search/commit/452211a1c3a4512f88a09e2b3286c91b6fa9e024))
+
+
+### Bug Fixes
+
+* **dockerfile:** Add correct expose port for production ([62b886b](https://github.com/City-of-Helsinki/unified-search/commit/62b886b8e070a7fce87a7a8b039d605c0f79436f))
+* Handle shellcheck error SC2199 ([7385889](https://github.com/City-of-Helsinki/unified-search/commit/7385889ebf2a7e08cee8f0ac617f95d05a7eba0f))
+
+
+### Dependencies
+
+* Add django-environ ([aa8a86f](https://github.com/City-of-Helsinki/unified-search/commit/aa8a86fa6717744b85a35949b15909b03b98410e))
+* Bump sentry ([1a55ad9](https://github.com/City-of-Helsinki/unified-search/commit/1a55ad95bdb5ce3a36791da219f3519ccfab5b50))
+* Move uwsgi to main requirements ([51c1e46](https://github.com/City-of-Helsinki/unified-search/commit/51c1e46b19ee245500ce8dd8f09d015aad8092e5))
+
 ## [2.5.10](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.9...sources-v2.5.10) (2026-05-20)
 
 
