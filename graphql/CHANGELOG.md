@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.5.0...graphql-v3.5.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* Handle shellcheck error SC2199 ([7385889](https://github.com/City-of-Helsinki/unified-search/commit/7385889ebf2a7e08cee8f0ac617f95d05a7eba0f))
+
 ## [3.5.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.4.0...graphql-v3.5.0) (2025-12-01)
 
 
