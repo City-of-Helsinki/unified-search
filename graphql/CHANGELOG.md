@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.5.1...graphql-v3.6.0) (2026-06-10)
+
+
+### Features
+
+* Add sentry cloud configuration for graphql backend ([79e6511](https://github.com/City-of-Helsinki/unified-search/commit/79e651183d1a68f5b8f22fe91281fdf8493e247a))
+
 ## [3.5.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.5.0...graphql-v3.5.1) (2026-06-04)
 
 
