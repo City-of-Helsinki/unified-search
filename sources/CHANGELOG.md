@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.0...sources-v2.6.1) (2026-08-14)
+
+
+### Dependencies
+
+* Bump django from 5.2.14 to 5.2.15 in /sources ([0b099f5](https://github.com/City-of-Helsinki/unified-search/commit/0b099f5a52cd7707e3438c97b8c89800198ead8c))
+* Bump django from 5.2.15 to 5.2.16 in /sources ([9e4e11a](https://github.com/City-of-Helsinki/unified-search/commit/9e4e11a0ba61b9eb5f312662b9136f50543058f3))
+* Bump django to latest 5.2.17 ([64ef666](https://github.com/City-of-Helsinki/unified-search/commit/64ef6662e86cb659f281aaf014886d9002375c4f))
+
 ## [2.6.0](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.5.10...sources-v2.6.0) (2026-06-04)
 
 
