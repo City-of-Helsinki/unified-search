@@ -23,6 +23,9 @@ from sentry_sdk.types import SamplingContext
 
 from .csp_settings import CONTENT_SECURITY_POLICY  # noqa: F401
 
+GDAL_LIBRARY_PATH = os.environ.get("GDAL_LIBRARY_PATH")
+GEOS_LIBRARY_PATH = os.environ.get("GEOS_LIBRARY_PATH")
+
 # Load environment variables from .env in current directory or higher.
 #
 # From https://github.com/theskumar/python-dotenv?tab=readme-ov-file#getting-started
