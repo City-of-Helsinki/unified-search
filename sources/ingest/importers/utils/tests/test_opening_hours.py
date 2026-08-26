@@ -148,7 +148,7 @@ MOCK_RESPONSE = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture
 def patched_request_json(mocker):
     return mocker.patch(
         "ingest.importers.utils.opening_hours.request_json", return_value=MOCK_RESPONSE

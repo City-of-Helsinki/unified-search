@@ -34,7 +34,7 @@ def mocked_ontology_words(mocker):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_tpr_units_response(mocker):
     return mocker.patch(
         "ingest.importers.location.api.LocationImporterAPI.fetch_tpr_units",
@@ -42,7 +42,7 @@ def mocked_tpr_units_response(mocker):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_culture_and_leisure_division_tpr_units_response(mocker):
     return mocker.patch(
         "ingest.importers.location.api.LocationImporterAPI.fetch_culture_and_leisure_division_tpr_units",
@@ -50,7 +50,7 @@ def mocked_culture_and_leisure_division_tpr_units_response(mocker):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_service_map_connections_response(mocker):
     return mocker.patch(
         "ingest.importers.location.api.LocationImporterAPI.fetch_connections",
@@ -74,7 +74,7 @@ def mocked_service_map_accessibility_shortage_viewpoint_response(mocker):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_opening_hours_response(mocker):
     return mocker.patch(
         "ingest.importers.utils.opening_hours.request_json",
@@ -106,7 +106,7 @@ def mocked_service_registry_description_viewpoint_response(mocker):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_event_counts_per_tpr_unit_response(mocker):
     return mocker.patch(
         "ingest.importers.location.api.LocationImporterAPI.fetch_event_counts_per_tpr_unit",
