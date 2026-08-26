@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set
 
 from ingest.importers.location.constants import (
     ACCESSIBILITY_PROFILE_VIEWPOINTS,
@@ -34,7 +34,7 @@ class Connection:
     name: LanguageString
     www: Optional[LanguageString] = None
     phone: Optional[str] = None
-    tags: Optional[List[Union[str, ConnectionTag]]] = None
+    tags: Optional[List[str | ConnectionTag]] = None
 
 
 @dataclass(eq=True)
@@ -56,14 +56,14 @@ class AccessibilityViewpoint:
 class NodeMeta:
     id: str
     createdAt: datetime
-    updatedAt: datetime = None
+    updatedAt: datetime | None = None
 
 
 @dataclass
 class LinkedData:
-    service: str = None
-    origin_url: str = None
-    raw_data: Union[dict, list] = None
+    service: str | None = None
+    origin_url: str | None = None
+    raw_data: dict | list | None = None
 
 
 @dataclass
@@ -97,8 +97,8 @@ class GeoJSONFeature:
 @dataclass
 class Location:
     url: LanguageString
-    address: Address = None
-    geoLocation: GeoJSONFeature = None
+    address: Address | None = None
+    geoLocation: GeoJSONFeature | None = None
     administrativeDivisions: List[AdministrativeDivision] = field(default_factory=list)
 
 
@@ -267,9 +267,9 @@ class Reservation:
 
 @dataclass
 class Venue:
-    meta: NodeMeta = None
+    meta: NodeMeta | None = None
     name: LanguageString = None
-    location: Location = None
+    location: Location | None = None
     description: LanguageString = None
     serviceOwner: Optional[ServiceOwner] = None
     # List[TargetGroup] as List[str] to fix Elasticsearch serialization:
@@ -287,7 +287,7 @@ class Venue:
 @dataclass
 class Root:
     venue: Venue
-    location: GeoPoint = None
+    location: GeoPoint | None = None
     links: List[LinkedData] = field(default_factory=list)
     suggest: List[str] = field(default_factory=list)
 
