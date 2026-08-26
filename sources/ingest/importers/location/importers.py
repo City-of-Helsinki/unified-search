@@ -350,7 +350,7 @@ class LocationImporter(Importer[Root]):
                 tree_ontologies, self.use_fallback_languages
             )
 
-        return (all_ontologies, ontology_words)
+        return all_ontologies, ontology_words
 
     def _create_root_from_tpr_unit(self, tpr_unit: Any) -> Root:
         l = LanguageStringConverter(tpr_unit, self.use_fallback_languages)
