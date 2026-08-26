@@ -14,7 +14,7 @@ from .shared import LinkedData
 from .traffic import request_json
 
 DEFAULT_BATCH_SIZE = 100
-# TODO make configurable
+# A one-week window limits response sizes while keeping indexed data current.
 HAUKI_BASE_URL = "https://hauki.api.hel.fi/v1/"
 NUMBER_OF_DAYS_TO_FETCH = 7
 DEFAULT_TIME_ZONE = "Europe/Helsinki"
