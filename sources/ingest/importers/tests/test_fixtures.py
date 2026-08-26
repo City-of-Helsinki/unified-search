@@ -31,9 +31,10 @@ def test_allow_only_real_elasticsearch_requests_failure(method_name):
     """
     # Intentionally failing fast on the first URL to make making a real request to
     # non-local address less likely.
+    request_method = getattr(requests, method_name)
     for url in EXPECTED_BLOCKED_URLS:
         with pytest.raises(AssertionError) as exc_info:
-            getattr(requests, method_name)(url)
+            request_method(url)
         assert str(exc_info.value) == (
             f"Unmocked {method_name.upper()} request to: {url}\n"
             + "Add a fixture to mock this endpoint."
