@@ -2,7 +2,7 @@ import logging
 from copy import copy
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
 
@@ -97,7 +97,7 @@ class HaukiOpeningHoursFetcher:
 
     def __init__(
         self,
-        all_venue_ids: Iterable[Union[str, int]],
+        all_venue_ids: Iterable[str | int],
         batch_size: int = DEFAULT_BATCH_SIZE,
     ) -> None:
         self.batch_size = batch_size
@@ -105,7 +105,7 @@ class HaukiOpeningHoursFetcher:
         self.data: RawHoursById = {}
 
     def get_opening_hours_and_link(
-        self, venue_id: Union[str, int]
+        self, venue_id: str | int
     ) -> Tuple[OpeningHours, Optional[LinkedData]]:
         venue_id = str(venue_id)
         hauki_resource_url = HAUKI_RESOURCE_URL.format(venue_id=venue_id)
