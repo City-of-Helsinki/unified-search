@@ -1,7 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import asdict, is_dataclass
-from typing import Generic, List, Optional, Tuple, TypeVar
+from typing import List, Optional, Tuple
 
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch.helpers import bulk as elasticsearch_bulk
@@ -11,10 +11,7 @@ from common.elasticsearch import get_elasticsearch_client
 logger = logging.getLogger(__name__)
 
 
-IndexableData = TypeVar("IndexableData")
-
-
-class Importer(ABC, Generic[IndexableData]):
+class Importer[IndexableData](ABC):
     """Base class for importers.
 
     This base class provides functionality for ingesting data to Elastic Search. A
