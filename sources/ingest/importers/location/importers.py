@@ -300,7 +300,7 @@ class LocationImporter(Importer[Root]):
 
         # Add accessibility viewpoints' shortages to the venue
         venue.accessibility.set_accessibility_shortages(
-            self.unit_id_to_accessibility_viewpoint_shortages_mapping.get(_id, dict())
+            self.unit_id_to_accessibility_viewpoint_shortages_mapping.get(_id, {})
         )
         venue.accessibility.fix_unknown_and_zero_shortcomings()
 
