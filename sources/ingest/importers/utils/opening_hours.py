@@ -175,54 +175,56 @@ class HaukiOpeningHoursFetcher:
 
         open_ranges: List[DateTimeRange] = []
         closed_ranges: List[DateTimeRange] = []
+        ranges_by_state = {"open": open_ranges, "closed": closed_ranges}
 
         for day_data in data:
             day = datetime.date(datetime.strptime(day_data["date"], "%Y-%m-%d"))
 
             for time_data in day_data["times"]:
                 # Skip other states than "open" and "closed" at least for now
-                if time_data["resource_state"] not in ("open", "closed"):
+                resource_state = time_data["resource_state"]
+                if resource_state not in ranges_by_state:
                     continue
 
                 # If the data is not for full day, require both the start time and the
                 # end time
-                if not (
-                    time_data["full_day"]
-                    or (
-                        time_data["start_time"]
-                        and time_data["end_time"]
-                        and time_data["start_time"] != time_data["end_time"]
-                    )
-                ):
+                if not self._has_usable_times(time_data):
                     continue
 
-                if time_data["full_day"]:
-                    start_time = end_time = "00:00:00"
-                    end_time_on_next_day = True
-                else:
-                    start_time = time_data["start_time"]
-                    end_time = time_data["end_time"]
-                    end_time_on_next_day = time_data["end_time_on_next_day"]
-
-                range_list = (
-                    open_ranges
-                    if time_data["resource_state"] == "open"
-                    else closed_ranges
-                )
-                range_list.append(
-                    DateTimeRange(
-                        start=self.get_datetime_from_date_and_time(day, start_time),
-                        end=self.get_datetime_from_date_and_time(
-                            day + timedelta(days=1) if end_time_on_next_day else day,
-                            end_time,
-                        ),
-                    )
+                ranges_by_state[resource_state].append(
+                    self._make_datetime_range(day, time_data)
                 )
 
         # Override times when open by times when closed
         open_ranges = self.datetime_range_list_difference(open_ranges, closed_ranges)
 
         return [r.as_opening_hours_times_range() for r in open_ranges]
+
+    @staticmethod
+    def _has_usable_times(time_data: dict) -> bool:
+        return bool(
+            time_data["full_day"]
+            or (
+                time_data["start_time"]
+                and time_data["end_time"]
+                and time_data["start_time"] != time_data["end_time"]
+            )
+        )
+
+    def _make_datetime_range(self, day: date, time_data: dict) -> DateTimeRange:
+        if time_data["full_day"]:
+            start_time = end_time = "00:00:00"
+            end_time_on_next_day = True
+        else:
+            start_time = time_data["start_time"]
+            end_time = time_data["end_time"]
+            end_time_on_next_day = time_data["end_time_on_next_day"]
+
+        end_date = day + timedelta(days=1) if end_time_on_next_day else day
+        return DateTimeRange(
+            start=self.get_datetime_from_date_and_time(day, start_time),
+            end=self.get_datetime_from_date_and_time(end_date, end_time),
+        )
 
     @staticmethod
     def get_tprek_origin_id(data: dict) -> Optional[str]:
