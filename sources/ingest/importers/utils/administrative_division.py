@@ -52,7 +52,8 @@ class AdministrativeDivisionFetcher:
             )
         )
 
-    def _get_data(self, administrative_divisions_qs) -> List[AdministrativeDivision]:
+    @staticmethod
+    def _get_data(administrative_divisions_qs) -> List[AdministrativeDivision]:
         return [
             AdministrativeDivision(
                 id=db_division.ocd_id,
