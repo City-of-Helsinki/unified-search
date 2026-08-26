@@ -276,27 +276,26 @@ class HaukiOpeningHoursFetcher:
             # subtrahend covers minuend completely
             #  mmmm
             # ssssss
-            return []
+            result = []
         elif subtrahend.end <= minuend.start or subtrahend.start >= minuend.end:
             # subtrahend completely outside minuend
             # mmmmmm
             #        ssssss
-            return [copy(minuend)]
+            result = [copy(minuend)]
         elif subtrahend.start > minuend.start and subtrahend.end < minuend.end:
             # subtrahend in the middle of minuend, the result is two ranges
             # mmmmmm
             #  ssss
-            return [
+            result = [
                 DateTimeRange(start=minuend.start, end=subtrahend.start),
                 DateTimeRange(start=subtrahend.end, end=minuend.end),
             ]
+        elif subtrahend.start <= minuend.start:
+            #    mmmmmm
+            # ssssss
+            result = [DateTimeRange(start=subtrahend.end, end=minuend.end)]
         else:
-            # here we have only two possibilities left
-            if subtrahend.start <= minuend.start:
-                #    mmmmmm
-                # ssssss
-                return [DateTimeRange(start=subtrahend.end, end=minuend.end)]
-            else:
-                # mmmmmm
-                #    ssssss
-                return [DateTimeRange(start=minuend.start, end=subtrahend.start)]
+            # mmmmmm
+            #    ssssss
+            result = [DateTimeRange(start=minuend.start, end=subtrahend.start)]
+        return result
