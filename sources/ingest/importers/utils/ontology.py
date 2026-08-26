@@ -19,12 +19,14 @@ class Ontology:
         self.ontology_tree = self._get_ontology_tree_ids()
         self.ontology_word = self._get_ontology_word_ids()
 
-    def _get_ontology_tree_ids(self):
+    @staticmethod
+    def _get_ontology_tree_ids():
         url = "https://www.hel.fi/palvelukarttaws/rest/v4/ontologytree/"
         data = request_json(url)
         return data
 
-    def _get_ontology_word_ids(self):
+    @staticmethod
+    def _get_ontology_word_ids():
         url = "https://www.hel.fi/palvelukarttaws/rest/v4/ontologyword/"
         data = request_json(url)
         return data
