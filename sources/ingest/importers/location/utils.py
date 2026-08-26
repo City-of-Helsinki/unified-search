@@ -320,14 +320,14 @@ def get_accessibility_viewpoint_id_to_value_mapping(
 
     All accessibility viewpoints' values are limited to "unknown", "green" and "red".
     """
-    return (
-        dict(
-            accessibility_viewpoint.split(":")
-            for accessibility_viewpoint in accessibility_viewpoints.split(",")
-        )
-        if accessibility_viewpoints
-        else {}
+    if not accessibility_viewpoints:
+        return {}
+
+    viewpoint_pairs = (
+        accessibility_viewpoint.split(":")
+        for accessibility_viewpoint in accessibility_viewpoints.split(",")
     )
+    return dict(viewpoint_pairs)
 
 
 def get_enriched_accessibility_viewpoints(
