@@ -3,12 +3,6 @@ from typing import List
 from .traffic import request_json
 
 
-class AlreadyFoundError(Exception):
-    """Custom expection for checking against duplicate entries."""
-
-    pass
-
-
 class Ontology:
     """Helper class for dealing with ontology ID's and ontology tree.
     Instead of fething extra information for each ID separately, get
@@ -58,20 +52,17 @@ class Ontology:
         """
 
         info = []
+        seen_ids = set()
 
         for _id in id_list:
             # Get tree of id's
             data = self._get_tree(_id)
             # Store only individual id's, flat list
-            for i in data:
-                try:
-                    for old_elem in info:
-                        if old_elem["id"] == i["id"]:
-                            raise AlreadyFoundError
-                    info.append(i)
-                except AlreadyFoundError:
-                    # skip duplicate
-                    pass
+            for item in data:
+                if item["id"] in seen_ids:
+                    continue
+                seen_ids.add(item["id"])
+                info.append(item)
 
         return info
 
