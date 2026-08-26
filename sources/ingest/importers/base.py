@@ -71,8 +71,8 @@ class Importer[IndexableData](ABC):
         body = asdict(data) if is_dataclass(data) else data
         try:
             self.es.index(index=index_name, body=body, **(extra_params or {}))
-        except ConnectionError as e:
-            logger.error(e)
+        except ConnectionError:
+            logger.exception("Error while adding data")
 
     def add_data_bulk(
         self,
@@ -87,8 +87,8 @@ class Importer[IndexableData](ABC):
         ]
         try:
             elasticsearch_bulk(self.es, body)
-        except ConnectionError as e:
-            logger.error(e)
+        except ConnectionError:
+            logger.exception("Error while adding data in bulk")
 
     def apply_mapping(self, mapping: dict, index_base_name: Optional[str] = None):
         index_name = self._get_wip_alias(index_base_name or self.index_base_names[0])

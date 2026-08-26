@@ -27,5 +27,5 @@ def request_json(url, timeout_seconds=20):
         response = retry_twice_5s_intervals(fetch_response)
         return response.json()
     except Exception as e:
-        logger.error(f"Error while requesting {url}: {e}")
+        logger.exception("Error while requesting %s: %s", url, e)
         raise
