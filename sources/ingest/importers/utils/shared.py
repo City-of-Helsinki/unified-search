@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional
 
 
 @dataclass(eq=True)
@@ -14,6 +14,6 @@ class LanguageString:
 
 @dataclass
 class LinkedData:
-    service: str = None
-    origin_url: str = None
-    raw_data: Union[dict, list] = None
+    service: str | None = None
+    origin_url: str | None = None
+    raw_data: dict | list | None = None
