@@ -39,15 +39,11 @@ COPY --chown=root:root --chmod=755 . /app/
 
 # Make sure db.sqlite3 under /app/db_data is writable by the application.
 # Needed by e.g. `python manage.py ingest_data administrative_division`.
-RUN mkdir -p /app/db_data \
-    && chown -R default:root /app/db_data \
-    && chmod -R g+w /app/db_data
-
 # Make sure files under /app/data/ are writable by the application.
 # Needed by e.g. `python manage.py ingest_data administrative_division`.
-RUN mkdir -p /app/data \
-    && chown -R default:root /app/data \
-    && chmod -R g+w /app/data
+RUN mkdir -p /app/db_data /app/data \
+    && chown -R default:root /app/db_data /app/data \
+    && chmod -R g+w /app/db_data /app/data
 
 COPY --chown=root:root --chmod=755 docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
