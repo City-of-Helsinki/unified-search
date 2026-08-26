@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         start_time = timezone.now()
-        logger.info(f"Started at {start_time:%X}")
+        logger.info("Started at %s", start_time.strftime("%X"))
 
         importer_map = self.get_importer_map(kwargs["importer"])
 
@@ -65,7 +65,9 @@ class Command(BaseCommand):
 
         end_time = timezone.now()
         logger.info(
-            f"Completed at {end_time:%X}, took {(end_time - start_time).seconds} sec."
+            "Completed at %s, took %s sec.",
+            end_time.strftime("%X"),
+            (end_time - start_time).seconds,
         )
 
     def get_importer_map(self, importer_names: Optional[str]) -> ImporterMap:

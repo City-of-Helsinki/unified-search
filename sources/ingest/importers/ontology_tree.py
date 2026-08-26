@@ -22,7 +22,9 @@ class OntologyTreeImporter(Importer[OntologyTreeObject]):
     index_base_names = ("ontology_tree",)
 
     def run(self):
-        logger.info(f"Started importing ontology trees at {timezone.now():%X}")
+        logger.info(
+            "Started importing ontology trees at %s", timezone.now().strftime("%X")
+        )
         ontology = Ontology()
 
         for tree_obj in ontology.ontology_tree:
@@ -37,6 +39,7 @@ class OntologyTreeImporter(Importer[OntologyTreeObject]):
             self.add_data(data, extra_params={"id": tree_obj["id"]})
 
         logger.info(
-            f"Finished importing {len(ontology.ontology_tree)} ontology trees "
-            + f"at {timezone.now():%X}"
+            "Finished importing %s ontology trees at %s",
+            len(ontology.ontology_tree),
+            timezone.now().strftime("%X"),
         )

@@ -31,7 +31,8 @@ class AdministrativeDivisionImporter(Importer[AdministrativeDivision]):
 
     def run(self):
         logger.info(
-            f"Started importing administrative divisions at {timezone.now():%X}"
+            "Started importing administrative divisions at %s",
+            timezone.now().strftime("%X"),
         )
         all_administrative_divisions = AdministrativeDivisionFetcher().get_all()
         self.add_data_bulk(all_administrative_divisions, self.ALL_DIVISIONS_INDEX)
@@ -67,5 +68,6 @@ class AdministrativeDivisionImporter(Importer[AdministrativeDivision]):
             + f"divisions to Elasticsearch index {self.HELSINKI_COMMON_DIVISIONS_INDEX}"
         )
         logger.info(
-            f"Finished importing administrative divisions at {timezone.now():%X}"
+            "Finished importing administrative divisions at %s",
+            timezone.now().strftime("%X"),
         )
