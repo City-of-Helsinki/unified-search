@@ -45,7 +45,7 @@ class LanguageStringConverter:
 
     def has_postfixed_fields(self):
         expected = [self.field_name + "_" + lang for lang in self.LANGUAGES]
-        return any([self.input.get(key, False) for key in expected])
+        return any(self.input.get(key, False) for key in expected)
 
     @staticmethod
     def get_fields_with_fallback_languages(fields: dict) -> dict:
