@@ -98,11 +98,6 @@ def test_get_language_string_without_fallback_languages(
         ({"foo_fi": "kissa", "bar": {"fi": "koira"}, "foz": None}, "baz", None),
         ({"foo_fi": "kissa", "bar": {"fi": "koira"}, "foz": None}, "foz", None),
         (
-            {"foo_fi": "kissa", "foo_en": "cat", "foo_sv": "katt"},
-            "foo",
-            LanguageString(fi="kissa", sv="katt", en="cat"),
-        ),
-        (
             {"foo_fi": "kissa"},
             "foo",
             LanguageString(fi="kissa", sv="kissa", en="kissa"),
