@@ -308,10 +308,10 @@ def unique_shortages_count_for_viewpoint_ids(
             viewpoint IDs
     """
     return len(
-        set(
+        {
             shortage
             for viewpoint_id in viewpoint_ids
             for shortage in viewpoint_id_to_shortages.get(viewpoint_id, [])
-        )
+        }
         - set(NO_SHORTCOMINGS_SHORTAGE_TEXT_VARIANTS)
     )
