@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 from django.utils import timezone
 
@@ -15,7 +15,7 @@ class OntologyTreeObject:
     name: LanguageString
     ancestorIds: List[str]
     childIds: List[str]
-    ontologyWordReference: Union[str, None]
+    ontologyWordReference: str | None
 
 
 class OntologyTreeImporter(Importer[OntologyTreeObject]):
