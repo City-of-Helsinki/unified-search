@@ -316,10 +316,8 @@ class LocationImporter(Importer[Root]):
         return venue
 
     def _collect_ontologies(self, tpr_unit: Any):
-        # TODO: Separate words from tree
-        # TODO: Remove duplicates
-        #       Duplicates are not yet removed, because ontologies are not
-        #       returned in a public facing data structure.
+        # Search suggestions combine words and tree nodes. Preserve duplicates because
+        # ontologies are not returned in a public-facing data structure.
         all_ontologies = []
         ontology_words = []
         # Ontology ID's and tree contain plain integers, get corresponding texts
