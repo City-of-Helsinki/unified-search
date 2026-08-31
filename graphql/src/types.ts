@@ -29,11 +29,11 @@ export type SearchableFields = 'venue.name' | 'venue.description';
 export type TranslatableField<T extends string = SearchableFields> =
   `${T}.${ElasticLanguage}`;
 
-// FIXME: Generate this from GraphQL type UnifiedSearchVenue
+// NOTE: This type is not generated from the GraphQL type UnifiedSearchVenue.
 //
-// This type is mostly unspecified, simply made to have some
+// It is mostly unspecified, simply made to have some
 // kind of a structure for the data that's being handled.
-// By generating this from the GraphQL type, this could be
+// Generating this from the GraphQL type would allow it to be
 // more strictly typed.
 export type Venue = {
   accessibility?: {
@@ -57,13 +57,13 @@ export type VenueProps = {
   venue: Venue;
 };
 
-// FIXME: Combine TypeScript types and GraphQL types
+// NOTE: TypeScript types and GraphQL types are not combined here.
 export type EsHitSource = {
   name?: unknown;
   venue?: Venue;
 };
 
-// FIXME: Combine TypeScript types and GraphQL types
+// NOTE: TypeScript types and GraphQL types are not combined here.
 export type EsResults = estypes.SearchResponse<
   EsHitSource,
   Record<string, estypes.AggregationsAggregate>
