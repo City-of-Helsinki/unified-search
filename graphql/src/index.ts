@@ -106,14 +106,14 @@ httpServer.listen({ port }, () => {
 
 app.get('/healthz', (_, response) => {
   if (!serverIsReady) {
-    response.status(500).send(SERVER_IS_NOT_READY);
+    return response.status(500).send(SERVER_IS_NOT_READY);
   }
   return healthz(response);
 });
 
 app.get('/readiness', (_, response) => {
   if (!serverIsReady) {
-    response.status(500).send(SERVER_IS_NOT_READY);
+    return response.status(500).send(SERVER_IS_NOT_READY);
   }
   return readiness(response);
 });
