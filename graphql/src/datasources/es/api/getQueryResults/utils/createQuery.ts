@@ -25,8 +25,6 @@ export function createQuery({
 
   if (ontology) {
     // Resolve ontology
-    // NOTE: This query has not been in use anymore in the events-helsinki-monorepo.
-    //       It was earlier used with auto suggest menu.
     return getOntologyQuery({ index, languages, ontology });
   }
   return getDefaultBoolQuery({ index, languages, text });

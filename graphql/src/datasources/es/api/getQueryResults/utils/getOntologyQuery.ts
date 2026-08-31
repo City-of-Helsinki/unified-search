@@ -32,7 +32,12 @@ export function getOntologyMatchers({
   return matchers;
 }
 
-/** @deprecated Deprecated as unused. */
+/**
+ * NOTE: Not actually unused despite the name — this resolves the `ontology`
+ * GraphQL query argument (see `createQuery.ts`). It was previously marked
+ * `@deprecated` because it fell out of use in the separate
+ * events-helsinki-monorepo project, but it remains an active code path here.
+ */
 export function getOntologyQuery({
   index = ES_DEFAULT_INDEX,
   languages = Object.values(GraphQlToElasticLanguageMap),

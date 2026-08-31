@@ -21,12 +21,13 @@ export const DEFAULT_TIME_ZONE = 'Europe/Helsinki' as const;
 export const ES_DEFAULT_PAGE_SIZE = 10 as const;
 
 /**
- * @deprecated Used by the clients to fetch any results, since response is empty for the empty string.
+ * NOTE: Used by clients to fetch any results, since response is empty for
+ * the empty string.
  *
  * The asterisk ('*') is an operational character in the ElasticSearch,
- * but all the operational cahracters are escaped by `/src/constants/elasticSearchQueryStringSpecialCharsRegExpPattern`.
+ * but all the operational characters are escaped by `/src/constants/elasticSearchQueryStringSpecialCharsRegExpPattern`.
  *
- * This is deprecated, because we have had no actual need to separate empty string and asterisk queries --
+ * This is still needed because we have had no actual need to separate empty string and asterisk queries --
  * The empty query string could do what the asterisk query now does.
  */
 export const SEARCH_ALL_SPECIAL_CHAR = '*';
