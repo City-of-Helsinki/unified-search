@@ -20,7 +20,7 @@ export const SORT_ORDERS = ['ASCENDING', 'DESCENDING'] as const;
  * Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
  */
 export const elasticSearchQueryStringSpecialCharsRegExpPattern =
-  /(\+|-|=|&&|\|\||>|<|!|\(|\)|\{|\}|\[|\]|\^|"|~|\*|\?|:|\\|\/)/gi;
+  /(&&|\|\||[+=<>!(){}[\]^"~*?:\\/-])/gi;
 
 /**
  * CORS (Cross-Origin Resource Sharing) configuration for the GraphQL server.

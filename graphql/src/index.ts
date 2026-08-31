@@ -61,61 +61,59 @@ const combinedSchema = buildSubgraphSchema({
   resolvers: getResolvers(),
 });
 
-void (async () => {
-  let serverIsReady: boolean = false;
+let serverIsReady: boolean = false;
 
-  const signalReady = () => {
-    serverIsReady = true;
-  };
+const signalReady = () => {
+  serverIsReady = true;
+};
 
-  const app = express();
-  const httpServer = http.createServer(app);
+const app = express();
+const httpServer = http.createServer(app);
 
-  const server = new ApolloServer({
-    schema: combinedSchema,
-    introspection: true,
-    plugins: [
-      getLandingPagePlugin(),
-      ApolloServerPluginDrainHttpServer({ httpServer }),
-      responseCachePlugin(),
-      sentryConfig,
-    ],
-  });
-  await server.start();
+const server = new ApolloServer({
+  schema: combinedSchema,
+  introspection: true,
+  plugins: [
+    getLandingPagePlugin(),
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    responseCachePlugin(),
+    sentryConfig,
+  ],
+});
+await server.start();
 
-  app.use(
-    '/search',
-    helmet(getCspConfig()),
-    cors(corsConfig),
-    express.json(),
-    expressMiddleware(server, {
-      context: async () => ({
-        dataSources: {
-          elasticSearchAPI: new ElasticSearchAPI(),
-        },
-      }),
-    })
-  );
+app.use(
+  '/search',
+  helmet(getCspConfig()),
+  cors(corsConfig),
+  express.json(),
+  expressMiddleware(server, {
+    context: async () => ({
+      dataSources: {
+        elasticSearchAPI: new ElasticSearchAPI(),
+      },
+    }),
+  })
+);
 
-  const port = process.env.GRAPHQL_PROXY_PORT || 4000;
+const port = process.env.GRAPHQL_PROXY_PORT || 4000;
 
-  httpServer.listen({ port }, () => {
-    signalReady();
-    // eslint-disable-next-line no-console
-    console.info(`🚀 Server ready at http://localhost:${port}/search`);
-  });
+httpServer.listen({ port }, () => {
+  signalReady();
+  // eslint-disable-next-line no-console
+  console.info(`🚀 Server ready at http://localhost:${port}/search`);
+});
 
-  app.get('/healthz', (_, response) => {
-    if (!serverIsReady) {
-      response.status(500).send(SERVER_IS_NOT_READY);
-    }
-    return healthz(response);
-  });
+app.get('/healthz', (_, response) => {
+  if (!serverIsReady) {
+    response.status(500).send(SERVER_IS_NOT_READY);
+  }
+  return healthz(response);
+});
 
-  app.get('/readiness', (_, response) => {
-    if (!serverIsReady) {
-      response.status(500).send(SERVER_IS_NOT_READY);
-    }
-    return readiness(response);
-  });
-})();
+app.get('/readiness', (_, response) => {
+  if (!serverIsReady) {
+    response.status(500).send(SERVER_IS_NOT_READY);
+  }
+  return readiness(response);
+});
