@@ -1,7 +1,7 @@
-// eslint-disable-next-line
+// eslint-disable-next-line n/no-missing-import
 import './sentry-init.mjs'; // MUST be FIRST IMPORT! See file for details.
 
-import http from 'http';
+import http from 'node:http';
 
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';

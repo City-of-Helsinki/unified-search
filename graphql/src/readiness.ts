@@ -1,5 +1,5 @@
-import { statSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { statSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import type { Response } from 'express';
 

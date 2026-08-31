@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { estypes } from '@elastic/elasticsearch';
@@ -82,7 +82,7 @@ export function targetFieldLanguages(
 }
 
 export function isDefined<T>(value: T): value is Exclude<T, undefined> {
-  return typeof value !== 'undefined';
+  return value !== undefined;
 }
 
 /**
@@ -100,7 +100,7 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
 export function escapeQuery(text: string) {
   return text.replace(
     elasticSearchQueryStringSpecialCharsRegExpPattern,
-    '\\$1'
+    String.raw`\$1`
   );
 }
 

@@ -107,7 +107,7 @@ export async function unifiedSearchResolver(
 
   if (result.hits.hits.length >= 1000) {
     info.cacheControl.setCacheHint({
-      maxAge: parseInt(process.env.CACHE_MAX_AGE ?? '3600', 10),
+      maxAge: Number.parseInt(process.env.CACHE_MAX_AGE ?? '3600', 10),
     });
   }
 
