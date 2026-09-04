@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.0...graphql-v3.6.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **graphql:** Stop after not-ready health responses ([146c7b1](https://github.com/City-of-Helsinki/unified-search/commit/146c7b1bab0cff84274e44737b10c24a8884ef7f))
+
 ## [3.6.0](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.5.1...graphql-v3.6.0) (2026-06-10)
 
 
