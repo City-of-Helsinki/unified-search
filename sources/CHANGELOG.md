@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.6.2](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.1...sources-v2.6.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **sources:** Configure optional GDAL and GEOS library paths ([0e6248f](https://github.com/City-of-Helsinki/unified-search/commit/0e6248f3484f53244ea6c5b181f88b6f1489625f))
+* **sources:** Log exceptions with logging.exception ([c805e29](https://github.com/City-of-Helsinki/unified-search/commit/c805e29faa8a9394191237ed86f6c0ab14e04865))
+* **sources:** Use lazy logging args in importer log messages ([2193515](https://github.com/City-of-Helsinki/unified-search/commit/2193515a23b8241b87b595af1670f7a499df57c9))
+
+
+### Dependencies
+
+* Bump djangorestframework from 3.16.1 to 3.17.2 in /sources ([cb24675](https://github.com/City-of-Helsinki/unified-search/commit/cb2467580a7bb5b30bd3bfc56efc5643be58cabc))
+* Bump sqlparse from 0.5.4 to 0.6.0 in /sources ([d159905](https://github.com/City-of-Helsinki/unified-search/commit/d159905d4ea9f8cf87dc94a44359a32ae0b99a8c))
+
+
+### Documentation
+
+* **sources:** Replace FIXME comments with explanatory notes ([965c9ff](https://github.com/City-of-Helsinki/unified-search/commit/965c9ffa90bd4f91c264d523fd567c0fa8496ea1))
+* **sources:** Replace TODO comments with explanatory notes ([bec1287](https://github.com/City-of-Helsinki/unified-search/commit/bec12872126a9ba8906302ace27dc8855e2c35d9))
+
 ## [2.6.1](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.0...sources-v2.6.1) (2026-08-14)
 
 
