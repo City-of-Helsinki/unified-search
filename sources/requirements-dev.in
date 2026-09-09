@@ -1,8 +1,0 @@
--c requirements.txt
-ipython
-pytest
-pytest-cov
-pytest-django
-pytest-mock
-ruff
-snapshottest>=1.0.0a1

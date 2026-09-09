@@ -202,7 +202,7 @@ Services can now be locally accessed at:
 
 Sources tests, with `docker compose`:
 
-    docker compose exec sources pytest
+    docker compose exec sources uv run pytest
 
 GraphQL tests under `graphql` folder (Install dependencies with `yarn` first):
 
@@ -215,11 +215,11 @@ but here are a few examples of importing data into unified search.
 
 Import administrative division data:
 
-    docker compose exec sources python manage.py ingest_data administrative_division
+    docker compose exec sources uv run manage.py ingest_data administrative_division
 
 Import location data:
 
-    docker compose exec sources python manage.py ingest_data location
+    docker compose exec sources uv run manage.py ingest_data location
 
 ### Setting up pre-commit hooks
 
