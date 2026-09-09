@@ -9,11 +9,11 @@ on:
 
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@main
+    uses: City-of-Helsinki/.github/.github/workflows/ci-uv-django-api.yml@main
     secrets: inherit
     with:
       python-version: 3.12
-      # PostgreSQL is NOT USED in sources app at all, but ci-django-api.yml requires this to be set:
+      # PostgreSQL is NOT USED in sources app at all, but the reusable workflow requires this to be set:
       postgres-major-version: 13
       working-directory: ./sources
       extra-commands: |
