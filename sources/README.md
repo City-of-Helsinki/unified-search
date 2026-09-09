@@ -14,7 +14,7 @@ and storing it to Elasticsearch.
 - [Environments](#environments)
 - [Data importers](#data-importers)
 - [Endpoints](#endpoints)
-- [Keeping Python requirements up to date](#keeping-python-requirements-up-to-date)
+- [Keeping Python dependencies up to date](#keeping-python-dependencies-up-to-date)
 - [Code linting & formatting](#code-linting--formatting)
 - [Pre-commit hooks](#pre-commit-hooks)
 
@@ -68,39 +68,46 @@ The data importers are documented in [Data Importers README](./ingest/README.md)
 Data Collector doesn't have many endpoints, just the ones needed for
 readiness and health checks. They are documented in [openapi.yaml](./openapi.yaml).
 
-## Keeping Python requirements up to date
+## Keeping Python dependencies up to date
 
 If you're using Docker, spin up the container using `docker compose up`
 and go into it with `docker exec -it unified-search-sources-1 bash` first.
 
-1. Install `pip-tools` to get `pip-compile` command:
+Install [uv](https://docs.astral.sh/uv/) if it is not already available.
+Run the following commands from the `sources` directory, or from `/app` in the
+Docker container:
 
-   - `pip install pip-tools`
+1. Add dependencies to the appropriate group:
 
-2. Add new packages to `requirements*.in` where wanted
+   - `uv add <package>`
+   - `uv add --group dev <package>`
+   - `uv add --group prod <package>`
 
-3. Update `requirements*.txt` files:
+2. Update the lockfile:
 
-   - `pip-compile requirements.in`
-   - `pip-compile requirements-dev.in`
+   - `uv lock`
 
-4. If you want to update dependencies to their newest versions, run:
+3. If you want to update dependencies to their newest versions, run:
 
-   - `pip-compile --upgrade requirements.in`
-   - `pip-compile --upgrade requirements-dev.in`
+   - `uv lock --upgrade-package <package>`
+   - `uv lock --upgrade`
 
-5. To install Python requirements run:
+4. To install the dependencies, run:
 
-   - `pip install -r requirements.txt`
-   - `pip install -r requirements-dev.txt`
-   - Or if you're using Docker and the previous commands fail:
-     - Spin down the container with `docker compose down`
-     - Rebuild the container with `docker compose up --build` to take the package changes into account
+   - `uv sync --group dev --group prod`
+
+Use `uv run <command>` to run commands in the project environment, for example:
+
+   - `uv run pytest`
+   - `uv run manage.py check`
 
 ## Code linting & formatting
 
 This project uses [ruff](https://github.com/astral-sh/ruff) for Python code linting and formatting.
 Ruff is configured through [pyproject.toml](./pyproject.toml).
+Ruff is not a project dependency because it is run by the pre-commit hooks.
+If you want to run it manually, install it separately, for example with
+`uv tool install ruff` or `pip install ruff`.
 
 Basic `ruff` commands:
  - Check linting & formatting:
