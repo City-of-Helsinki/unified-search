@@ -8,7 +8,14 @@
     },
     "sources": {
       "release-type": "python",
-      "package-name": "sources"
+      "package-name": "sources",
+      "extra-files": [
+        {
+          "path": "uv.lock",
+          "type": "toml",
+          "jsonpath": "$.package[?(@.name.value=='unified-search-sources')].version"
+        }
+      ]
     }
   },
   "plugins": ["sentence-case"]
