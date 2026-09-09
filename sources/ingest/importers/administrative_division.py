@@ -46,8 +46,10 @@ class AdministrativeDivisionImporter(Importer[AdministrativeDivision]):
 
         for division in sorted(
             filter(
-                lambda d: d.type in ("neighborhood", "sub_district")
-                and d.municipality == "Helsinki",
+                lambda d: (
+                    d.type in ("neighborhood", "sub_district")
+                    and d.municipality == "Helsinki"
+                ),
                 all_administrative_divisions,
             ),
             # make sure neighborhoods are processed before sub districts so that

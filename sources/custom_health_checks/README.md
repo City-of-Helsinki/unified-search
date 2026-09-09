@@ -25,8 +25,8 @@ In [backends.py](backends.py) there are custom health checks for backend, like d
 
    ```python
    INSTALLED_APPS = [
-       'health_check', # requirement
-       "custom_health_checks", # this app
+       "health_check",  # requirement
+       "custom_health_checks",  # this app
    ]
    ```
 
@@ -48,7 +48,7 @@ In [backends.py](backends.py) there are custom health checks for backend, like d
    ```python
    urlpatterns = [
        # ...
-       path("healthz/", include('health_check.urls'))
+       path("healthz/", include("health_check.urls"))
    ]
    ```
 
@@ -56,8 +56,9 @@ In [backends.py](backends.py) there are custom health checks for backend, like d
 
    ```python
    import views
+
    urlpatterns = [
        # ...
-       path(r'healthz', views.HealthCheckCustomView.as_view(), name='healthz'),
+       path(r"healthz", views.HealthCheckCustomView.as_view(), name="healthz"),
    ]
    ```
