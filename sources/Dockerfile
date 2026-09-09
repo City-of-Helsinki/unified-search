@@ -5,16 +5,24 @@ FROM helsinki.azurecr.io/ubi9/python-312-gdal AS appbase
 # Branch or tag used to pull python-uwsgi-common.
 ARG UWSGI_COMMON_REF=main
 
-ENV PYTHONUNBUFFERED 1
+# Install uv, see https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
+COPY --from=ghcr.io/astral-sh/uv:0.12.11@sha256:79c6f4776b851471cc73b7d21d0cc834bb94383c292e83640d27eff512864df7 /uv /uvx /usr/local/bin/
+
+ENV PYTHONUNBUFFERED=1
+ENV UV_PROJECT_ENVIRONMENT=/opt/app-root \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_NO_CACHE=1 \
+    UV_PYTHON_DOWNLOADS=never
+ENV PATH="/opt/app-root/bin:$PATH"
 
 WORKDIR /app
 RUN mkdir /entrypoint
 
-COPY --chown=root:root --chmod=755 requirements.txt /app/requirements.txt
+COPY --chown=root:root --chmod=755 pyproject.toml uv.lock /app/
 
 RUN dnf update -y  \
-    && pip install --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir -r requirements.txt \
+    && uv sync --locked --no-dev --group prod \
     && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
     && dnf clean all
 
@@ -52,7 +60,7 @@ ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 FROM appbase AS staticbuilder
 # ==============================
 
-ENV STATIC_ROOT /app/static
+ENV STATIC_ROOT=/app/static
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic --noinput
 
 # ==============================
@@ -61,10 +69,7 @@ FROM appbase AS development
 
 ENV DEV_SERVER=1
 
-COPY --chown=root:root --chmod=755 requirements-dev.txt /app/requirements-dev.txt
-RUN pip install --no-cache-dir -r /app/requirements-dev.txt \
-    && pip install --no-cache-dir pip-tools
-
+RUN uv sync --locked --group dev --group prod
 
 # Allow .pytest_cache writing so running pytest in container won't warn about cache writing failure:
 RUN mkdir -p /app/.pytest_cache \
