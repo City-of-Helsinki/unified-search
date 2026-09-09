@@ -27,6 +27,13 @@ repos:
       - id: ruff-format
         args: [ --config, sources/pyproject.toml ]
         files: ^sources/
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.12.11
+    hooks:
+      # Keep sources/uv.lock in sync with sources/pyproject.toml
+      - id: uv-lock
+        args: [ --directory, sources ]
+        files: ^sources/(uv\.lock|pyproject\.toml|uv\.toml)$
   #####################################################################
   # Hooks for `graphql` directory / Node.js project
   #####################################################################
