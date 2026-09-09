@@ -39,6 +39,9 @@
 
 # Miscellaneous
 **/*.lock
+# uv.lock is required to build the Docker image (uv sync --locked), so it
+# must be excluded from the "**/*.lock" ignore rule above.
+!uv.lock
 **/*.log
 **/*.pyc
 **/*.temp
