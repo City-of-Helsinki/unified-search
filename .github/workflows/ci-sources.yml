@@ -10,7 +10,11 @@ on:
 jobs:
   common:
     uses: City-of-Helsinki/.github/.github/workflows/ci-uv-django-api.yml@main
-    secrets: inherit
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     with:
       python-version: 3.12
       # PostgreSQL is NOT USED in sources app at all, but the reusable workflow requires this to be set:
