@@ -18,7 +18,7 @@ jobs:
     with:
       python-version: 3.12
       # PostgreSQL is NOT USED in sources app at all, but the reusable workflow requires this to be set:
-      postgres-major-version: 13
+      postgres-major-version: 17
       working-directory: ./sources
       extra-commands: |
         # Start local Elasticsearch for testing. It will be destroyed after the tests are done.
