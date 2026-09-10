@@ -21,11 +21,9 @@ services:
       - ./sources:/app
       # Map directories that need to be written to inside container
       # to named volumes to avoid permission issues with host OS.
-      # Use :z option to allow sharing these between multiple containers in SELinux,
-      # https://docs.docker.com/engine/storage/bind-mounts/#configure-the-selinux-label
-      - unified-search-sources-app-data:/app/data:z
-      - unified-search-sources-app-db-data:/app/db_data:z
-      - unified-search-sources-app-pytest-cache:/app/.pytest_cache:z
+      - unified-search-sources-app-data:/app/data
+      - unified-search-sources-app-db-data:/app/db_data
+      - unified-search-sources-app-pytest-cache:/app/.pytest_cache
 
   search-api:
     env_file: .env
