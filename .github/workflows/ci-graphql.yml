@@ -10,7 +10,11 @@ on:
 jobs:
   common:
     uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main
-    secrets: inherit
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     with:
       node-version: 22
       working-directory: ./graphql
