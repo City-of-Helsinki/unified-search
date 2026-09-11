@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.2](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.1...graphql-v3.6.2) (2026-09-11)
+
+
+### Dependencies
+
+* Bump js-yaml from 4.3.1 to 4.3.2 in /graphql ([75c527b](https://github.com/City-of-Helsinki/unified-search/commit/75c527b220b1ab9ddcb4b9939d53db150f1898ec))
+* Bump vitest from 4.1.4 to 4.1.11 in /graphql ([0795fe8](https://github.com/City-of-Helsinki/unified-search/commit/0795fe815e30268108360aad78781bceac3ad43d))
+
 ## [3.6.1](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.0...graphql-v3.6.1) (2026-09-04)
 
 
