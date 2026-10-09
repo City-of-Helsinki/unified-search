@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.3](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.2...sources-v2.6.3) (2026-10-09)
+
+
+### Dependencies
+
+* Bump urllib3 from 2.7.0 to 2.8.0 in /sources ([ce9cc9e](https://github.com/City-of-Helsinki/unified-search/commit/ce9cc9efeba11c316e1b92dfe43491032f1e9eb0))
+
 ## [2.6.2](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.1...sources-v2.6.2) (2026-09-04)
 
 

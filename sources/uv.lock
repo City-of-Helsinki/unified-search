@@ -768,7 +768,7 @@ wheels = [
 
 [[package]]
 name = "unified-search-sources"
-version = "2.6.2"
+version = "2.6.3"
 source = { virtual = "." }
 dependencies = [
     { name = "certifi" },
