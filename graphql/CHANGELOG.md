@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.3](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.2...graphql-v3.6.3) (2026-10-09)
+
+
+### Dependencies
+
+* Bump undici from 7.29.0 to 7.30.0 in /graphql ([59f4efd](https://github.com/City-of-Helsinki/unified-search/commit/59f4efd6e9e6fd9f2ee5e4d38b93d3ca9ca33447))
+
 ## [3.6.2](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.1...graphql-v3.6.2) (2026-09-11)
 
 
