@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.4](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.3...graphql-v3.6.4) (2026-10-09)
+
+
+### Dependencies
+
+* Bump proxy-addr from 2.0.7 to 2.0.8 in /graphql ([14e21a7](https://github.com/City-of-Helsinki/unified-search/commit/14e21a78faa83b9b55bce5670fa8f9aefd9bbb6f))
+* Bump source-map-js from 1.2.1 to 1.2.2 in /graphql ([492e39b](https://github.com/City-of-Helsinki/unified-search/commit/492e39b517c8031d4a1480338f09a7191159314b))
+
 ## [3.6.3](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.2...graphql-v3.6.3) (2026-10-09)
 
 
