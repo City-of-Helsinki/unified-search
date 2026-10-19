@@ -40,6 +40,13 @@ administrative divisions using [django-munigeo](https://github.com/City-of-Helsi
 - `geo_import finland --municipalities` → [geo_import](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/management/commands/geo_import.py) → [finland](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/importer/finland.py) importer
 - `geo_import helsinki --divisions` → [geo_import](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/management/commands/geo_import.py) → [helsinki](https://github.com/City-of-Helsinki/django-munigeo/blob/release-0.3.12/munigeo/importer/helsinki.py) importer
 
+The local [geo_import command](./management/commands/geo_import.py) registers a
+[Helsinki importer extension](./geo_importers.py) that fetches the HSY statistical
+district layer without a CQL filter and filters municipality codes locally. This
+avoids HSY's gateway rejecting the upstream `kunta in (...)` filter with HTTP 403,
+while retaining only Helsinki, Vantaa, Espoo and Kauniainen. The extension applies
+to both direct `geo_import` calls and `ingest_data` imports, including locations.
+
 #### Imported administrative divisions
 
 - Municipalities (=kunnat)

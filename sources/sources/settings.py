@@ -106,8 +106,8 @@ INSTALLED_APPS = [
     "csp",
     "health_check",
     "custom_health_checks",
-    "munigeo",
     "ingest",
+    "munigeo",
 ]
 
 MIDDLEWARE = [
