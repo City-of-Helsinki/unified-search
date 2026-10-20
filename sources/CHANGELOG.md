@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.4](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.3...sources-v2.6.4) (2026-10-20)
+
+
+### Bug Fixes
+
+* **sources:** Avoid HSY WFS filter rejection ([c0ab41b](https://github.com/City-of-Helsinki/unified-search/commit/c0ab41ba046a9a178865758c16294b7d90613e8f))
+
 ## [2.6.3](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.2...sources-v2.6.3) (2026-10-09)
 
 
