@@ -34,6 +34,7 @@ prod = [
 
 [tool.uv]
 package = false
+required-version = ">=0.13.4"
 exclude-newer = "P3D"
 # url-normalize is a transitive dependency (via requests-cache, pulled in by
 # django-munigeo). Pinned below the current major version to avoid an
