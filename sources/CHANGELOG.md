@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.5](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.4...sources-v2.6.5) (2026-10-23)
+
+
+### Bug Fixes
+
+* Bump uv version to 0.13.5 ([e3e49a3](https://github.com/City-of-Helsinki/unified-search/commit/e3e49a3f78034f13d9de72683ff6a935e632fea5))
+
+
+### Dependencies
+
+* Bump certifi to 2026.10.19 ([e8fb4b2](https://github.com/City-of-Helsinki/unified-search/commit/e8fb4b21454e6aed7f18f92eaf61edd083c376f3))
+
 ## [2.6.4](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.3...sources-v2.6.4) (2026-10-20)
 
 
