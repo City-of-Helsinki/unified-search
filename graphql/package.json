@@ -1,6 +1,6 @@
 {
   "name": "unified-search-graphql-api",
-  "version": "3.6.4",
+  "version": "3.6.5",
   "description": "GraphQL API for unified search",
   "main": "src/index.ts",
   "type": "module",

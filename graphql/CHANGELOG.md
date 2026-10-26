@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.6.5](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.4...graphql-v3.6.5) (2026-10-26)
+
+
+### Dependencies
+
+* Bump body-parser from 2.3.0 to 2.4.0 in /graphql ([ac6a933](https://github.com/City-of-Helsinki/unified-search/commit/ac6a9335e92ee5878b6a0c3b033b778d659c883d))
+* Bump undici from 7.30.0 to 7.30.1 in /graphql ([e17a2bc](https://github.com/City-of-Helsinki/unified-search/commit/e17a2bc107b7f4dd14fc69e00ceb85ce228a17f5))
+* Bump vite from 8.0.16 to 8.1.6 in /graphql ([b39f8c0](https://github.com/City-of-Helsinki/unified-search/commit/b39f8c069eb8cda1423826b6f8bd148c27a50f4c))
+
 ## [3.6.4](https://github.com/City-of-Helsinki/unified-search/compare/graphql-v3.6.3...graphql-v3.6.4) (2026-10-09)
 
 
