@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.6](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.5...sources-v2.6.6) (2026-10-26)
+
+
+### Dependencies
+
+* Bump djangorestframework from 3.18.0 to 3.18.2 in /sources ([f2ce9d4](https://github.com/City-of-Helsinki/unified-search/commit/f2ce9d41d881be0bf3d4ab46d71ec59aada546a5))
+
 ## [2.6.5](https://github.com/City-of-Helsinki/unified-search/compare/sources-v2.6.4...sources-v2.6.5) (2026-10-23)
 
 
